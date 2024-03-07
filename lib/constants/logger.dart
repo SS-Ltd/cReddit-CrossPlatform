@@ -1,10 +1,10 @@
-import 'package:logger/logger.dart' as LoggerPackage;
+import 'package:logger/logger.dart' as logger_package;
 
 class Logger {
-  static LoggerPackage.Logger? _logger;
+  static logger_package.Logger? _logger;
   static getLogger() {
     if (_logger == null) {
-      _logger = LoggerPackage.Logger();
+      _logger = logger_package.Logger();
     }
     return _logger;
   }
