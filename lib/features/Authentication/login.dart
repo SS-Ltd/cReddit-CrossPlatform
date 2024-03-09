@@ -7,7 +7,9 @@ import 'package:reddit_clone/theme/pallete.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +64,10 @@ class LoginScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             AuthField(
-                controller: TextEditingController(), labelText: 'Username'),
+                controller: emailController, labelText: 'Email or Username'),
             const SizedBox(height: 20),
             AuthField(
-                controller: TextEditingController(),
+                controller: passwordController,
                 labelText: 'Password',
                 obscureText: true),
           ],
