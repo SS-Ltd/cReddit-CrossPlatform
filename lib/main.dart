@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/constants/logger.dart';
+import 'package:reddit_clone/common/logger.dart';
 
 void main() {
   runApp(const MyApp());
