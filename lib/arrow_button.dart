@@ -15,30 +15,32 @@ class ArrowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Row(
           children: [
-            TextButton(
-              onPressed: onPressed,
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all<OutlinedBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0),
+            Expanded(
+              child: TextButton(
+                onPressed: onPressed,
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
                   ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  Icon(buttonicon),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(buttonText),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Icon(Icons.arrow_forward),
-                  ),
-                ],
+                child: Row(
+                  children: [
+                    Icon(buttonicon),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(buttonText),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Icon(Icons.arrow_forward),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

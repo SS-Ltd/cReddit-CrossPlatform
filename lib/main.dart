@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/constants/logger.dart';
 import 'package:reddit_clone/settings.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     Logger.getLogger().d('MyApp build');
     return const MaterialApp(
       title: 'Flutter Demo',
-      home: Settings(),
+      home: AccountSettings(),
     );
   }
 }

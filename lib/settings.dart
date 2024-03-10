@@ -71,7 +71,7 @@ class Settings extends StatelessWidget {
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Report an issue',
-                  buttonicon: Icons.message),
+                  buttonicon: Icons.email_outlined),
             ],
           ),
         ),

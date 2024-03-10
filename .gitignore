@@ -161,3 +161,4 @@ app.*.symbols
 .flutter-plugins
 .flutter-plugins-dependencies
 lib/selection_button.dart
+lib/account_settings.dart
