@@ -160,3 +160,4 @@ app.*.symbols
 !.vscode/settings.json
 .flutter-plugins
 .flutter-plugins-dependencies
+lib/selection_button.dart

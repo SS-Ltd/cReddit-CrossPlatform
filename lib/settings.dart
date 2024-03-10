@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/arrow_button.dart';
-import 'package:reddit_clone/constants/logger.dart';
 import 'package:reddit_clone/heading.dart';
 
 class Settings extends StatelessWidget {

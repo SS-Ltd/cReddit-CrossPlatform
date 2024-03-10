@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/constants/logger.dart';
 
 class Heading extends StatelessWidget {
 
