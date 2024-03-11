@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/arrow_button.dart';
@@ -62,7 +60,7 @@ class _SettingsState extends State<Settings> {
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Content Language',
-                  buttonIcon: Icons.translate),
+                  buttonIcon: Icons.translate,),
               const Heading(text: 'View Options'),
               const Heading(text: 'Accessibility'),
               ArrowButton(

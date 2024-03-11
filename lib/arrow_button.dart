@@ -5,12 +5,14 @@ class ArrowButton extends StatelessWidget {
   final String buttonText;
   final IconData buttonIcon;
   final String optional;
+  final bool hasarrow;
 
   const ArrowButton({
     super.key,
     required this.onPressed,
     required this.buttonText,
     required this.buttonIcon,
+    this.hasarrow = true,
     this.optional = '',
   });
 
@@ -43,9 +45,9 @@ class ArrowButton extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Icon(Icons.arrow_forward),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: hasarrow ? const Icon(Icons.arrow_forward) : const SizedBox.shrink(),
                   ),
                 ],
               ),
@@ -56,4 +58,5 @@ class ArrowButton extends StatelessWidget {
     );
   }
 }
-//if (optional.isNotEmpty) Text(optional),
+
+                  //  hasarrow ? Icon(Icons.arrow_forward) : SizedBox.shrink(),
