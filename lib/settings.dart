@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/arrow_button.dart';
 import 'package:reddit_clone/heading.dart';
+import 'package:reddit_clone/switch_button.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -21,57 +23,62 @@ class Settings extends StatelessWidget {
             children: [
               const Heading(text: 'General'),
               ArrowButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AccountSettings()));
+                  },
                   buttonText: 'Account Settings for u/ (username)',
-                  buttonicon: Icons.person),
+                  buttonIcon: Icons.person),
               const Heading(text: 'Premium'),
               const Heading(text: 'Language'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Content Language',
-                  buttonicon: Icons.translate),
+                  buttonIcon: Icons.translate),
               const Heading(text: 'View Options'),
               const Heading(text: 'Accessibility'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Increase Text Size',
-                  buttonicon: Icons.text_fields),
+                  buttonIcon: Icons.text_fields),
               const Heading(text: 'Dark Mode'),
               const Heading(text: 'Advanced'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Export video log',
-                  buttonicon: Icons.help_outline),
+                  buttonIcon: Icons.help_outline),
               const Heading(text: 'About'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Content Policy',
-                  buttonicon: Icons.description_outlined),
+                  buttonIcon: Icons.description_outlined),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Privacy Policy',
-                  buttonicon: Icons.privacy_tip),
+                  buttonIcon: Icons.privacy_tip),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'User Agreement',
-                  buttonicon: Icons.person),
+                  buttonIcon: Icons.person),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Acknowledgments',
-                  buttonicon: Icons.description),
+                  buttonIcon: Icons.description),
               const Heading(text: 'Support'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Help Center',
-                  buttonicon: Icons.help_outline),
+                  buttonIcon: Icons.help_outline),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Visit r/redditmobile',
-                  buttonicon: Icons.reddit),
+                  buttonIcon: Icons.reddit),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Report an issue',
-                  buttonicon: Icons.email_outlined),
+                  buttonIcon: Icons.email_outlined),
             ],
           ),
         ),
