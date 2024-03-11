@@ -93,16 +93,16 @@ class _UpdateEmailState extends State<UpdateEmail> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscureText,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Redddit Password',
-                      // suffixIcon: IconButton(
-                      //   icon: Icon(
-                      //     _obscureText
-                      //         ? Icons.visibility
-                      //         : Icons.visibility_off,
-                      //   ),
-                      //   onPressed: _toggle,
-                      // ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: _toggle,
+                      ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -122,9 +122,15 @@ class _UpdateEmailState extends State<UpdateEmail> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: ElevatedButton(
-                      onPressed: _submit,
-                      child: const Text('Submit'),
+                    child: Row(
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {}, child: const Text('Cancel')),
+                        ElevatedButton(
+                          onPressed: _submit,
+                          child: const Text('Save'),
+                        ),
+                      ],
                     ),
                   ),
                 ],
