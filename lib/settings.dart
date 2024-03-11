@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/arrow_button.dart';
 import 'package:reddit_clone/heading.dart';
-import 'package:reddit_clone/switch_button.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
