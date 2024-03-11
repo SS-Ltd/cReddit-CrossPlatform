@@ -41,41 +41,29 @@ class AboutUserPopUp extends StatelessWidget {
                     ]),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                  children: [
-                    ArrowButton(
-                        onPressed: () {},
-                        buttonText: 'View profile',
-                        buttonIcon: Icons.person,
-                        hasarrow: false),
-                  ],
-                ),
+                padding: const EdgeInsets.only(top: 25),
+                child: ArrowButton(
+                    onPressed: () {},
+                    buttonText: 'View Profile',
+                    buttonIcon: Icons.person,
+                    hasarrow: false),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 10),
-              //   child: Row(
-              //     children: [
-              //       ArrowButton(
-              //           onPressed: () {},
-              //           buttonText: 'Start chat',
-              //           buttonIcon: Icons.chat_rounded,
-              //           hasarrow: false),
-              //     ],
-              //   ),
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 10),
-              //   child: Row(
-              //     children: [
-              //       ArrowButton(
-              //           onPressed: () {},
-              //           buttonText: 'Block Account',
-              //           buttonIcon: Icons.person_off_outlined,
-              //           hasarrow: false),
-              //     ],
-              //   ),
-              // ),
+              Padding(
+                padding: const EdgeInsets.all(0),
+                child: ArrowButton(
+                    onPressed: () {},
+                    buttonText: 'Send Message',
+                    buttonIcon: Icons.mail_outline,
+                    hasarrow: false),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(0),
+                child: ArrowButton(
+                    onPressed: () {},
+                    buttonText: 'Block Account',
+                    buttonIcon: Icons.person_off_outlined,
+                    hasarrow: false),
+              ),
             ],
           )),
     );

@@ -12,7 +12,7 @@ class ArrowButton extends StatelessWidget {
     required this.onPressed,
     required this.buttonText,
     required this.buttonIcon,
-    required this.hasarrow,
+    this.hasarrow = true,
     this.optional = '',
   });
 
@@ -45,14 +45,11 @@ class ArrowButton extends StatelessWidget {
                       ],
                     ),
                   ),
-                  hasarrow
-                      ? const Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                          ),
-                      )
-                      : const SizedBox(),
+                  Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: hasarrow
+                          ? const Icon(Icons.arrow_forward_outlined)
+                          : const SizedBox.shrink()),
                 ],
               ),
             ),
