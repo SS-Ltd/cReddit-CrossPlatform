@@ -1,11 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/arrow_button.dart';
 import 'package:reddit_clone/heading.dart';
+import 'package:reddit_clone/selection_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +41,24 @@ class Settings extends StatelessWidget {
                   buttonIcon: Icons.person),
               const Heading(text: 'Premium'),
               const Heading(text: 'Language'),
+              SelectionButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const Column(
+                          children: [
+                            Row(
+                              children: [Text('Language')],
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  buttonText: 'App Language',
+                  buttonIcon: Icons.translate,
+                  selectedtext: 'English'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Content Language',
@@ -50,15 +77,30 @@ class Settings extends StatelessWidget {
                   buttonIcon: Icons.help_outline),
               const Heading(text: 'About'),
               ArrowButton(
-                  onPressed: () {},
+                  onPressed: () => setState(() {
+                        launchUrl(
+                            Uri.parse(
+                                'https://www.redditinc.com/policies/content-policy'),
+                            mode: LaunchMode.externalApplication);
+                      }),
                   buttonText: 'Content Policy',
                   buttonIcon: Icons.description_outlined),
               ArrowButton(
-                  onPressed: () {},
+                  onPressed: () => setState(() {
+                        launchUrl(
+                            Uri.parse(
+                                'https://www.reddit.com/policies/privacy-policy'),
+                            mode: LaunchMode.externalApplication);
+                      }),
                   buttonText: 'Privacy Policy',
                   buttonIcon: Icons.privacy_tip),
               ArrowButton(
-                  onPressed: () {},
+                  onPressed: () => setState(() {
+                        launchUrl(
+                            Uri.parse(
+                                'https://www.redditinc.com/policies/user-agreement'),
+                            mode: LaunchMode.externalApplication);
+                      }),
                   buttonText: 'User Agreement',
                   buttonIcon: Icons.person),
               ArrowButton(
@@ -67,11 +109,21 @@ class Settings extends StatelessWidget {
                   buttonIcon: Icons.description),
               const Heading(text: 'Support'),
               ArrowButton(
-                  onPressed: () {},
+                  onPressed: () => setState(() {
+                        launchUrl(
+                            Uri.parse(
+                                'https://support.reddithelp.com/hc/en-us'),
+                            mode: LaunchMode.externalApplication);
+                      }),
                   buttonText: 'Help Center',
                   buttonIcon: Icons.help_outline),
               ArrowButton(
-                  onPressed: () {},
+                  onPressed: () => setState(() {
+                        launchUrl(
+                            Uri.parse(
+                                'https://www.reddit.com/r/redditmobile/s/Nc8FRHZvS4'),
+                            mode: LaunchMode.externalApplication);
+                      }),
                   buttonText: 'Visit r/redditmobile',
                   buttonIcon: Icons.reddit),
               ArrowButton(
