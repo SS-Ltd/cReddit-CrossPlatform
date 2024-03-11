@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class UpdateEmail extends StatefulWidget {
   const UpdateEmail({super.key});
@@ -123,9 +122,12 @@ class _UpdateEmailState extends State<UpdateEmail> {
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                            onPressed: () {}, child: const Text('Cancel')),
+                          onPressed: () {},
+                          child: const Text('Cancel'),
+                        ),
                         ElevatedButton(
                           onPressed: _submit,
                           child: const Text('Save'),
