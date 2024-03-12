@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'dart:convert';
 
 class SubRedditPage extends StatefulWidget {
   const SubRedditPage({super.key});
@@ -14,6 +15,37 @@ class _SubRedditPageState extends State<SubRedditPage> {
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
+  @override
+  void initState() {
+    super.initState();
+    fetchMockPosts();
+  }
+
+  Future<void> fetchMockPosts() async {
+    final mockClient = MockClient((request) async {
+      if (request.url.path == '/subreddit/posts') {
+        return http.Response(
+            jsonEncode([
+              {'title': 'Mock Post 1', 'summary': 'Summary of mock post 1'},
+              {'title': 'Mock Post 2', 'summary': 'Summary of mock post 2'},
+            ]),
+            200);
+      }
+      return http.Response('Not Found', 404);
+    });
+
+    final response = await mockClient.get(Uri.parse('/subreddit/posts'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      setState(() {
+        posts = responseData.map((post) => post['title'].toString()).toList();
+      });
+    } else {
+      print('Failed to fetch posts');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
