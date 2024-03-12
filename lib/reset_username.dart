@@ -1,50 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
+class ResetUsername extends StatefulWidget {
+  const ResetUsername({super.key});
 
   @override
-  State<ForgotPassword> createState() {
-    return _ForgotPasswordState();
+  State<ResetUsername> createState() {
+    return _ResetUsernameState();
   }
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ResetUsernameState extends State<ResetUsername> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
               padding: EdgeInsets.only(bottom: 20),
               child: Text(
-                'Forgot your password?',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                ),
-              ),
-            ),
-            const Padding(
+                'Recover username?',
+              )),
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Text('Unfortunatly, if you have never given us your email,'
+                ' we will not be able to reset your password.'),
+          ),
+                     Padding(
               padding: EdgeInsets.only(top: 20),
-              child: Text('Unfortunatly, if you have never given us your email,'
-                  ' we will not be able to reset your password.'),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
               child: TextButton(
                   onPressed: () => setState(() {
                         launchUrl(
@@ -93,8 +80,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ],
               ),
             ),
-          ],
-        ),
+        ],
+      ),
     );
   }
 }
