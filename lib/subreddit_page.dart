@@ -10,6 +10,7 @@ class SubRedditPage extends StatefulWidget {
 class _SubRedditPageState extends State<SubRedditPage> {
   bool isJoined = false;
   String currentSort = 'Hot';
+  String currentIcon = 'Hot';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +39,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         children: [
           _subredditInfo(),
           const Divider(height: 1, thickness: 1),
+          _sortingOptions(),
           const SizedBox(height: 10),
           const Text('Posts'),
         ],
@@ -47,7 +49,18 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Widget _sortingOptions() {
     return ListTile(
-      title: Text(currentSort, style: TextStyle(color: Colors.white)),
+      title: Row(
+        children: [
+          if (currentSort == 'Hot')
+            const Icon(Icons.whatshot_outlined, color: Colors.white),
+          if (currentSort == 'New')
+            const Icon(Icons.new_releases_outlined, color: Colors.white),
+          if (currentSort == 'Top')
+            const Icon(Icons.arrow_upward_outlined, color: Colors.white),
+          SizedBox(width: 8),
+          Text(currentSort, style: TextStyle(color: Colors.white)),
+        ],
+      ),
       trailing: const Icon(Icons.arrow_drop_down, color: Colors.white),
       onTap: () {
         showModalBottomSheet(
@@ -58,42 +71,38 @@ class _SubRedditPageState extends State<SubRedditPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  ListTile(
-                    title: const Text('Hot',
-                        style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                      setState(() {
-                        currentSort = 'Hot';
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('New',
-                        style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                      setState(() {
-                        currentSort = 'New';
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Top',
-                        style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                      setState(() {
-                        currentSort = 'Top';
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
+                  _sortingOptionTile('Hot', Icons.whatshot_outlined, () {
+                    setState(() {
+                      currentSort = 'Hot';
+                    });
+                    Navigator.pop(context);
+                  }),
+                  _sortingOptionTile('New', Icons.new_releases_outlined, () {
+                    setState(() {
+                      currentSort = 'New';
+                    });
+                    Navigator.pop(context);
+                  }),
+                  _sortingOptionTile('Top', Icons.arrow_upward_outlined, () {
+                    setState(() {
+                      currentSort = 'Top';
+                    });
+                    Navigator.pop(context);
+                  }),
                 ],
               ),
             );
           },
         );
       },
+    );
+  }
+
+  Widget _sortingOptionTile(String title, IconData icon, Function() onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: TextStyle(color: Colors.white)),
+      onTap: onTap,
     );
   }
 
