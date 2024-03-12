@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
+import 'dart:async';
 
 class ResetPasswordDone extends StatefulWidget {
   const ResetPasswordDone({super.key});
@@ -10,26 +12,32 @@ class ResetPasswordDone extends StatefulWidget {
 }
 
 class _ResetPasswordDoneState extends State<ResetPasswordDone> {
-  int delayInSeconds = 5;
+  ValueNotifier<int> countdown = ValueNotifier<int>(5);
+  Timer? timer;
   ValueNotifier<bool> canResend = ValueNotifier(false);
-  bool canResend2 = false;
-  int isValidEmail(String input) {
-    // Change this line
-    final RegExp regex = RegExp(
-      r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
-    );
-    return regex.hasMatch(input) ? 1 : -1;
+  //bool canResend2 = false;
+
+  void startCountdown() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (countdown.value > 1) {
+        countdown.value--;
+      } else {
+        timer.cancel();
+        canResend.value = true;
+      }
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: delayInSeconds), () {
-      setState(() {
-        canResend.value = true;
-        canResend2 = true;
-      });
-    });
+    startCountdown();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -80,7 +88,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            children: <Widget>[
+            children: [
               // Heading
               const Text(
                 'Check your inbox',
@@ -93,7 +101,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
               //Sub Heading
               const Center(
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     Text(
                       'We send a password reset link to the email '
                       'associated with your account',
@@ -109,39 +117,57 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
 
               // Avatar Reset Page Image
               SizedBox(
-                width: 200, 
-                height: 200, 
+                width: 200,
+                height: 200,
                 child: Image.asset('assets/reddit_char.png'),
               ),
 
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    const Text(
-                      'Didn\'t get an email?',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: canResend,
-                      builder: (context, value, child) {
-                        return GestureDetector(
-                          onTap: value
-                              ? () {
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    '/',
-                                  );
-                                }
-                              : null,
-                          child: Text(
-                            'Resend',
-                            style: TextStyle(
-                              color: value ? Colors.blue : Colors.grey,
-                            ),
-                          ),
-                        );
-                      },
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Didn\'t get an email? ',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: canResend,
+                          builder: (context, value, child) {
+                            return GestureDetector(
+                              onTap: value
+                                  ? () {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        '/',
+                                      );
+                                    }
+                                  : null,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Resend',
+                                    style: TextStyle(
+                                      color: value ? Colors.black : Colors.grey,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (!value)
+                                    ValueListenableBuilder(
+                                      valueListenable: countdown,
+                                      builder: (context, value, child) {
+                                        return Text(' in $value');
+                                      },
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(

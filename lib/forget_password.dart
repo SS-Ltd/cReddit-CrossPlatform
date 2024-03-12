@@ -37,7 +37,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   }
 
   int isValidEmail(String input) {
-    // Change this line
     final RegExp regex = RegExp(
       r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
     );
@@ -92,7 +91,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
-            children: <Widget>[
+            children: [
               // Heading
               const Text(
                 'Reset your Password',
@@ -105,9 +104,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
               //Sub Heading
               const Center(
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     Text(
-                      'Enter your email address or username and we\'ll ' 
+                      'Enter your email address or username and we\'ll '
                       'send you a link to reset your password',
                       style: TextStyle(
                           fontSize: 16,
@@ -117,72 +116,89 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                   ],
                 ),
               ),
+
               const SizedBox(height: 32),
+
               // Email or username input field
-              Focus(
-                child: ValueListenableBuilder<int>(
-                  valueListenable: isValidNotifier,
-                  builder: (BuildContext context, int isValid, Widget? child) {
-                    final bool hasFocus = Focus.of(context).hasFocus;
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: hasFocus
-                              ? (emailController.text.isEmpty
-                                  ? Colors.grey
-                                  : (isValid == 1 ? Colors.green : Colors.red))
-                              : Colors.transparent,
-                          width: 1.5,
-                        ),
-                      ),
-                      child: TextFormField(
-                        controller: emailController,
-                        onChanged: (value) {
-                          isValidNotifier.value = isValidEmail(value);
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Email or username',
-                          labelStyle: const TextStyle(
-                            color: Color.fromARGB(255, 71, 70, 70),
+              ValueListenableBuilder<int>(
+                valueListenable: isValidNotifier,
+                builder: (BuildContext context, int isValid, Widget? child) {
+                  return Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: emailController.text.isEmpty
+                                ? Colors.grey
+                                : (isValid == 1 ? Colors.green : Colors.red),
+                            width: 1.5,
                           ),
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.only(
-                              left: 15, top: 5, bottom: 10),
-                          suffixIcon: emailController.text.isNotEmpty
-                              ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    isValidNotifier.value == 1
-                                        // If the text is valid,
-                                        // show the green icon
-                                        ? const Icon(Icons.check_sharp,
-                                            color: Colors.green)
-                                        // If the text is not valid,
-                                        // show the red icon
-                                        : const Icon(Icons.error_outline,
-                                            color: Colors.red),
-                                    IconButton(
-                                      onPressed: () {
-                                        emailController.clear();
-                                        isValidNotifier.value = 0;
-                                      },
-                                      icon: const Icon(Icons.clear),
-                                    ),
-                                  ],
-                                )
-                              : null,
+                        ),
+                        child: TextFormField(
+                          controller: emailController,
+                          onChanged: (value) {
+                            isValidNotifier.value = isValidEmail(value);
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Email or username',
+                            labelStyle: const TextStyle(
+                              color: Color.fromARGB(255, 71, 70, 70),
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.only(
+                                left: 15, top: 5, bottom: 10),
+                            suffixIcon: emailController.text.isNotEmpty
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      isValidNotifier.value == 1
+                                          // If the text is valid,
+                                          // show the green icon
+                                          ? const Icon(Icons.check_sharp,
+                                              color: Colors.green)
+                                          // If the text is not valid,
+                                          // show the red icon
+                                          : const Icon(Icons.error_outline,
+                                              color: Colors.red),
+                                      IconButton(
+                                        onPressed: () {
+                                          emailController.clear();
+                                          isValidNotifier.value = 0;
+                                        },
+                                        icon: const Icon(Icons.clear),
+                                      ),
+                                    ],
+                                  )
+                                : null,
+                          ),
                         ),
                       ),
-                    );
-                  },
-                ),
+                      const SizedBox(height: 4),
+                      if (isValid == -1 && emailController.text.isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.only(left: 16),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Not a valid email address',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
+
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
+                  children: [
                     ValueListenableBuilder<int>(
                       valueListenable: isValidNotifier,
                       builder: (context, isValid, child) {
