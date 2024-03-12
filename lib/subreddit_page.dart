@@ -9,6 +9,7 @@ class SubRedditPage extends StatefulWidget {
 
 class _SubRedditPageState extends State<SubRedditPage> {
   bool isJoined = false;
+  String currentSort = 'Hot';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +42,58 @@ class _SubRedditPageState extends State<SubRedditPage> {
           const Text('Posts'),
         ],
       ),
+    );
+  }
+
+  Widget _sortingOptions() {
+    return ListTile(
+      title: Text(currentSort, style: TextStyle(color: Colors.white)),
+      trailing: const Icon(Icons.arrow_drop_down, color: Colors.white),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              color: const Color.fromRGBO(27, 27, 27, 1),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    title: const Text('Hot',
+                        style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      setState(() {
+                        currentSort = 'Hot';
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('New',
+                        style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      setState(() {
+                        currentSort = 'New';
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    title: const Text('Top',
+                        style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      setState(() {
+                        currentSort = 'Top';
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
