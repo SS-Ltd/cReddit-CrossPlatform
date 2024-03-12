@@ -11,6 +11,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   bool isJoined = false;
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
+  List<String> posts = List.generate(20, (index) => 'Post $index');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,13 +36,29 @@ class _SubRedditPageState extends State<SubRedditPage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          _subredditInfo(),
-          const Divider(height: 1, thickness: 1),
-          _sortingOptions(),
-          const SizedBox(height: 10),
-          const Text('Posts'),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: _subredditInfo()),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+            ),
+          ),
+          SliverToBoxAdapter(child: _sortingOptions()),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(posts[index]),
+                  subtitle: Text('Post Summary Here'),
+                  trailing: Icon(Icons.comment),
+                  leading: Icon(Icons.image),
+                  onTap: () {},
+                );
+              },
+              childCount: posts.length,
+            ),
+          ),
         ],
       ),
     );
