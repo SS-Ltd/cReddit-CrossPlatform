@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/forgot_password.dart';
 
 class UpdateEmail extends StatefulWidget {
   const UpdateEmail({super.key});
@@ -114,7 +115,14 @@ class _UpdateEmailState extends State<UpdateEmail> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const ForgotPassword();
+                            },
+                          );
+                        },
                         child: const Text('Forgot password?'),
                       ),
                     ),
