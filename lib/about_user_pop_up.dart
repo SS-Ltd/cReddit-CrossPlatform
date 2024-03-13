@@ -16,14 +16,16 @@ class AboutUserPopUp extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [Text('u/(username)')],
               ),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {},
                     label: const Text('Create Your Own Avatar'),
-                    icon: const Icon(Icons.arrow_forward_ios_rounded),
+                    icon: const Icon(Icons.arrow_forward),
                   )
                 ],
               ),
@@ -33,9 +35,11 @@ class AboutUserPopUp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [Text('10,111'), Text('Post Karma')],
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [Text('10,111'), Text('Comment Karma')],
                       )
                     ]),
@@ -71,3 +75,4 @@ class AboutUserPopUp extends StatelessWidget {
 }
 
 //actions in dialog box
+  
