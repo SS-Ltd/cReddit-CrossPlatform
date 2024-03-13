@@ -162,6 +162,5 @@ app.*.symbols
 .flutter-plugins-dependencies
 lib/selection_button.dart
 lib/switch_button.dart
-lib/forgot_password.dart
-lib/update_email.dart
+
 
