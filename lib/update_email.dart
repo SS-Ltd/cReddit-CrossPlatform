@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/forgot_password.dart';
 
@@ -22,12 +23,17 @@ class _UpdateEmailState extends State<UpdateEmail> {
     });
   }
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   void _submit() {
-    // if (_formKey.currentState.validate()) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Processing Data')),
-    //   );
-    // }
+    if (_formKey.currentState!.validate()) {
+      print('Email: ${_emailController.text}');
+    }
   }
 
   @override
@@ -42,111 +48,124 @@ class _UpdateEmailState extends State<UpdateEmail> {
         ),
         title: const Text('Update email address'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 30),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundColor: Colors.grey,
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('u/username'),
-                        Text('usama.nasser21@gmail.com'),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'New email address',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter an email address.';
-                      } else if (!value.contains('@')) {
-                        return 'Please enter a valid email address.';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                      labelText: 'Redddit Password',
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureText
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                        ),
-                        onPressed: _toggle,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 30),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: Colors.grey,
+                      child: Icon(
+                        Icons.person,
+                        size: 40,
+                        color: Colors.white,
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const ForgotPassword();
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('u/username'),
+                          Text('usama.nasser21@gmail.com'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              ///////////////////////////////////////
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'New email address',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter an email address.';
+                        } else if (!(EmailValidator.validate(value))) {
+                          return 'Please enter a valid email address.';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscureText,
+                      decoration: InputDecoration(
+                        labelText: 'Redddit Password',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: _toggle,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    //////////////////////////////////////////
+                    SizedBox(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const ForgotPassword();
+                              },
+                            );
+                          },
+                          child: const Text('Forgot password?'),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 340),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              _emailController.clear();
+                              _passwordController.clear();
+                              Navigator.pop(context);
                             },
-                          );
-                        },
-                        child: const Text('Forgot password?'),
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(150, 40)),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: _submit,
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(150, 40)),
+                            child: const Text('Save'),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed: _submit,
-                          child: const Text('Save'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

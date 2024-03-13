@@ -20,12 +20,12 @@ class _ResetUsernameState extends State<ResetUsername> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
+          const Padding(
               padding: EdgeInsets.only(bottom: 20),
               child: Text(
                 'Recover username?',
               )),
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(top: 20),
             child: Text('Unfortunatly, if you have never given us your email,'
                 ' we will not be able to reset your password.'),
