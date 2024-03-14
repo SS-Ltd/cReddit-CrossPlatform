@@ -9,6 +9,16 @@ class ReportButton extends StatefulWidget {
 }
 
 class _ReportButtonState extends State<ReportButton> {
+  Future<http.Client> createMockHttpClient() async {
+    return MockClient((request) async {
+      if (request.url.path.contains('/report') && request.method == 'POST') {
+        return http.Response(
+            jsonEncode({"message": "Post reported successfully"}), 200);
+      }
+      return http.Response('Not Found', 404);
+    });
+  }
+
   String? selectedReason;
 
   void showReportSheet(BuildContext context) {
