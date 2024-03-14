@@ -19,6 +19,47 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
   String _communityTypeDescription =
       'Anyone can view, post, and comment to this community.';
   bool _is18Plus = false;
+
+  Future<http.Client> createMockHttpClient() async {
+    return MockClient((request) async {
+      final uri = request.url;
+      final path = uri.path;
+      // Simulate a check for existing subreddit
+      if (path.contains('/subreddit/') && request.method == 'GET') {
+        final subredditName = path.split('/').last;
+        if (subredditName.toLowerCase() == 'creddit_sw_project') {
+          // Simulate subreddit exists with detailed information
+          return http.Response(
+              jsonEncode({
+                "profilePicture": "drive.creddit.com/test",
+                "mods": ["SlaxSplash", "Baroudy 14", "No_Animator_8210"],
+                "members": 1000,
+                "name": "r/cReddit_SW_Project",
+                "banner": "drive.creddit.com/test",
+                "rules": ["Rule 1", "Rule 2", "Rule 3"],
+              }),
+              200);
+        } else {
+          // Simulate subreddit does not exist
+          return http.Response(
+              jsonEncode({"message": "Subreddit does not exist"}), 404);
+        }
+      } else if (path == '/subreddit' && request.method == 'POST') {
+        final requestBody = json.decode(request.body);
+        if (requestBody['name'].toLowerCase() != 'creddit_sw_project') {
+          // Simulate successful community creation if the name isn't "creddit_sw_project"
+          return http.Response(
+              jsonEncode({"message": "Community created successfully"}), 200);
+        } else {
+          // Simulate failure to create community if the name is "creddit_sw_project" (since it already exists)
+          return http.Response(
+              jsonEncode({"message": "Subreddit already exists"}), 400);
+        }
+      }
+      return http.Response('Not Found', 404);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
