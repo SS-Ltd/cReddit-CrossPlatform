@@ -15,6 +15,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       TextEditingController();
   final int _maxLength = 21;
 
+  bool subredditExists = false;
+
   String _communityType = 'Public';
   String _communityTypeDescription =
       'Anyone can view, post, and comment to this community.';
@@ -63,8 +65,22 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
   @override
   void initState() {
     super.initState();
-    _communityNameController.addListener(() {
-      setState(() {});
+    _communityNameController.addListener(checkSubredditExistence);
+  }
+
+  void checkSubredditExistence() async {
+    final subredditName = _communityNameController.text.trim();
+    if (subredditName.isEmpty) {
+      setState(() {
+        subredditExists = false;
+      });
+      return;
+    }
+    final http.Client mockClient = await createMockHttpClient();
+    final responseCheck =
+        await mockClient.get(Uri.parse('/subreddit/$subredditName'));
+    setState(() {
+      subredditExists = responseCheck.statusCode == 200;
     });
   }
 
@@ -113,6 +129,10 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                   ),
                 ),
               ),
+              if (subredditExists)
+                Text('Subreddit already exists',
+                    style: TextStyle(color: Colors.grey)),
+              const SizedBox(height: 10),
               const Text(
                 'Community Type',
                 style: TextStyle(
@@ -178,8 +198,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
               ),
               Center(
                 child: ElevatedButton(
-                  onPressed:
-                      _isButtonEnabled() ? _createCommunity : _createCommunity,
+                  onPressed: _isButtonEnabled() ? _createCommunity : null,
                   child: Text(
                     'Create Community',
                     style: TextStyle(
@@ -276,7 +295,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
 
   bool _isButtonEnabled() {
     return (_communityNameController.text.isNotEmpty &&
-        _communityNameController.text != "");
+        _communityNameController.text != "" &&
+        subredditExists == false);
   }
 
   void _createCommunity() async {
