@@ -21,6 +21,17 @@ class _ReportButtonState extends State<ReportButton> {
 
   String? selectedReason;
 
+  void reportPost(String postId, String reason) async {
+    final http.Client client = await createMockHttpClient();
+    final response = await client.post(
+      Uri.parse('/post/$postId/report'),
+      body: jsonEncode({'reason': reason}),
+    );
+
+    final responseData = jsonDecode(response.body);
+    print(responseData['message']);
+  }
+
   void showReportSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -81,8 +92,7 @@ class _ReportButtonState extends State<ReportButton> {
                             child: Text('Next', style: TextStyle(fontSize: 17)),
                             onPressed: () {
                               if (selectedReason != null) {
-                                print(
-                                    'Report submitted for reason: $selectedReason');
+                                reportPost('123', selectedReason!);
                               }
                               Navigator.pop(context);
                             },
