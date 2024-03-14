@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// Import necessary packages if you're using a mock HTTP client
 
 class ReportButton extends StatefulWidget {
   @override
@@ -69,7 +68,6 @@ class _ReportButtonState extends State<ReportButton> {
                             child: Text('Next', style: TextStyle(fontSize: 17)),
                             onPressed: () {
                               if (selectedReason != null) {
-                                // Here you would call your mock HTTP client to submit the report
                                 print(
                                     'Report submitted for reason: $selectedReason');
                               }
