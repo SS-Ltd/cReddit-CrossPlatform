@@ -49,7 +49,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           child: Column(
             children: [
               const Padding(
-                padding: EdgeInsets.only(bottom: 30, left: 10),
+                padding: EdgeInsets.only(left: 10),
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -68,115 +68,118 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ],
                 ),
               ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _currentPasswordController,
-                      obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        labelText: 'Current password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: _toggle,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return const ForgotPassword();
-                              },
-                            );
-                          },
-                          child: const Text('Forgot password?'),
-                        ),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _newPasswordController,
-                      obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        labelText: 'New password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: _toggle,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm new password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: _toggle,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
-                                          Padding(
-                        padding: const EdgeInsets.only(top: 340),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _currentPasswordController.clear();
-                                _newPasswordController.clear();
-                                _confirmPasswordController.clear();
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
-                              child: const Text('Cancel'),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _currentPasswordController,
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          labelText: 'Current password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
-                              child: const Text('Save'),
-                            ),
-                          ],
+                            onPressed: _toggle,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const ForgotPassword();
+                                },
+                              );
+                            },
+                            child: const Text('Forgot password?'),
+                          ),
                         ),
                       ),
-                  ],
+                      TextFormField(
+                        controller: _newPasswordController,
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          labelText: 'New password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: _toggle,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          labelText: 'Confirm new password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: _toggle,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                                            Padding(
+                          padding: const EdgeInsets.only(top: 340),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  _currentPasswordController.clear();
+                                  _newPasswordController.clear();
+                                  _confirmPasswordController.clear();
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(150, 40)),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(150, 40)),
+                                child: const Text('Save'),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],

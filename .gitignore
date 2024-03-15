@@ -161,6 +161,7 @@ app.*.symbols
 .flutter-plugins
 .flutter-plugins-dependencies
 lib/switch_button.dart
-
-
 lib/blocked_user_model.dart
+lib/option_list_tile.dart
+lib/selection_button.dart
+lib/update_email.dart

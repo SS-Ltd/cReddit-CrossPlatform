@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/arrow_button.dart';
 import 'package:reddit_clone/heading.dart';
+import 'package:reddit_clone/option_list_tile.dart';
 import 'package:reddit_clone/selection_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,6 +14,9 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+
+  String currentlanguage = 'English';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,28 +60,51 @@ class _SettingsState extends State<Settings> {
               const Heading(text: 'Language'),
               SelectionButton(
                   onPressed: () {
-                    // showModalBottomSheet(
-                    //   context: context,
-                    //   builder: (BuildContext context) {
-                    //     return SingleChildScrollView(
-                    //       child: BottomSheet(
-                    //         onClosing: () {},
-                    //         builder: (context) => const Text('Language'),
-                    //         // child: const Column(
-                    //         //   children: [
-                    //         //     Row(
-                    //         //       children: [Text('Language')],
-                    //         //     ),
-                    //         //   ],
-                    //         // ),
-                    //       ),
-                    //     );
-                    //   },
-                    // );
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SingleChildScrollView(
+                          child: BottomSheet(
+                            onClosing: () {},
+                            builder: (context) => Column(
+                              children: [
+                                ListTile(
+                                  title: Text('English'),
+                                  onTap: () {
+                                    setState(() {
+                                      currentlanguage = 'English';
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: Text('Spanish'),
+                                  onTap: () {
+                                    setState(() {
+                                      currentlanguage = 'Spanish';
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: Text('French'),
+                                  onTap: () {
+                                    setState(() {
+                                      currentlanguage = 'French';
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                   buttonText: 'App Language',
                   buttonIcon: Icons.translate,
-                  selectedtext: 'English'),
+                  selectedtext: currentlanguage),
               ArrowButton(
                 onPressed: () {},
                 buttonText: 'Content Language',

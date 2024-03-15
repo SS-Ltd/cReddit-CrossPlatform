@@ -117,6 +117,8 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your password';
+                          } else if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
                           }
                           return null;
                         },
@@ -139,7 +141,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 340),
+                        padding: const EdgeInsets.only(top: 360),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -150,13 +152,13 @@ class _UpdateEmailState extends State<UpdateEmail> {
                                 Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
+                                  minimumSize: const Size(170, 40)),
                               child: const Text('Cancel'),
                             ),
                             ElevatedButton(
                               onPressed: _submit,
                               style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
+                                  minimumSize: const Size(170, 40)),
                               child: const Text('Save'),
                             ),
                           ],

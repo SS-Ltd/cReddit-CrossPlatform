@@ -4,7 +4,6 @@ class SelectionButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
   final IconData buttonIcon;
-  // final List<String> dropdownItems;
   // final String selectedDropdownItem;
   final String selectedtext;
 
@@ -13,7 +12,6 @@ class SelectionButton extends StatelessWidget {
     required this.onPressed,
     required this.buttonText,
     required this.buttonIcon,
-    // required this.dropdownItems,
     // required this.selectedDropdownItem,
     required this.selectedtext,
   });

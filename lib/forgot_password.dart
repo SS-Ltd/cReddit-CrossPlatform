@@ -27,21 +27,26 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
+      alignment: Alignment.center,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child: Text(
-              'Forgot your password?',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+          const Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Text(
+                  'Forgot your password?',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
           Form(
             key: _formKey,
@@ -100,21 +105,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             child: Text('Unfortunatly, if you have never given us your email,'
                 ' we will not be able to reset your password.'),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: TextButton(
-                onPressed: () => setState(() {
-                      launchUrl(
-                          Uri.parse(
-                              'https://support.reddithelp.com/hc/en-us/articles/205240005-How-do-I-log-in-to-Reddit-if-I-forgot-my-password'),
-                          mode: LaunchMode.externalApplication);
-                    }),
-                child: const Text('Having Trouble?',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
-                      decorationColor: Colors.blue,
-                    ))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              TextButton(
+                  onPressed: () => setState(() {
+                        launchUrl(
+                            Uri.parse(
+                                'https://support.reddithelp.com/hc/en-us/articles/205240005-How-do-I-log-in-to-Reddit-if-I-forgot-my-password'),
+                            mode: LaunchMode.externalApplication);
+                      }),
+                  child: const Text('Having Trouble?',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.blue,
+                      ))),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20),
