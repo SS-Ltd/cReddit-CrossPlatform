@@ -5,13 +5,19 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
-      ),
-      body: Center(
-        child: Text(
-          'Welcome to the Home Page!',
-          style: TextStyle(fontSize: 24),
-        ),
+        leading: const Icon(Icons.menu),
+        //title: todo add drop down menu here 
+        //the title parameter can be used to add a drop down menu
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.reddit),
+          ),
+        ],
       ),
     );
   }
