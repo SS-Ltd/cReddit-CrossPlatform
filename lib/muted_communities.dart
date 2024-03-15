@@ -10,6 +10,8 @@ class MutedCommunities extends StatefulWidget {
 }
 
 class _MutedCommunitiesState extends State<MutedCommunities> {
+  final _communityNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
@@ -21,6 +23,37 @@ class _MutedCommunitiesState extends State<MutedCommunities> {
             onPressed: () {
               Navigator.pop(context);
             },
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Text('Posts from muted communities will not show up in'),
+                      Text('your feeds or recommendations.'),
+                    ],
+                  )
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                child: TextField(
+                  controller: _communityNameController,
+                  decoration: InputDecoration(
+                    hintText: 'Search Communities',
+                    suffixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                    contentPadding: const EdgeInsets.all(10),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
