@@ -163,3 +163,4 @@ app.*.symbols
 lib/switch_button.dart
 
 
+lib/blocked_user_model.dart

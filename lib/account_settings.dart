@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/arrow_button.dart';
+import 'package:reddit_clone/change_password.dart';
 import 'package:reddit_clone/chat_messages_permissions.dart';
 import 'package:reddit_clone/heading.dart';
 import 'package:reddit_clone/muted_communities.dart';
@@ -31,6 +32,7 @@ class AccountSettings extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
+                          fullscreenDialog: true,
                             builder: (context) => const UpdateEmail()));
                   },
                   buttonText: 'Update email address',
@@ -44,7 +46,13 @@ class AccountSettings extends StatelessWidget {
                   optional: '+923000000000',
                 ),
                 ArrowButton(
-                    onPressed: () {},
+                    onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          fullscreenDialog: true,
+                            builder: (context) => const ChangePassword()));
+                  },
                     buttonText: 'Change password',
                     buttonIcon: Icons.settings),
                 ArrowButton(

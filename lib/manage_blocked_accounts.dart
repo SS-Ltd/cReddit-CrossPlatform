@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/blocked_user.dart';
+import 'package:reddit_clone/blocked_user_model.dart';
+
+final dummyusers = [
+  BlockedUserModel(onPressed: () {}, username: 'Osama', userphoto: 'qwdasdass'),
+  BlockedUserModel(
+      onPressed: () {}, username: 'Mohamed', userphoto: 'qwdasdass'),
+];
 
 class ManageBlockedAccounts extends StatefulWidget {
   const ManageBlockedAccounts({super.key});
@@ -44,13 +51,14 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                 ),
               ),
               // ListView.builder(
-              //   itemCount: 2,
-              //   itemBuilder: (BuildContext context, int index) {
-              //   return ListTile(
-              //     title: BlockedUser(
-              //         onPressed: () {}, username: 'adasd', userphoto: ''),
-              //   );
-              // }),
+              //     itemCount: dummyusers.length,
+              //     itemBuilder: (ctx, index) {
+              //       return BlockedUser(
+              //         onPressed: () {},
+              //         username: dummyusers[index].username,
+              //         userphoto: dummyusers[index].userphoto,
+              //       );
+              //     }),
             ],
           ),
         ),
