@@ -105,23 +105,23 @@ class _SettingsState extends State<Settings> {
                   buttonText: 'Increase Text Size',
                   buttonIcon: Icons.text_fields),
               const Heading(text: 'Dark Mode'),
-                                              SelectionButton(
+              SelectionButton(
                   onPressed: () {},
                   buttonText: 'Auto Dark Mode',
                   buttonIcon: Icons.settings,
                   selectedtext: 'Follow OS settings'),
-                                                  SelectionButton(
+              SelectionButton(
                   onPressed: () {},
                   buttonText: 'Light theme',
                   buttonIcon: Icons.light_mode_outlined,
                   selectedtext: 'Alien Blue'),
-                                                  SelectionButton(
+              SelectionButton(
                   onPressed: () {},
                   buttonText: 'Dark theme',
                   buttonIcon: Icons.dark_mode_outlined,
                   selectedtext: 'Night'),
               const Heading(text: 'Advanced'),
-                                              SelectionButton(
+              SelectionButton(
                   onPressed: () {},
                   buttonText: 'Default comment sort',
                   buttonIcon: Icons.mode_comment_outlined,

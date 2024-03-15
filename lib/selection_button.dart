@@ -57,13 +57,3 @@ class SelectionButton extends StatelessWidget {
     );
   }
 }
-
-                    // Padding(
-                    //   padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
-                    //   child: Row(
-                    //     children: [
-                    //       Text(selectedtext),
-                    //       const Icon(Icons.arrow_drop_down)
-                    //     ],
-                    //   ),
-                    // )
