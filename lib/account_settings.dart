@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/arrow_button.dart';
+import 'package:reddit_clone/chat_messages_permissions.dart';
 import 'package:reddit_clone/heading.dart';
 import 'package:reddit_clone/muted_communities.dart';
 import 'package:reddit_clone/update_email.dart';
@@ -67,7 +68,7 @@ class AccountSettings extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            fullscreenDialog: true,
+                              fullscreenDialog: true,
                               builder: (context) =>
                                   const ManageBlockedAccounts()));
                     },
@@ -78,14 +79,20 @@ class AccountSettings extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            fullscreenDialog: true,
-                              builder: (context) =>
-                                  const MutedCommunities()));
+                              fullscreenDialog: true,
+                              builder: (context) => const MutedCommunities()));
                     },
                     buttonText: 'Manage muted communities',
                     buttonIcon: Icons.volume_off),
                 ArrowButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (context) =>
+                                  const ChatMessagesPermissions()));
+                    },
                     buttonText: 'Chat and messaging permissions',
                     buttonIcon: Icons.message),
                 const Heading(text: 'PRIVACY'),
