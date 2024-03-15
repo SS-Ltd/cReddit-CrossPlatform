@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/arrow_button.dart';
 import 'package:reddit_clone/heading.dart';
+import 'package:reddit_clone/muted_communities.dart';
 import 'package:reddit_clone/update_email.dart';
 import 'package:reddit_clone/manage_blocked_accounts.dart';
 
@@ -73,7 +74,14 @@ class AccountSettings extends StatelessWidget {
                     buttonText: 'Manage blocked Accounts',
                     buttonIcon: Icons.block_flipped),
                 ArrowButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                              builder: (context) =>
+                                  const MutedCommunities()));
+                    },
                     buttonText: 'Manage muted communities',
                     buttonIcon: Icons.volume_off),
                 ArrowButton(
