@@ -20,18 +20,19 @@ class ArrowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      child: Row(
-        children: [
-          TextButton(
-            onPressed: onPressed,
-            style: ButtonStyle(
-              shape: MaterialStateProperty.all<OutlinedBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                ),
-              ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<OutlinedBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0.0),
             ),
-            child: Row(
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Icon(buttonIcon),
@@ -45,16 +46,17 @@ class ArrowButton extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: hasarrow
-                      ? const Icon(Icons.arrow_forward)
-                      : const SizedBox.shrink(),
-                ),
               ],
             ),
-          ),
-        ],
+            Row(
+              children: [
+                hasarrow
+                    ? const Icon(Icons.arrow_forward)
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
