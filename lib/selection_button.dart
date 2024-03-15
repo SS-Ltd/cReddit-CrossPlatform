@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
-class ArrowButton extends StatelessWidget {
+class SelectionButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
   final IconData buttonIcon;
-  final String optional;
-  final bool hasarrow;
+  // final List<String> dropdownItems;
+  // final String selectedDropdownItem;
+  final String selectedtext;
 
-  const ArrowButton({
+  const SelectionButton({
     super.key,
     required this.onPressed,
     required this.buttonText,
     required this.buttonIcon,
-    this.hasarrow = true,
-    this.optional = '',
+    // required this.dropdownItems,
+    // required this.selectedDropdownItem,
+    required this.selectedtext,
   });
 
   @override
@@ -38,27 +40,30 @@ class ArrowButton extends StatelessWidget {
                 Icon(buttonIcon),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(buttonText),
-                      if (optional.isNotEmpty) Text(optional),
-                    ],
-                  ),
+                  child: Text(buttonText),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                hasarrow
-                    ? const Icon(Icons.arrow_forward)
-                    : const SizedBox.shrink(),
+                Text(selectedtext),
+                const Icon(Icons.arrow_drop_down)
               ],
-            ),
+            )
           ],
         ),
       ),
     );
   }
 }
+
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(80, 0, 0, 0),
+                    //   child: Row(
+                    //     children: [
+                    //       Text(selectedtext),
+                    //       const Icon(Icons.arrow_drop_down)
+                    //     ],
+                    //   ),
+                    // )

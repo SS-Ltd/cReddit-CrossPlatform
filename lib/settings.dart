@@ -38,37 +38,94 @@ class _SettingsState extends State<Settings> {
                   buttonText: 'Account Settings for u/ (username)',
                   buttonIcon: Icons.person),
               const Heading(text: 'Premium'),
+              ArrowButton(
+                onPressed: () {},
+                buttonText: 'Get Premium',
+                buttonIcon: Icons.shield,
+              ),
+              ArrowButton(
+                onPressed: () {},
+                buttonText: 'Change app icon',
+                buttonIcon: Icons.reddit,
+              ),
+              ArrowButton(
+                onPressed: () {},
+                buttonText: 'Create Avatar',
+                buttonIcon: Icons.android,
+              ),
               const Heading(text: 'Language'),
               SelectionButton(
                   onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const Column(
-                          children: [
-                            Row(
-                              children: [Text('Language')],
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    // showModalBottomSheet(
+                    //   context: context,
+                    //   builder: (BuildContext context) {
+                    //     return SingleChildScrollView(
+                    //       child: BottomSheet(
+                    //         onClosing: () {},
+                    //         builder: (context) => const Text('Language'),
+                    //         // child: const Column(
+                    //         //   children: [
+                    //         //     Row(
+                    //         //       children: [Text('Language')],
+                    //         //     ),
+                    //         //   ],
+                    //         // ),
+                    //       ),
+                    //     );
+                    //   },
+                    // );
                   },
                   buttonText: 'App Language',
                   buttonIcon: Icons.translate,
                   selectedtext: 'English'),
               ArrowButton(
-                  onPressed: () {},
-                  buttonText: 'Content Language',
-                  buttonIcon: Icons.translate,),
+                onPressed: () {},
+                buttonText: 'Content Language',
+                buttonIcon: Icons.translate,
+              ),
               const Heading(text: 'View Options'),
+              SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Default view',
+                  buttonIcon: Icons.view_stream_outlined,
+                  selectedtext: 'Card'),
+              SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Autoplay',
+                  buttonIcon: Icons.play_arrow_outlined,
+                  selectedtext: 'Always'),
+              SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Thumbnails',
+                  buttonIcon: Icons.image_outlined,
+                  selectedtext: 'Community default'),
               const Heading(text: 'Accessibility'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Increase Text Size',
                   buttonIcon: Icons.text_fields),
               const Heading(text: 'Dark Mode'),
+                                              SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Auto Dark Mode',
+                  buttonIcon: Icons.settings,
+                  selectedtext: 'Follow OS settings'),
+                                                  SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Light theme',
+                  buttonIcon: Icons.light_mode_outlined,
+                  selectedtext: 'Alien Blue'),
+                                                  SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Dark theme',
+                  buttonIcon: Icons.dark_mode_outlined,
+                  selectedtext: 'Night'),
               const Heading(text: 'Advanced'),
+                                              SelectionButton(
+                  onPressed: () {},
+                  buttonText: 'Default comment sort',
+                  buttonIcon: Icons.mode_comment_outlined,
+                  selectedtext: 'Best'),
               ArrowButton(
                   onPressed: () {},
                   buttonText: 'Export video log',
