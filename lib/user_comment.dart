@@ -37,6 +37,7 @@ class _UserCommentState extends State<UserComment> {
   int votes = 0;
   Timer? _timer;
   List<UserComment> replies = [];
+  late ValueNotifier<bool> isMinimized;
 
   void _addReply() {
     setState(() {
@@ -70,6 +71,8 @@ class _UserCommentState extends State<UserComment> {
   void initState() {
     super.initState();
 
+    isMinimized = ValueNotifier<bool>(false);
+
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -89,96 +92,131 @@ class _UserCommentState extends State<UserComment> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Card(
-              color: Colors.black,
-              //margin: const EdgeInsets.all(10),
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          // Replace with your user's avatar image
-                          backgroundImage: NetworkImage(
-                              'https://example.com/user_avatar.png'),
-                        ),
-                        const SizedBox(width: 10),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  isMinimized.value = !isMinimized.value;
+                });
+              },
+              child: Card(
+                color: Colors.black,
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                'https://example.com/user_avatar.png'),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            widget.username,
+                            style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            formatTimestamp(widget.timestamp),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey),
+                          ),
+                          if (isMinimized.value) ...[
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                widget.content,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.grey),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (!isMinimized.value) ...[
+                        const SizedBox(height: 10),
                         Text(
-                          widget.username,
+                          widget.content,
                           style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          formatTimestamp(widget.timestamp),
-                          style:
-                              const TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                        widget.content), // Use the content passed to the widget
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const Spacer(),
-                        PopupMenuButton(
-                          icon: const Icon(Icons.more_vert),
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              child: const Text('Report'),
-                              onTap: () => print('Report clicked'),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            const Spacer(),
+                            PopupMenuButton(
+                              icon: const Icon(Icons.more_vert),
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  child: const Text('Report'),
+                                  onTap: () => print('Report clicked'),
+                                ),
+                                PopupMenuItem(
+                                  child: const Text('Save'),
+                                  onTap: () => print('Save clicked'),
+                                ),
+                                PopupMenuItem(
+                                  child: const Text('Permalink'),
+                                  onTap: () => print('Permalink clicked'),
+                                ),
+                              ],
                             ),
-                            PopupMenuItem(
-                              child: const Text('Save'),
-                              onTap: () => print('Save clicked'),
+                            IconButton(
+                              icon: const Icon(Icons.reply_sharp),
+                              onPressed: _addReply,
                             ),
-                            PopupMenuItem(
-                              child: const Text('Permalink'),
-                              onTap: () => print('Permalink clicked'),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_upward),
+                              onPressed: () {
+                                setState(() {
+                                  votes++;
+                                });
+                              },
+                            ),
+                            Text('$votes'),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_downward),
+                              onPressed: () {
+                                setState(() {
+                                  votes--;
+                                });
+                              },
                             ),
                           ],
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.reply_sharp),
-                          onPressed: _addReply,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_upward),
-                          onPressed: () {
-                            setState(() {
-                              votes++;
-                            });
-                          },
-                        ),
-                        Text('$votes'),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_downward),
-                          onPressed: () {
-                            setState(() {
-                              votes--;
-                            });
-                          },
-                        ),
                       ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            for (var reply in replies)
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: CustomPaint(
-                  painter: LinePainter(),
-                  child: reply,
-                ),
-              ),
+            ValueListenableBuilder<bool>(
+              valueListenable: isMinimized,
+              builder: (context, value, child) {
+                if (value) {
+                  return Container();
+                } else {
+                  return Column(
+                    children: replies.map((reply) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: CustomPaint(
+                          painter: LinePainter(),
+                          child: reply,
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
