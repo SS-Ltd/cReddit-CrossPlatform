@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Logger.getLogger().d('MyApp build');
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Demos',
       theme: ThemeData(
         // This is the theme of your application.
         //
