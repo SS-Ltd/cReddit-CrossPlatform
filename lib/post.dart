@@ -6,6 +6,7 @@ class Post extends StatefulWidget {
   final String communityName;
   final String userName;
   final String title;
+  final String imageUrl;
   final String content;
   final DateTime timeStamp;
 
@@ -13,6 +14,7 @@ class Post extends StatefulWidget {
     required this.communityName,
     required this.userName,
     required this.title,
+    required this.imageUrl,
     required this.content,
     required this.timeStamp,
   });
@@ -95,6 +97,27 @@ class _PostState extends State<Post> {
               ),
             ),
             const SizedBox(height: 10),
+            Visibility(
+              visible: widget.imageUrl.isNotEmpty,
+              child: Column(
+                  children: [
+                    Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.network(
+                        widget.imageUrl,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
             Text(widget.content),
             const SizedBox(height: 10),
             Row(
@@ -117,16 +140,14 @@ class _PostState extends State<Post> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.comment),
+                  icon: Icon(Icons.add_comment), //other icon: add_comment, comment
                   onPressed: () {
                     // navigate to add comment page 
                   },
                 ),
                 Spacer(),
-                // add icon for share to the most right
                 IconButton(
-                  // make the icon share to the most right
-                  icon: Icon(Icons.share),
+                  icon: Icon(Icons.ios_share),  //other icon: ios_share, share
                   onPressed: () {
                     // share post
                   }, 
