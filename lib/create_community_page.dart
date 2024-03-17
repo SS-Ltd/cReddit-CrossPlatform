@@ -4,15 +4,14 @@ import 'package:http/testing.dart';
 import 'dart:convert';
 
 class CreateCommunityPage extends StatefulWidget {
-  const CreateCommunityPage({Key? key}) : super(key: key);
+  const CreateCommunityPage({super.key});
 
   @override
   State<CreateCommunityPage> createState() => _CreateCommunityPageState();
 }
 
 class _CreateCommunityPageState extends State<CreateCommunityPage> {
-  final TextEditingController _communityNameController =
-      TextEditingController();
+  final _communityNameController = TextEditingController();
   final int _maxLength = 21;
 
   bool subredditExists = false;
@@ -85,6 +84,12 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
   }
 
   @override
+  void dispose() {
+    _communityNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -130,7 +135,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                 ),
               ),
               if (subredditExists)
-                Text('Subreddit already exists',
+                const Text('Subreddit already exists',
                     style: TextStyle(color: Colors.grey)),
               const SizedBox(height: 10),
               const Text(
@@ -162,7 +167,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
               ),
               Text(
                 _communityTypeDescription,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
                 ),
@@ -170,7 +175,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
               const SizedBox(height: 10),
               Row(
                 children: <Widget>[
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       '18+ Community',
                       style: TextStyle(
@@ -187,9 +192,9 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                         _is18Plus = value;
                       });
                     },
-                    activeTrackColor: Color.fromRGBO(0, 110, 199, 1),
+                    activeTrackColor: const Color.fromRGBO(0, 110, 199, 1),
                     inactiveThumbColor: Colors.white,
-                    inactiveTrackColor: Color.fromRGBO(30, 30, 30, 1),
+                    inactiveTrackColor: const Color.fromRGBO(30, 30, 30, 1),
                   ),
                 ],
               ),
@@ -199,6 +204,12 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
               Center(
                 child: ElevatedButton(
                   onPressed: _isButtonEnabled() ? _createCommunity : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isButtonEnabled()
+                        ? const Color.fromRGBO(54, 143, 233, 1)
+                        : Colors.grey,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
                   child: Text(
                     'Create Community',
                     style: TextStyle(
@@ -206,12 +217,6 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                       color:
                           _isButtonEnabled() ? Colors.white : Colors.grey[400],
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isButtonEnabled()
-                        ? Color.fromRGBO(54, 143, 233, 1)
-                        : Colors.grey,
-                    minimumSize: const Size(double.infinity, 50),
                   ),
                 ),
               ),
@@ -233,7 +238,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
             ),
             child: Column(
               children: <Widget>[
-                Padding(
+                const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
                     'Select Community Type',
