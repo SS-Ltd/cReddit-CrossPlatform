@@ -35,9 +35,96 @@ class LinePainter extends CustomPainter {
 
 class UserCommentState extends State<UserComment> {
   int votes = 0;
+  int hasVoted = 0;
   Timer? _timer;
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
+
+  void showOverlay(BuildContext context, Widget card) {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).size.height * 0.37,
+        left: 10,
+        right: 10,
+        child: Material(
+          color: Colors.transparent,
+          child: card,
+        ),
+      ),
+    );
+
+    Overlay.of(context)!.insert(overlayEntry);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+      builder: (context) {
+        return Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.share_outlined),
+              title: const Text('Share'),
+              onTap: () {
+                Navigator.pop(context);
+                print('Share');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.save_alt),
+              title: const Text('Save'),
+              onTap: () {
+                Navigator.pop(context);
+                print('Save');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.notifications_outlined),
+              title: const Text('Get reply notification'),
+              onTap: () {
+                Navigator.pop(context);
+                print('notifications');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.copy_outlined),
+              title: const Text('Copy text'),
+              onTap: () {
+                Navigator.pop(context);
+                print('Copy text');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.merge_type_outlined),
+              title: const Text('Collapse thread'),
+              onTap: () {
+                Navigator.pop(context);
+                print('Collapse thread');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.block_outlined),
+              title: const Text('Block account'),
+              onTap: () {
+                Navigator.pop(context);
+                print('Block account');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.flag_outlined),
+              title: const Text('Report'),
+              onTap: () {
+                Navigator.pop(context);
+                print('Report');
+              },
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      // Remove the overlay entry after the modal bottom sheet is dismissed
+      overlayEntry.remove();
+    });
+  }
 
   void _addReply() {
     setState(() {
@@ -154,73 +241,7 @@ class UserCommentState extends State<UserComment> {
                             IconButton(
                               icon: const Icon(Icons.more_vert),
                               onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  backgroundColor: 
-                                  const Color.fromARGB(255, 19, 19, 19),
-                                  builder: (context) {
-                                    return Wrap(
-                                      children: <Widget>[
-                                        ListTile(
-                                          leading: const Icon(Icons.share_outlined),
-                                          title: const Text('Share'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('Share');
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.save_alt),
-                                          title: const Text('Save'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('Save');
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.notifications_outlined),
-                                          title: const Text('Get reply notification'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('notifications');
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.copy_outlined),
-                                          title: const Text('Copy text'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('Copy text');
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.merge_type_outlined),
-                                          title: const Text('Collapse thread'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('Collapse thread');
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.block_outlined),
-                                          title: const Text('Block account'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('Block account');
-                                          },
-                                        ),
-                                        ListTile(
-                                          leading: const Icon(Icons.flag_outlined),
-                                          title: const Text('Report'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                            print('Report');
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
+                                showOverlay(context, widget);
                               },
                             ),
                             IconButton(
@@ -230,18 +251,24 @@ class UserCommentState extends State<UserComment> {
                             IconButton(
                               icon: const Icon(Icons.arrow_upward),
                               onPressed: () {
-                                setState(() {
-                                  votes++;
-                                });
+                                if (hasVoted != 1) {
+                                  setState(() {
+                                    votes++;
+                                    hasVoted = 1;
+                                  });
+                                }
                               },
                             ),
                             Text('$votes'),
                             IconButton(
                               icon: const Icon(Icons.arrow_downward),
                               onPressed: () {
-                                setState(() {
-                                  votes--;
-                                });
+                                if (hasVoted != -1) {
+                                  setState(() {
+                                    votes--;
+                                    hasVoted = -1;
+                                  });
+                                }
                               },
                             ),
                           ],
