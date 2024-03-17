@@ -9,7 +9,7 @@ void main() {
     routes: {
       '/comment': (context) => UserComment(username: 'User123', content: 'This is a comment from User123', timestamp: DateTime.now()),
       '/home': (context) => const Home(),
-      //'/reply':(context) => const _UserCommentState(),
+      //'/commentpage':(context) => const CommentPage(),
       },
   ));
 }

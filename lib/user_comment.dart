@@ -16,7 +16,7 @@ class UserComment extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _UserCommentState createState() => _UserCommentState();
+  UserCommentState createState() => UserCommentState();
 }
 
 class LinePainter extends CustomPainter {
@@ -33,7 +33,7 @@ class LinePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
-class _UserCommentState extends State<UserComment> {
+class UserCommentState extends State<UserComment> {
   int votes = 0;
   Timer? _timer;
   List<UserComment> replies = [];
@@ -109,7 +109,7 @@ class _UserCommentState extends State<UserComment> {
                         children: [
                           const CircleAvatar(
                             backgroundImage: NetworkImage(
-                                'https://example.com/user_avatar.png'),
+                                'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.reddit.com%2Fr%2FOnePiece%2Fcomments%2Fww3xat%2Fi_drew_monkey_d_luffy_as_a_reddit_avatar_comment%2F&psig=AOvVaw0nRKxmKmnwvV23b3Se7kQs&ust=1710718192594000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCJjj2Ib4-YQDFQAAAAAdAAAAABAE'),
                           ),
                           const SizedBox(width: 10),
                           Text(
@@ -151,22 +151,77 @@ class _UserCommentState extends State<UserComment> {
                         Row(
                           children: [
                             const Spacer(),
-                            PopupMenuButton(
+                            IconButton(
                               icon: const Icon(Icons.more_vert),
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  child: const Text('Report'),
-                                  onTap: () => print('Report clicked'),
-                                ),
-                                PopupMenuItem(
-                                  child: const Text('Save'),
-                                  onTap: () => print('Save clicked'),
-                                ),
-                                PopupMenuItem(
-                                  child: const Text('Permalink'),
-                                  onTap: () => print('Permalink clicked'),
-                                ),
-                              ],
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: 
+                                  const Color.fromARGB(255, 19, 19, 19),
+                                  builder: (context) {
+                                    return Wrap(
+                                      children: <Widget>[
+                                        ListTile(
+                                          leading: const Icon(Icons.share_outlined),
+                                          title: const Text('Share'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('Share');
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.save_alt),
+                                          title: const Text('Save'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('Save');
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.notifications_outlined),
+                                          title: const Text('Get reply notification'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('notifications');
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.copy_outlined),
+                                          title: const Text('Copy text'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('Copy text');
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.merge_type_outlined),
+                                          title: const Text('Collapse thread'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('Collapse thread');
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.block_outlined),
+                                          title: const Text('Block account'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('Block account');
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.flag_outlined),
+                                          title: const Text('Report'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                            print('Report');
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                             ),
                             IconButton(
                               icon: const Icon(Icons.reply_sharp),
