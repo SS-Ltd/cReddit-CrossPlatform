@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 
 class Sidebar extends StatefulWidget {
-  const Sidebar({super.key});
+  const Sidebar({Key? key}) : super(key: key);
 
   @override
   _SidebarState createState() => _SidebarState();
 }
 
 class _SidebarState extends State<Sidebar> {
-  bool isOnline = false; // Track online status
+  bool isOnline = false;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
         color: Colors.grey[900],
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
+        child: Column(
+          children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 25.0),
               child: Container(
@@ -28,7 +27,6 @@ class _SidebarState extends State<Sidebar> {
                 ),
               ),
             ),
-
             const Align(
               alignment: Alignment.center,
               child: Padding(
@@ -43,7 +41,6 @@ class _SidebarState extends State<Sidebar> {
                 ),
               ),
             ),
-            // Online status button
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -78,8 +75,8 @@ class _SidebarState extends State<Sidebar> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.star, color: Colors.blue, size: 30), // Icon
-                        SizedBox(width: 20),
+                        Icon(Icons.star, color: Colors.blue, size: 30),
+                        SizedBox(width: 12),
                         Column(
                           children: [
                             Text(
@@ -102,18 +99,14 @@ class _SidebarState extends State<Sidebar> {
                       ],
                     ),
                   ),
-
-                  // Vertical Divider
                   VerticalDivider(
                       color: Colors.grey[800], thickness: 1, width: 20),
-
-                  // Reddit Age Section
                   const Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.cake, color: Colors.blue, size: 30), // Icon
-                        SizedBox(width: 18),
+                        Icon(Icons.cake, color: Colors.blue, size: 30),
+                        SizedBox(width: 12),
                         Column(
                           children: [
                             Text(
@@ -139,11 +132,48 @@ class _SidebarState extends State<Sidebar> {
                 ],
               ),
             ),
-
             Divider(color: Colors.grey[800]),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _buildListTile(
+                      icon: Icons.person, text: 'My Profile', onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.group_add,
+                      text: 'Create a Community',
+                      onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.star_border,
+                      text: 'Contributor Program',
+                      onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.lock_outline, text: 'Vault', onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.card_membership,
+                      text: 'Reddit Premium',
+                      onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.bookmark_border, text: 'Saved', onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.history, text: 'History', onTap: () {}),
+                  _buildListTile(
+                      icon: Icons.settings, text: 'Settings', onTap: () {}),
+                ],
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildListTile(
+      {required IconData icon, required String text, VoidCallback? onTap}) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(text, style: TextStyle(color: Colors.white)),
+      onTap: onTap,
     );
   }
 }
