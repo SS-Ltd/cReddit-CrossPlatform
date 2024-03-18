@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'static_comment_card.dart';
 import 'dart:async';
 
 class UserComment extends StatefulWidget {
@@ -26,7 +27,7 @@ class LinePainter extends CustomPainter {
       ..color = Colors.grey
       ..strokeWidth = 1.0;
 
-    canvas.drawLine(Offset(0, 0), Offset(0, size.height), paint);
+    canvas.drawLine(Offset(10, 0), Offset(10, size.height), paint);
   }
 
   @override
@@ -40,20 +41,24 @@ class UserCommentState extends State<UserComment> {
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
 
-  void showOverlay(BuildContext context, Widget card) {
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).size.height * 0.37,
-        left: 10,
-        right: 10,
-        child: Material(
-          color: Colors.transparent,
-          child: card,
+  void showOverlay(BuildContext context, UserComment card) {
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      left: 8,
+      right: 8,
+      bottom: MediaQuery.of(context).size.height * 0.46,
+      child: Material(
+        color: Colors.transparent,
+        child: StaticCommentCard(
+          username: card.username,
+          timestamp: card.timestamp,
+          content: card.content,
         ),
       ),
-    );
+    ),
+  );
 
-    Overlay.of(context)!.insert(overlayEntry);
+  Overlay.of(context).insert(overlayEntry);
 
     showModalBottomSheet(
       context: context,
@@ -175,7 +180,7 @@ class UserCommentState extends State<UserComment> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10.0),
+      padding: const EdgeInsets.only(left: 8),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -186,9 +191,10 @@ class UserCommentState extends State<UserComment> {
                 });
               },
               child: Card(
-                color: Colors.black,
+                color: const Color.fromARGB(255, 12, 12, 12),
+                shape: Border.all(),
                 child: Padding(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.fromLTRB(12, 7, 12, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -234,7 +240,7 @@ class UserCommentState extends State<UserComment> {
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
                             const Spacer(),
