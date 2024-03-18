@@ -8,7 +8,7 @@ void main() {
     theme: AppTheme.theme,
     initialRoute: '/commentpage',
     routes: {
-      '/comment': (context) => UserComment(username: 'test', content: 'This is a comment from User123', timestamp: DateTime.now()),
+      '/comment': (context) => UserComment(avatar:'assets/MonkeyDLuffy.png', username: 'test', content: 'This is a comment from User123', timestamp: DateTime.now()),
       '/home': (context) => const Home(),
       '/commentpage':(context) => const CommentPage(),
       },

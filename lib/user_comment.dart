@@ -3,6 +3,7 @@ import 'static_comment_card.dart';
 import 'dart:async';
 
 class UserComment extends StatefulWidget {
+  final String avatar;
   final String username;
   final String content;
   final int level;
@@ -10,6 +11,8 @@ class UserComment extends StatefulWidget {
 
   const UserComment({
     Key? key,
+    // may be the required keyword need to be removed
+    required this.avatar,
     required this.username,
     required this.content,
     this.level = 0,
@@ -42,23 +45,24 @@ class UserCommentState extends State<UserComment> {
   late ValueNotifier<bool> isMinimized;
 
   void showOverlay(BuildContext context, UserComment card) {
-  OverlayEntry overlayEntry = OverlayEntry(
-    builder: (context) => Positioned(
-      left: 8,
-      right: 8,
-      bottom: MediaQuery.of(context).size.height * 0.46,
-      child: Material(
-        color: Colors.transparent,
-        child: StaticCommentCard(
-          username: card.username,
-          timestamp: card.timestamp,
-          content: card.content,
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: 8,
+        right: 8,
+        bottom: MediaQuery.of(context).size.height * 0.46,
+        child: Material(
+          color: Colors.transparent,
+          child: StaticCommentCard(
+            avatar: card.avatar,
+            username: card.username,
+            timestamp: card.timestamp,
+            content: card.content,
+          ),
         ),
       ),
-    ),
-  );
+    );
 
-  Overlay.of(context).insert(overlayEntry);
+    Overlay.of(context).insert(overlayEntry);
 
     showModalBottomSheet(
       context: context,
@@ -135,6 +139,7 @@ class UserCommentState extends State<UserComment> {
     setState(() {
       replies.add(
         UserComment(
+          avatar:'assets/MonkeyDLuffy.png',
           username: 'reply_username',
           content: 'reply_content',
           level: widget.level + 1,
@@ -200,9 +205,8 @@ class UserCommentState extends State<UserComment> {
                     children: [
                       Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.reddit.com%2Fr%2FOnePiece%2Fcomments%2Fww3xat%2Fi_drew_monkey_d_luffy_as_a_reddit_avatar_comment%2F&psig=AOvVaw0nRKxmKmnwvV23b3Se7kQs&ust=1710718192594000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCJjj2Ib4-YQDFQAAAAAdAAAAABAE'),
+                          CircleAvatar(
+                            backgroundImage: AssetImage(widget.avatar),
                           ),
                           const SizedBox(width: 10),
                           Text(

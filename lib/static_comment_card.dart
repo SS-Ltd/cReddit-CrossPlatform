@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class StaticCommentCard extends StatelessWidget {
+  final String avatar;
   final String username;
   final String content;
   final DateTime timestamp;
 
   const StaticCommentCard({
+    required this.avatar,
     required this.username,
     required this.content,
     required this.timestamp,
@@ -39,8 +41,7 @@ class StaticCommentCard extends StatelessWidget {
             Row(
               children: [
                 const CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.reddit.com%2Fr%2FOnePiece%2Fcomments%2Fww3xat%2Fi_drew_monkey_d_luffy_as_a_reddit_avatar_comment%2F&psig=AOvVaw0nRKxmKmnwvV23b3Se7kQs&ust=1710718192594000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCJjj2Ib4-YQDFQAAAAAdAAAAABAE'),
+                  backgroundImage: AssetImage('assets/MonkeyDLuffy.png'),
                 ),
                 const SizedBox(width: 10),
                 Text(
@@ -65,7 +66,7 @@ class StaticCommentCard extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 10,)
+            const SizedBox(height: 20)
           ],
         ),
       ),

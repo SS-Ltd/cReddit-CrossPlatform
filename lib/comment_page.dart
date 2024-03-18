@@ -21,6 +21,7 @@ class _CommentPageState extends State<CommentPage> {
       body: ListView.builder(
         itemCount: _comments.length,
         itemBuilder: (context, index) => UserComment(
+          avatar: _comments[index].avatar,
           username: _comments[index].username,
           content: _comments[index].content,
           timestamp: _comments[index].timestamp,
@@ -52,6 +53,7 @@ class _CommentPageState extends State<CommentPage> {
                 if (_controller.text.isNotEmpty) {
                   setState(() {
                     _comments.add(UserComment(
+                      avatar: 'assets/MonkeyDLuffy.png',
                       username: 'User123',
                       content: _controller.text,
                       timestamp: DateTime.now(),
