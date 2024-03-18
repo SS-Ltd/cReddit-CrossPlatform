@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class BlockButton extends StatelessWidget {
   final bool isCircular;
   final VoidCallback onPressed;
@@ -11,31 +10,48 @@ class BlockButton extends StatelessWidget {
     required this.onPressed,
   }) : super(key: key);
 
+  void _showBlockSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: SlideInSnackBar(
+          content: 'Username was blocked',
+          duration: Duration(seconds: 1),
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return isCircular
-        ? _buildCircularButton()
+        ? _buildCircularButton(context)
         : _buildBarButton(context);
   }
 
-  Widget _buildCircularButton() {
+  Widget _buildCircularButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        onPressed();
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent,
         padding: EdgeInsets.all(8.0),
         shape: CircleBorder(),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(4.0), // Adjusted padding
-        child: Icon(Icons.block, color: Colors.white, size: 24.0), // Adjusted size
+        padding: const EdgeInsets.all(4.0),
+        child: Icon(Icons.block, color: Colors.white, size: 24.0),
       ),
     );
   }
 
   Widget _buildBarButton(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        onPressed();
+      },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all<Color>(
           Colors.black.withOpacity(0.2),
@@ -98,6 +114,20 @@ class BlockConfirmationDialog extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Perform block action
+                  void _showBlockSnackbar(BuildContext context) {
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.white,
+                      content: Text(
+                        'User has been blocked',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                  _showBlockSnackbar(context);
                   Navigator.of(context).pop();
                 },
                 style: ButtonStyle(
@@ -115,5 +145,68 @@ class BlockConfirmationDialog extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class SlideInSnackBar extends StatefulWidget {
+  final String content;
+  final Duration duration;
+  final Color backgroundColor;
+  final Color textColor;
+
+  const SlideInSnackBar({
+    Key? key,
+    required this.content,
+    required this.duration,
+    required this.backgroundColor,
+    required this.textColor,
+  }) : super(key: key);
+
+  @override
+  _SlideInSnackBarState createState() => _SlideInSnackBarState();
+}
+
+class _SlideInSnackBarState extends State<SlideInSnackBar>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+    _animationController.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(0, 1),
+        end: const Offset(0, 0),
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOut,
+      )),
+      child: Material(
+        color: widget.backgroundColor,
+        borderRadius: BorderRadius.circular(25.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          child: Text(
+            widget.content,
+            style: TextStyle(color: widget.textColor),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }
