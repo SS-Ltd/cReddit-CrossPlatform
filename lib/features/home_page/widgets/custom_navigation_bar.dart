@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/home_page.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/inbox_page.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -10,7 +10,6 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
