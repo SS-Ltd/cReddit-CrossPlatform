@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import 'user_comment.dart';
 
 class CommentPage extends StatefulWidget {
-  const CommentPage({Key? key}) : super(key: key);
+  const CommentPage({super.key});
 
   @override
-  _CommentPageState createState() => _CommentPageState();
+  State<CommentPage> createState() {
+    return _CommentPageState();
+  }
+
 }
 
 class _CommentPageState extends State<CommentPage> {
   final TextEditingController _controller = TextEditingController();
-  List<UserComment> _comments = [];
+  final List<UserComment> _comments = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Comments'),
+        title: const Text('Comments'),
       ),
       body: ListView.builder(
         itemCount: _comments.length,

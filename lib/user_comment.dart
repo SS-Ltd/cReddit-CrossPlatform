@@ -10,14 +10,14 @@ class UserComment extends StatefulWidget {
   final DateTime timestamp;
 
   const UserComment({
-    Key? key,
+    super.key,
     // may be the required keyword need to be removed
     required this.avatar,
     required this.username,
     required this.content,
     this.level = 0,
     required this.timestamp,
-  }) : super(key: key);
+  });
 
   @override
   UserCommentState createState() => UserCommentState();
@@ -30,7 +30,7 @@ class LinePainter extends CustomPainter {
       ..color = Colors.grey
       ..strokeWidth = 1.0;
 
-    canvas.drawLine(Offset(10, 0), Offset(10, size.height), paint);
+    canvas.drawLine(const Offset(10, 0), Offset(10, size.height), paint);
   }
 
   @override
@@ -139,7 +139,7 @@ class UserCommentState extends State<UserComment> {
     setState(() {
       replies.add(
         UserComment(
-          avatar:'assets/MonkeyDLuffy.png',
+          avatar: 'assets/MonkeyDLuffy.png',
           username: 'reply_username',
           content: 'reply_content',
           level: widget.level + 1,
@@ -149,28 +149,13 @@ class UserCommentState extends State<UserComment> {
     });
   }
 
-  String formatTimestamp(DateTime timestamp) {
-    final now = DateTime.now();
-    final difference = now.difference(timestamp);
-
-    if (difference.inDays > 0) {
-      return '${difference.inDays}d';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}h';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m';
-    } else {
-      return '${difference.inSeconds}s';
-    }
-  }
-
   @override
   void initState() {
     super.initState();
 
     isMinimized = ValueNotifier<bool>(false);
 
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
   }
@@ -313,5 +298,20 @@ class UserCommentState extends State<UserComment> {
         ),
       ),
     );
+  }
+}
+
+String formatTimestamp(DateTime timestamp) {
+  final now = DateTime.now();
+  final difference = now.difference(timestamp);
+
+  if (difference.inDays > 0) {
+    return '${difference.inDays}d';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours}h';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes}m';
+  } else {
+    return '${difference.inSeconds}s';
   }
 }
