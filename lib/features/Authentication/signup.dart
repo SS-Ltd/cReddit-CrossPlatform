@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
@@ -7,20 +5,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
-import 'package:reddit_clone/features/Authentication/signup.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  SignUpScreen({super.key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
-
     return Scaffold(
       appBar: AppBar(
         title:
@@ -29,12 +26,9 @@ class LoginScreen extends StatelessWidget {
         actions: [
           TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
-                );
+                Navigator.pop(context);
               },
-              child: const Text('Sign Up',
+              child: const Text('Log In',
                   style: TextStyle(
                       color: Palette.redditGrey,
                       fontSize: 16,
@@ -46,7 +40,7 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text('Log in to Reddit',
+            const Text('Hi friend, Sign up!',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
             ImageButton(
@@ -83,19 +77,6 @@ class LoginScreen extends StatelessWidget {
                 controller: passwordController,
                 labelText: 'Password',
                 obscureText: true),
-            if (!isKeyboardOpen) const SizedBox(height: 10),
-            if (!isKeyboardOpen)
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('Forgot Password?',
-                      style: TextStyle(
-                          color: Palette.redditBlue,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                ),
-              ),
             const Expanded(
               child: SizedBox(height: 1), // Replace 1 with the desired height
             ),
