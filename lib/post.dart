@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-
 class Post extends StatefulWidget {
   final String communityName;
   final String userName;
@@ -17,6 +16,7 @@ class Post extends StatefulWidget {
     required this.imageUrl,
     required this.content,
     required this.timeStamp,
+    super.key,
   });
 
   @override
@@ -24,74 +24,73 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-    int votes = 0;
-    Timer? _timer;
+  int votes = 0;
+  Timer? _timer;
 
-    String formatTimestamp(DateTime timestamp) {
-      final now = DateTime.now();
-      final difference = now.difference(timestamp);
+  String formatTimestamp(DateTime timestamp) {
+    final now = DateTime.now();
+    final difference = now.difference(timestamp);
 
-      if (difference.inDays > 0) {
-        return '${difference.inDays}d';
-      } else if (difference.inHours > 0) {
-        return '${difference.inHours}h';
-      } else if (difference.inMinutes > 0) {
-        return '${difference.inMinutes}m';
-      } else {
-        return '${difference.inSeconds}s';
-      }
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m';
+    } else {
+      return '${difference.inSeconds}s';
     }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Padding(
-        padding : const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
               color: Colors.black,
               child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          //replace with user profile picture
-                          backgroundImage: NetworkImage('https://www.w3schools.com/w3images/avatar2.png'),
-                        ),
-                        const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'r/${widget.communityName}',
-                              style: TextStyle(
-                                color: Colors.grey,
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            //replace with user profile picture
+                            backgroundImage: NetworkImage(
+                                'https://www.w3schools.com/w3images/avatar2.png'),
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'r/${widget.communityName}',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
-                            ),
-                            Text(
-                              'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
-                              style: TextStyle(
-                                color: Colors.grey,
+                              Text(
+                                'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
             ),
             const SizedBox(height: 10),
             Text(
               widget.title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -100,8 +99,8 @@ class _PostState extends State<Post> {
             Visibility(
               visible: widget.imageUrl.isNotEmpty,
               child: Column(
-                  children: [
-                    Container(
+                children: [
+                  Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -123,7 +122,7 @@ class _PostState extends State<Post> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_upward),
+                  icon: const Icon(Icons.arrow_upward),
                   onPressed: () {
                     setState(() {
                       votes++;
@@ -132,7 +131,7 @@ class _PostState extends State<Post> {
                 ),
                 Text(votes.toString()),
                 IconButton(
-                  icon: Icon(Icons.arrow_downward),
+                  icon: const Icon(Icons.arrow_downward),
                   onPressed: () {
                     setState(() {
                       votes--;
@@ -140,17 +139,19 @@ class _PostState extends State<Post> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add_comment), //other icon: add_comment, comment
+                  icon: const Icon(
+                      Icons.add_comment), //other icon: add_comment, comment
                   onPressed: () {
-                    // navigate to add comment page 
+                    // navigate to add comment page
                   },
                 ),
-                Spacer(),
+                const Spacer(),
                 IconButton(
-                  icon: Icon(Icons.ios_share),  //other icon: ios_share, share
+                  icon: const Icon(
+                      Icons.ios_share), //other icon: ios_share, share
                   onPressed: () {
                     // share post
-                  }, 
+                  },
                 )
               ],
             ),
