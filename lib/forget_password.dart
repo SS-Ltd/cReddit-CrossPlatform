@@ -45,11 +45,12 @@ class _ForgetPasswordState extends State<ForgetPassword> {
       r'^[a-zA-Z0-9_-]*$',
     );
 
-    if (emailRegex.hasMatch(input) || usernameRegex.hasMatch(input)) {
-      return 1; 
-    }
-    else {
-      return -1; 
+    if (input.isEmpty) {
+      return -1;
+    } else if (emailRegex.hasMatch(input) || usernameRegex.hasMatch(input)) {
+      return 1;
+    } else {
+      return -1;
     }
   }
 
