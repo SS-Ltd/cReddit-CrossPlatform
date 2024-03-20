@@ -4,13 +4,15 @@ import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AgreementText extends StatelessWidget {
+  const AgreementText({super.key});
+
   @override
   Widget build(BuildContext context) {
     return RichText(
       text: TextSpan(
         style: DefaultTextStyle.of(context).style,
         children: <TextSpan>[
-          TextSpan(
+          const TextSpan(
               text: 'By continuing up, you agree to the ',
               style: TextStyle(
                   color: Palette.redditBlack,
@@ -18,41 +20,38 @@ class AgreementText extends StatelessWidget {
                   decoration: TextDecoration.none)),
           TextSpan(
             text: 'User Agreement ',
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 12,
                 decoration: TextDecoration.none),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                // Open link in browser
-                // launchUrl(Uri(
-                //     scheme: 'https',
-                //     host: 'www.redditinc.com',
-                //     path: '/policies/user-agreement'));
+                launchUrl(
+                    Uri.parse(
+                        'https://www.redditinc.com/policies/user-agreement'),
+                    mode: LaunchMode.externalApplication);
               },
           ),
-          TextSpan(
+          const TextSpan(
               text: 'and ',
               style: TextStyle(
                   color: Palette.redditBlack,
                   fontSize: 12,
                   decoration: TextDecoration.none)),
           TextSpan(
-              text: 'Privacy Policy',
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 12,
-                  decoration: TextDecoration.none),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  // Open link in browser
-                  //   launchUrl(Uri(
-                  //       scheme: 'https',
-                  //       host: 'www.reddit.com',
-                  //       path: '/policies/privacy-policy'));
-                  // },
-                }),
-          TextSpan(
+            text: 'Privacy Policy',
+            style: const TextStyle(
+                color: Colors.blue,
+                fontSize: 12,
+                decoration: TextDecoration.none),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrl(
+                    Uri.parse('https://www.reddit.com/policies/privacy-policy'),
+                    mode: LaunchMode.externalApplication);
+              },
+          ),
+          const TextSpan(
               text: ' of Reddit.',
               style: TextStyle(
                   color: Palette.redditBlack,

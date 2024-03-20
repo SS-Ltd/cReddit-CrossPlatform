@@ -7,8 +7,11 @@ class ImageButton extends StatelessWidget {
   final void Function() onPressed;
   final String iconPath;
 
-  ImageButton(
-      {required this.text, required this.onPressed, required this.iconPath});
+  const ImageButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      required this.iconPath});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class ImageButton extends StatelessWidget {
       icon: Row(
         children: [
           SvgPicture.asset(iconPath, width: 30),
-          SizedBox(width: 20), // Add some spacing between icon and text
+          const SizedBox(width: 20), // Add some spacing between icon and text
         ],
       ),
       label: Text(

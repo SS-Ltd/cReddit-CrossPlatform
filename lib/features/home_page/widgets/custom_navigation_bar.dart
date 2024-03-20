@@ -3,7 +3,7 @@ import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/inbox_page.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  const CustomNavigationBar({Key? key}) : super(key: key);
+  const CustomNavigationBar({super.key});
 
   @override
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();

@@ -5,9 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
-import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:flutter/gestures.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -80,7 +78,7 @@ class SignUpScreen extends StatelessWidget {
             const Expanded(
               child: SizedBox(height: 1), // Replace 1 with the desired height
             ),
-            if (!isKeyboardOpen) AgreementText(),
+            if (!isKeyboardOpen) const AgreementText(),
             const SizedBox(height: 20),
             FullWidthButton(text: "Continue", onPressed: () {}),
           ],

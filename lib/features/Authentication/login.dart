@@ -5,11 +5,12 @@ import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
+import 'package:reddit_clone/forget_password.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'package:flutter/gestures.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -88,7 +89,14 @@ class LoginScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgetPassword(),
+                      ),
+                    );
+                  },
                   child: const Text('Forgot Password?',
                       style: TextStyle(
                           color: Palette.redditBlue,
@@ -99,9 +107,16 @@ class LoginScreen extends StatelessWidget {
             const Expanded(
               child: SizedBox(height: 1), // Replace 1 with the desired height
             ),
-            if (!isKeyboardOpen) AgreementText(),
+            if (!isKeyboardOpen) const AgreementText(),
             const SizedBox(height: 20),
-            FullWidthButton(text: "Continue", onPressed: () {}),
+            FullWidthButton(
+                text: "Continue",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }),
           ],
         ),
       ),
