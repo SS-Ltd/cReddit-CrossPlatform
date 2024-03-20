@@ -18,7 +18,9 @@ class StaticCommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromARGB(255, 12, 12, 12),
-      shape: Border.all(),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 7, 12, 0),
         child: Column(
