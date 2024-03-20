@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/constants/logger.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+
+import 'package:reddit_clone/common/logger.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/theme/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +15,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Logger.getLogger().d('MyApp build');
-    return const MaterialApp(
-        title: 'Flutter Demo', home: CustomNavigationBar());
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Palette.redditBackground),
+        dividerTheme: const DividerThemeData(
+          color: Colors.transparent,
+        ),
+        useMaterial3: true,
+      ),
+      home: LoginScreen(),
+    );
   }
 }
