@@ -62,12 +62,12 @@ class _CommentPageState extends State<CommentPage> {
                   decoration: const InputDecoration(
                     hintText: 'Add a comment...',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
                     fillColor: Color.fromARGB(255, 40, 39, 39),
-                    contentPadding: EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
+                    contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                   ),
                   enabled: false, // Disable the TextFormField
                 ),
@@ -76,17 +76,7 @@ class _CommentPageState extends State<CommentPage> {
             IconButton(
               icon: const Icon(Icons.send),
               onPressed: () {
-                // if (_controller.text.isNotEmpty) {
-                //   setState(() {
-                //     _comments.add(UserComment(
-                //       avatar: 'assets/MonkeyDLuffy.png',
-                //       username: 'User123',
-                //       content: _controller.text,
-                //       timestamp: DateTime.now(),
-                //     ));
-                //     _controller.clear();
-                //   });
-                // }
+                
               },
             ),
           ],

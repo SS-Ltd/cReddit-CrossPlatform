@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/comment_page.dart';
 import 'package:reddit_clone/comment_post.dart';
-import 'package:reddit_clone/comment_post.dart';
 import 'home.dart';
 import 'user_comment.dart';
 import 'theme/app_theme.dart';

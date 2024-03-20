@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'static_comment_card.dart';
+import 'reply_comment.dart';
 import 'dart:async';
 
 class UserComment extends StatefulWidget {
@@ -63,7 +64,7 @@ class UserCommentState extends State<UserComment> {
     );
 
     Overlay.of(context).insert(overlayEntry);
-    
+
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color.fromARGB(255, 19, 19, 19),
@@ -128,18 +129,26 @@ class UserCommentState extends State<UserComment> {
     });
   }
 
-  void _addReply() {
-    setState(() {
-      replies.add(
-        UserComment(
-          avatar: 'assets/MonkeyDLuffy.png',
-          username: 'reply_username',
-          content: 'reply_content',
-          level: widget.level + 1,
-          timestamp: DateTime.now(),
+  void _addReply() async {
+    final replyText = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReplyPage(
+          commentContent: widget.content,
+          username: widget.username,
+          timestamp: widget.timestamp,
         ),
-      );
-    });
+      ),
+    );
+
+    if (replyText != null) {
+      replies.add(UserComment(
+        avatar: 'assets/MonkeyDLuffy.png',
+        username: 'User123',
+        content: replyText,
+        timestamp: DateTime.now(),
+      ));
+    }
   }
 
   @override
