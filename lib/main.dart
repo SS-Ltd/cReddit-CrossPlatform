@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-
 import 'package:reddit_clone/common/logger.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/theme/theme.dart';
