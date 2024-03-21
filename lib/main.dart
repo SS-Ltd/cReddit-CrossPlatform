@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/constants/logger.dart';
-import 'package:reddit_clone/subreddit_page.dart';
+import 'package:reddit_clone/common/logger.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/theme/theme.dart';
 
 void main() {
   runApp(MyApp());
 }
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Create a community',
       theme: ThemeData(
-        scaffoldBackgroundColor: Color.fromRGBO(1, 1, 1, 1),
-        appBarTheme: const AppBarTheme(
-          iconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: Color.fromRGBO(16, 16, 16, 1),
+        colorScheme: ColorScheme.fromSeed(seedColor: Palette.redditBackground),
+        dividerTheme: const DividerThemeData(
+          color: Colors.transparent,
         ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        useMaterial3: true,
       ),
-      home: SubRedditPage(), // Set HomePage as the initial route
+      home: LoginScreen(),
     );
   }
 }
