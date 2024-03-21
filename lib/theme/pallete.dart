@@ -10,3 +10,4 @@ class Palette {
   static const Color redditDarkGrey = Color.fromARGB(255, 100, 100, 100);
   static const Color redditBlack = Color.fromARGB(255, 47, 47, 47);
 }
+
