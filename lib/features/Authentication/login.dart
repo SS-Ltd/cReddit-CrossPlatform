@@ -17,6 +17,13 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      print('Form is valid');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +84,21 @@ class LoginScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            AuthField(
-                controller: emailController, labelText: 'Email or Username'),
-            const SizedBox(height: 20),
-            AuthField(
-                controller: passwordController,
-                labelText: 'Password',
-                obscureText: true),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  AuthField(
+                      controller: emailController,
+                      labelText: 'Email or Username'),
+                  const SizedBox(height: 20),
+                  AuthField(
+                      controller: passwordController,
+                      labelText: 'Password',
+                      obscureText: true),
+                ],
+              ),
+            ),
             if (!isKeyboardOpen) const SizedBox(height: 10),
             if (!isKeyboardOpen)
               Align(
@@ -110,13 +125,16 @@ class LoginScreen extends StatelessWidget {
             if (!isKeyboardOpen) const AgreementText(),
             const SizedBox(height: 20),
             FullWidthButton(
-                text: "Continue",
-                onPressed: () {
+              text: "Continue",
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
-                }),
+                }
+              },
+            ),
           ],
         ),
       ),
