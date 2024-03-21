@@ -1,31 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/post/post.dart';
+import 'package:reddit_clone/rightsidebar.dart';
 
 class HomePage extends StatelessWidget {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: const Icon(Icons.menu, size: 30.0),
-          //title: todo add drop down menu here
-          //the title parameter can be used to add a drop down menu
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search, size: 30.0),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.reddit, size: 30.0),
-            ),
-          ],
-        ),
-        body: ListView.builder(
-          itemCount: 5, // replace with the number of Post widgets you have
-          itemBuilder: (context, index) {
-            return MockPost();
-          },
-        ));
+      key: _scaffoldKey,
+      appBar: AppBar(
+        leading: const Icon(Icons.menu, size: 30.0),
+        //title: todo add drop down menu here
+        //the title parameter can be used to add a drop down menu
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search, size: 30.0),
+          ),
+          IconButton(
+            onPressed: () => 
+              _scaffoldKey.currentState!.openEndDrawer(),
+            icon: const Icon(Icons.reddit, size: 30.0),
+          ),
+        ],
+      ),
+      endDrawer: Rightsidebar(),
+      body: ListView.builder(
+        itemCount: 5, // replace with the number of Post widgets you have
+        itemBuilder: (context, index) {
+          return MockPost();
+        },
+      ),
+    );
   }
 
   Container MockPost() {
