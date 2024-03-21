@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Sidebar extends StatefulWidget {
-  const Sidebar({Key? key}) : super(key: key);
+class Rightsidebar extends StatefulWidget {
+  const Rightsidebar({Key? key}) : super(key: key);
 
   @override
-  _SidebarState createState() => _SidebarState();
+  _RightsidebarState createState() => _RightsidebarState();
 }
 
-class _SidebarState extends State<Sidebar> {
+class _RightsidebarState extends State<Rightsidebar> {
   bool isOnline = false;
 
   @override
