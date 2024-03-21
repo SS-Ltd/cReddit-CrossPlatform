@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/create_community_page.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({Key? key}) : super(key: key);
@@ -142,7 +143,14 @@ class _RightsidebarState extends State<Rightsidebar> {
                   _buildListTile(
                       icon: Icons.group_add,
                       text: 'Create a Community',
-                      onTap: () {}),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateCommunityPage(),
+                          ),
+                        );
+                      }),
                   _buildListTile(
                       icon: Icons.star_border,
                       text: 'Contributor Program',
