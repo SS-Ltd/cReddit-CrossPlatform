@@ -4,7 +4,7 @@ import 'package:reddit_clone/theme/theme.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

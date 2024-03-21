@@ -48,11 +48,13 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       } else if (path == '/subreddit' && request.method == 'POST') {
         final requestBody = json.decode(request.body);
         if (requestBody['name'].toLowerCase() != 'creddit_sw_project') {
-          // Simulate successful community creation if the name isn't "creddit_sw_project"
+          // Simulate successful community creation
+          //if the name isn't "creddit_sw_project"
           return http.Response(
               jsonEncode({"message": "Community created successfully"}), 200);
         } else {
-          // Simulate failure to create community if the name is "creddit_sw_project" (since it already exists)
+          // Simulate failure to create community if the name is
+          //"creddit_sw_project" (since it already exists)
           return http.Response(
               jsonEncode({"message": "Subreddit already exists"}), 400);
         }
@@ -123,7 +125,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                 maxLength: _maxLength,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color.fromRGBO(32, 32, 32, 1),
+                  fillColor: const Color.fromRGBO(32, 32, 32, 1),
                   hintText: 'r/Community_name',
                   hintStyle: const TextStyle(
                     color: Colors.grey,
@@ -255,15 +257,17 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                 ListTile(
                   leading: const Icon(Icons.lock_open),
                   title: const Text('Restricted'),
-                  subtitle: const Text(
-                      'Anyone can view this community, but only approved users can post.'),
+                  subtitle:
+                      const Text('Anyone can view this community, but only '
+                          'approved users can post.'),
                   onTap: () => _selectCommunityType('Restricted', context),
                 ),
                 ListTile(
                   leading: const Icon(Icons.lock),
                   title: const Text('Private'),
                   subtitle: const Text(
-                      'Only approved users can view and submit to this community.'),
+                      'Only approved users can view and submit '
+                      'to this community.'),
                   onTap: () => _selectCommunityType('Private', context),
                 ),
               ],
@@ -324,7 +328,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       );
 
       if (responseCreate.statusCode == 200) {
-        // If community creation is successful, print success message to the console
+        // If community creation is successful, 
+        //print success message to the console
         print('Community created successfully.');
       } else {
         // If community creation fails, print error message to the console

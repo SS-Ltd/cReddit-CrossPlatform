@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/account_settings.dart';
 import 'package:reddit_clone/arrow_button.dart';
 import 'package:reddit_clone/heading.dart';
-import 'package:reddit_clone/option_list_tile.dart';
 import 'package:reddit_clone/selection_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,7 +22,9 @@ class _SettingsState extends State<Settings> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         title: const Text('Settings'),
       ),
@@ -69,7 +70,7 @@ class _SettingsState extends State<Settings> {
                             builder: (context) => Column(
                               children: [
                                 ListTile(
-                                  title: Text('English'),
+                                  title: const Text('English'),
                                   onTap: () {
                                     setState(() {
                                       currentlanguage = 'English';
@@ -78,7 +79,7 @@ class _SettingsState extends State<Settings> {
                                   },
                                 ),
                                 ListTile(
-                                  title: Text('Spanish'),
+                                  title: const Text('Spanish'),
                                   onTap: () {
                                     setState(() {
                                       currentlanguage = 'Spanish';
@@ -87,7 +88,7 @@ class _SettingsState extends State<Settings> {
                                   },
                                 ),
                                 ListTile(
-                                  title: Text('French'),
+                                  title: const Text('French'),
                                   onTap: () {
                                     setState(() {
                                       currentlanguage = 'French';

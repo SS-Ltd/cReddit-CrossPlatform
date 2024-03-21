@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class OptionListTile extends StatelessWidget {
-  OptionListTile(
+  const OptionListTile(
       {super.key,
       required this.title,
       required this.onTap,
@@ -17,7 +17,9 @@ class OptionListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
-      leading: radiobutton ? Radio(value: true, groupValue: null, onChanged: null) : Icon(icon),
+      leading: radiobutton
+          ? const Radio(value: true, groupValue: null, onChanged: null)
+          : Icon(icon),
       onTap: onTap,
     );
   }

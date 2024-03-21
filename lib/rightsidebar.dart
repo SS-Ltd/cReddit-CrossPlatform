@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/create_community_page.dart';
+import 'package:reddit_clone/settings.dart';
 
 class Rightsidebar extends StatefulWidget {
-  const Rightsidebar({Key? key}) : super(key: key);
+  const Rightsidebar({super.key});
 
   @override
-  _RightsidebarState createState() => _RightsidebarState();
+  State<Rightsidebar> createState() {
+    return _RightsidebarState();
+  }
 }
 
 class _RightsidebarState extends State<Rightsidebar> {
@@ -166,7 +169,17 @@ class _RightsidebarState extends State<Rightsidebar> {
                   _buildListTile(
                       icon: Icons.history, text: 'History', onTap: () {}),
                   _buildListTile(
-                      icon: Icons.settings, text: 'Settings', onTap: () {}),
+                    icon: Icons.settings,
+                    text: 'Settings',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Settings(),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -180,7 +193,7 @@ class _RightsidebarState extends State<Rightsidebar> {
       {required IconData icon, required String text, VoidCallback? onTap}) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(text, style: TextStyle(color: Colors.white)),
+      title: Text(text, style: const TextStyle(color: Colors.white)),
       onTap: onTap,
     );
   }

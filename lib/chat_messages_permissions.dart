@@ -25,7 +25,7 @@ class _ChatMessagesPermissionsState extends State<ChatMessagesPermissions> {
           },
         ),
       ),
-      body: Column(children: [],),
+      body: const Column(children: [],),
     );
   }
 }

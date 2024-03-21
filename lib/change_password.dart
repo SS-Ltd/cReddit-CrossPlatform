@@ -22,7 +22,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   void dispose() {
     _currentPasswordController.dispose();
     _newPasswordController.dispose();
-    _confirmPasswordController.dispose(); 
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -69,7 +69,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -153,31 +154,31 @@ class _ChangePasswordState extends State<ChangePassword> {
                           return null;
                         },
                       ),
-                                            Padding(
-                          padding: const EdgeInsets.only(top: 340),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  _currentPasswordController.clear();
-                                  _newPasswordController.clear();
-                                  _confirmPasswordController.clear();
-                                  Navigator.pop(context);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(150, 40)),
-                                child: const Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(150, 40)),
-                                child: const Text('Save'),
-                              ),
-                            ],
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 340),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                _currentPasswordController.clear();
+                                _newPasswordController.clear();
+                                _confirmPasswordController.clear();
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(150, 40)),
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(150, 40)),
+                              child: const Text('Save'),
+                            ),
+                          ],
                         ),
+                      ),
                     ],
                   ),
                 ),

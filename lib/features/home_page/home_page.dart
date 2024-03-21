@@ -4,6 +4,8 @@ import 'package:reddit_clone/rightsidebar.dart';
 
 class HomePage extends StatelessWidget {
 
+  HomePage({super.key});
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -26,7 +28,7 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      endDrawer: Rightsidebar(),
+      endDrawer: const Rightsidebar(),
       body: ListView.builder(
         itemCount: 5, // replace with the number of Post widgets you have
         itemBuilder: (context, index) {

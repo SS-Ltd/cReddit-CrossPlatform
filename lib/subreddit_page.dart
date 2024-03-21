@@ -52,7 +52,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(65),
         child: AppBar(
-          title: Text('r/SubredditName', style: TextStyle(color: Colors.white)),
+          title: const Text('r/SubredditName',
+              style: TextStyle(color: Colors.white)),
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -73,9 +74,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: _subredditInfo()),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
             ),
           ),
           SliverToBoxAdapter(child: _sortingOptions()),
@@ -84,9 +85,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
               (BuildContext context, int index) {
                 return ListTile(
                   title: Text(posts[index]),
-                  subtitle: Text('Post Summary Here'),
-                  trailing: Icon(Icons.comment),
-                  leading: Icon(Icons.image),
+                  subtitle: const Text('Post Summary Here'),
+                  trailing: const Icon(Icons.comment),
+                  leading: const Icon(Icons.image),
                   onTap: () {},
                 );
               },
@@ -108,8 +109,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
             const Icon(Icons.new_releases_outlined, color: Colors.white),
           if (currentSort == 'Top')
             const Icon(Icons.arrow_upward_outlined, color: Colors.white),
-          SizedBox(width: 8),
-          Text(currentSort, style: TextStyle(color: Colors.white)),
+          const SizedBox(width: 8),
+          Text(currentSort, style: const TextStyle(color: Colors.white)),
         ],
       ),
       trailing: const Icon(Icons.arrow_drop_down, color: Colors.white),
@@ -152,7 +153,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   Widget _sortingOptionTile(String title, IconData icon, Function() onTap) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: TextStyle(color: Colors.white)),
+      title: Text(title, style: const TextStyle(color: Colors.white)),
       onTap: onTap,
     );
   }
@@ -174,9 +175,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('r/hi osama',
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.white)),
+                    const Text('r/hi osama',
+                        style: TextStyle(fontSize: 16, color: Colors.white)),
                     Row(
                       children: [
                         const Text('100 members  ',
@@ -219,7 +219,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
           ),
           const SizedBox(height: 10),
           const Text(
-            'Welcome to the official subreddit of the osama. This is a place for all things osama.',
+            'Welcome to the official subreddit of the osama.'
+            ' This is a place for all things osama.',
             style: TextStyle(color: Colors.white),
           ),
         ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/blocked_user.dart';
 import 'package:reddit_clone/blocked_user_model.dart';
 
 final dummyusers = [
