@@ -1,8 +1,16 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
 
-class Pallete {
-  static const Color backgroundColor = Colors.black;
+class Palette {
+  static const Color redditBlue = Color(0xFF0079D3);
+  static const Color upvoteOrange = Color(0xFFFF4500);
+  static const Color downvoteBlue = Color(0xFF5A98D1);
+  static const Color redditBackground = Color(0xFFF6F7F8);
+  static const Color redditGrey = Color.fromARGB(255, 130, 129, 129);
+  static const Color redditLightGrey = Color.fromARGB(255, 243, 242, 242);
+  static const Color redditDarkGrey = Color.fromARGB(255, 100, 100, 100);
+  static const Color redditBlack = Color.fromARGB(255, 47, 47, 47);
   static const Color searchBarColor = Color.fromRGBO(32, 35, 39, 1);
+  static const Color backgroundColor = Colors.black;
   static const Color blueColor = Color.fromRGBO(29, 155, 240, 1);
   static const Color whiteColor = Colors.white;
   static const Color greyColor = Colors.grey;
