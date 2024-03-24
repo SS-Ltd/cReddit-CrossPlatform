@@ -318,7 +318,6 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
 
     if (responseCheck.statusCode == 200) {
       // If the subreddit exists, print an error message to the console
-      print('Subreddit already exists.');
     } else if (responseCheck.statusCode == 404) {
       // If the subreddit doesn't exist, try to create the community
       final responseCreate = await mockClient.post(
@@ -330,14 +329,11 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       if (responseCreate.statusCode == 200) {
         // If community creation is successful, 
         //print success message to the console
-        print('Community created successfully.');
       } else {
         // If community creation fails, print error message to the console
-        print('Failed to create community.');
       }
     } else {
       // Handle other unexpected statuses
-      print('An unexpected error occurred.');
     }
   }
 }

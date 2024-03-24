@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
@@ -15,7 +14,9 @@ class AuthField extends StatefulWidget {
   });
 
   @override
-  _AuthFieldState createState() => _AuthFieldState();
+  State<AuthField> createState() {
+    return _AuthFieldState();
+  }
 }
 
 class _AuthFieldState extends State<AuthField> {

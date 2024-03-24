@@ -7,7 +7,9 @@ class ReplyPage extends StatelessWidget {
   final DateTime timestamp;
 
   ReplyPage(
-      {required this.commentContent,
+      {
+      super.key,
+      required this.commentContent,
       required this.username,
       required this.timestamp});
 

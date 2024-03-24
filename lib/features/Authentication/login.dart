@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
@@ -10,7 +8,6 @@ import 'package:reddit_clone/forget_password.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
-import 'package:flutter/gestures.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -18,12 +15,6 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      print('Form is valid');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

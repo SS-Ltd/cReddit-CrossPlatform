@@ -3,13 +3,13 @@ import 'package:reddit_clone/theme/pallete.dart';
 
 class AppTheme {
   static ThemeData theme = ThemeData.dark().copyWith(
-    scaffoldBackgroundColor: Pallete.backgroundColor,
+    scaffoldBackgroundColor: Palette.backgroundColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Pallete.backgroundColor,
+      backgroundColor: Palette.backgroundColor,
       elevation: 0,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Pallete.blueColor,
+      backgroundColor: Palette.blueColor,
     ),
   );
 }

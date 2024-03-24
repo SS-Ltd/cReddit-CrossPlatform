@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class Post extends StatefulWidget {
   final String communityName;
@@ -25,7 +24,6 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   int votes = 0;
-  Timer? _timer;
 
   @override
   Widget build(BuildContext context) {

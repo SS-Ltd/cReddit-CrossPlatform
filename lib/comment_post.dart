@@ -4,7 +4,7 @@ class CommentPostPage extends StatelessWidget {
   final _controller = TextEditingController();
   final String commentContent;
 
-  CommentPostPage({required this.commentContent});
+  CommentPostPage({super.key ,required this.commentContent});
 
   @override
   Widget build(BuildContext context) {
