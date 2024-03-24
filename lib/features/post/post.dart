@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/comments/comment_page.dart';
 
 class Post extends StatefulWidget {
   final String communityName;
@@ -125,6 +126,10 @@ class _PostState extends State<Post> {
                   icon: const Icon(
                       Icons.add_comment), //other icon: add_comment, comment
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CommentPage()));
                     // navigate to add comment page
                   },
                 ),

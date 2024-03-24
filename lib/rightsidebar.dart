@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/create_community_page.dart';
-import 'package:reddit_clone/settings.dart';
+import 'package:reddit_clone/features/settings/settings.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});

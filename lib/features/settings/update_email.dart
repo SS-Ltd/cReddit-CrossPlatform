@@ -1,6 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/forgot_password.dart';
+import 'package:reddit_clone/features/settings/forgot_password.dart';
 
 class UpdateEmail extends StatefulWidget {
   const UpdateEmail({super.key});

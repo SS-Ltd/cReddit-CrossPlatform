@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/forgot_password.dart';
+import 'package:reddit_clone/features/settings/forgot_password.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
