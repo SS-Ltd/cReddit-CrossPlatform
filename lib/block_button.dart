@@ -5,10 +5,10 @@ class BlockButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const BlockButton({
-    Key? key,
+    super.key,
     required this.isCircular,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   void _showBlockSnackbar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -37,11 +37,11 @@ class BlockButton extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent,
-        padding: EdgeInsets.all(8.0),
-        shape: CircleBorder(),
+        padding: const EdgeInsets.all(8.0),
+        shape: const CircleBorder(),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
+      child: const Padding(
+        padding: EdgeInsets.all(4.0),
         child: Icon(Icons.block, color: Colors.white, size: 24.0),
       ),
     );
@@ -62,10 +62,10 @@ class BlockButton extends StatelessWidget {
           ),
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
         ),
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.block, color: Colors.white),
@@ -78,11 +78,14 @@ class BlockButton extends StatelessWidget {
 }
 
 class BlockConfirmationDialog extends StatelessWidget {
+
+  const BlockConfirmationDialog({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.grey[900],
-      title: Text(
+      title: const Text(
         'Are you Sure?',
         style: TextStyle(color: Colors.white, fontSize: 24.0),
       ),
@@ -90,11 +93,11 @@ class BlockConfirmationDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'You won\'t see posts or comments from this user.',
             style: TextStyle(color: Colors.white, fontSize: 18.0),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -108,16 +111,16 @@ class BlockConfirmationDialog extends StatelessWidget {
                     Colors.white,
                   ),
                 ),
-                child: Text('CANCEL'),
+                child: const Text('CANCEL'),
               ),
-              SizedBox(width: 16.0),
+              const SizedBox(width: 16.0),
               ElevatedButton(
                 onPressed: () {
                   // Perform block action
                   void _showBlockSnackbar(BuildContext context) {
                     final snackBar = SnackBar(
                       backgroundColor: Colors.white,
-                      content: Text(
+                      content: const Text(
                         'User has been blocked',
                         style: TextStyle(color: Colors.black),
                       ),
@@ -138,7 +141,7 @@ class BlockConfirmationDialog extends StatelessWidget {
                     Colors.white,
                   ),
                 ),
-                child: Text('BLOCK'),
+                child: const Text('BLOCK'),
               ),
             ],
           ),
@@ -155,15 +158,17 @@ class SlideInSnackBar extends StatefulWidget {
   final Color textColor;
 
   const SlideInSnackBar({
-    Key? key,
+    super.key,
     required this.content,
     required this.duration,
     required this.backgroundColor,
     required this.textColor,
-  }) : super(key: key);
+  });
 
   @override
-  _SlideInSnackBarState createState() => _SlideInSnackBarState();
+  State<SlideInSnackBar> createState() {
+    return _SlideInSnackBarState();
+  }
 }
 
 class _SlideInSnackBarState extends State<SlideInSnackBar>
