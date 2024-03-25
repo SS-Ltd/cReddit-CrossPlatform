@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/create_community_page.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
+import 'package:reddit_clone/history.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -167,7 +168,17 @@ class _RightsidebarState extends State<Rightsidebar> {
                   _buildListTile(
                       icon: Icons.bookmark_border, text: 'Saved', onTap: () {}),
                   _buildListTile(
-                      icon: Icons.history, text: 'History', onTap: () {}),
+                    icon: Icons.history,
+                    text: 'History',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HistoryPage(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildListTile(
                     icon: Icons.settings,
                     text: 'Settings',
