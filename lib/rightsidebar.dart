@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/create_community_page.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
+import 'package:reddit_clone/saved.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -165,7 +166,17 @@ class _RightsidebarState extends State<Rightsidebar> {
                       text: 'Reddit Premium',
                       onTap: () {}),
                   _buildListTile(
-                      icon: Icons.bookmark_border, text: 'Saved', onTap: () {}),
+                    icon: Icons.bookmark_border,
+                    text: 'Saved',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavedPage(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildListTile(
                       icon: Icons.history, text: 'History', onTap: () {}),
                   _buildListTile(
