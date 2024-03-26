@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/notification_item.dart'; // Ensure correct import path
+import 'package:reddit_clone/notification_item.dart';
 
 class NotificationLayout extends StatelessWidget {
   const NotificationLayout(
-      {Key? key, required this.notification, required this.onTap})
-      : super(key: key);
+      {super.key, required this.notification, required this.onTap});
 
   final NotificationItem notification;
   final VoidCallback onTap;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/message_item.dart';
+import 'package:reddit_clone/message_layout.dart';
 import 'package:reddit_clone/notification_item.dart';
 import 'package:reddit_clone/notification_layout.dart';
 
@@ -21,10 +23,71 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
         time: "1m"),
     NotificationItem(
         id: "2",
-        title:
-            "u/PlasticDragonfruit84 replied to your post aaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaa",
-        description: "i am a little late here but here is my take",
+        title: "u/PlasticDragonfruit84 replied to your post",
+        description: "I am a little late here but here is my take",
         time: "19d"),
+    NotificationItem(
+        id: "3",
+        title: "u/TravelingSloth liked your comment",
+        description: "“Absolutely brilliant point there!”",
+        time: "2h"),
+    NotificationItem(
+        id: "4",
+        title: "u/GreenTechie mentioned you in a comment",
+        description: "I think u/ExampleUser might have some insights on this",
+        time: "5d"),
+    NotificationItem(
+        id: "5",
+        title: "u/CuriousCat posted in r/Cats",
+        description: "Look at my cat’s new hat!",
+        time: "3m"),
+  ];
+
+  List<MessageItem> messages = [
+    MessageItem(
+      id: "1",
+      title: "Welcome to Reddit!",
+      content: "Hello, welcome to Reddit! We're glad you're here.",
+      senderUsername: "u/RedditAdmin",
+      time: "1h",
+      isRead: false,
+    ),
+    MessageItem(
+      id: "2",
+      title: "Can we collaborate?",
+      content:
+          "Hi there! I saw your post on r/FlutterDev. Are you open to collaboration on a Flutter project?",
+      senderUsername: "u/FlutterFan123",
+      time: "2d",
+      isRead: true,
+    ),
+    MessageItem(
+      id: "3",
+      title: "Your subscription is expiring",
+      content:
+          "Just a reminder that your subscription to r/PremiumContent is expiring in 3 days.",
+      senderUsername: "u/SubscriptionsBot",
+      time: "4d",
+      isRead: false,
+    ),
+    MessageItem(
+      id: "4",
+      title: "Thank you for your support!",
+      content:
+          "We just wanted to say a big thank you for supporting our Kickstarter campaign.",
+      senderUsername: "u/KickstartThis",
+      time: "6d",
+      isRead: true,
+    ),
+    MessageItem(
+      id: "5",
+      title: "Your order has shipped",
+      content:
+          "Good news! Your order from r/ArtisanGoods has shipped. Track your package here: [link]",
+      senderUsername: "u/CraftsmanBot",
+      time: "8d",
+      isRead: false,
+    ),
   ];
 
   @override
@@ -102,7 +165,20 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
               );
             },
           ),
-          const Center(child: Text('Messages Content')),
+          ListView.builder(
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+              return MessageLayout(
+                message: message,
+                onTap: () {
+                  setState(() {
+                    messages[index].isRead = true;
+                  });
+                },
+              );
+            },
+          ),
         ],
       ),
     );
