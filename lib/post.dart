@@ -212,7 +212,7 @@ class _PostState extends State<Post> {
                   )
                 : (!widget.isHomePage
                   ? Text(widget.content)
-                  : SizedBox.shrink()),  
+                  : const SizedBox.shrink()),  
             ),
             const SizedBox(height: 10),
             Row(
@@ -235,7 +235,8 @@ class _PostState extends State<Post> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.add_comment), //other icon: add_comment, comment
+                  icon: const Icon(Icons.add_comment), 
+                  //other icon: add_comment,comment
                   onPressed: () {
                     // navigate to add comment page 
                   },
@@ -243,7 +244,8 @@ class _PostState extends State<Post> {
                 Text(widget.commentNumber.toString()),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.ios_share),  //other icon: ios_share, share
+                  icon: const Icon(Icons.ios_share),  
+                  //other icon: ios_share, share
                   onPressed: () {
                     // share post
                   }, 

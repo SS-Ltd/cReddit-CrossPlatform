@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class NewPage extends StatelessWidget {
+  const NewPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Page'),
+        title: const Text('New Page'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('This is a new page'),
       ),
     );
