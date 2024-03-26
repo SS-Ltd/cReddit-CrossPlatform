@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/create_community_page.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
+import 'package:reddit_clone/inbox_notifications.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -157,7 +158,14 @@ class _RightsidebarState extends State<Rightsidebar> {
                   _buildListTile(
                       icon: Icons.star_border,
                       text: 'Contributor Program',
-                      onTap: () {}),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const InboxNotificationPage()),
+                        );
+                      }),
                   _buildListTile(
                       icon: Icons.lock_outline, text: 'Vault', onTap: () {}),
                   _buildListTile(
