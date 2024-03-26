@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/notification_item.dart';
+import 'package:reddit_clone/notification_layout.dart';
 
 class InboxNotificationPage extends StatefulWidget {
   const InboxNotificationPage({super.key});
@@ -11,6 +13,20 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  List<NotificationItem> notifications = [
+    NotificationItem(
+        id: "1",
+        title: "HweiMains",
+        description: "One For All Hwei Winrate",
+        time: "1m"),
+    NotificationItem(
+        id: "2",
+        title:
+            "u/PlasticDragonfruit84 replied to your post aaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaa",
+        description: "i am a little late here but here is my take",
+        time: "19d"),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -20,6 +36,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   void _showMenuOptions() {
     showModalBottomSheet(
       context: context,
+      shape: Border.all(style: BorderStyle.none),
       builder: (BuildContext context) {
         return Wrap(
           children: <Widget>[
@@ -70,9 +87,22 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          Center(child: Text('Notifications Content')),
-          Center(child: Text('Messages Content')),
+        children: [
+          ListView.builder(
+            itemCount: notifications.length,
+            itemBuilder: (context, index) {
+              final notification = notifications[index];
+              return NotificationLayout(
+                notification: notification,
+                onTap: () {
+                  setState(() {
+                    notifications[index].isRead = true;
+                  });
+                },
+              );
+            },
+          ),
+          const Center(child: Text('Messages Content')),
         ],
       ),
     );
