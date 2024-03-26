@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'new_page.dart';
 
 class Post extends StatefulWidget {
@@ -24,6 +23,7 @@ class Post extends StatefulWidget {
     required this.shareNumber,
     required this.timeStamp,
     required this.isHomePage,
+    super.key,
   });
 
   @override
@@ -52,10 +52,9 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Padding(
-        padding : const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -70,7 +69,8 @@ class _PostState extends State<Post> {
                       children: [
                         const CircleAvatar(
                           //replace with user profile picture
-                          backgroundImage: NetworkImage('https://www.w3schools.com/w3images/avatar2.png'),
+                          backgroundImage: NetworkImage(
+                            'https://www.w3schools.com/w3images/avatar2.png'),
                         ),
                         const SizedBox(width: 10),
                         widget.isHomePage
@@ -83,7 +83,7 @@ class _PostState extends State<Post> {
                             },
                             child: Text(
                               'r/${widget.communityName}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.grey,
                               ),
                             ),
@@ -93,7 +93,7 @@ class _PostState extends State<Post> {
                             children: [
                               Text(
                                 'r/${widget.communityName}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                 color: Colors.grey,
                                 ),
                               ),
@@ -106,7 +106,7 @@ class _PostState extends State<Post> {
                                 },
                                 child: Text(
                                   'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.blue,
                                   ),
                                 ),
@@ -143,7 +143,7 @@ class _PostState extends State<Post> {
                 : null,
               child: Text(
                 widget.title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
@@ -218,7 +218,7 @@ class _PostState extends State<Post> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_upward),
+                  icon: const Icon(Icons.arrow_upward),
                   onPressed: () {
                     setState(() {
                       votes++;
@@ -227,7 +227,7 @@ class _PostState extends State<Post> {
                 ),
                 Text(votes.toString()),
                 IconButton(
-                  icon: Icon(Icons.arrow_downward),
+                  icon: const Icon(Icons.arrow_downward),
                   onPressed: () {
                     setState(() {
                       votes--;
@@ -235,15 +235,15 @@ class _PostState extends State<Post> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add_comment), //other icon: add_comment, comment
+                  icon: const Icon(Icons.add_comment), //other icon: add_comment, comment
                   onPressed: () {
                     // navigate to add comment page 
                   },
                 ),
                 Text(widget.commentNumber.toString()),
-                Spacer(),
+                const Spacer(),
                 IconButton(
-                  icon: Icon(Icons.ios_share),  //other icon: ios_share, share
+                  icon: const Icon(Icons.ios_share),  //other icon: ios_share, share
                   onPressed: () {
                     // share post
                   }, 
