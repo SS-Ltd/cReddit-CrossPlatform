@@ -11,7 +11,11 @@ void main() {
         userName: 'throwaway123',
         title: 'Escaping corporate Hell and finding freedom', 
         imageUrl: 'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-        content: 'Man, let me fucking vent for a minute. Just got out of the shittiest gig ever – being a "marketing specialist" for the supposed big boys over at Microsoft. Let me tell you, it was SHIT.', 
+        // imageUrl: '',
+        content: 'Man, let me fucking vent for a minute. Just got out of the shittiest gig ever – being a "marketing specialist" for the supposed big boys over at Microsoft. Let me tell you, it was SHIT. The office culture was toxic, the workload was overwhelming, and the pay was insulting.', 
+        commentNumber: 3,
+        shareNumber: 0,
+        isHomePage: true,
         timeStamp: DateTime.now()),
       },
   ));
