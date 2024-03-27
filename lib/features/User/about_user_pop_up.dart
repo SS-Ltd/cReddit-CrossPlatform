@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/arrow_button.dart';
+import 'package:reddit_clone/common/arrow_button.dart';
 
 class AboutUserPopUp extends StatelessWidget {
   const AboutUserPopUp({super.key});

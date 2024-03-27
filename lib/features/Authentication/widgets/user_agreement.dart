@@ -14,21 +14,17 @@ class AgreementText extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
                 children: [
-                  const TextSpan(
+                  TextSpan(
+                    style: Theme.of(context).textTheme.labelSmall,
                     text: 'By continuing, you agree to our ',
-                    style: TextStyle(
-                        color: Palette.redditBlack,
-                        fontSize: 12,
-                        decoration: TextDecoration.none),
                   ),
                   TextSpan(
                     text: 'User Agreement ',
-                    style: const TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12,
-                        decoration: TextDecoration.none),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Palette.orangeColor,
+                        ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         launchUrl(
@@ -37,12 +33,9 @@ class AgreementText extends StatelessWidget {
                             mode: LaunchMode.externalApplication);
                       },
                   ),
-                  const TextSpan(
+                  TextSpan(
+                    style: Theme.of(context).textTheme.labelSmall,
                     text: 'and acknowledge',
-                    style: TextStyle(
-                        color: Palette.redditBlack,
-                        fontSize: 12,
-                        decoration: TextDecoration.none),
                   ),
                 ],
               ),
@@ -54,21 +47,18 @@ class AgreementText extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
+                style: Theme.of(context).textTheme.labelSmall,
                 children: [
-                  const TextSpan(
+                  TextSpan(
                     text: 'that you understand the ',
-                    style: TextStyle(
-                        color: Palette.redditBlack,
-                        fontSize: 12,
-                        decoration: TextDecoration.none),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                   TextSpan(
                     text: 'Privacy Policy',
-                    style: const TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12,
-                        decoration: TextDecoration.none),
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Palette.orangeColor,
+                        ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         launchUrl(

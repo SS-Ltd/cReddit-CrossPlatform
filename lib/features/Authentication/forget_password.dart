@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/theme/pallete.dart';
 import 'reset_password_done.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
@@ -61,6 +62,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: Palette.redditBlack,
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -120,8 +122,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                       'Enter your email address or username and we\'ll '
                       'send you a link to reset your password',
                       style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 107, 106, 106)),
+                        fontSize: 16,
+                        color: Palette.whiteColor,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],

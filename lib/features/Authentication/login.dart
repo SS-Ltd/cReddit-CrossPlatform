@@ -3,8 +3,8 @@ import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
-import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/Authentication/forget_password.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
@@ -21,7 +21,9 @@ class LoginScreen extends StatelessWidget {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
+      backgroundColor: Palette.redditBlack,
       appBar: AppBar(
+        backgroundColor: Palette.redditBlack,
         title:
             SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
         centerTitle: true,
@@ -57,7 +59,7 @@ class LoginScreen extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Divider(
-                    color: Palette.redditGrey,
+                    color: Palette.whiteColor,
                     height: 50,
                   ),
                 ),
@@ -65,10 +67,10 @@ class LoginScreen extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Palette.redditDarkGrey)),
+                        color: Palette.whiteColor)),
                 Expanded(
                   child: Divider(
-                    color: Palette.redditGrey,
+                    color: Palette.whiteColor,
                     height: 50,
                   ),
                 ),
@@ -105,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                   },
                   child: const Text('Forgot Password?',
                       style: TextStyle(
-                          color: Palette.redditBlue,
+                          color: Palette.orangeColor,
                           fontSize: 16,
                           fontWeight: FontWeight.bold)),
                 ),
@@ -121,7 +123,8 @@ class LoginScreen extends StatelessWidget {
                 if (_formKey.currentState!.validate()) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(
+                        builder: (context) => const CustomNavigationBar()),
                   );
                 }
               },

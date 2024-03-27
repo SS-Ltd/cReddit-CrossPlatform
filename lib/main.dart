@@ -11,13 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Create a community',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Palette.redditBackground),
-        dividerTheme: const DividerThemeData(
-          color: Colors.transparent,
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.darkTheme,
       home: LoginScreen(),
     );
   }
