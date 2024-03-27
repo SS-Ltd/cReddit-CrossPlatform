@@ -1,5 +1,5 @@
-import 'dart:ui';
-
+//import 'dart:ui';
+import 'package:flutter/material.dart';
 class Palette {
   static const Color redditBlue = Color(0xFF0079D3);
   static const Color upvoteOrange = Color(0xFFFF4500);

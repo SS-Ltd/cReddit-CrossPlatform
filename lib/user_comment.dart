@@ -192,16 +192,29 @@ class UserCommentState extends State<UserComment> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage(widget.avatar),
+                          GestureDetector(
+                            onTap: () {
+                              // will be replaced with redirecting to user
+                              showOverlay(context, widget);
+                            },
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage(widget.avatar),
+                            ),
                           ),
                           const SizedBox(width: 10),
-                          Text(
-                            widget.username,
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold),
+                          GestureDetector(
+                            onTap: () {
+                              // will be replaced with redirecting to user
+                              showOverlay(context, widget);
+                              
+                            },
+                            child: Text(
+                              widget.username,
+                              style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           const SizedBox(width: 10),
                           Text(
