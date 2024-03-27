@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'new_page.dart';
 
 class Post extends StatefulWidget {
   final String communityName;
@@ -7,7 +8,10 @@ class Post extends StatefulWidget {
   final String title;
   final String imageUrl;
   final String content;
+  final int commentNumber;
+  final int shareNumber;
   final DateTime timeStamp;
+  final bool isHomePage;
 
   const Post({
     required this.communityName,
@@ -15,7 +19,10 @@ class Post extends StatefulWidget {
     required this.title,
     required this.imageUrl,
     required this.content,
+    required this.commentNumber,
+    required this.shareNumber,
     required this.timeStamp,
+    required this.isHomePage,
     super.key,
   });
 
@@ -38,71 +45,159 @@ class _PostState extends State<Post> {
             Card(
               color: Colors.black,
               child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const CircleAvatar(
-                            //replace with user profile picture
-                            backgroundImage: NetworkImage(
-                                'https://www.w3schools.com/w3images/avatar2.png'),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          //replace with user profile picture
+                          backgroundImage: NetworkImage(
+                            'https://www.w3schools.com/w3images/avatar2.png'),
+                        ),
+                        const SizedBox(width: 10),
+                        widget.isHomePage
+                        ? GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => NewPage()), //replace with community page
+                              );
+                            },
+                            child: Text(
+                              'r/${widget.communityName}',
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          )
+                        : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'r/${widget.communityName}',
                                 style: const TextStyle(
-                                  color: Colors.grey,
+                                color: Colors.grey,
                                 ),
                               ),
-                              Text(
-                                'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => NewPage()), //replace with profile page or widget
+                                  );
+                                },
+                                child: Text(
+                                  'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ],
-                  )),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 10),
-            Text(
-              widget.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            GestureDetector(
+              onTap: widget.isHomePage
+                ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Post(
+                        communityName: widget.communityName,
+                        userName: widget.userName,
+                        title: widget.title,
+                        imageUrl: widget.imageUrl,
+                        content: widget.content,
+                        commentNumber: widget.commentNumber,
+                        shareNumber: widget.shareNumber,
+                        timeStamp: widget.timeStamp,
+                        isHomePage: false,
+                      )
+                    ), //replace with post page
+                  );
+                }
+                : null,
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
             const SizedBox(height: 10),
             Visibility(
-              visible: widget.imageUrl.isNotEmpty,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
+              visible: widget.imageUrl.isNotEmpty,  
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      // builder: (context) => ImageScreen(imageUrl: widget.imageUrl),
+                      builder: (context) => NewPage(),  //replace with image screen
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.network(
-                        widget.imageUrl,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                  );
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          widget.imageUrl,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
+                    const SizedBox(height: 10),
+                  ],
+                ),
               ),
             ),
-            Text(widget.content),
+            GestureDetector(
+              onTap: widget.isHomePage
+                ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Post(
+                        communityName: widget.communityName,
+                        userName: widget.userName,
+                        title: widget.title,
+                        imageUrl: widget.imageUrl,
+                        content: widget.content,
+                        commentNumber: widget.commentNumber,
+                        shareNumber: widget.shareNumber,
+                        timeStamp: widget.timeStamp,
+                        isHomePage: false,
+                      )
+                    ), //replace with post page
+                  );
+                }
+                : null,
+              child: widget.isHomePage && widget.imageUrl.isEmpty
+                ? ( Text(
+                      widget.content,
+                      maxLines: 3,  
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  )
+                : (!widget.isHomePage
+                  ? Text(widget.content)
+                  : const SizedBox.shrink()),  
+            ),
             const SizedBox(height: 10),
             Row(
               children: [
@@ -124,20 +219,22 @@ class _PostState extends State<Post> {
                   },
                 ),
                 IconButton(
-                  icon: const Icon(
-                      Icons.add_comment), //other icon: add_comment, comment
+                  icon: const Icon(Icons.add_comment), 
+                  //other icon: add_comment,comment
                   onPressed: () {
                     // navigate to add comment page
                   },
                 ),
+                Text(widget.commentNumber.toString()),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(
-                      Icons.ios_share), //other icon: ios_share, share
+                  icon: const Icon(Icons.ios_share),  
+                  //other icon: ios_share, share
                   onPressed: () {
                     // share post
-                  },
-                )
+                  }, 
+                ),
+                if (widget.shareNumber > 0) Text(widget.shareNumber.toString()),
               ],
             ),
           ],
