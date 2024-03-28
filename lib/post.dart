@@ -23,7 +23,7 @@ class Post extends StatefulWidget {
     this.commentNumber = 0,
     this.shareNumber = 0,
     required this.timeStamp,
-    this.isHomePage = false,
+    this.isHomePage = true,
     super.key,
   });
 
@@ -122,7 +122,7 @@ class _PostState extends State<Post> {
                         timeStamp: widget.timeStamp,
                         isHomePage: false,
                       )
-                    ), //replace with post page
+                    ), //replace with post and comment page
                   );
                 }
                 : null,
@@ -184,7 +184,7 @@ class _PostState extends State<Post> {
                         timeStamp: widget.timeStamp,
                         isHomePage: false,
                       )
-                    ), //replace with post page
+                    ), //replace with post and comment page
                   );
                 }
                 : null,
