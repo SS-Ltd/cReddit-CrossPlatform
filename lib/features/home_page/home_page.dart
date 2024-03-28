@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/post/post.dart';
+import 'package:reddit_clone/post.dart';
 import 'package:reddit_clone/rightsidebar.dart';
 
 class HomePage extends StatelessWidget {

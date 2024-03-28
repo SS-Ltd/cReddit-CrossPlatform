@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'dart:async';
 import 'new_page.dart';
 
@@ -19,10 +20,10 @@ class Post extends StatefulWidget {
     required this.title,
     required this.imageUrl,
     required this.content,
-    required this.commentNumber,
-    required this.shareNumber,
+    this.commentNumber = 0,
+    this.shareNumber = 0,
     required this.timeStamp,
-    required this.isHomePage,
+    this.isHomePage = false,
     super.key,
   });
 
@@ -222,7 +223,12 @@ class _PostState extends State<Post> {
                   icon: const Icon(Icons.add_comment), 
                   //other icon: add_comment,comment
                   onPressed: () {
-                    // navigate to add comment page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CommentPage(), 
+                      ),
+                    );
                   },
                 ),
                 Text(widget.commentNumber.toString()),
