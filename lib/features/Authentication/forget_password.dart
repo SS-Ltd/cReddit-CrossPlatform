@@ -37,23 +37,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     }
   }
 
-  int isValidEmail(String input) {
-    final RegExp emailRegex = RegExp(
-      r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
-    );
-
-    final RegExp usernameRegex = RegExp(
-      r'^[a-zA-Z0-9_-]*$',
-    );
-
-    if (input.isEmpty) {
-      return -1;
-    } else if (emailRegex.hasMatch(input) || usernameRegex.hasMatch(input)) {
-      return 1;
-    } else {
-      return -1;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,5 +233,23 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         ),
       ),
     );
+  }
+}
+
+int isValidEmail(String input) {
+  final RegExp emailRegex = RegExp(
+    r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
+  );
+
+  final RegExp usernameRegex = RegExp(
+    r'^[a-zA-Z0-9_-]*$',
+  );
+
+  if (input.isEmpty) {
+    return -1;
+  } else if (emailRegex.hasMatch(input) || usernameRegex.hasMatch(input)) {
+    return 1;
+  } else {
+    return -1;
   }
 }
