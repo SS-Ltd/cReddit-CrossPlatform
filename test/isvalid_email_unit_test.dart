@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reddit_clone/forget_password.dart';
+import 'package:reddit_clone/features/Authentication/forget_password.dart';
 
 void main() {
   

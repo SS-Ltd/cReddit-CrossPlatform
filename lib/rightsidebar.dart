@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/create_community_page.dart';
+import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 
 class Rightsidebar extends StatefulWidget {
