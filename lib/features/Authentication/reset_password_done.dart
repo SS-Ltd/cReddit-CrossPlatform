@@ -3,7 +3,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
-import 'package:android_intent_plus/android_intent.dart';
 import 'package:logging/logging.dart';
 
 class ResetPasswordDone extends StatefulWidget {
@@ -176,16 +175,16 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                       onPressed: () async {
                         final Logger logger = Logger('ResetPasswordDone');
 
-                        if (Platform.isAndroid) {
-                          AndroidIntent intent = const AndroidIntent(
-                            action: 'android.intent.action.MAIN',
-                            package: 'com.google.android.gm',
-                            category: 'android.intent.category.LAUNCHER',
-                          );
-                          intent.launch().catchError((e) {
-                            logger.severe("Error opening Gmail app: $e");
-                          });
-                        }
+                        // if (Platform.isAndroid) {
+                        //   AndroidIntent intent = const AndroidIntent(
+                        //     action: 'android.intent.action.MAIN',
+                        //     package: 'com.google.android.gm',
+                        //     category: 'android.intent.category.LAUNCHER',
+                        //   );
+                        //   intent.launch().catchError((e) {
+                        //     logger.severe("Error opening Gmail app: $e");
+                        //   });
+                        // }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepOrange,

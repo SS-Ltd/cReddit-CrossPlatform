@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'dart:async';
-import 'new_page.dart';
+import '../../new_page.dart';
 import 'post_comment.dart';
 
 

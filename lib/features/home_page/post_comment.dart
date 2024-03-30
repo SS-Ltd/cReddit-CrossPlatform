@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/post.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 
 
@@ -25,13 +25,8 @@ class PostComment extends StatelessWidget {
         ],
       ),
       body: 
-        // ListView.builder(
-        // itemBuilder: (context, index) {
-        //   return mockPost();
-        // },
         mockPost(),
-
-      // ),
+        
     );
   }
 }
