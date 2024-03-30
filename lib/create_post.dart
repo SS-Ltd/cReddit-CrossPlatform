@@ -39,38 +39,59 @@ class _CreatePostState extends State<CreatePost> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: _istitleempty ? 'Title' : '',
-                    labelStyle: const TextStyle(fontSize: 30),
-                    border: InputBorder.none,
-                  ),
-                  controller: _titleController,
-                  onChanged: (text) {
-                    setState(() {
-                      _istitleempty = text.isEmpty;
-                    });
-                  },
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: _istitleempty ? 'Title' : '',
+                  labelStyle: const TextStyle(fontSize: 30),
+                  border: InputBorder.none,
                 ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: _isbodyempty ? 'body text (optional)' : '',
-                    border: InputBorder.none,
-                  ),
-                  controller: _bodyController,
-                  onChanged: (text) {
-                    setState(
-                      () {
-                        _isbodyempty = text.isEmpty;
-                      },
-                    );
-                  },
+                controller: _titleController,
+                onChanged: (text) {
+                  setState(() {
+                    _istitleempty = text.isEmpty;
+                  });
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: _isbodyempty ? 'body text (optional)' : '',
+                  border: InputBorder.none,
                 ),
-              ],
-            )),
+                controller: _bodyController,
+                onChanged: (text) {
+                  setState(
+                    () {
+                      _isbodyempty = text.isEmpty;
+                    },
+                  );
+                },
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.link),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.image),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.video_library_outlined),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.poll_outlined),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
