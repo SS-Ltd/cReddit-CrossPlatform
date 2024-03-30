@@ -18,9 +18,6 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Comments'),
-      ),
       body: ListView.builder(
         itemCount: _comments.length,
         itemBuilder: (context, index) => UserComment(
