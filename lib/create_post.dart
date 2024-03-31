@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/community_choice.dart';
 
+//This Screen is now used to create a post
+//We can use it either to create a post from Home Screen and post to comminity
+//or to create a post from Profile Screen and post to profile
+
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key, required this.profile});
 
