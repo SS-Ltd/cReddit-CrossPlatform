@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/community_choice.dart';
 
 class CreatePost extends StatefulWidget {
-  const CreatePost({super.key});
+  const CreatePost({super.key, required this.profile});
+
+  final bool profile;
 
   @override
   State<CreatePost> createState() {
@@ -29,10 +32,26 @@ class _CreatePostState extends State<CreatePost> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text('Next'),
-            ),
+            child: widget.profile
+                ? ElevatedButton(
+                    onPressed: () {},
+                    //in this case we will add the post to the profile
+                    child: const Text('Post'),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => const CommunityChoice(),
+                        ),
+                      );
+                    },
+                    //in this case we will go to choose the community
+                    //then add the post to the subreddit
+                    child: const Text('Next'),
+                  ),
           ),
         ],
         title: const Text(''),

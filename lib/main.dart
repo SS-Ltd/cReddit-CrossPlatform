@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     Logger.getLogger().d('MyApp build');
     return const MaterialApp(
       title: 'Flutter Demo',
-      home: CreatePost(),
+      home: CreatePost(profile: true,),
     );
   }
 }
