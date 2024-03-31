@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:reddit_clone/common/logger.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/theme/theme.dart';
 
 void main() {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: HomePage(),
     );
   }
 }

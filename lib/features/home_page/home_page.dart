@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/post/post.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  dynamic shownvalue = 'Home';
+  List<String> list = ['Home', 'Popular'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //another method is to make it as a leading with icon button and this icon button opens the drawer
+      drawer: Drawer(),
         appBar: AppBar(
-          leading: const Icon(Icons.menu, size: 30.0),
-          //title: todo add drop down menu here
-          //the title parameter can be used to add a drop down menu
+          title: TextButton(
+              onPressed: () {},
+              child: Row(
+                children: [Text('asdasd'), Icon(Icons.keyboard_arrow_down)],
+              )),
           actions: [
             IconButton(
               onPressed: () {},
@@ -43,3 +55,16 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+// DropdownButton(
+//             value: shownvalue,
+//             icon: const Icon(Icons.arrow_downward),
+//             onChanged: (value) {
+//               setState(() {
+//                 shownvalue = value;
+//               });
+//             },
+//             items: list.map<DropdownMenuItem<String>>((String value) {
+//               return DropdownMenuItem<String>(value: value, child: Text(value));
+//             }).toList(),
+//           ),
