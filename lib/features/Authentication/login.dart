@@ -127,6 +127,9 @@ class LoginScreen extends StatelessWidget {
                       .read<NetworkService>()
                       .login(emailController.text, passwordController.text);
                   final user = context.read<NetworkService>().user;
+
+                  final settingsData =
+                      await context.read<NetworkService>().getUserSettings();
                   if (user != null && user.isLoggedIn) {
                     Navigator.push(
                       context,

@@ -49,6 +49,46 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> forgotPassword(String username, String email) async {
+    final url = Uri.parse('$_baseUrl/forgot-password');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'email': email,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> createUser(
+      String username, String email, String password, String gender) async {
+    final url = Uri.parse(_baseUrl);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'username': username,
+        'email': email,
+        'password': password,
+        'gender': gender,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to create user: ${response.body}');
+      return false;
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
