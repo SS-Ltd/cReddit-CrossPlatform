@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/forget_password.dart';
-import 'package:reddit_clone/theme/pallete.dart';
+import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'package:flutter/gestures.dart';

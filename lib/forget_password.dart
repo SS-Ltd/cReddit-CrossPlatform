@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'reset_password_done.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
-
+import 'theme/palette.dart';
 //import 'package:flutter_linkify/flutter_linkify.dart';
 
 class ForgetPassword extends StatefulWidget {
@@ -81,7 +81,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                 text: TextSpan(
                   text: 'Help',
                   style: DefaultTextStyle.of(context).style.copyWith(
-                        color: Colors.grey,
+                        color: Palette.greyColor,
                         fontSize: 14.0,
                       ),
                   recognizer: TapGestureRecognizer()
@@ -120,8 +120,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                       'Enter your email address or username and we\'ll '
                       'send you a link to reset your password',
                       style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 107, 106, 106)),
+                          fontSize: 16, color: Palette.redditDarkGrey),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -138,12 +137,14 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Palette.redditLightGrey,
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: emailController.text.isEmpty
-                                ? Colors.grey
-                                : (isValid == 1 ? Colors.green : Colors.red),
+                                ? Palette.greyColor
+                                : (isValid == 1
+                                    ? Palette.greenColor
+                                    : Palette.redColor),
                             width: 1.5,
                           ),
                         ),
@@ -168,11 +169,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                           // If the text is valid,
                                           // show the green icon
                                           ? const Icon(Icons.check_sharp,
-                                              color: Colors.green)
+                                              color: Palette.greenColor)
                                           // If the text is not valid,
                                           // show the red icon
                                           : const Icon(Icons.error_outline,
-                                              color: Colors.red),
+                                              color: Palette.redColor),
                                       IconButton(
                                         onPressed: () {
                                           emailController.clear();
@@ -195,7 +196,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             child: Text(
                               'Not a valid email address',
                               style: TextStyle(
-                                color: Colors.red,
+                                color: Palette.redColor,
                                 fontSize: 12,
                               ),
                             ),
@@ -226,10 +227,12 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 }
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                isValid == 1 ? Colors.deepOrange : Colors.grey,
-                            foregroundColor:
-                                isValid == 1 ? Colors.white : Colors.black,
+                            backgroundColor: isValid == 1
+                                ? Palette.deepOrangeColor
+                                : Palette.greyColor,
+                            foregroundColor: isValid == 1
+                                ? Palette.whiteColor
+                                : Palette.blackColor,
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),

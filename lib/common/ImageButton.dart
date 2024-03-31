@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/theme/pallete.dart';
+import 'package:reddit_clone/theme/palette.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ImageButton extends StatelessWidget {

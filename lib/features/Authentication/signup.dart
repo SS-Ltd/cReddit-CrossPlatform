@@ -3,7 +3,7 @@ import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
-import 'package:reddit_clone/theme/pallete.dart';
+import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:flutter/gestures.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';

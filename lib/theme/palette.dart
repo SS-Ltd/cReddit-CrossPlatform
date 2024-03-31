@@ -15,4 +15,7 @@ class Palette {
   static const Color whiteColor = Colors.white;
   static const Color greyColor = Colors.grey;
   static const Color redColor = Color.fromRGBO(249, 25, 127, 1);
+  static const Color greenColor = Color.fromRGBO(0, 204, 24, 1);
+  static const Color blackColor = Colors.black;
+  static const Color deepOrangeColor = Colors.deepOrange;
 }
