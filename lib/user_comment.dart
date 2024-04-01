@@ -45,90 +45,6 @@ class UserCommentState extends State<UserComment> {
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
 
-  void showOverlay(BuildContext context, UserComment card) {
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: 8,
-        right: 8,
-        bottom: MediaQuery.of(context).size.height * 0.46,
-        child: Material(
-          color: Colors.transparent,
-          child: StaticCommentCard(
-            avatar: card.avatar,
-            username: card.username,
-            timestamp: card.timestamp,
-            content: card.content,
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(overlayEntry);
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
-      builder: (context) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.share_outlined),
-              title: const Text('Share'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.save_alt),
-              title: const Text('Save'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications_outlined),
-              title: const Text('Get reply notification'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.copy_outlined),
-              title: const Text('Copy text'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.merge_type_outlined),
-              title: const Text('Collapse thread'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.block_outlined),
-              title: const Text('Block account'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.flag_outlined),
-              title: const Text('Report'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry.remove();
-    });
-  }
-
   void _addReply() async {
     final replyText = await Navigator.push(
       context,
@@ -330,3 +246,87 @@ String formatTimestamp(DateTime timestamp) {
     return '${difference.inSeconds}s';
   }
 }
+
+void showOverlay(BuildContext context, UserComment card) {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: 8,
+        right: 8,
+        bottom: MediaQuery.of(context).size.height * 0.46,
+        child: Material(
+          color: Colors.transparent,
+          child: StaticCommentCard(
+            avatar: card.avatar,
+            username: card.username,
+            timestamp: card.timestamp,
+            content: card.content,
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(overlayEntry);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+      builder: (context) {
+        return Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.share_outlined),
+              title: const Text('Share'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.save_alt),
+              title: const Text('Save'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.notifications_outlined),
+              title: const Text('Get reply notification'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.copy_outlined),
+              title: const Text('Copy text'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.merge_type_outlined),
+              title: const Text('Collapse thread'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.block_outlined),
+              title: const Text('Block account'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.flag_outlined),
+              title: const Text('Report'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      // Remove the overlay entry after the modal bottom sheet is dismissed
+      overlayEntry.remove();
+    });
+  }

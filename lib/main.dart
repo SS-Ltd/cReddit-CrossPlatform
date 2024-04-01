@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/comment_page.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/theme/theme.dart';
 
@@ -14,14 +15,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Create a community',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Palette.redditBackground),
-        dividerTheme: const DividerThemeData(
-          color: Colors.transparent,
-        ),
-        useMaterial3: true,
-      ),
-      home: LoginScreen(),
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: Palette.redditBackground),
+      //   dividerTheme: const DividerThemeData(
+      //     color: Colors.transparent,
+      //   ),
+      //   useMaterial3: true,
+      // ),
+      theme: ThemeData.dark(),
+      // home: LoginScreen(),
+      home: const CommentPage(),
     );
   }
 }
