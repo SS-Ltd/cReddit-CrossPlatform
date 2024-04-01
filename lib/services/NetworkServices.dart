@@ -96,8 +96,19 @@ class NetworkService extends ChangeNotifier {
 
   Future<void> refreshToken() async {
     Uri url = Uri.parse('$_baseUrl/refresh-token');
-    final response = await http.get(url, headers: _headers);
-    print(_headers);
+
+    // Extract refreshToken from _headers['Cookie']
+    String? rawCookie = _headers['Cookie'];
+    String refreshToken = '';
+    if (rawCookie != null) {
+      refreshToken = rawCookie.split(',').firstWhere(
+          (element) => element.contains('refreshToken'),
+          orElse: () => '');
+    }
+
+    final response = await http.get(url, headers: {'Cookie': refreshToken});
+    print("alo?");
+    print(_headers['Cookie']);
     if (response.statusCode == 200) {
       _updateCookie(response);
       print('Token refreshed successfully. New Cookie: $_cookie');
