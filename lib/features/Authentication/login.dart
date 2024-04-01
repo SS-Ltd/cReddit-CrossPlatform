@@ -130,6 +130,9 @@ class LoginScreen extends StatelessWidget {
 
                   final settingsData =
                       await context.read<NetworkService>().getUserSettings();
+
+                  final settings = context.read<NetworkService>().userSettings;
+                  print(settings?.account.email);
                   if (user != null && user.isLoggedIn) {
                     Navigator.push(
                       context,

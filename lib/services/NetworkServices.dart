@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/models/user_settings.dart';
 
 class NetworkService extends ChangeNotifier {
   static final NetworkService _instance = NetworkService._internal();
@@ -14,6 +15,8 @@ class NetworkService extends ChangeNotifier {
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
+  UserSettings? _userSettings;
+  UserSettings? get userSettings => _userSettings;
 
   Future<void> login(String username, String password) async {
     print('Logging in...');
@@ -43,7 +46,9 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/settings');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 200) {
-      print('User Settings: ${response.body}');
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      _userSettings = UserSettings.fromJson(json);
+      notifyListeners(); // Notify listeners to update UI or other components listening to changes
     } else {
       print('Failed to fetch user settings: ${response.body}');
     }

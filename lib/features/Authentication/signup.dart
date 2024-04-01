@@ -93,7 +93,7 @@ class SignUpScreen extends StatelessWidget {
                     return;
                   }
                   bool signup = await context.read<NetworkService>().createUser(
-                      "darwish2003",
+                      "osama2001",
                       emailController.text,
                       passwordController.text,
                       "Man");
