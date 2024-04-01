@@ -148,7 +148,8 @@ class _RightsidebarState extends State<Rightsidebar> {
                   _buildListTile(
                       icon: Icons.group_add,
                       text: 'Create a Community',
-                      onTap: () {
+                      onTap: () async {
+                        await context.read<NetworkService>().refreshToken();
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -94,6 +94,18 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<void> refreshToken() async {
+    Uri url = Uri.parse('$_baseUrl/refresh-token');
+    final response = await http.get(url, headers: _headers);
+    print(_headers);
+    if (response.statusCode == 200) {
+      _updateCookie(response);
+      print('Token refreshed successfully. New Cookie: $_cookie');
+    } else {
+      print('Failed to refresh token: ${response.body}');
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
