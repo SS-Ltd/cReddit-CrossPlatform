@@ -122,7 +122,7 @@ class _CommentPageState extends State<CommentPage> {
                       _comments.add(UserComment(
                         avatar: 'assets/MonkeyDLuffy.png',
                         username: 'User123',
-                        content: 'ana zh222t',
+                        content: '',
                         timestamp: DateTime.now(),
                         photo: commentImage,
                         contentType: contentType,

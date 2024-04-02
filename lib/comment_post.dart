@@ -123,26 +123,23 @@ class _CommentPostPageState extends State<CommentPostPage> {
               ),
             ),
             const Divider(color: Colors.grey, thickness: 0.15),
-            SizedBox(
-              height: 25,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  if (_image != null)
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        setState(() {
-                          _image = null;
-                        });
-                      },
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                if (_image != null)
                   IconButton(
-                    icon: const Icon(Icons.insert_photo_outlined),
-                    onPressed: _isTextFieldFilled ? null : getImage,
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        _image = null;
+                      });
+                    },
                   ),
-                ],
-              ),
+                IconButton(
+                  icon: const Icon(Icons.insert_photo_outlined),
+                  onPressed: _isTextFieldFilled ? null : getImage,
+                ),
+              ],
             ),
           ],
         ),

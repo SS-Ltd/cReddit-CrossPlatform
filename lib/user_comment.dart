@@ -92,7 +92,6 @@ class UserCommentState extends State<UserComment> {
   @override
   void initState() {
     super.initState();
-
     isMinimized = ValueNotifier<bool>(false);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -124,12 +123,13 @@ class UserCommentState extends State<UserComment> {
                 color: const Color.fromARGB(255, 12, 12, 12),
                 shape: Border.all(),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 7, 12, 0),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
+                          const SizedBox(height: 60),
                           GestureDetector(
                             onTap: () {
                               // will be replaced with redirecting to user
@@ -137,6 +137,7 @@ class UserCommentState extends State<UserComment> {
                             },
                             child: CircleAvatar(
                               backgroundImage: AssetImage(widget.avatar),
+                              //radius: 18,
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -163,15 +164,15 @@ class UserCommentState extends State<UserComment> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: SizedBox(
-                                height: 60,
+                                height: 50,
                                 child: widget.contentType == false
-                                    ? Center(
+                                    ? Align(
+                                        alignment: Alignment.centerLeft,
                                         child: Text(
                                           widget.content.split('\n')[0],
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontSize: 12, color: Colors.grey),
-                                          textAlign: TextAlign.center,
                                         ),
                                       )
                                     : widget.contentType == true
@@ -220,7 +221,20 @@ class UserCommentState extends State<UserComment> {
                             IconButton(
                               icon: const Icon(Icons.arrow_upward),
                               onPressed: () {
-                                if (hasVoted != 1) {
+                                if(hasVoted == 1)
+                                {
+                                  setState(() {
+                                    votes--;
+                                    hasVoted = 0;
+                                  });
+                                }
+                                else if (hasVoted == -1) {
+                                  setState(() {
+                                    votes += 2;
+                                    hasVoted = 1;
+                                  });
+                                }
+                                else if (hasVoted != 1) {
                                   setState(() {
                                     votes++;
                                     hasVoted = 1;
@@ -228,10 +242,24 @@ class UserCommentState extends State<UserComment> {
                                 }
                               },
                             ),
-                            Text('$votes'),
+                            Text(votes == 0 ? 'Vote' : '$votes'),
                             IconButton(
                               icon: const Icon(Icons.arrow_downward),
                               onPressed: () {
+                                if(hasVoted == -1)
+                                {
+                                  setState(() {
+                                    votes++;
+                                    hasVoted = 0;
+                                  });
+                                }
+                                else if (hasVoted == 1) {
+                                  setState(() {
+                                    votes -= 2;
+                                    hasVoted = -1;
+                                  });
+                                }
+                                else
                                 if (hasVoted != -1) {
                                   setState(() {
                                     votes--;
