@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
 
 import 'package:reddit_clone/models/user.dart';
@@ -11,7 +12,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  String _baseUrl = 'http://10.0.2.2:3000/user';
+  String _baseUrl = 'http://10.0.2.2:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -20,7 +21,7 @@ class NetworkService extends ChangeNotifier {
 
   Future<void> login(String username, String password) async {
     print('Logging in...');
-    Uri url = Uri.parse('$_baseUrl/login');
+    Uri url = Uri.parse('$_baseUrl/user/login');
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username, 'password': password}));
@@ -37,13 +38,13 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    Uri url = Uri.parse('$_baseUrl/logout');
+    Uri url = Uri.parse('$_baseUrl/user/logout');
     final response = await http.get(url, headers: _headers);
     print('Logged out: ${response.body}');
   }
 
   Future<void> getUserSettings() async {
-    Uri url = Uri.parse('$_baseUrl/settings');
+    Uri url = Uri.parse('$_baseUrl/user/settings');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
@@ -55,7 +56,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<bool> forgotPassword(String username, String email) async {
-    final url = Uri.parse('$_baseUrl/forgot-password');
+    final url = Uri.parse('$_baseUrl/user/forgot-password');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -74,7 +75,7 @@ class NetworkService extends ChangeNotifier {
 
   Future<bool> createUser(
       String username, String email, String password, String gender) async {
-    final url = Uri.parse(_baseUrl);
+    final url = Uri.parse('$_baseUrl/user');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -95,7 +96,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<void> refreshToken() async {
-    Uri url = Uri.parse('$_baseUrl/refresh-token');
+    Uri url = Uri.parse('$_baseUrl/user/refresh-token');
 
     // Extract refreshToken from _headers['Cookie']
     String? rawCookie = _headers['Cookie'];
@@ -114,6 +115,51 @@ class NetworkService extends ChangeNotifier {
       print('Token refreshed successfully. New Cookie: $_cookie');
     } else {
       print('Failed to refresh token: ${response.body}');
+    }
+  }
+
+  Future<bool> createCommunity(String name, bool isNSFW) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'name': name,
+        'isNSFW': isNSFW,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to create community: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> isSubredditNameAvailable(String name) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/is-name-available/$name');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final body = jsonDecode(response.body);
+      return body['available'] ?? false;
+    } else {
+      // Handle error or assume name is not available
+      return false;
+    }
+  }
+
+  Future<Subreddit?> getSubredditDetails(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return Subreddit.fromJson(json);
+    } else {
+      // Failed to fetch details or handle specific error
+      return null;
     }
   }
 
