@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/subreddit_page.dart';
 
 class CreateCommunityPage extends StatefulWidget {
   const CreateCommunityPage({super.key});
@@ -271,10 +272,10 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     final isNSFW = _is18Plus;
     final success = await networkService.createCommunity(subredditName, isNSFW);
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Community created successfully'),
-        ),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SubRedditPage(subredditName: subredditName)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

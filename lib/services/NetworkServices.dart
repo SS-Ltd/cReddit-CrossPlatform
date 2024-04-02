@@ -155,6 +155,7 @@ class NetworkService extends ChangeNotifier {
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
+      print(response.body);
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
     } else {

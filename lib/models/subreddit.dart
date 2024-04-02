@@ -1,7 +1,7 @@
 class Subreddit {
   final String name;
   final String icon;
-  final String banner;
+  final String? banner;
   final int members;
   final List<String> rules;
   final List<String> moderators;
