@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
+import 'theme/palette.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;
@@ -45,7 +46,7 @@ class LinePainter extends CustomPainter {
 
 class UserCommentState extends State<UserComment> {
   int votes = 0;
-  int hasVoted = 0;
+  ValueNotifier<int> hasVoted = ValueNotifier<int>(0);
   Timer? _timer;
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
@@ -90,30 +91,30 @@ class UserCommentState extends State<UserComment> {
   }
 
   void updateUpVote() {
-    if (hasVoted == 1) {
+    if (hasVoted.value == 1) {
       votes--;
-      hasVoted = 0;
-    } else if (hasVoted == -1) {
+      hasVoted.value = 0;
+    } else if (hasVoted.value == -1) {
       votes += 2;
-      hasVoted = 1;
-    } else if (hasVoted != 1) {
+      hasVoted.value = 1;
+    } else if (hasVoted.value != 1) {
       votes++;
-      hasVoted = 1;
+      hasVoted.value = 1;
     }
-}
+  }
 
   void updateDownVote() {
-    if (hasVoted == -1) {
+    if (hasVoted.value == -1) {
       votes++;
-      hasVoted = 0;
-    } else if (hasVoted == 1) {
+      hasVoted.value = 0;
+    } else if (hasVoted.value == 1) {
       votes -= 2;
-      hasVoted = -1;
-    } else if (hasVoted != -1) {
+      hasVoted.value = -1;
+    } else if (hasVoted.value != -1) {
       votes--;
-      hasVoted = -1;
+      hasVoted.value = -1;
     }
-}
+  }
 
   @override
   void initState() {
@@ -244,22 +245,52 @@ class UserCommentState extends State<UserComment> {
                               icon: const Icon(Icons.reply_sharp),
                               onPressed: _addReply,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_upward),
-                              onPressed: () {
-                                setState(() {
-                                  updateUpVote();
-                                });
+                            ValueListenableBuilder<int>(
+                              valueListenable: hasVoted,
+                              builder: (context, value, child) {
+                                return IconButton(
+                                  icon: Icon(Icons.arrow_upward,
+                                      color: value == 1
+                                          ? Palette.upvoteOrange
+                                          : Palette.greyColor),
+                                  onPressed: () {
+                                    setState(() {
+                                      updateUpVote();
+                                    });
+                                  },
+                                );
                               },
                             ),
-                            Text(votes == 0 ? 'Vote' : '$votes'),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_downward),
-                              onPressed: () {
-                                setState(() {
-                                  updateDownVote();
-
-                                });
+                            ValueListenableBuilder<int>(
+                              valueListenable: hasVoted,
+                              builder: (context, value, child) {
+                                return Text(
+                                  votes == 0 ? 'Vote' : '$votes',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                      color: value == 1
+                                          ? Palette.upvoteOrange
+                                          : value == -1
+                                              ? Palette.downvoteBlue
+                                              : Palette.greyColor),
+                                );
+                              },
+                            ),
+                            ValueListenableBuilder<int>(
+                              valueListenable: hasVoted,
+                              builder: (context, value, child) {
+                                return IconButton(
+                                  icon: Icon(Icons.arrow_downward,
+                                      color: value == -1
+                                          ? Palette.downvoteBlue
+                                          : Palette.greyColor),
+                                  onPressed: () {
+                                    setState(() {
+                                      updateDownVote();
+                                    });
+                                  },
+                                );
                               },
                             ),
                           ],
@@ -296,8 +327,6 @@ class UserCommentState extends State<UserComment> {
     );
   }
 }
-
-
 
 String formatTimestamp(DateTime timestamp) {
   final now = DateTime.now();
