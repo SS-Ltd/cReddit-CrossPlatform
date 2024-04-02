@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
-import 'dart:convert';
+import 'package:provider/provider.dart';
+
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CreateCommunityPage extends StatefulWidget {
   const CreateCommunityPage({super.key});
@@ -21,48 +21,6 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       'Anyone can view, post, and comment to this community.';
   bool _is18Plus = false;
 
-  Future<http.Client> createMockHttpClient() async {
-    return MockClient((request) async {
-      final uri = request.url;
-      final path = uri.path;
-      // Simulate a check for existing subreddit
-      if (path.contains('/subreddit/') && request.method == 'GET') {
-        final subredditName = path.split('/').last;
-        if (subredditName.toLowerCase() == 'creddit_sw_project') {
-          // Simulate subreddit exists with detailed information
-          return http.Response(
-              jsonEncode({
-                "profilePicture": "drive.creddit.com/test",
-                "mods": ["SlaxSplash", "Baroudy 14", "No_Animator_8210"],
-                "members": 1000,
-                "name": "r/cReddit_SW_Project",
-                "banner": "drive.creddit.com/test",
-                "rules": ["Rule 1", "Rule 2", "Rule 3"],
-              }),
-              200);
-        } else {
-          // Simulate subreddit does not exist
-          return http.Response(
-              jsonEncode({"message": "Subreddit does not exist"}), 404);
-        }
-      } else if (path == '/subreddit' && request.method == 'POST') {
-        final requestBody = json.decode(request.body);
-        if (requestBody['name'].toLowerCase() != 'creddit_sw_project') {
-          // Simulate successful community creation
-          //if the name isn't "creddit_sw_project"
-          return http.Response(
-              jsonEncode({"message": "Community created successfully"}), 200);
-        } else {
-          // Simulate failure to create community if the name is
-          //"creddit_sw_project" (since it already exists)
-          return http.Response(
-              jsonEncode({"message": "Subreddit already exists"}), 400);
-        }
-      }
-      return http.Response('Not Found', 404);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -71,18 +29,17 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
 
   void checkSubredditExistence() async {
     final subredditName = _communityNameController.text.trim();
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    subredditExists =
+        await networkService.isSubredditNameAvailable(subredditName);
+    subredditExists = !subredditExists;
     if (subredditName.isEmpty) {
       setState(() {
         subredditExists = false;
       });
       return;
     }
-    final http.Client mockClient = await createMockHttpClient();
-    final responseCheck =
-        await mockClient.get(Uri.parse('/subreddit/$subredditName'));
-    setState(() {
-      subredditExists = responseCheck.statusCode == 200;
-    });
+    setState(() {});
   }
 
   @override
@@ -265,9 +222,9 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                 ListTile(
                   leading: const Icon(Icons.lock),
                   title: const Text('Private'),
-                  subtitle: const Text(
-                      'Only approved users can view and submit '
-                      'to this community.'),
+                  subtitle:
+                      const Text('Only approved users can view and submit '
+                          'to this community.'),
                   onTap: () => _selectCommunityType('Private', context),
                 ),
               ],
@@ -309,31 +266,22 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
   }
 
   void _createCommunity() async {
-    final http.Client mockClient = await createMockHttpClient();
+    final networkService = Provider.of<NetworkService>(context, listen: false);
     final subredditName = _communityNameController.text.trim();
-
-    // Check if the subreddit exists
-    final responseCheck =
-        await mockClient.get(Uri.parse('/subreddit/$subredditName'));
-
-    if (responseCheck.statusCode == 200) {
-      // If the subreddit exists, print an error message to the console
-    } else if (responseCheck.statusCode == 404) {
-      // If the subreddit doesn't exist, try to create the community
-      final responseCreate = await mockClient.post(
-        Uri.parse('/subreddit'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'name': subredditName}),
+    final isNSFW = _is18Plus;
+    final success = await networkService.createCommunity(subredditName, isNSFW);
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Community created successfully'),
+        ),
       );
-
-      if (responseCreate.statusCode == 200) {
-        // If community creation is successful, 
-        //print success message to the console
-      } else {
-        // If community creation fails, print error message to the console
-      }
     } else {
-      // Handle other unexpected statuses
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to create community'),
+        ),
+      );
     }
   }
 }
