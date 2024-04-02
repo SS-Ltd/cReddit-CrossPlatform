@@ -1,10 +1,40 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class CommentPostPage extends StatelessWidget {
-  final _controller = TextEditingController();
+class CommentPostPage extends StatefulWidget {
   final String commentContent;
 
   CommentPostPage({required this.commentContent});
+
+  @override
+  _CommentPostPageState createState() => _CommentPostPageState();
+}
+
+class _CommentPostPageState extends State<CommentPostPage> {
+  File? _image;
+  final picker = ImagePicker();
+  final _controller = TextEditingController();
+
+  bool _isImagePickerOpen = false;
+  bool _isTextFieldFilled = false;
+  bool contentType = false; // false for text, true for image
+
+  Future getImage() async {
+    if (_isImagePickerOpen || _isTextFieldFilled) {
+      return;
+    }
+    _isImagePickerOpen = true;
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        _controller.clear();
+      }
+    });
+
+    _isImagePickerOpen = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,50 +53,95 @@ class CommentPostPage extends StatelessWidget {
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Post',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                )),
-            onPressed: () {
-              if (_controller.text.isNotEmpty) {
-                Navigator.pop(context, _controller.text);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Please enter a comment'),
-                    duration: const Duration(seconds: 3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+              child: const Text('Post',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  )),
+              onPressed: () {
+                if (_controller.text.isNotEmpty) {
+                  contentType = false; // Text is entered
+                  Navigator.pop(context, {
+                    'content': _controller.text,
+                    'contentType': contentType
+                  });
+                } else if (_image != null) {
+                  contentType = true; // Image is uploaded
+                  Navigator.pop(
+                      context, {'content': _image, 'contentType': contentType});
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Please enter a comment'),
+                      duration: const Duration(seconds: 3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      behavior: SnackBarBehavior.floating,
                     ),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-          ),
+                  );
+                }
+              }),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                commentContent,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.commentContent,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Divider(color: Colors.grey, thickness: 0.15),
+                    TextFormField(
+                      controller: _controller,
+                      autofocus: true,
+                      maxLines: null,
+                      onChanged: (text) {
+                        setState(() {
+                          _isTextFieldFilled = text.isNotEmpty;
+                        });
+                      },
+                      enabled: _image == null,
+                      decoration: InputDecoration(
+                        hintText: _image == null ? 'Your comment' : null,
+                        hintStyle: const TextStyle(fontSize: 16),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                    if (_image != null) Image.file(_image!),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 10),
             const Divider(color: Colors.grey, thickness: 0.15),
-            TextFormField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: 'Your comment',
-                hintStyle: TextStyle(
-                    fontSize: 16),
-                border: InputBorder.none,
+            SizedBox(
+              height: 25,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  if (_image != null)
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        setState(() {
+                          _image = null;
+                        });
+                      },
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.insert_photo_outlined),
+                    onPressed: _isTextFieldFilled ? null : getImage,
+                  ),
+                ],
               ),
             ),
           ],

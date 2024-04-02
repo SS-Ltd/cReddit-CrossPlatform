@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
@@ -9,15 +10,19 @@ class UserComment extends StatefulWidget {
   final String content;
   final int level;
   final DateTime timestamp;
+  final File? photo;
+  final bool contentType;
 
   const UserComment({
     super.key,
     // may be the required keyword need to be removed
     required this.avatar,
     required this.username,
-    required this.content,
+    this.content = '',
     this.level = 0,
     required this.timestamp,
+    this.photo,
+    required this.contentType,
   });
 
   @override
@@ -46,7 +51,7 @@ class UserCommentState extends State<UserComment> {
   late ValueNotifier<bool> isMinimized;
 
   void _addReply() async {
-    final replyText = await Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ReplyPage(
@@ -57,13 +62,30 @@ class UserCommentState extends State<UserComment> {
       ),
     );
 
-    if (replyText != null) {
-      replies.add(UserComment(
-        avatar: 'assets/MonkeyDLuffy.png',
-        username: 'User123',
-        content: replyText,
-        timestamp: DateTime.now(),
-      ));
+    if (result != null) {
+      final bool contentType = result['contentType'];
+
+      if (contentType == false) {
+        final String commentText = result['content'];
+        replies.add(UserComment(
+          avatar: 'assets/MonkeyDLuffy.png',
+          username: 'User123',
+          content: commentText,
+          timestamp: DateTime.now(),
+          photo: null,
+          contentType: contentType,
+        ));
+      } else if (contentType == true) {
+        final File commentImage = result['content'];
+        replies.add(UserComment(
+          avatar: 'assets/MonkeyDLuffy.png',
+          username: 'User123',
+          content: '',
+          timestamp: DateTime.now(),
+          photo: commentImage,
+          contentType: contentType,
+        ));
+      }
     }
   }
 
@@ -122,7 +144,6 @@ class UserCommentState extends State<UserComment> {
                             onTap: () {
                               // will be replaced with redirecting to user
                               showOverlay(context, widget);
-                              
                             },
                             child: Text(
                               widget.username,
@@ -141,11 +162,26 @@ class UserCommentState extends State<UserComment> {
                           if (isMinimized.value) ...[
                             const SizedBox(width: 10),
                             Expanded(
-                              child: Text(
-                                widget.content,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.grey),
+                              child: SizedBox(
+                                height: 60,
+                                child: widget.contentType == false
+                                    ? Center(
+                                        child: Text(
+                                          widget.content.split('\n')[0],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    : widget.contentType == true
+                                        ? Center(
+                                            child: Image.file(
+                                              widget.photo!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : Container(),
                               ),
                             ),
                           ],
@@ -153,13 +189,20 @@ class UserCommentState extends State<UserComment> {
                       ),
                       if (!isMinimized.value) ...[
                         const SizedBox(height: 10),
-                        Text(
-                          widget.content,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
+                        if (widget.contentType == false) ...[
+                          Text(
+                            widget.content,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
+                        ] else if (widget.contentType == true) ...[
+                          Image.file(
+                            widget.photo!,
+                            fit: BoxFit.cover,
+                          ),
+                        ],
                         const SizedBox(height: 5),
                         Row(
                           children: [
@@ -248,85 +291,85 @@ String formatTimestamp(DateTime timestamp) {
 }
 
 void showOverlay(BuildContext context, UserComment card) {
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: 8,
-        right: 8,
-        bottom: MediaQuery.of(context).size.height * 0.46,
-        child: Material(
-          color: Colors.transparent,
-          child: StaticCommentCard(
-            avatar: card.avatar,
-            username: card.username,
-            timestamp: card.timestamp,
-            content: card.content,
-          ),
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      left: 8,
+      right: 8,
+      bottom: MediaQuery.of(context).size.height * 0.46,
+      child: Material(
+        color: Colors.transparent,
+        child: StaticCommentCard(
+          avatar: card.avatar,
+          username: card.username,
+          timestamp: card.timestamp,
+          content: card.content,
         ),
       ),
-    );
+    ),
+  );
 
-    Overlay.of(context).insert(overlayEntry);
+  Overlay.of(context).insert(overlayEntry);
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
-      builder: (context) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.share_outlined),
-              title: const Text('Share'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.save_alt),
-              title: const Text('Save'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications_outlined),
-              title: const Text('Get reply notification'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.copy_outlined),
-              title: const Text('Copy text'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.merge_type_outlined),
-              title: const Text('Collapse thread'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.block_outlined),
-              title: const Text('Block account'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.flag_outlined),
-              title: const Text('Report'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry.remove();
-    });
-  }
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+    builder: (context) {
+      return Wrap(
+        children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.share_outlined),
+            title: const Text('Share'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.save_alt),
+            title: const Text('Save'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications_outlined),
+            title: const Text('Get reply notification'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.copy_outlined),
+            title: const Text('Copy text'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.merge_type_outlined),
+            title: const Text('Collapse thread'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.block_outlined),
+            title: const Text('Block account'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.flag_outlined),
+            title: const Text('Report'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    },
+  ).then((_) {
+    // Remove the overlay entry after the modal bottom sheet is dismissed
+    overlayEntry.remove();
+  });
+}

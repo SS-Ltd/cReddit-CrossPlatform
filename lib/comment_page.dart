@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/comment_post.dart';
 import 'package:reddit_clone/theme/palette.dart';
@@ -74,6 +76,8 @@ class _CommentPageState extends State<CommentPage> {
                   username: _comments[index].username,
                   content: _comments[index].content,
                   timestamp: _comments[index].timestamp,
+                  photo: _comments[index].photo,
+                  contentType: _comments[index].contentType,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -93,20 +97,37 @@ class _CommentPageState extends State<CommentPage> {
             Expanded(
               child: GestureDetector(
                 onTap: () async {
-                  final commentText = await Navigator.push(
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => CommentPostPage(
                             commentContent: 'Your comment content here')),
                   );
 
-                  if (commentText != null) {
-                    _comments.add(UserComment(
-                      avatar: 'assets/MonkeyDLuffy.png',
-                      username: 'User123',
-                      content: commentText,
-                      timestamp: DateTime.now(),
-                    ));
+                  if (result != null) {
+                    final bool contentType = result['contentType'];
+    
+                    if (contentType == false) {
+                      final String commentText = result['content'];
+                      _comments.add(UserComment(
+                        avatar: 'assets/MonkeyDLuffy.png',
+                        username: 'User123',
+                        content: commentText,
+                        timestamp: DateTime.now(),
+                        photo: null,
+                        contentType: contentType,
+                      ));
+                    } else if (contentType == true) {
+                      final File commentImage = result['content'];
+                      _comments.add(UserComment(
+                        avatar: 'assets/MonkeyDLuffy.png',
+                        username: 'User123',
+                        content: 'ana zh222t',
+                        timestamp: DateTime.now(),
+                        photo: commentImage,
+                        contentType: contentType,
+                      ));
+                    }
                     // Add a GlobalKey for the new comment
                     _keys.add(GlobalKey());
                     _calculateCommentPositions();
@@ -131,8 +152,7 @@ class _CommentPageState extends State<CommentPage> {
             const SizedBox(width: 10),
             Container(
               decoration: const BoxDecoration(
-                color: Color.fromARGB(
-                    255, 40, 39, 39),
+                color: Color.fromARGB(255, 40, 39, 39),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
