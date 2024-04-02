@@ -89,6 +89,32 @@ class UserCommentState extends State<UserComment> {
     }
   }
 
+  void updateUpVote() {
+    if (hasVoted == 1) {
+      votes--;
+      hasVoted = 0;
+    } else if (hasVoted == -1) {
+      votes += 2;
+      hasVoted = 1;
+    } else if (hasVoted != 1) {
+      votes++;
+      hasVoted = 1;
+    }
+}
+
+  void updateDownVote() {
+    if (hasVoted == -1) {
+      votes++;
+      hasVoted = 0;
+    } else if (hasVoted == 1) {
+      votes -= 2;
+      hasVoted = -1;
+    } else if (hasVoted != -1) {
+      votes--;
+      hasVoted = -1;
+    }
+}
+
   @override
   void initState() {
     super.initState();
@@ -221,51 +247,19 @@ class UserCommentState extends State<UserComment> {
                             IconButton(
                               icon: const Icon(Icons.arrow_upward),
                               onPressed: () {
-                                if(hasVoted == 1)
-                                {
-                                  setState(() {
-                                    votes--;
-                                    hasVoted = 0;
-                                  });
-                                }
-                                else if (hasVoted == -1) {
-                                  setState(() {
-                                    votes += 2;
-                                    hasVoted = 1;
-                                  });
-                                }
-                                else if (hasVoted != 1) {
-                                  setState(() {
-                                    votes++;
-                                    hasVoted = 1;
-                                  });
-                                }
+                                setState(() {
+                                  updateUpVote();
+                                });
                               },
                             ),
                             Text(votes == 0 ? 'Vote' : '$votes'),
                             IconButton(
                               icon: const Icon(Icons.arrow_downward),
                               onPressed: () {
-                                if(hasVoted == -1)
-                                {
-                                  setState(() {
-                                    votes++;
-                                    hasVoted = 0;
-                                  });
-                                }
-                                else if (hasVoted == 1) {
-                                  setState(() {
-                                    votes -= 2;
-                                    hasVoted = -1;
-                                  });
-                                }
-                                else
-                                if (hasVoted != -1) {
-                                  setState(() {
-                                    votes--;
-                                    hasVoted = -1;
-                                  });
-                                }
+                                setState(() {
+                                  updateDownVote();
+
+                                });
                               },
                             ),
                           ],
@@ -302,6 +296,8 @@ class UserCommentState extends State<UserComment> {
     );
   }
 }
+
+
 
 String formatTimestamp(DateTime timestamp) {
   final now = DateTime.now();
