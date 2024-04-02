@@ -20,7 +20,6 @@ class _CommentPageState extends State<CommentPage> {
   final ScrollController _scrollController = ScrollController();
   final List<GlobalKey> _keys = [];
   final List<double> _commentPositions = [];
-  //int _currentCommentIndex = 0;
 
   @override
   void initState() {
@@ -106,31 +105,33 @@ class _CommentPageState extends State<CommentPage> {
 
                   if (result != null) {
                     final bool contentType = result['contentType'];
-    
-                    if (contentType == false) {
-                      final String commentText = result['content'];
-                      _comments.add(UserComment(
-                        avatar: 'assets/MonkeyDLuffy.png',
-                        username: 'User123',
-                        content: commentText,
-                        timestamp: DateTime.now(),
-                        photo: null,
-                        contentType: contentType,
-                      ));
-                    } else if (contentType == true) {
-                      final File commentImage = result['content'];
-                      _comments.add(UserComment(
-                        avatar: 'assets/MonkeyDLuffy.png',
-                        username: 'User123',
-                        content: '',
-                        timestamp: DateTime.now(),
-                        photo: commentImage,
-                        contentType: contentType,
-                      ));
-                    }
-                    // Add a GlobalKey for the new comment
-                    _keys.add(GlobalKey());
-                    _calculateCommentPositions();
+
+                    setState(() {
+                      if (contentType == false) {
+                        final String commentText = result['content'];
+                        _comments.add(UserComment(
+                          avatar: 'assets/MonkeyDLuffy.png',
+                          username: 'User123',
+                          content: commentText,
+                          timestamp: DateTime.now(),
+                          photo: null,
+                          contentType: contentType,
+                        ));
+                      } else if (contentType == true) {
+                        final File commentImage = result['content'];
+                        _comments.add(UserComment(
+                          avatar: 'assets/MonkeyDLuffy.png',
+                          username: 'User123',
+                          content: '',
+                          timestamp: DateTime.now(),
+                          photo: commentImage,
+                          contentType: contentType,
+                        ));
+                      }
+                      // Add a GlobalKey for the new comment
+                      _keys.add(GlobalKey());
+                      _calculateCommentPositions();
+                    });
                   }
                 },
                 child: TextFormField(
