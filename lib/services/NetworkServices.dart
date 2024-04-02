@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
 
@@ -46,6 +47,7 @@ class NetworkService extends ChangeNotifier {
   Future<void> getUserSettings() async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     final response = await http.get(url, headers: _headers);
+    print(response.body);
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
@@ -155,11 +157,24 @@ class NetworkService extends ChangeNotifier {
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
-      print(response.body);
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
     } else {
       // Failed to fetch details or handle specific error
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> fetchPostsForSubreddit(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((postJson) => PostModel.fromJson(postJson))
+          .toList();
+    } else {
       return null;
     }
   }

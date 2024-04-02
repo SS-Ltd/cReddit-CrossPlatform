@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
+  List<PostModel> subredditPosts = [];
 
   String _subredditIcon = '';
   String _subredditBanner = 'https://picsum.photos/200/300';
@@ -29,6 +32,19 @@ class _SubRedditPageState extends State<SubRedditPage> {
   void initState() {
     super.initState();
     fetchSubredditDetails();
+    fetchPosts();
+  }
+
+  Future<void> fetchPosts() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final subredditName = widget.subredditName;
+    final posts = await networkService.fetchPostsForSubreddit(subredditName);
+
+    if (posts != null) {
+      setState(() {
+        subredditPosts = posts;
+      });
+    }
   }
 
   Future<void> fetchSubredditDetails() async {
@@ -37,6 +53,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
       setState(() {
+        print(details.icon);
         _subredditIcon = details.icon;
         _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
         //  _subredditDescription = details['description'];
@@ -81,22 +98,38 @@ class _SubRedditPageState extends State<SubRedditPage> {
             ),
           ),
           SliverToBoxAdapter(child: _sortingOptions()),
+          // Inside CustomScrollView
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(posts[index]),
-                  subtitle: const Text('Post Summary Here'),
-                  trailing: const Icon(Icons.comment),
-                  leading: const Icon(Icons.image),
-                  onTap: () {},
-                );
+                // Use the postWidget method to create a widget for each post
+                return postWidget(subredditPosts[index]);
               },
-              childCount: posts.length,
+              childCount: subredditPosts
+                  .length, // Set the count to the length of subredditPosts
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget postWidget(PostModel postModel) {
+    return Column(
+      children: [
+        Post(
+          communityName: postModel.communityName,
+          userName: postModel.username,
+          title: postModel.title,
+          imageUrl: '', // Assuming this is the image URL
+          content: postModel.content,
+          commentNumber: postModel.commentCount,
+          shareNumber: 0, // Adjust accordingly if your model includes this info
+          timeStamp: postModel.uploadDate,
+          isHomePage: true, // Adjust based on your design/requirements
+        ),
+        const Divider(height: 1, thickness: 1),
+      ],
     );
   }
 
@@ -160,6 +193,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   }
 
   Widget _subredditInfo() {
+    print('Subreddit Icon URL: $_subredditIcon');
     return Container(
       padding: const EdgeInsets.all(10),
       color: const Color.fromRGBO(27, 27, 27, 1),
@@ -168,7 +202,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
           Row(
             children: [
               CircleAvatar(
-                backgroundImage: NetworkImage(_subredditIcon),
+                backgroundImage: _subredditIcon.isNotEmpty
+                    ? NetworkImage(_subredditIcon)
+                    : NetworkImage('https://picsum.photos/200/300'),
                 radius: 25,
               ),
               const SizedBox(width: 10),

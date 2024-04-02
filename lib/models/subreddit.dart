@@ -16,12 +16,15 @@ class Subreddit {
   });
 
   factory Subreddit.fromJson(Map<String, dynamic> json) {
+    final List<String> rulesTexts = (json['rules'] as List).map((rule) {
+      return rule['text'] as String; // Assuming 'text' is always a string
+    }).toList();
     return Subreddit(
       name: json['name'],
       icon: json['icon'],
       banner: json['banner'],
       members: json['members'],
-      rules: List<String>.from(json['rules']),
+      rules: rulesTexts,
       moderators: List<String>.from(json['moderators']),
     );
   }

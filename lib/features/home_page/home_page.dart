@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/post/post.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/rightsidebar.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  HomePage({Key? key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -13,8 +13,6 @@ class HomePage extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(
         leading: const Icon(Icons.menu, size: 30.0),
-        //title: todo add drop down menu here
-        //the title parameter can be used to add a drop down menu
         actions: [
           IconButton(
             onPressed: () {},
@@ -28,28 +26,35 @@ class HomePage extends StatelessWidget {
       ),
       endDrawer: const Rightsidebar(),
       body: ListView.builder(
-        itemCount: 5, // replace with the number of Post widgets you have
+        itemCount: 5,
         itemBuilder: (context, index) {
-          return MockPost();
+          return mockPost();
         },
       ),
     );
   }
 
-  Container MockPost() {
-    return Container(
-      height: 550,
-      child: Post(
+  Widget mockPost() {
+    return Column(
+      children: [
+        Post(
           communityName: 'Entrepreneur',
           userName: 'throwaway123',
           title: 'Escaping corporate Hell and finding freedom',
           imageUrl:
-              'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+              // 'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+              '',
           content:
               'Man, let me have a  vent for a minute. Just got out of the shittiest '
               'gig ever – being a "marketing specialist" for the supposed big boys'
               ' over at Microsoft. Let me tell you, it was not bad.',
-          timeStamp: DateTime.now()),
+          commentNumber: 0,
+          shareNumber: 0,
+          timeStamp: DateTime.now(),
+          isHomePage: true,
+        ),
+        const Divider(height: 1, thickness: 1), // Add a thin horizontal line
+      ],
     );
   }
 }

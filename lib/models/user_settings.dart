@@ -65,6 +65,14 @@ class Profile {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
+    print(json['displayName']);
+    print(json['about']);
+    print(json['socialLinks']);
+    print(json['avatar']);
+    print(json['banner']);
+    print(json['isNSFW']);
+    print(json['allowFollow']);
+    print(json['isContentVisible']);
     List<SocialLink> socialLinks = (json['socialLinks'] as List)
         .map((socialLinkJson) => SocialLink.fromJson(socialLinkJson))
         .toList();
