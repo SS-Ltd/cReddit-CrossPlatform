@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/create_community_page.dart';
+import 'package:reddit_clone/features/history.dart';
+import 'package:reddit_clone/features/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
@@ -168,9 +170,29 @@ class _RightsidebarState extends State<Rightsidebar> {
                       text: 'Reddit Premium',
                       onTap: () {}),
                   _buildListTile(
-                      icon: Icons.bookmark_border, text: 'Saved', onTap: () {}),
+                    icon: Icons.bookmark_border,
+                    text: 'Saved',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavedPage(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildListTile(
-                      icon: Icons.history, text: 'History', onTap: () {}),
+                    icon: Icons.history,
+                    text: 'History',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HistoryPage(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildListTile(
                     icon: Icons.settings,
                     text: 'Settings',
