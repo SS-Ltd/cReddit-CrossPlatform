@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:reddit_clone/services/NetworkServices.dart';
-import 'package:reddit_clone/subreddit_page.dart';
+import 'package:reddit_clone/features/community/subreddit_page.dart';
 
 class CreateCommunityPage extends StatefulWidget {
   const CreateCommunityPage({super.key});
