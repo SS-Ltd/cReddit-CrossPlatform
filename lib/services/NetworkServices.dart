@@ -176,6 +176,34 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<PostModel>?> getSavedPosts() async {
+    final url = Uri.parse('$_baseUrl/user/saved');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      List<PostModel> posts =
+          jsonData.map((item) => PostModel.fromJson(item)).toList();
+      return posts;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> getUserHistory() async {
+    final url = Uri.parse('$_baseUrl/user/history');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      List<PostModel> posts =
+          jsonData.map((item) => PostModel.fromJson(item)).toList();
+      return posts;
+    } else {
+      return null;
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {

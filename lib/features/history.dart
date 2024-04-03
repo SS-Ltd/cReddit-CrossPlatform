@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -8,8 +12,23 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+  List<PostModel>? historyPosts;
   String currentSort = 'Recent';
   IconData currentIcon = Icons.access_time;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchHistory();
+  }
+
+  void fetchHistory() async {
+    final posts = await Provider.of<NetworkService>(context, listen: false)
+        .getUserHistory();
+    if (posts != null) {
+      setState(() => historyPosts = posts);
+    }
+  }
 
   void _showSortOptions() {
     showModalBottomSheet(
@@ -77,13 +96,37 @@ class _HistoryPageState extends State<HistoryPage> {
             onTap: _showSortOptions,
           ),
           Expanded(
-            child: Center(
-              child: Text('Content sorted by $currentSort',
-                  style: const TextStyle(color: Colors.white)),
-            ),
+            child: historyPosts == null
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: historyPosts!.length,
+                    itemBuilder: (context, index) {
+                      // Assuming you have a widget to display each post
+                      return postWidget(historyPosts![index]);
+                    },
+                  ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget postWidget(PostModel postModel) {
+    return Column(
+      children: [
+        Post(
+          communityName: postModel.communityName,
+          userName: postModel.username,
+          title: postModel.title,
+          imageUrl: '', // Assuming this is the image URL
+          content: postModel.content,
+          commentNumber: postModel.commentCount,
+          shareNumber: 0, // Adjust accordingly if your model includes this info
+          timeStamp: postModel.uploadDate,
+          isHomePage: true, // Adjust based on your design/requirements
+        ),
+        const Divider(height: 1, thickness: 1),
+      ],
     );
   }
 }
