@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
-import 'package:reddit_clone/inbox_page.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -16,7 +16,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   final List<Widget> _pages = [
     HomePage(),
-    InboxPage(),
+    const InboxNotificationPage(),
 
     // CommunitiesPage(),
     // CreatePage(),
