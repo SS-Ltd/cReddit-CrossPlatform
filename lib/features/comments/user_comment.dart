@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
-import 'theme/palette.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;

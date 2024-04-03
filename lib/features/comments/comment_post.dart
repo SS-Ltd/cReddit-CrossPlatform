@@ -5,10 +5,12 @@ import 'package:image_picker/image_picker.dart';
 class CommentPostPage extends StatefulWidget {
   final String commentContent;
 
-  CommentPostPage({super.key ,required this.commentContent});
+  const CommentPostPage({super.key, required this.commentContent});
 
   @override
-  _CommentPostPageState createState() => _CommentPostPageState();
+  State<CommentPostPage> createState() {
+    return _CommentPostPageState();
+  }
 }
 
 class _CommentPostPageState extends State<CommentPostPage> {

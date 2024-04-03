@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'user_comment.dart';
 
@@ -98,7 +98,7 @@ class _CommentPageState extends State<CommentPage> {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CommentPostPage(
+                        builder: (context) => const CommentPostPage(
                             commentContent: 'Your comment content here')),
                   );
 

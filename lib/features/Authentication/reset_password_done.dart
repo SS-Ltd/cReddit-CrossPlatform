@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:async';
+import 'package:reddit_clone/theme/palette.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
 
