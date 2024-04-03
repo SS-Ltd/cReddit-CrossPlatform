@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/features/Authentication/forget_password.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
@@ -119,13 +121,21 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 20),
             FullWidthButton(
               text: "Continue",
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CustomNavigationBar()),
-                  );
+                  await context
+                      .read<NetworkService>()
+                      .login(emailController.text, passwordController.text);
+                  final user = context.read<NetworkService>().user;
+
+                  if (user != null && user.isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CustomNavigationBar(),
+                      ),
+                    );
+                  }
                 }
               },
             ),

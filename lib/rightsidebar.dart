@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/history.dart';
+import 'package:reddit_clone/features/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -13,9 +17,9 @@ class Rightsidebar extends StatefulWidget {
 
 class _RightsidebarState extends State<Rightsidebar> {
   bool isOnline = false;
-
   @override
   Widget build(BuildContext context) {
+    final user = context.read<NetworkService>().user;
     return Drawer(
       child: Container(
         color: Colors.grey[900],
@@ -31,16 +35,16 @@ class _RightsidebarState extends State<Rightsidebar> {
                 ),
               ),
             ),
-            const Align(
+            Align(
               alignment: Alignment.center,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  "u/No_Significance_7222",
-                  style: TextStyle(
+                  'u/${user?.username ?? 'Username'}',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 22,
                   ),
                 ),
               ),
@@ -146,7 +150,8 @@ class _RightsidebarState extends State<Rightsidebar> {
                   _buildListTile(
                       icon: Icons.group_add,
                       text: 'Create a Community',
-                      onTap: () {
+                      onTap: () async {
+                        await context.read<NetworkService>().refreshToken();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -165,9 +170,29 @@ class _RightsidebarState extends State<Rightsidebar> {
                       text: 'Reddit Premium',
                       onTap: () {}),
                   _buildListTile(
-                      icon: Icons.bookmark_border, text: 'Saved', onTap: () {}),
+                    icon: Icons.bookmark_border,
+                    text: 'Saved',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavedPage(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildListTile(
-                      icon: Icons.history, text: 'History', onTap: () {}),
+                    icon: Icons.history,
+                    text: 'History',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HistoryPage(),
+                        ),
+                      );
+                    },
+                  ),
                   _buildListTile(
                     icon: Icons.settings,
                     text: 'Settings',

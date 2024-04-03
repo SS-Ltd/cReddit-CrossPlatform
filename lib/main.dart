@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => NetworkService(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

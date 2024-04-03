@@ -4,7 +4,6 @@ import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
 
-
 class Post extends StatefulWidget {
   final String communityName;
   final String userName;

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 
@@ -79,7 +81,30 @@ class SignUpScreen extends StatelessWidget {
             ),
             if (!isKeyboardOpen) const AgreementText(),
             const SizedBox(height: 20),
-            FullWidthButton(text: "Continue", onPressed: () {}),
+            FullWidthButton(
+                text: "Continue",
+                onPressed: () async {
+                  if (emailController.text.isEmpty ||
+                      passwordController.text.isEmpty) {
+                    // Show an error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please fill in all fields')),
+                    );
+                    return;
+                  }
+                  bool signup = await context.read<NetworkService>().createUser(
+                      "osama2001",
+                      emailController.text,
+                      passwordController.text,
+                      "Man");
+                  if (signup) {
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to sign up')),
+                    );
+                  }
+                }),
           ],
         ),
       ),

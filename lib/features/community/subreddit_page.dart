@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
-import 'dart:convert';
+
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
-  const SubRedditPage({super.key});
+  final String subredditName;
+
+  const SubRedditPage({Key? key, required this.subredditName})
+      : super(key: key);
 
   @override
   State<SubRedditPage> createState() => _SubRedditPageState();
@@ -15,34 +20,47 @@ class _SubRedditPageState extends State<SubRedditPage> {
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
+  List<PostModel> subredditPosts = [];
+
+  String _subredditIcon = '';
+  String _subredditBanner = 'https://picsum.photos/200/300';
+  String _subredditDescription = '';
+  int _subredditMembers = 0;
+  List<String> _subredditRules = [];
+  List<String> _subredditModerators = [];
   @override
   void initState() {
     super.initState();
-    fetchMockPosts();
+    fetchSubredditDetails();
+    fetchPosts();
   }
 
-  Future<void> fetchMockPosts() async {
-    final mockClient = MockClient((request) async {
-      if (request.url.path == '/subreddit/posts') {
-        return http.Response(
-            jsonEncode([
-              {'title': 'Mock Post 1', 'summary': 'Summary of mock post 1'},
-              {'title': 'Mock Post 2', 'summary': 'Summary of mock post 2'},
-            ]),
-            200);
-      }
-      return http.Response('Not Found', 404);
-    });
+  Future<void> fetchPosts() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final subredditName = widget.subredditName;
+    final posts = await networkService.fetchPostsForSubreddit(subredditName);
 
-    final response = await mockClient.get(Uri.parse('/subreddit/posts'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body);
+    if (posts != null) {
       setState(() {
-        posts = responseData.map((post) => post['title'].toString()).toList();
+        subredditPosts = posts;
       });
-    } else {
-      print('Failed to fetch posts');
+    }
+  }
+
+  Future<void> fetchSubredditDetails() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final details =
+        await networkService.getSubredditDetails(widget.subredditName);
+    if (details != null) {
+      setState(() {
+        print(details.icon);
+        _subredditIcon = details.icon;
+        _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
+        //  _subredditDescription = details['description'];
+        _subredditMembers = details.members;
+        _subredditRules = details.rules;
+        _subredditModerators = details.moderators;
+      });
     }
   }
 
@@ -52,12 +70,12 @@ class _SubRedditPageState extends State<SubRedditPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(65),
         child: AppBar(
-          title: const Text('r/SubredditName',
+          title: Text('r/${widget.subredditName}',
               style: TextStyle(color: Colors.white)),
           flexibleSpace: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage('https://picsum.photos/200/300'),
+                image: NetworkImage(_subredditBanner),
                 fit: BoxFit.cover,
               ),
             ),
@@ -80,22 +98,38 @@ class _SubRedditPageState extends State<SubRedditPage> {
             ),
           ),
           SliverToBoxAdapter(child: _sortingOptions()),
+          // Inside CustomScrollView
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(posts[index]),
-                  subtitle: const Text('Post Summary Here'),
-                  trailing: const Icon(Icons.comment),
-                  leading: const Icon(Icons.image),
-                  onTap: () {},
-                );
+                // Use the postWidget method to create a widget for each post
+                return postWidget(subredditPosts[index]);
               },
-              childCount: posts.length,
+              childCount: subredditPosts
+                  .length, // Set the count to the length of subredditPosts
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget postWidget(PostModel postModel) {
+    return Column(
+      children: [
+        Post(
+          communityName: postModel.communityName,
+          userName: postModel.username,
+          title: postModel.title,
+          imageUrl: '', // Assuming this is the image URL
+          content: postModel.content,
+          commentNumber: postModel.commentCount,
+          shareNumber: 0, // Adjust accordingly if your model includes this info
+          timeStamp: postModel.uploadDate,
+          isHomePage: true, // Adjust based on your design/requirements
+        ),
+        const Divider(height: 1, thickness: 1),
+      ],
     );
   }
 
@@ -159,6 +193,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   }
 
   Widget _subredditInfo() {
+    print('Subreddit Icon URL: $_subredditIcon');
     return Container(
       padding: const EdgeInsets.all(10),
       color: const Color.fromRGBO(27, 27, 27, 1),
@@ -166,8 +201,10 @@ class _SubRedditPageState extends State<SubRedditPage> {
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                backgroundImage: NetworkImage('https://picsum.photos/50/50'),
+              CircleAvatar(
+                backgroundImage: _subredditIcon.isNotEmpty
+                    ? NetworkImage(_subredditIcon)
+                    : NetworkImage('https://picsum.photos/200/300'),
                 radius: 25,
               ),
               const SizedBox(width: 10),
@@ -175,11 +212,11 @@ class _SubRedditPageState extends State<SubRedditPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('r/hi osama',
+                    Text('r/${widget.subredditName}',
                         style: TextStyle(fontSize: 16, color: Colors.white)),
                     Row(
                       children: [
-                        const Text('100 members  ',
+                        Text('$_subredditMembers members  ',
                             style:
                                 TextStyle(fontSize: 12, color: Colors.white)),
                         Row(
@@ -193,7 +230,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
                               ),
                             ),
                             const SizedBox(width: 4),
-                            const Text('200 online',
+                            Text('$_subredditMembers online',
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
                           ],
@@ -220,7 +257,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
           const SizedBox(height: 10),
           const Text(
             'Welcome to the official subreddit of the osama.'
-            ' This is a place for all things osama.',
+            ' This is a place for all things osama.', //to be replaced with description when its done in backend
             style: TextStyle(color: Colors.white),
           ),
         ],

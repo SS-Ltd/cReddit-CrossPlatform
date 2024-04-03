@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
-import 'package:reddit_clone/inbox_page.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
@@ -14,7 +16,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   final List<Widget> _pages = [
     HomePage(),
-    InboxPage(),
+    const InboxNotificationPage(),
 
     // CommunitiesPage(),
     // CreatePage(),
@@ -23,6 +25,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<NetworkService>().user;
+    print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
