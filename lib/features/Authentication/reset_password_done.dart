@@ -68,7 +68,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                 text: TextSpan(
                   text: 'Help',
                   style: DefaultTextStyle.of(context).style.copyWith(
-                        color: Colors.grey,
+                        color: Palette.greyColor,
                         fontSize: 14.0,
                       ),
                   recognizer: TapGestureRecognizer()
@@ -151,7 +151,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                   Text(
                                     'Resend',
                                     style: TextStyle(
-                                      color: value ? Colors.black : Colors.grey,
+                                      color: value ? Palette.blackColor : Palette.blueColor,
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -187,8 +187,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                         // }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepOrange,
-                        foregroundColor: Colors.white,
+                        backgroundColor: Palette.deepOrangeColor,
+                        foregroundColor: Palette.whiteColor,
                         minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),

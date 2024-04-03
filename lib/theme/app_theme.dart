@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/theme/pallete.dart';
+import 'palette.dart';
 
 class AppTheme {
   // static ThemeData theme = ThemeData.dark().copyWith(
@@ -29,7 +29,6 @@ class AppTheme {
         color: Palette.whiteColor,
         fontSize: 14,
       ),
-    ),
-  );
+  ));
 }
 

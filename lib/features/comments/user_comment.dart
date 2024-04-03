@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
+import 'theme/palette.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;
@@ -9,15 +11,19 @@ class UserComment extends StatefulWidget {
   final String content;
   final int level;
   final DateTime timestamp;
+  final File? photo;
+  final bool contentType;
 
   const UserComment({
     super.key,
     // may be the required keyword need to be removed
     required this.avatar,
     required this.username,
-    required this.content,
+    this.content = '',
     this.level = 0,
     required this.timestamp,
+    this.photo,
+    required this.contentType,
   });
 
   @override
@@ -40,97 +46,13 @@ class LinePainter extends CustomPainter {
 
 class UserCommentState extends State<UserComment> {
   int votes = 0;
-  int hasVoted = 0;
+  ValueNotifier<int> hasVoted = ValueNotifier<int>(0);
   Timer? _timer;
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
 
-  void showOverlay(BuildContext context, UserComment card) {
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: 8,
-        right: 8,
-        bottom: MediaQuery.of(context).size.height * 0.46,
-        child: Material(
-          color: Colors.transparent,
-          child: StaticCommentCard(
-            avatar: card.avatar,
-            username: card.username,
-            timestamp: card.timestamp,
-            content: card.content,
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(overlayEntry);
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
-      builder: (context) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.share_outlined),
-              title: const Text('Share'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.save_alt),
-              title: const Text('Save'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.notifications_outlined),
-              title: const Text('Get reply notification'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.copy_outlined),
-              title: const Text('Copy text'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.merge_type_outlined),
-              title: const Text('Collapse thread'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.block_outlined),
-              title: const Text('Block account'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.flag_outlined),
-              title: const Text('Report'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry.remove();
-    });
-  }
-
   void _addReply() async {
-    final replyText = await Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ReplyPage(
@@ -141,20 +63,62 @@ class UserCommentState extends State<UserComment> {
       ),
     );
 
-    if (replyText != null) {
-      replies.add(UserComment(
-        avatar: 'assets/MonkeyDLuffy.png',
-        username: 'User123',
-        content: replyText,
-        timestamp: DateTime.now(),
-      ));
+    if (result != null) {
+      final bool contentType = result['contentType'];
+
+      if (contentType == false) {
+        final String commentText = result['content'];
+        replies.add(UserComment(
+          avatar: 'assets/MonkeyDLuffy.png',
+          username: 'User123',
+          content: commentText,
+          timestamp: DateTime.now(),
+          photo: null,
+          contentType: contentType,
+        ));
+      } else if (contentType == true) {
+        final File commentImage = result['content'];
+        replies.add(UserComment(
+          avatar: 'assets/MonkeyDLuffy.png',
+          username: 'User123',
+          content: '',
+          timestamp: DateTime.now(),
+          photo: commentImage,
+          contentType: contentType,
+        ));
+      }
+    }
+  }
+
+  void updateUpVote() {
+    if (hasVoted.value == 1) {
+      votes--;
+      hasVoted.value = 0;
+    } else if (hasVoted.value == -1) {
+      votes += 2;
+      hasVoted.value = 1;
+    } else if (hasVoted.value != 1) {
+      votes++;
+      hasVoted.value = 1;
+    }
+  }
+
+  void updateDownVote() {
+    if (hasVoted.value == -1) {
+      votes++;
+      hasVoted.value = 0;
+    } else if (hasVoted.value == 1) {
+      votes -= 2;
+      hasVoted.value = -1;
+    } else if (hasVoted.value != -1) {
+      votes--;
+      hasVoted.value = -1;
     }
   }
 
   @override
   void initState() {
     super.initState();
-
     isMinimized = ValueNotifier<bool>(false);
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -186,22 +150,36 @@ class UserCommentState extends State<UserComment> {
                 color: const Color.fromARGB(255, 12, 12, 12),
                 shape: Border.all(),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 7, 12, 0),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage(widget.avatar),
+                          const SizedBox(height: 60),
+                          GestureDetector(
+                            onTap: () {
+                              // will be replaced with redirecting to user
+                              showOverlay(context, widget);
+                            },
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage(widget.avatar),
+                              //radius: 18,
+                            ),
                           ),
                           const SizedBox(width: 10),
-                          Text(
-                            widget.username,
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold),
+                          GestureDetector(
+                            onTap: () {
+                              // will be replaced with redirecting to user
+                              showOverlay(context, widget);
+                            },
+                            child: Text(
+                              widget.username,
+                              style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           const SizedBox(width: 10),
                           Text(
@@ -212,11 +190,26 @@ class UserCommentState extends State<UserComment> {
                           if (isMinimized.value) ...[
                             const SizedBox(width: 10),
                             Expanded(
-                              child: Text(
-                                widget.content,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.grey),
+                              child: SizedBox(
+                                height: 50,
+                                child: widget.contentType == false
+                                    ? Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          widget.content.split('\n')[0],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                        ),
+                                      )
+                                    : widget.contentType == true
+                                        ? Center(
+                                            child: Image.file(
+                                              widget.photo!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : Container(),
                               ),
                             ),
                           ],
@@ -224,13 +217,20 @@ class UserCommentState extends State<UserComment> {
                       ),
                       if (!isMinimized.value) ...[
                         const SizedBox(height: 10),
-                        Text(
-                          widget.content,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
+                        if (widget.contentType == false) ...[
+                          Text(
+                            widget.content,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
+                        ] else if (widget.contentType == true) ...[
+                          Image.file(
+                            widget.photo!,
+                            fit: BoxFit.cover,
+                          ),
+                        ],
                         const SizedBox(height: 5),
                         Row(
                           children: [
@@ -245,27 +245,52 @@ class UserCommentState extends State<UserComment> {
                               icon: const Icon(Icons.reply_sharp),
                               onPressed: _addReply,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_upward),
-                              onPressed: () {
-                                if (hasVoted != 1) {
-                                  setState(() {
-                                    votes++;
-                                    hasVoted = 1;
-                                  });
-                                }
+                            ValueListenableBuilder<int>(
+                              valueListenable: hasVoted,
+                              builder: (context, value, child) {
+                                return IconButton(
+                                  icon: Icon(Icons.arrow_upward,
+                                      color: value == 1
+                                          ? Palette.upvoteOrange
+                                          : Palette.greyColor),
+                                  onPressed: () {
+                                    setState(() {
+                                      updateUpVote();
+                                    });
+                                  },
+                                );
                               },
                             ),
-                            Text('$votes'),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_downward),
-                              onPressed: () {
-                                if (hasVoted != -1) {
-                                  setState(() {
-                                    votes--;
-                                    hasVoted = -1;
-                                  });
-                                }
+                            ValueListenableBuilder<int>(
+                              valueListenable: hasVoted,
+                              builder: (context, value, child) {
+                                return Text(
+                                  votes == 0 ? 'Vote' : '$votes',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                      color: value == 1
+                                          ? Palette.upvoteOrange
+                                          : value == -1
+                                              ? Palette.downvoteBlue
+                                              : Palette.greyColor),
+                                );
+                              },
+                            ),
+                            ValueListenableBuilder<int>(
+                              valueListenable: hasVoted,
+                              builder: (context, value, child) {
+                                return IconButton(
+                                  icon: Icon(Icons.arrow_downward,
+                                      color: value == -1
+                                          ? Palette.downvoteBlue
+                                          : Palette.greyColor),
+                                  onPressed: () {
+                                    setState(() {
+                                      updateDownVote();
+                                    });
+                                  },
+                                );
                               },
                             ),
                           ],
@@ -316,4 +341,88 @@ String formatTimestamp(DateTime timestamp) {
   } else {
     return '${difference.inSeconds}s';
   }
+}
+
+void showOverlay(BuildContext context, UserComment card) {
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      left: 8,
+      right: 8,
+      bottom: MediaQuery.of(context).size.height * 0.46,
+      child: Material(
+        color: Colors.transparent,
+        child: StaticCommentCard(
+          avatar: card.avatar,
+          username: card.username,
+          timestamp: card.timestamp,
+          content: card.content,
+        ),
+      ),
+    ),
+  );
+
+  Overlay.of(context).insert(overlayEntry);
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+    builder: (context) {
+      return Wrap(
+        children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.share_outlined),
+            title: const Text('Share'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.save_alt),
+            title: const Text('Save'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications_outlined),
+            title: const Text('Get reply notification'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.copy_outlined),
+            title: const Text('Copy text'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.merge_type_outlined),
+            title: const Text('Collapse thread'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.block_outlined),
+            title: const Text('Block account'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.flag_outlined),
+            title: const Text('Report'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      );
+    },
+  ).then((_) {
+    // Remove the overlay entry after the modal bottom sheet is dismissed
+    overlayEntry.remove();
+  });
 }

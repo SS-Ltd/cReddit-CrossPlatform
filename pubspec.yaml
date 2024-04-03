@@ -36,6 +36,8 @@ dependencies:
   web_socket_channel: ^2.4.4
   cupertino_icons: ^1.0.6
   email_validator: ^2.1.17
+  image_picker: ^1.0.7
+  flutter_quill: ^9.3.5
   logging: ^1.2.0
  # android_intent_plus: ^5.0.1
 
