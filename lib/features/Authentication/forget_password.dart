@@ -224,8 +224,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                   //submit();
                                   bool reset = await context
                                       .read<NetworkService>()
-                                      .forgotPassword(emailController.text,
-                                          "usama.nasser21@gmail.com");
+                                      .forgotPassword(emailController.text);
                                   print(reset);
                                   Navigator.push(
                                     context,

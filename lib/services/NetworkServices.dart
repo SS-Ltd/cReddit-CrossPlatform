@@ -57,15 +57,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> forgotPassword(String username, String email) async {
+  Future<bool> forgotPassword(String username) async {
     final url = Uri.parse('$_baseUrl/user/forgot-password');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': username,
-        'email': email,
-      }),
+      body: jsonEncode({'info': username}),
     );
 
     if (response.statusCode == 200) {
