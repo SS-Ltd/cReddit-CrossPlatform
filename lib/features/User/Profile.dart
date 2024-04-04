@@ -4,7 +4,17 @@ import 'dart:async';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
 
-enum Menu { share, subscribe, save, copytext, edit, addpostflair, markspoiler, markNSFW, markasbrandaffiliate, report }
+enum Menu { 
+  share, 
+  subscribe, 
+  save, 
+  copytext, 
+  edit, 
+  addpostflair, 
+  markspoiler, 
+  markNSFW, 
+  markasbrandaffiliate, 
+  report }
 
 class Profile extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,104 +50,7 @@ class _ProfileState extends State<Profile> {
     // Format DateTime object to desired format
     return DateFormat('dd MMM yyyy').format(parsedDate);
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     key: widget._scaffoldKey,
-  //     appBar: AppBar(
-  //       actions: [
-  //         IconButton(
-  //           onPressed: () {},
-  //           icon: const Icon(Icons.search, size: 30.0),
-  //         ),
-  //         IconButton(
-  //           onPressed: () {},
-  //           icon: const Icon(Icons.share, size: 30.0),
-  //         ),
-  //         PopupMenuButton<Menu>(
-  //           onSelected: (Menu item) {},
-  //           itemBuilder: (BuildContext context) => menuitems(),
-  //         ),
-  //       ],
-  //     ),
-  //     endDrawer: const Rightsidebar(),
-  //     body: 
-  //     Column(
-  //       children: [
-  //         Container(
-  //           height: 200,
-  //           decoration: BoxDecoration(
-  //             gradient: LinearGradient(
-  //               begin: Alignment.topCenter,
-  //               end: Alignment.bottomCenter,
-  //               colors: [
-  //                 Colors.blue, // Starting color at the top
-  //                 Colors.black, // Ending color at the bottom
-  //               ],
-  //             ),
-  //           ),
-  //           child: Column(
-  //             children: [
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 children: [
-  //                   CircleAvatar(
-  //                     backgroundImage: NetworkImage(widget.profilePicture),
-  //                     radius: 50,
-  //                   ),
-  //                   if (widget.isOwnProfile)
-  //                     IconButton(
-  //                       onPressed: () {},
-  //                       icon: const Icon(Icons.edit),
-  //                     ),
-  //                   if (widget.isOwnProfile)
-  //                     IconButton(
-  //                       onPressed: () {},
-  //                       icon: const Icon(Icons.settings),
-  //                     ),
-  //                 ],
-  //               ),
-  //               Align(
-  //                 alignment: Alignment.centerLeft,
-  //                 child: Text(
-  //                   " ${widget.displayName}",
-  //                   style: const TextStyle(
-  //                     fontSize: 24,
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //                 ),
-  //               ),
-  //               Align(
-  //                 alignment: Alignment.centerLeft,
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Text(
-  //                       style: const TextStyle(
-  //                         fontSize: 12,
-  //                       ),
-  //                       ' u/${widget.userName}. ${_formattedCakeDay(widget.cakeDay)}'
-  //                       ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               Align(
-  //                 alignment: Alignment.centerLeft,
-  //                 child: Text(
-  //                   style: const TextStyle(
-  //                     fontSize: 12,
-  //                   ),
-  //                   ' ${widget.about}'
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,7 +61,7 @@ class _ProfileState extends State<Profile> {
           Container(
             height: 300, // Increase the height to cover the AppBar
             padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -216,7 +129,8 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           AppBar(
-            backgroundColor: Colors.transparent, // Make AppBar background transparent
+            // Make AppBar background transparent
+            backgroundColor: Colors.transparent, 
             elevation: 0, // Remove shadow
             actions: [
               IconButton(

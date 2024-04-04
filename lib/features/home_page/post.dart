@@ -13,6 +13,7 @@ import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:reddit_clone/features/User/profile.dart';
 
 class PollOptions {
   String option;
