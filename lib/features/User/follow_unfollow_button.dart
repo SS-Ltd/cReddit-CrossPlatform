@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class FollowButton extends StatefulWidget {
-  const FollowButton({super.key});
+  final String userName;
+  final String profileName;
 
+  const FollowButton({
+    Key? key,
+    required this.userName,
+    required this.profileName,
+
+  }) : super(key: key);
+  
   @override
   _FollowButtonState createState() => _FollowButtonState();
 }
@@ -71,7 +79,7 @@ class _FollowButtonState extends State<FollowButton> {
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
-            side: BorderSide(color: borderColor, width: 3.0),
+            side: BorderSide(color: borderColor, width: 2.0),
           ),
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(

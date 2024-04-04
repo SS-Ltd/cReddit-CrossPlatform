@@ -1,8 +1,13 @@
+// import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/rightsidebar.dart';
 import 'dart:async';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
+import 'block_button.dart';
+import 'follow_unfollow_button.dart';
+import 'chat_button.dart';
+import 'package:reddit_clone/features/User/edit_button.dart';
 
 enum Menu { 
   share, 
@@ -19,6 +24,7 @@ enum Menu {
 class Profile extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userName;
+  final String profileName;
   final String displayName;
   final String about;
   final String profilePicture;
@@ -29,6 +35,7 @@ class Profile extends StatefulWidget {
 
   Profile({
     required this.userName,
+    required this.profileName,
     required this.displayName,
     required this.about,
     required this.profilePicture,
@@ -74,22 +81,33 @@ class _ProfileState extends State<Profile> {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(widget.profilePicture),
                       radius: 50,
                     ),
-                    if (widget.isOwnProfile)
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.edit),
-                      ),
-                    if (widget.isOwnProfile)
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.settings),
-                      ),
+                    widget.isOwnProfile
+                    ? 
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: EditButton(
+                          userName: widget.userName,
+                        ),
+                      ) 
+                    : 
+                    Row(
+                      children: [
+                        ChatButton(
+                          userName: widget.userName,
+                          profileName: widget.displayName,
+                        ),
+                        FollowButton(
+                          userName: widget.userName,
+                          profileName: widget.profileName,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
                 Align(
@@ -108,7 +126,7 @@ class _ProfileState extends State<Profile> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'u/${widget.userName} . ${_formattedCakeDay(widget.cakeDay)}',
+                        'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
                         style: const TextStyle(
                           fontSize: 12,
                         ),
