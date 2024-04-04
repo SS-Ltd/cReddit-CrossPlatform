@@ -3,7 +3,7 @@ import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
-import 'package:reddit_clone/features/User/Profile.dart';
+import 'package:reddit_clone/features/User/profile.dart';
 
 
 class Post extends StatefulWidget {
