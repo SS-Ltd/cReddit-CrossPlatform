@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 
 class CommunityChoice extends StatefulWidget {
   const CommunityChoice({
@@ -16,6 +16,10 @@ class CommunityChoice extends StatefulWidget {
 }
 
 class _CommunityChoiceState extends State<CommunityChoice> {
+
+  Future <void> getcommunities () async {
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
