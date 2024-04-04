@@ -91,17 +91,17 @@ class _PostState extends State<Post> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              Profile (
-                                                userName: widget.userName,
-                                                displayName: widget.userName,
-                                                about: 'Hello to my profile!',
-                                                profilePicture: 'https://www.w3schools.com/w3images/avatar2.png',
-                                                bannerPicture: 'drive.creddit.com/pfp',
-                                                followerCount: 0,
-                                                cakeDay: '2024-03-25T15:37:33.339+00:00',
-                                                isOwnProfile: false,
-                                              ), //replace with profile page or widget
+                                          builder: (context) => Profile (
+                                            userName: widget.userName,
+                                            profileName: widget.userName,
+                                            displayName: widget.userName,
+                                            about: 'Hello to my profile!',
+                                            profilePicture: 'https://www.w3schools.com/w3images/avatar2.png',
+                                            bannerPicture: 'drive.creddit.com/pfp',
+                                            followerCount: 0,
+                                            cakeDay: '2024-03-25T15:37:33.339+00:00',
+                                            isOwnProfile: true,
+                                          ), //replace with profile page or widget
                                       )
                                     );
                                   },
