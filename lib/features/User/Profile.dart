@@ -68,18 +68,29 @@ class _ProfileState extends State<Profile> {
           Container(
             height: 300, // Increase the height to cover the AppBar
             padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.blue, // Starting color at the top
-                  Colors.black, // Ending color at the bottom
-                ],
-              ),
+            decoration: BoxDecoration(
+              image: widget.bannerPicture.isNotEmpty
+                ? DecorationImage(
+                    image: NetworkImage(widget.bannerPicture),
+                    fit: BoxFit.cover,
+                  )
+                : null,
             ),
+          ),
+          Container(
+              height: 300, // Same height as the image container
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: widget.bannerPicture.isNotEmpty
+                    ? [Colors.transparent, Colors.black]
+                    : [Colors.blue, Colors.black],
+                ),
+              ),
             child: Column(
               children: [
+                const SizedBox(height: 100), // Same height as the image container
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
