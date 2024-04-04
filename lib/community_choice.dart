@@ -4,7 +4,10 @@ import 'package:flutter/widgets.dart';
 class CommunityChoice extends StatefulWidget {
   const CommunityChoice({
     super.key,
+    required this.chosenCommunity,
   });
+
+  final String chosenCommunity;
 
   @override
   State<CommunityChoice> createState() {

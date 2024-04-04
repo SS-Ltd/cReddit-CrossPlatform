@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/community_choice.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
 //or to create a post from Profile Screen and post to profile
+
+//todo; check link validity, test multiple images, add place to show them,
+//add option to scroll them hotizontally
 
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key, required this.profile});
@@ -17,11 +22,35 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
+
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
   bool _istitleempty = true;
   bool _isbodyempty = true;
+  String chosenCommunity = "";
+  File? _image;
+  final ImagePicker picker = ImagePicker();
+  bool _isImagePickerOpen = false;
+
+  final _linkController = TextEditingController();
+  bool _insertlink = false;
+  bool _islinkempty = true;
+
+  Future getImage() async {
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (image != null) {
+        _image = File(image.path);
+      }
+    });
+    _isImagePickerOpen = false;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,23 +67,29 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile
                 ? ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _istitleempty ? null : () {},
                     //in this case we will add the post to the profile
                     child: const Text('Post'),
                   )
                 : ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => const CommunityChoice(),
-                        ),
-                      );
-                    },
+                    onPressed: _istitleempty
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (context) => CommunityChoice(
+                                  chosenCommunity: chosenCommunity,
+                                ),
+                              ),
+                            );
+                          },
                     //in this case we will go to choose the community
                     //then add the post to the subreddit
-                    child: const Text('Next'),
+                    child: chosenCommunity.isEmpty
+                        ? const Text('Next')
+                        : const Text('Post'),
                   ),
           ),
         ],
@@ -72,12 +107,29 @@ class _CreatePostState extends State<CreatePost> {
                   border: InputBorder.none,
                 ),
                 controller: _titleController,
-                onChanged: (text) {
+                onChanged: (value) {
                   setState(() {
-                    _istitleempty = text.isEmpty;
+                    _istitleempty = value.isEmpty;
                   });
                 },
               ),
+              _insertlink ? TextField(
+                decoration: InputDecoration(
+                  labelText: _islinkempty ? 'Enter link' : '',
+                  labelStyle: const TextStyle(fontSize: 30),
+                  border: InputBorder.none,
+                  suffixIcon: IconButton(onPressed: () {setState(() {
+                    _linkController.clear();
+                    _insertlink = false;
+                  });}, icon: const Icon(Icons.close),),
+                ),
+                controller: _linkController,
+                onChanged: (value) {
+                  setState(() {
+                    _islinkempty = value.isEmpty;
+                  });
+                },
+              ) : const SizedBox(),
               TextField(
                 decoration: InputDecoration(
                   labelText: _isbodyempty ? 'body text (optional)' : '',
@@ -95,11 +147,15 @@ class _CreatePostState extends State<CreatePost> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        _insertlink = !_insertlink;
+                      });
+                    },
                     icon: const Icon(Icons.link),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: getImage,
                     icon: const Icon(Icons.image),
                   ),
                   IconButton(
