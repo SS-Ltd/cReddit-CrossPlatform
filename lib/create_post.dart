@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
@@ -268,7 +266,6 @@ class _CreatePostState extends State<CreatePost> {
                         onPressed: () {
                           setState(() {
                             count = count + 1;
-                            print(count);
                           });
                         },
                         label: const Text('Add option'),
