@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/features/Authentication/reset_password_done.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Create a community',
       theme: AppTheme.darkTheme,
-      home: LoginScreen(),
+      home: ResetPasswordDone(),
     );
   }
 }

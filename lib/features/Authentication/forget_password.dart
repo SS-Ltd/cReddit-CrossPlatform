@@ -38,7 +38,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -46,8 +45,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Palette.redditBlack,
+        backgroundColor: Palette.redditLogin,
         appBar: AppBar(
+          backgroundColor: Palette.redditLogin,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -67,7 +67,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                 text: TextSpan(
                   text: 'Help',
                   style: DefaultTextStyle.of(context).style.copyWith(
-                        color: Colors.grey,
+                        color: Palette.whiteColor,
                         fontSize: 14.0,
                       ),
                   recognizer: TapGestureRecognizer()
@@ -95,6 +95,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: Palette.whiteColor,
                 ),
               ),
               const SizedBox(height: 18),

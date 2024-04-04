@@ -37,7 +37,7 @@ class _AuthFieldState extends State<AuthField> {
     return Container(
       height: 55.0,
       child: TextFormField(
-        style: Theme.of(context).textTheme.labelMedium,
+        style: const TextStyle(color: Palette.redditBlack),
         keyboardType: TextInputType.emailAddress,
         obscureText: widget.obscureText,
         controller: widget.controller,
@@ -59,7 +59,7 @@ class _AuthFieldState extends State<AuthField> {
             borderSide: const BorderSide(color: Palette.redditBlack),
           ),
           labelText: widget.labelText,
-          labelStyle: TextStyle(color: Colors.black),
+          labelStyle: const TextStyle(color: Colors.black),
           suffixIcon: widget.labelText == 'Password'
               ? IconButton(
                   icon: Icon(

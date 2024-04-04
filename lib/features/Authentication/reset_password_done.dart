@@ -49,7 +49,9 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: Palette.redditLogin,
         appBar: AppBar(
+          backgroundColor: Palette.redditLogin,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -69,7 +71,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                 text: TextSpan(
                   text: 'Help',
                   style: DefaultTextStyle.of(context).style.copyWith(
-                        color: Palette.greyColor,
+                        color: Palette.whiteColor,
                         fontSize: 14.0,
                       ),
                   recognizer: TapGestureRecognizer()
@@ -95,9 +97,9 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
               const Text(
                 'Check your inbox',
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Palette.whiteColor),
               ),
               const SizedBox(height: 18),
               //Sub Heading
@@ -108,8 +110,9 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                       'We send a password reset link to the email '
                       'associated with your account',
                       style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 107, 106, 106)),
+                        fontSize: 16,
+                        color: Palette.whiteColor,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -133,7 +136,10 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                       children: [
                         const Text(
                           'Didn\'t get an email? ',
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Palette.whiteColor,
+                          ),
                         ),
                         ValueListenableBuilder(
                           valueListenable: canResend,
@@ -152,7 +158,9 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                   Text(
                                     'Resend',
                                     style: TextStyle(
-                                      color: value ? Palette.blackColor : Palette.blueColor,
+                                      color: value
+                                          ? Palette.whiteColor
+                                          : Palette.blueColor,
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -161,7 +169,11 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                     ValueListenableBuilder(
                                       valueListenable: countdown,
                                       builder: (context, value, child) {
-                                        return Text(' in $value');
+                                        return Text(
+                                          ' in $value',
+                                          style: const TextStyle(
+                                              color: Palette.whiteColor),
+                                        );
                                       },
                                     ),
                                 ],
