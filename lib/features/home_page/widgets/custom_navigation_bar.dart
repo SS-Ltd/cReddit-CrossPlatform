@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
+import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
@@ -13,9 +15,10 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int _currentIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
-    HomePage(),
+    const HomePage(),
     const InboxNotificationPage(),
 
     // CommunitiesPage(),
@@ -28,6 +31,50 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     final user = context.read<NetworkService>().user;
     print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: const [
+            Divider(
+              height: 20,
+              thickness: 1,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        title: (_currentIndex == 0)
+            ? ElevatedButton(
+                onPressed: () {},
+                child: const Text('Home'),
+              )
+            : (_currentIndex == 1) ? Title(
+                color: Palette.whiteColor,
+                child: const Text('Communities'),
+              ) : (_currentIndex == 3) ? Title(
+                color: Palette.whiteColor,
+                child: const Text('Chat'),
+              ) : Title(
+                color: Palette.whiteColor,
+                child: const Text('Inbox'),
+              ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search, size: 30.0),
+          ),
+          IconButton(
+            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+            icon: const Icon(Icons.reddit, size: 30.0),
+          ),
+        ],
+      ),
+      endDrawer: const Rightsidebar(),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

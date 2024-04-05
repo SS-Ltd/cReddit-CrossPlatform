@@ -1,45 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/rightsidebar.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const  HomePage({super.key});
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      drawer: Drawer(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-        ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: const [
-            Divider(
-              height: 20,
-              thickness: 1,
-              color: Colors.white,
-            ),
-            
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, size: 30.0),
-          ),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-            icon: const Icon(Icons.reddit, size: 30.0),
-          ),
-        ],
-      ),
-      endDrawer: const Rightsidebar(),
       body: ListView.builder(
         itemCount: 5,
         itemBuilder: (context, index) {
