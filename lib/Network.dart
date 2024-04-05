@@ -138,20 +138,24 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future <bool> createNewPost(String name) async {
+  Future<bool> createNewPost(String type, String communityname, String title,
+      String content, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
     final response = await http.post(
       url,
+      headers: _headers,
       body: jsonEncode({
-        
-      }),    
+        'type': type,
+        'communityname': communityname,
+        'title': title,
+        'content': content,
+        'isNSFW': isNSFW,
+        'isSpoiler': isSpoiler,
+      }),
     );
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else
-    {
+    } else {
       print('Failed to create post: ${response.body}');
       return false;
     }
@@ -170,16 +174,13 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<RecentlyVisited?> joinedcommunitites() async{
+  Future<RecentlyVisited?> joinedcommunitites() async {
     Uri url = Uri.parse('$_baseUrl/user/joined-communities');
     final response = await http.get(url, headers: _headers);
 
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      
-    }
-    else{
+    } else {
       return null;
     }
   }

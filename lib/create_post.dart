@@ -56,7 +56,9 @@ class _CreatePostState extends State<CreatePost> {
     super.dispose();
   }
 
-  Future<void> createNewPost() async {}
+  void savePost(){
+        
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +73,11 @@ class _CreatePostState extends State<CreatePost> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
-            child: widget.profile
+            child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
-                    onPressed: _istitleempty ? null : () {},
+                    onPressed: _istitleempty ? null : () {
+                      savePost();
+                    },
                     //in this case we will add the post to the profile
                     child: const Text('Post'),
                   )
@@ -93,9 +97,7 @@ class _CreatePostState extends State<CreatePost> {
                           },
                     //in this case we will go to choose the community
                     //then add the post to the subreddit
-                    child: chosenCommunity.isEmpty
-                        ? const Text('Next')
-                        : const Text('Post'),
+                    child: const Text('Next')
                   ),
           ),
         ],
