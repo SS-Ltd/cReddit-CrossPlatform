@@ -1,8 +1,10 @@
+import 'package:reddit_clone/models/subreddit.dart';
+
 class UserModel {
   final String username;
 
   bool isLoggedIn = false;
-  final List<String> recentlyVisited = [];
+  final List<Subreddit> recentlyVisited = [];
 
   UserModel(this.username);
 
@@ -10,11 +12,11 @@ class UserModel {
     isLoggedIn = status;
   }
 
-  void setrecentlyVisited(String communityName) {
+  void setrecentlyVisited(Subreddit communityName) {
     recentlyVisited.add(communityName);
   }
 
-  List<String> getrecentlyvisited(){
+  List<Subreddit> getrecentlyvisited(){
     return recentlyVisited;
   }
 }
