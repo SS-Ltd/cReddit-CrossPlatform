@@ -137,192 +137,190 @@ class UserCommentState extends State<UserComment> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 8),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isMinimized.value = !isMinimized.value;
-                });
-              },
-              child: Card(
-                color: const Color.fromARGB(255, 12, 12, 12),
-                shape: Border.all(),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const SizedBox(height: 60),
-                          GestureDetector(
-                            onTap: () {
-                              // will be replaced with redirecting to user
-                              showOverlay(context, widget);
-                            },
-                            child: CircleAvatar(
-                              backgroundImage: AssetImage(widget.avatar),
-                              //radius: 18,
-                            ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isMinimized.value = !isMinimized.value;
+              });
+            },
+            child: Card(
+              color: const Color.fromARGB(255, 12, 12, 12),
+              shape: Border.all(),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const SizedBox(height: 60),
+                        GestureDetector(
+                          onTap: () {
+                            // will be replaced with redirecting to user
+                            showOverlay(context, widget);
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage(widget.avatar),
+                            //radius: 18,
                           ),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () {
-                              // will be replaced with redirecting to user
-                              showOverlay(context, widget);
-                            },
-                            child: Text(
-                              widget.username,
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            formatTimestamp(widget.timestamp),
+                        ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () {
+                            // will be replaced with redirecting to user
+                            showOverlay(context, widget);
+                          },
+                          child: Text(
+                            widget.username,
                             style: const TextStyle(
-                                fontSize: 12, color: Colors.grey),
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
                           ),
-                          if (isMinimized.value) ...[
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: SizedBox(
-                                height: 50,
-                                child: widget.contentType == false
-                                    ? Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          widget.content.split('\n')[0],
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 12, color: Colors.grey),
-                                        ),
-                                      )
-                                    : widget.contentType == true
-                                        ? Center(
-                                            child: Image.file(
-                                              widget.photo!,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                        : Container(),
-                              ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          formatTimestamp(widget.timestamp),
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey),
+                        ),
+                        if (isMinimized.value) ...[
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: SizedBox(
+                              height: 50,
+                              child: widget.contentType == false
+                                  ? Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        widget.content.split('\n')[0],
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 12, color: Colors.grey),
+                                      ),
+                                    )
+                                  : widget.contentType == true
+                                      ? Center(
+                                          child: Image.file(
+                                            widget.photo!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : Container(),
                             ),
-                          ],
-                        ],
-                      ),
-                      if (!isMinimized.value) ...[
-                        const SizedBox(height: 10),
-                        if (widget.contentType == false) ...[
-                          Text(
-                            widget.content,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ] else if (widget.contentType == true) ...[
-                          Image.file(
-                            widget.photo!,
-                            fit: BoxFit.cover,
                           ),
                         ],
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            const Spacer(),
-                            IconButton(
-                              icon: const Icon(Icons.more_vert),
-                              onPressed: () {
-                                showOverlay(context, widget);
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.reply_sharp),
-                              onPressed: _addReply,
-                            ),
-                            ValueListenableBuilder<int>(
-                              valueListenable: hasVoted,
-                              builder: (context, value, child) {
-                                return IconButton(
-                                  icon: Icon(Icons.arrow_upward,
-                                      color: value == 1
-                                          ? Palette.upvoteOrange
-                                          : Palette.greyColor),
-                                  onPressed: () {
-                                    setState(() {
-                                      updateUpVote();
-                                    });
-                                  },
-                                );
-                              },
-                            ),
-                            ValueListenableBuilder<int>(
-                              valueListenable: hasVoted,
-                              builder: (context, value, child) {
-                                return Text(
-                                  votes == 0 ? 'Vote' : '$votes',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                      color: value == 1
-                                          ? Palette.upvoteOrange
-                                          : value == -1
-                                              ? Palette.downvoteBlue
-                                              : Palette.greyColor),
-                                );
-                              },
-                            ),
-                            ValueListenableBuilder<int>(
-                              valueListenable: hasVoted,
-                              builder: (context, value, child) {
-                                return IconButton(
-                                  icon: Icon(Icons.arrow_downward,
-                                      color: value == -1
-                                          ? Palette.downvoteBlue
-                                          : Palette.greyColor),
-                                  onPressed: () {
-                                    setState(() {
-                                      updateDownVote();
-                                    });
-                                  },
-                                );
-                              },
-                            ),
-                          ],
+                      ],
+                    ),
+                    if (!isMinimized.value) ...[
+                      const SizedBox(height: 10),
+                      if (widget.contentType == false) ...[
+                        Text(
+                          widget.content,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ] else if (widget.contentType == true) ...[
+                        Image.file(
+                          widget.photo!,
+                          fit: BoxFit.cover,
                         ),
                       ],
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.more_vert),
+                            onPressed: () {
+                              showOverlay(context, widget);
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.reply_sharp),
+                            onPressed: _addReply,
+                          ),
+                          ValueListenableBuilder<int>(
+                            valueListenable: hasVoted,
+                            builder: (context, value, child) {
+                              return IconButton(
+                                icon: Icon(Icons.arrow_upward,
+                                    color: value == 1
+                                        ? Palette.upvoteOrange
+                                        : Palette.greyColor),
+                                onPressed: () {
+                                  setState(() {
+                                    updateUpVote();
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                          ValueListenableBuilder<int>(
+                            valueListenable: hasVoted,
+                            builder: (context, value, child) {
+                              return Text(
+                                votes == 0 ? 'Vote' : '$votes',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                    color: value == 1
+                                        ? Palette.upvoteOrange
+                                        : value == -1
+                                            ? Palette.downvoteBlue
+                                            : Palette.greyColor),
+                              );
+                            },
+                          ),
+                          ValueListenableBuilder<int>(
+                            valueListenable: hasVoted,
+                            builder: (context, value, child) {
+                              return IconButton(
+                                icon: Icon(Icons.arrow_downward,
+                                    color: value == -1
+                                        ? Palette.downvoteBlue
+                                        : Palette.greyColor),
+                                onPressed: () {
+                                  setState(() {
+                                    updateDownVote();
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ],
-                  ),
+                  ],
                 ),
               ),
             ),
-            ValueListenableBuilder<bool>(
-              valueListenable: isMinimized,
-              builder: (context, value, child) {
-                if (value) {
-                  return Container();
-                } else {
-                  return Column(
-                    children: replies.map((reply) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: CustomPaint(
-                          painter: LinePainter(),
-                          child: reply,
-                        ),
-                      );
-                    }).toList(),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: isMinimized,
+            builder: (context, value, child) {
+              if (value) {
+                return Container();
+              } else {
+                return Column(
+                  children: replies.map((reply) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: CustomPaint(
+                        painter: LinePainter(),
+                        child: reply,
+                      ),
+                    );
+                  }).toList(),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }

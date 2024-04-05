@@ -13,7 +13,8 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  String _baseUrl = 'http://10.0.2.2:3000';
+  //String _baseUrl = 'http://10.0.2.2:3000';
+  String _baseUrl = 'http://192.168.1.20:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
