@@ -3,7 +3,7 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/rightsidebar.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key});
+  HomePage({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -11,8 +11,23 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      drawer: Drawer(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: const [
+            Divider(
+              height: 20,
+              thickness: 1,
+              color: Colors.white,
+            ),
+            
+          ],
+        ),
+      ),
       appBar: AppBar(
-        leading: const Icon(Icons.menu, size: 30.0),
         actions: [
           IconButton(
             onPressed: () {},
