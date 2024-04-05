@@ -49,9 +49,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Palette.redditLogin,
         appBar: AppBar(
-          backgroundColor: Palette.redditLogin,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {

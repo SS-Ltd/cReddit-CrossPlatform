@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Create a community',
       theme: AppTheme.darkTheme,
-      home: ResetPasswordDone(),
+      home: LoginScreen(),
     );
   }
 }
