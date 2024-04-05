@@ -56,9 +56,6 @@ class _CreatePostState extends State<CreatePost> {
     super.dispose();
   }
 
-  void savePost(){
-        
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +72,7 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
-                    onPressed: _istitleempty ? null : () {
-                      savePost();
+                    onPressed: _istitleempty ? null : () async {
                     },
                     //in this case we will add the post to the profile
                     child: const Text('Post'),
