@@ -24,9 +24,13 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
+  final List<TextEditingController> _optionControllers =
+      List.generate(6, (index) => TextEditingController());
+
+  //final List<bool> _pollendin = List.generate(7, (index) => false);
+  String _pollendsin = "2 Day";
 
   bool _istitleempty = true;
   bool _isbodyempty = true;
@@ -76,22 +80,26 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
-                            //i shpuld add requests for different types of posts
+                            //i should add requests for different types of posts
+
                             bool newpost = await context
                                 .read<NetworkService>()
-                                .createNewPost('Post', "",
-                                    "Testing", "", false, false);
-                          ////////////////////////////////////////////////////////
+                                .createNewPost(
+                                    "Post",
+                                    "",
+                                    _titleController.text,
+                                    _bodyController.text,
+                                    false,
+                                    false);
+                            ////////////////////////////////////////////////////////
                             if (newpost) {
-                              Navigator.pop(context);
+                              Navigator.of(context).pop();
                             } else {
                               const snackBar = SnackBar(
                                 content: Text('Failed to create post'),
                               );
-                          
                             }
                           },
-                    //in this case we will add the post to the profile
                     child: const Text('Post'),
                   )
                 : ElevatedButton(
@@ -109,7 +117,6 @@ class _CreatePostState extends State<CreatePost> {
                             );
                           },
                     //in this case we will go to choose the community
-                    //then add the post to the subreddit
                     child: const Text('Next')),
           ),
         ],
@@ -133,6 +140,19 @@ class _CreatePostState extends State<CreatePost> {
                   });
                 },
               ),
+              widget.profile || chosenCommunity.isNotEmpty ? Row(
+                children: [
+                  TextButton(
+                    style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.all(
+                        const Size(150, 8),
+                      ),
+                    ),
+                    onPressed: () {},
+                    child: const Text('Add tags & flair'),
+                  ),
+                ],
+              ) : const SizedBox(),
               _insertlink
                   ? TextField(
                       decoration: InputDecoration(
@@ -208,9 +228,6 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   Widget openpollcreator() {
-    final _option1 = TextEditingController();
-    final _option2 = TextEditingController();
-
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
@@ -223,7 +240,117 @@ class _CreatePostState extends State<CreatePost> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Poll ends in'),
+                TextButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        ///////////////////////////////////////////
+                        return BottomSheet(
+                          onClosing: () {},
+                          builder: (context) => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              RadioListTile(
+                                title: const Text('1 Day'),
+                                value: '1 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RadioListTile(
+                                title: const Text('2 Day'),
+                                value: '2 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RadioListTile(
+                                title: const Text('3 Day'),
+                                value: '3 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RadioListTile(
+                                title: const Text('4 Day'),
+                                value: '4 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RadioListTile(
+                                title: const Text('5 Day'),
+                                value: '5 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RadioListTile(
+                                title: const Text('6 Day'),
+                                value: '6 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              RadioListTile(
+                                title: const Text('7 Day'),
+                                value: '7 Day',
+                                groupValue: _pollendsin,
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _pollendsin = value!;
+                                    },
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  label: Text('Poll ends in $_pollendsin'),
+                  icon: const Icon(Icons.arrow_drop_down),
+                ),
                 IconButton(
                   onPressed: () {
                     setState(() {
@@ -239,14 +366,14 @@ class _CreatePostState extends State<CreatePost> {
                 labelText: 'Option 1',
                 border: InputBorder.none,
               ),
-              controller: _option1,
+              controller: _optionControllers[0],
             ),
             TextField(
               decoration: const InputDecoration(
                 labelText: 'Option 2',
                 border: InputBorder.none,
               ),
-              controller: _option2,
+              controller: _optionControllers[1],
             ),
             ListView.builder(
               shrinkWrap: true,
@@ -257,17 +384,16 @@ class _CreatePostState extends State<CreatePost> {
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
-                          labelText: 'Option ${index + 3}',
-                        ),
-                        onChanged: (value) {
-                          // Handle the input value for each option
-                        },
+                            labelText: 'Option ${index + 3}',
+                            border: InputBorder.none),
+                        controller: _optionControllers[index + 2],
                       ),
                     ),
                     IconButton(
                         onPressed: () {
                           setState(() {
                             count = count - 1;
+                            _optionControllers[index + 2].clear();
                           });
                         },
                         icon: const Icon(Icons.close))
