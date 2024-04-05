@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/Network.dart';
 import 'package:reddit_clone/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -56,7 +58,6 @@ class _CreatePostState extends State<CreatePost> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,8 +73,24 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
-                    onPressed: _istitleempty ? null : () async {
-                    },
+                    onPressed: _istitleempty
+                        ? null
+                        : () async {
+                            //i shpuld add requests for different types of posts
+                            bool newpost = await context
+                                .read<NetworkService>()
+                                .createNewPost('Post', "",
+                                    "Testing", "", false, false);
+                          ////////////////////////////////////////////////////////
+                            if (newpost) {
+                              Navigator.pop(context);
+                            } else {
+                              const snackBar = SnackBar(
+                                content: Text('Failed to create post'),
+                              );
+                          
+                            }
+                          },
                     //in this case we will add the post to the profile
                     child: const Text('Post'),
                   )
@@ -93,8 +110,7 @@ class _CreatePostState extends State<CreatePost> {
                           },
                     //in this case we will go to choose the community
                     //then add the post to the subreddit
-                    child: const Text('Next')
-                  ),
+                    child: const Text('Next')),
           ),
         ],
         title: const Text(''),
@@ -248,11 +264,13 @@ class _CreatePostState extends State<CreatePost> {
                         },
                       ),
                     ),
-                    IconButton(onPressed: () {
-                      setState(() {
-                        count = count - 1;
-                      });
-                    }, icon: const Icon(Icons.close))
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            count = count - 1;
+                          });
+                        },
+                        icon: const Icon(Icons.close))
                   ],
                 );
               },

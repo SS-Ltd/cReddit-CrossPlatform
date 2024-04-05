@@ -38,6 +38,7 @@ dependencies:
   image_picker: ^1.0.7
   http: ^1.2.1
   flutter_polls: ^0.1.6
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
