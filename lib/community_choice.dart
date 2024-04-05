@@ -16,9 +16,6 @@ class CommunityChoice extends StatefulWidget {
 
 class _CommunityChoiceState extends State<CommunityChoice> {
 
-  Future <void> getcommunities () async {
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(

@@ -29,9 +29,6 @@ class _CreatePostState extends State<CreatePost> {
   final List<TextEditingController> _optionControllers =
       List.generate(6, (index) => TextEditingController());
 
-  //final List<bool> _pollendin = List.generate(7, (index) => false);
-  String _pollendsin = "2 Day";
-
   bool _istitleempty = true;
   bool _isbodyempty = true;
   String chosenCommunity = "";
@@ -46,6 +43,7 @@ class _CreatePostState extends State<CreatePost> {
 
   bool _insertpoll = false;
   int count = 0;
+  String _pollendsin = "2 Day";
 
   Future getImage() async {
     final image = await picker.pickImage(source: ImageSource.gallery);
@@ -94,9 +92,7 @@ class _CreatePostState extends State<CreatePost> {
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.of(context).pop();
-                            } else {
-                              
-                            }
+                            } else {}
                           },
                     child: const Text('Post'),
                   )
@@ -138,19 +134,47 @@ class _CreatePostState extends State<CreatePost> {
                   });
                 },
               ),
-              widget.profile || chosenCommunity.isNotEmpty ? Row(
-                children: [
-                  TextButton(
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(
-                        const Size(150, 8),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: const Text('Add tags & flair'),
-                  ),
-                ],
-              ) : const SizedBox(),
+              widget.profile || chosenCommunity.isNotEmpty
+                  ? Row(
+                      children: [
+                        TextButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all(
+                              const Size(150, 8),
+                            ),
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BottomSheet(
+                                      onClosing: () {},
+                                      builder: (context) => Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Text('Add tags'),
+                                                  ElevatedButton(
+                                                    onPressed: () {},
+                                                    child: const Text('Apply'),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ));
+                                });
+                          },
+                          child: const Text('Add tags & flair'),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
               _insertlink
                   ? TextField(
                       decoration: InputDecoration(
@@ -243,7 +267,7 @@ class _CreatePostState extends State<CreatePost> {
                     showModalBottomSheet(
                       context: context,
                       builder: (BuildContext context) {
-                        ///////////////////////////////////////////
+//-----------------------------------------------------------------------------------------------------------//
                         return BottomSheet(
                           onClosing: () {},
                           builder: (context) => Column(
