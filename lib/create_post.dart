@@ -24,7 +24,7 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-  final _formKey = GlobalKey<FormState>();
+
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
 
