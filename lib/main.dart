@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/constants/logger.dart';
 import 'package:reddit_clone/create_post.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/Network.dart';

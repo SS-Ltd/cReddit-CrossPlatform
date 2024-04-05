@@ -95,9 +95,7 @@ class _CreatePostState extends State<CreatePost> {
                             if (newpost) {
                               Navigator.of(context).pop();
                             } else {
-                              const snackBar = SnackBar(
-                                content: Text('Failed to create post'),
-                              );
+                              
                             }
                           },
                     child: const Text('Post'),
