@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/features/Community/community_page.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
@@ -16,10 +17,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   final List<Widget> _pages = [
     HomePage(),
+    CommunityPage(),
     const InboxNotificationPage(),
 
-    // CommunitiesPage(),
-    // CreatePage(),
+    
+    //CreatePage(),
     // ChatPage(),
   ];
 

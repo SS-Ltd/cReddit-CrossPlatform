@@ -14,8 +14,8 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  String _baseUrl = 'http://10.0.2.2:3000';
-  //String _baseUrl = 'http://192.168.1.20:3000';
+  //String _baseUrl = 'http://10.0.2.2:3000';
+  String _baseUrl = 'http://192.168.1.5:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -206,7 +206,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<Community>?> fetchTopCommunities() async {
+  Future<List<Community>> fetchTopCommunities() async {
   Uri url = Uri.parse('$_baseUrl/subreddit/top?limit=25');
   final response = await http.get(url, headers: _headers);
   print(response.body);
@@ -214,7 +214,7 @@ class NetworkService extends ChangeNotifier {
     final List<dynamic> jsonData = jsonDecode(response.body);
     return jsonData.map((item) => Community.fromJson(item)).toList();
   } else {
-    return null;
+    throw Exception('Failed to fetch top communities');
   }
 }
 

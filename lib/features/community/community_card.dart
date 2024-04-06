@@ -35,7 +35,10 @@ class CommunityCardState extends State<CommunityCard> {
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromARGB(255, 12, 12, 12),
-      shape: Border.all(),
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20), // Adjust as needed
+      side: BorderSide(color: Colors.grey[800]!, width:0.75), // Adjust as needed
+    ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -46,7 +49,7 @@ class CommunityCardState extends State<CommunityCard> {
               children: <Widget>[
                 CircleAvatar(
                   backgroundImage: NetworkImage(widget.icon),
-                  radius: 25,
+                  radius: 20,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -56,12 +59,12 @@ class CommunityCardState extends State<CommunityCard> {
                       Text(
                         widget.name,
                         style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '${widget.members} members',
                         style: const TextStyle(
-                            fontSize: 12, color: Palette.greyColor),
+                            fontSize: 11, color: Palette.greyColor),
                       ),
                     ],
                   ),
@@ -92,7 +95,7 @@ class CommunityCardState extends State<CommunityCard> {
             const SizedBox(height: 8),
             Text(
               widget.description,
-              style: const TextStyle(fontSize: 12, color: Palette.greyColor),
+              style: const TextStyle(fontSize: 11, color: Palette.greyColor),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
