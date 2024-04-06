@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
 class CommunityCard extends StatefulWidget {
-  final String title;
+  final String name;
   final int members;
   final String description;
-  final String avatarUrl;
+  final String icon;
+  final bool isJoined;
+
 
   const CommunityCard({
     Key? key,
-    required this.title,
+    required this.name,
     required this.members,
     required this.description,
-    required this.avatarUrl,
+    required this.icon,
+    required this.isJoined,
   }) : super(key: key);
 
   @override
@@ -20,7 +23,13 @@ class CommunityCard extends StatefulWidget {
 }
 
 class CommunityCardState extends State<CommunityCard> {
-  final ValueNotifier<bool> isJoined = ValueNotifier<bool>(true);
+  late final ValueNotifier<bool> isJoined;
+
+  @override
+  void initState() {
+    super.initState();
+    isJoined = ValueNotifier<bool>(widget.isJoined);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +45,7 @@ class CommunityCardState extends State<CommunityCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CircleAvatar(
-                  backgroundImage: NetworkImage(widget.avatarUrl),
+                  backgroundImage: NetworkImage(widget.icon),
                   radius: 25,
                 ),
                 const SizedBox(width: 8),
@@ -45,14 +54,14 @@ class CommunityCardState extends State<CommunityCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.title,
+                        widget.name,
                         style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '${widget.members} members',
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+                        style: const TextStyle(
+                            fontSize: 12, color: Palette.greyColor),
                       ),
                     ],
                   ),
@@ -69,7 +78,7 @@ class CommunityCardState extends State<CommunityCard> {
                             value ? Palette.transparent : Palette.blueColor,
                         foregroundColor:
                             value ? Palette.blueColor : Palette.whiteColor,
-                        side: isJoined.value
+                        side: value
                             ? const BorderSide(
                                 color: Palette.blueColor, width: 2.0)
                             : BorderSide.none,
@@ -83,7 +92,7 @@ class CommunityCardState extends State<CommunityCard> {
             const SizedBox(height: 8),
             Text(
               widget.description,
-              style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+              style: const TextStyle(fontSize: 12, color: Palette.greyColor),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
