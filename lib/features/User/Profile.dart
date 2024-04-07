@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +9,7 @@ import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
 import 'package:reddit_clone/features/User/edit_button.dart';
 
+enum TabSelection { posts, comments, about }
 class Profile extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userName;
@@ -17,6 +20,7 @@ class Profile extends StatefulWidget {
   final String bannerPicture;
   final int followerCount;
   final String cakeDay;
+  TabSelection selectedTab = TabSelection.posts;
   final bool isOwnProfile;
 
   Profile({
@@ -89,73 +93,209 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget _buildProfileContent() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(widget.profilePicture),
-                radius: 50,
-              ),
-              widget.isOwnProfile
-                ? Align(
-                    alignment: Alignment.bottomRight,
-                    child: EditButton(
-                      userName: widget.userName,
-                    ),
-                  ) 
-                : Row(
-                    children: [
-                      ChatButton(
-                        userName: widget.userName,
-                        profileName: widget.displayName,
-                      ),
-                      FollowButton(
-                        userName: widget.userName,
-                        profileName: widget.profileName,
-                      ),
-                    ],
+  return SingleChildScrollView(
+    child: Padding(
+    padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(widget.profilePicture),
+              radius: 50,
+            ),
+            widget.isOwnProfile
+              ? Align(
+                  alignment: Alignment.bottomRight,
+                  child: EditButton(
+                    userName: widget.userName,
                   ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.displayName,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+                ) 
+              : Row(
+                  children: [
+                    ChatButton(
+                      userName: widget.userName,
+                      profileName: widget.displayName,
+                    ),
+                    FollowButton(
+                      userName: widget.userName,
+                      profileName: widget.profileName,
+                    ),
+                  ],
+                ),
+          ],
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            widget.displayName,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            widget.about,
+            style: const TextStyle(
+              fontSize: 12,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+          color: const Color.fromARGB(255, 21, 21, 27),
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
               children: [
-                Text(
-                  'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          widget.selectedTab = TabSelection.posts;
+                        });
+                      },
+                      child: Text(
+                        'Posts',
+                        style: TextStyle(
+                          color: widget.selectedTab == TabSelection.posts ? Colors.blue : Colors.white,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          widget.selectedTab = TabSelection.comments;
+                        });
+                      },
+                      child: Text(
+                        'Comments',
+                        style: TextStyle(
+                          color: widget.selectedTab == TabSelection.comments ? Colors.blue : Colors.white,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          widget.selectedTab = TabSelection.about;
+                        });
+                      },
+                      child: Text(
+                        'About',
+                        style: TextStyle(
+                          color: widget.selectedTab == TabSelection.about ? Colors.blue : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.about,
-              style: const TextStyle(
-                fontSize: 12,
+        ),
+        // Expanded(
+          // child: 
+          Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 0.5,
+                color: Colors.grey,
               ),
-            ),
+              if (widget.selectedTab == TabSelection.posts) ...[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: 1.0,
+                    color: Colors.blue,
+                  ),
+                ),
+                // Text("Posts content here"),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return mockPost();
+                  },
+                ),
+                // for (int i = 0; i < 5; i++) mockPost(),
+              ],
+              if (widget.selectedTab == TabSelection.comments) ...[
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: 1.0,
+                    color: Colors.blue,
+                  ),
+                ),
+                Text("Comments content here"),
+              ],
+              if (widget.selectedTab == TabSelection.about) ...[
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: 1.0,
+                    color: Colors.blue,
+                  ),
+                ),
+                Text("About content here"),
+              ],
+            ],
           ),
-        ],
-      ),
+        // ),
+      ],
+    ),
+  ),
+  );
+}
+
+
+  Widget mockPost() {
+    return Column(
+      children: [
+        Post(
+          communityName: 'Entrepreneur',
+          userName: 'throwaway123',
+          title: 'Escaping corporate Hell and finding freedom',
+          imageUrl: 
+              'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+              // '',
+          content:
+              'Man, let me have a  vent for a minute. Just got out of the shittiest '
+              'gig ever – being a "marketing specialist" for the supposed big boys'
+              ' over at Microsoft. Let me tell you, it was not bad.',
+          commentNumber: 0,
+          shareNumber: 0,
+          timeStamp: DateTime.now(),
+          isHomePage: true,
+        ),
+        const Divider(height: 1, thickness: 1), // Add a thin horizontal line
+      ],
     );
   }
 
