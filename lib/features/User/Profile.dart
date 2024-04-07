@@ -1,25 +1,11 @@
-// import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/rightsidebar.dart';
-import 'dart:async';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
-import 'block_button.dart';
+// import 'block_button.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
 import 'package:reddit_clone/features/User/edit_button.dart';
-
-enum Menu { 
-  share, 
-  subscribe, 
-  save, 
-  copytext, 
-  edit, 
-  addpostflair, 
-  markspoiler, 
-  markNSFW, 
-  markasbrandaffiliate, 
-  report }
 
 class Profile extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -43,8 +29,8 @@ class Profile extends StatefulWidget {
     required this.followerCount,
     required this.cakeDay,
     this.isOwnProfile = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -52,12 +38,10 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   String _formattedCakeDay(String cakeDay) {
-    // Parse cakeDay string to DateTime object
     DateTime parsedDate = DateTime.parse(cakeDay);
-    // Format DateTime object to desired format
     return DateFormat('dd MMM yyyy').format(parsedDate);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,119 +49,134 @@ class _ProfileState extends State<Profile> {
       endDrawer: const Rightsidebar(),
       body: Stack(
         children: [
-          Container(
-            height: 300, // Increase the height to cover the AppBar
-            padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
-            decoration: BoxDecoration(
-              image: widget.bannerPicture.isNotEmpty
-                ? DecorationImage(
-                    image: NetworkImage(widget.bannerPicture),
-                    fit: BoxFit.cover,
-                  )
-                : null,
+          _buildBackground(),
+          _buildProfileContent(),
+          _buildAppBar(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Stack(
+      children: [
+        Container(
+          height: 300,
+          padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
+          decoration: BoxDecoration(
+            image: widget.bannerPicture.isNotEmpty
+              ? DecorationImage(
+                  image: NetworkImage(widget.bannerPicture),
+                  fit: BoxFit.cover,
+                )
+              : null,
+          ),
+        ),
+        Container(
+          height: 300,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: widget.bannerPicture.isNotEmpty
+                ? [Colors.transparent, Colors.black]
+                : [Colors.blue, Colors.black],
             ),
           ),
-          Container(
-              height: 300, // Same height as the image container
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: widget.bannerPicture.isNotEmpty
-                    ? [Colors.transparent, Colors.black]
-                    : [Colors.blue, Colors.black],
-                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileContent() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(widget.profilePicture),
+                radius: 50,
               ),
-            child: Column(
-              children: [
-                const SizedBox(height: 100), // Same height as the image container
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(widget.profilePicture),
-                      radius: 50,
+              widget.isOwnProfile
+                ? Align(
+                    alignment: Alignment.bottomRight,
+                    child: EditButton(
+                      userName: widget.userName,
                     ),
-                    widget.isOwnProfile
-                    ? 
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: EditButton(
-                          userName: widget.userName,
-                        ),
-                      ) 
-                    : 
-                    Row(
-                      children: [
-                        ChatButton(
-                          userName: widget.userName,
-                          profileName: widget.displayName,
-                        ),
-                        FollowButton(
-                          userName: widget.userName,
-                          profileName: widget.profileName,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.displayName,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ) 
+                : Row(
                     children: [
-                      Text(
-                        'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                        ),
+                      ChatButton(
+                        userName: widget.userName,
+                        profileName: widget.displayName,
+                      ),
+                      FollowButton(
+                        userName: widget.userName,
+                        profileName: widget.profileName,
                       ),
                     ],
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.about,
-                    style: const TextStyle(
-                      fontSize: 12,
-                    ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              widget.displayName,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
+                  style: const TextStyle(
+                    fontSize: 12,
                   ),
                 ),
               ],
             ),
           ),
-          AppBar(
-            // Make AppBar background transparent
-            backgroundColor: Colors.transparent, 
-            elevation: 0, // Remove shadow
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.search, size: 30.0),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              widget.about,
+              style: const TextStyle(
+                fontSize: 12,
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.share, size: 30.0),
-              ),
-              PopupMenuButton<Menu>(
-                onSelected: (Menu item) {},
-                itemBuilder: (BuildContext context) => menuitems(),
-              ),
-            ],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent, 
+      elevation: 0,
+      actions: [
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.search, size: 30.0),
+        ),
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.share, size: 30.0),
+        ),
+        PopupMenuButton<Menu>(
+          onSelected: (Menu item) {},
+          itemBuilder: (BuildContext context) => menuitems(),
+        ),
+      ],
     );
   }
 }
