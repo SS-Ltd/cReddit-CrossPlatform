@@ -138,8 +138,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNewPost(String type, String communityname, String title,
-      String content, bool isNSFW, bool isSpoiler) async {
+  Future<bool> createNewTextOrLinkPost(String type, String communityname,
+      String title, String content, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
     final response = await http.post(
       url,
@@ -151,6 +151,60 @@ class NetworkService extends ChangeNotifier {
         'content': content,
         'isNSFW': isNSFW,
         'isSpoiler': isSpoiler,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> createNewImagePost(String communityname, String title,
+      String content, bool isNSFW, bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': 'Images & Video',
+        'communityname': communityname,
+        'title': title,
+        //'images' :
+        'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> createNewPollPost(
+      String communityname,
+      String title,
+      String content,
+      List<String> options,
+      String expDate,
+      bool isNSFW,
+      bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': 'Poll',
+        'communityname': communityname,
+        'title': title,
+        //'content' :
+        //'pollOptions' :
+        //'expirationDate' :
+        'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
       }),
     );
     if (response.statusCode == 200) {

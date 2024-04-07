@@ -77,14 +77,13 @@ class _CreatePostState extends State<CreatePost> {
                 ? ElevatedButton(
                     onPressed: _istitleempty
                         ? null
-                        : () async {
-                            //i should add requests for different types of posts
-
+                        :  () async {
+                            String type = _insertlink ? "Links" : "Post";
                             bool newpost = await context
                                 .read<NetworkService>()
-                                .createNewPost(
-                                    "Post",
-                                    "",
+                                .createNewTextOrLinkPost(
+                                    type,
+                                    chosenCommunity,
                                     _titleController.text,
                                     _bodyController.text,
                                     false,
