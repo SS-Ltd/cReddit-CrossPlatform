@@ -71,3 +71,15 @@ class HomePage extends StatelessWidget {
 //               return DropdownMenuItem<String>(value: value, child: Text(value));
 //             }).toList(),
 //           ),
+// DropdownButton(
+//             value: shownvalue,
+//             icon: const Icon(Icons.arrow_downward),
+//             onChanged: (value) {
+//               setState(() {
+//                 shownvalue = value;
+//               });
+//             },
+//             items: list.map<DropdownMenuItem<String>>((String value) {
+//               return DropdownMenuItem<String>(value: value, child: Text(value));
+//             }).toList(),
+//           ),
