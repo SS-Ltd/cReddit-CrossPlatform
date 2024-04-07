@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
-import 'package:reddit_clone/features/home_page/reddit_refresh_indicator.dart';
 
 class HomePage extends StatefulWidget {
   @override
