@@ -8,6 +8,7 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
+import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
@@ -95,22 +96,27 @@ class SignUpScreen extends StatelessWidget {
                       passwordController.text.isEmpty) {
                     // Show an error message
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please fill in all fields')),
+                      const SnackBar(
+                          content: Text('Please fill in all fields')),
                     );
                     return;
                   }
-                  bool signup = await context.read<NetworkService>().createUser(
-                      "osama2001",
-                      emailController.text,
-                      passwordController.text,
-                      "Man");
-                  if (signup) {
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to sign up')),
-                    );
-                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NameSuggestion()),
+                  );
+                  // bool signup = await context.read<NetworkService>().createUser(
+                  //     "osama2001",
+                  //     emailController.text,
+                  //     passwordController.text,
+                  //     "Man");
+                  // if (signup) {
+                  //   Navigator.pop(context);
+                  // } else {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('Failed to sign up')),
+                  //   );
+                  // }
                 }),
           ],
         ),
