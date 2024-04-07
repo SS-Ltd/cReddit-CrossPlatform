@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
@@ -49,9 +50,11 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
+    print(networkService.user?.recentlyVisited[0].name);
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
+      networkService.user?.recentlyVisited.add(details);
       setState(() {
         print(details.icon);
         _subredditIcon = details.icon;
