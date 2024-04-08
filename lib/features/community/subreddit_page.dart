@@ -49,7 +49,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
-    print(networkService.user?.recentlyVisited[0].name);
+    for (var subreddit in networkService.user?.recentlyVisited ?? []) {
+      print(subreddit.name);
+    }
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
@@ -120,7 +122,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
     return Column(
       children: [
         Post(
-          communityName: postModel.communityName,
+          communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
           imageUrl: '', // Assuming this is the image URL
@@ -260,7 +262,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
           const SizedBox(height: 10),
           const Text(
             'Welcome to the official subreddit of the osama.'
-            ' This is a place for all things osama.', 
+            ' This is a place for all things osama.',
             //to be replaced with description when its done in backend
             style: TextStyle(color: Colors.white),
           ),

@@ -274,7 +274,8 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SubRedditPage(subredditName: 'Amir59')),
+          builder: (context) =>
+              SubRedditPage(subredditName: 'Karelle_Brown73')),
     );
     // } else {
     //   ScaffoldMessenger.of(context).showSnackBar(

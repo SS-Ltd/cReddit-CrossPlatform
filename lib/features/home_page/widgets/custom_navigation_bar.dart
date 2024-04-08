@@ -20,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
-    const HomePage(),
+    HomePage(),
     const CreatePost(profile: false),
     const InboxNotificationPage(),
 
@@ -49,33 +49,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             ),
           ],
         ),
-      ),
-      appBar: AppBar(
-        title: (_currentIndex == 0)
-            ? ElevatedButton(
-                onPressed: () {},
-                child: const Text('Home'),
-              )
-            : (_currentIndex == 1) ? Title(
-                color: Palette.whiteColor,
-                child: const Text('Communities'),
-              ) : (_currentIndex == 3) ? Title(
-                color: Palette.whiteColor,
-                child: const Text('Chat'),
-              ) : Title(
-                color: Palette.whiteColor,
-                child: const Text('Inbox'),
-              ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, size: 30.0),
-          ),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-            icon: const Icon(Icons.reddit, size: 30.0),
-          ),
-        ],
       ),
       endDrawer: const Rightsidebar(),
       body: _pages[_currentIndex],

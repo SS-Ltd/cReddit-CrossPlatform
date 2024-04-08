@@ -27,7 +27,23 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: const Icon(Icons.menu, size: 30.0),
+        leading: Row(mainAxisSize: MainAxisSize.max, children: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.menu, size: 30.0),
+          ),
+          SelectItem(
+            menuItems: menuItems,
+            onMenuItemSelected: (String selectedItem) {
+              // Handle menu item selection here
+              setState(() {
+                isSelectItemClicked = true;
+              });
+              print('Selected: $selectedItem');
+            },
+          ),
+        ]),
+        leadingWidth: 150,
         actions: [
           IconButton(
             onPressed: () {},
@@ -40,11 +56,14 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       endDrawer: const Rightsidebar(),
-      body: ListView.builder(
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return mockPost();
-        },
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return mockPost();
+          },
+        ),
       ),
     );
   }

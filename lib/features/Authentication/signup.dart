@@ -101,22 +101,22 @@ class SignUpScreen extends StatelessWidget {
                     );
                     return;
                   }
+                  bool signup = await context.read<NetworkService>().createUser(
+                      "osama2001",
+                      emailController.text,
+                      passwordController.text,
+                      "Man");
+                  if (signup) {
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Failed to sign up')),
+                    );
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NameSuggestion()),
                   );
-                  // bool signup = await context.read<NetworkService>().createUser(
-                  //     "osama2001",
-                  //     emailController.text,
-                  //     passwordController.text,
-                  //     "Man");
-                  // if (signup) {
-                  //   Navigator.pop(context);
-                  // } else {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(content: Text('Failed to sign up')),
-                  //   );
-                  // }
                 }),
           ],
         ),

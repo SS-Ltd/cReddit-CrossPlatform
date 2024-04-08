@@ -14,7 +14,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  String _baseUrl = 'http://192.168.0.11:3000';
+  String _baseUrl = 'http://10.0.2.2:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -205,7 +205,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-    Future<bool> createNewTextOrLinkPost(String type, String communityname,
+  Future<bool> createNewTextOrLinkPost(String type, String communityname,
       String title, String content, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
     final response = await http.post(
@@ -282,7 +282,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-    Future<List<JoinedCommunitites>?> joinedcommunitites() async {
+  Future<List<JoinedCommunitites>?> joinedcommunitites() async {
     Uri url = Uri.parse('$_baseUrl/user/joined-communities');
     final response = await http.get(url, headers: _headers);
 

@@ -115,7 +115,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Column(
       children: [
         Post(
-          communityName: postModel.communityName,
+          communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
           imageUrl: '', // Assuming this is the image URL
