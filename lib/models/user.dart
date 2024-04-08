@@ -6,6 +6,7 @@ class UserModel {
   bool isLoggedIn = false;
   final List<Subreddit> recentlyVisited = [];
 
+
   UserModel(this.username);
 
   void updateUserStatus(bool status) {
