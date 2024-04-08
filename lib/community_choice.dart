@@ -1,4 +1,8 @@
+import 'dart:js';
+import 'package:reddit_clone/models/joined_communities.dart';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/Network.dart';
+import 'package:provider/provider.dart';
 
 class CommunityChoice extends StatefulWidget {
   const CommunityChoice({
@@ -16,6 +20,21 @@ class CommunityChoice extends StatefulWidget {
 
 class _CommunityChoiceState extends State<CommunityChoice> {
 
+  List<JoinedCommunitites>? joinedCommunities = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetcheddata();
+  }
+
+  Future<void> fetcheddata() async {
+    joinedCommunities =
+        await Provider.of<NetworkService>(context, listen: false)
+            .joinedcommunitites();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
@@ -29,31 +48,21 @@ class _CommunityChoiceState extends State<CommunityChoice> {
           ),
           title: const Text('Post to'),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: TextField(
-                        //controller: _communityNameController,
-                        decoration: InputDecoration(
-                          hintText: 'Search for a community',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(0)),
-                          contentPadding: const EdgeInsets.all(10),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+        body: joinedCommunities == null
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: joinedCommunities!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(joinedCommunities![index].name),
+                    onTap: () {
+                      Navigator.pop(context, joinedCommunities![index].name);
+                    },
+                  );
+                },
               ),
-            ],
-          ),
-        ),
       ),
     );
   }

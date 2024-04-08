@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 // import 'package:reddit_clone/models/post_model.dart';
 // import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
-
 import 'package:reddit_clone/models/joined_communities.dart';
 
 // import 'package:reddit_clone/models/user.dart';
@@ -228,13 +227,17 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<JoinedCommunitites?> joinedcommunitites() async {
+  Future<List<JoinedCommunitites>?> joinedcommunitites() async {
     Uri url = Uri.parse('$_baseUrl/user/joined-communities');
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      return JoinedCommunitites.fromJson(json);
+      final List<dynamic> responseData = json.decode(response.body);
+      List<JoinedCommunitites> joinedCommunitites = responseData
+          .map((item) => JoinedCommunitites.fromJson(item))
+          .toList();
+      return joinedCommunitites;
     } else {
       return null;
     }
