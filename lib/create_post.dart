@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/Network.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
