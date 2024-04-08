@@ -13,6 +13,7 @@ class UserComment extends StatefulWidget {
   final DateTime timestamp;
   final File? photo;
   final bool contentType;
+  final int netVote;
 
   const UserComment({
     super.key,
@@ -24,6 +25,7 @@ class UserComment extends StatefulWidget {
     required this.timestamp,
     this.photo,
     required this.contentType,
+    this.netVote = 0,
   });
 
   @override
@@ -45,7 +47,7 @@ class LinePainter extends CustomPainter {
 }
 
 class UserCommentState extends State<UserComment> {
-  int votes = 0;
+  late int votes;
   ValueNotifier<int> hasVoted = ValueNotifier<int>(0);
   Timer? _timer;
   List<UserComment> replies = [];
@@ -77,7 +79,7 @@ class UserCommentState extends State<UserComment> {
           contentType: contentType,
         ));
       } else if (contentType == true) {
-        final File commentImage = result['content'];
+        final File commentImage = File(result['content']);
         replies.add(UserComment(
           avatar: 'assets/MonkeyDLuffy.png',
           username: 'User123',
@@ -120,7 +122,7 @@ class UserCommentState extends State<UserComment> {
   void initState() {
     super.initState();
     isMinimized = ValueNotifier<bool>(false);
-
+    votes = widget.netVote;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -162,7 +164,7 @@ class UserCommentState extends State<UserComment> {
                             showOverlay(context, widget);
                           },
                           child: CircleAvatar(
-                            backgroundImage: AssetImage(widget.avatar),
+                            backgroundImage:NetworkImage(widget.avatar),
                             //radius: 18,
                           ),
                         ),
@@ -183,8 +185,8 @@ class UserCommentState extends State<UserComment> {
                         const SizedBox(width: 10),
                         Text(
                           formatTimestamp(widget.timestamp),
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.grey),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                         if (isMinimized.value) ...[
                           const SizedBox(width: 10),
@@ -266,8 +268,8 @@ class UserCommentState extends State<UserComment> {
                               return Text(
                                 votes == 0 ? 'Vote' : '$votes',
                                 style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
                                     color: value == 1
                                         ? Palette.upvoteOrange
                                         : value == -1

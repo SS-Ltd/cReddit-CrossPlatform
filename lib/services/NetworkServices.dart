@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/community.dart';
+import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -15,7 +16,7 @@ class NetworkService extends ChangeNotifier {
   NetworkService._internal();
 
   //String _baseUrl = 'http://10.0.2.2:3000';
-  String _baseUrl = 'http://192.168.1.5:3000';
+  String _baseUrl = 'http://192.168.1.15:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -217,6 +218,18 @@ class NetworkService extends ChangeNotifier {
     throw Exception('Failed to fetch top communities');
   }
 }
+
+  Future<List<Comments>?> fetchCommentsForPost(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData.map((commentJson) => Comments.fromJson(commentJson)).toList();
+    } else {
+      return null;
+    }
+  }
 
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];

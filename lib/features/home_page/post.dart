@@ -232,7 +232,7 @@ class _PostState extends State<Post> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CommentPage(),
+                      builder: (context) => const CommentPage(postId: '557af0075b9e362be4a5d7ad'),
                     ),
                   );
                 },
