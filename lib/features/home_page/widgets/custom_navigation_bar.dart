@@ -5,6 +5,7 @@ import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/create_post.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
@@ -14,11 +15,13 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
+  bool isprofile = false;
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
     const HomePage(),
+    const CreatePost(profile: false),
     const InboxNotificationPage(),
 
     // CommunitiesPage(),
