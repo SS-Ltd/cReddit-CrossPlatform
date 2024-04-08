@@ -97,7 +97,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
           Expanded(
             child: historyPosts == null
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
                     itemCount: historyPosts!.length,
                     itemBuilder: (context, index) {

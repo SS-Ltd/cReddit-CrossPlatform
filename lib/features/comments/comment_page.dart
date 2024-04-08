@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
-import 'package:reddit_clone/theme/palette.dart';
 import 'user_comment.dart';
 
 class CommentPage extends StatefulWidget {
-  const CommentPage({Key? key}) : super(key: key);
+  const CommentPage({super.key});
 
   @override
   State<CommentPage> createState() {

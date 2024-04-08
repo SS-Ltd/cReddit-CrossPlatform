@@ -101,7 +101,7 @@ class SignUpScreen extends StatelessWidget {
                     Navigator.pop(context);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to sign up')),
+                      const SnackBar(content: Text('Failed to sign up')),
                     );
                   }
                 }),
