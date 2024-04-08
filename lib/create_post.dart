@@ -77,17 +77,28 @@ class _CreatePostState extends State<CreatePost> {
                 ? ElevatedButton(
                     onPressed: _istitleempty
                         ? null
-                        :  () async {
+                        : () async {
                             String type = _insertlink ? "Links" : "Post";
-                            bool newpost = await context
-                                .read<NetworkService>()
-                                .createNewTextOrLinkPost(
-                                    type,
-                                    chosenCommunity,
-                                    _titleController.text,
-                                    _bodyController.text,
-                                    false,
-                                    false);
+                            bool newpost = _insertpoll
+                                ? await context
+                                    .read<NetworkService>()
+                                    .createNewPollPost(
+                                        chosenCommunity,
+                                        _titleController.text,
+                                        '',
+                                        _optionControllers.cast(),
+                                        '',
+                                        false,
+                                        false)
+                                : await context
+                                    .read<NetworkService>()
+                                    .createNewTextOrLinkPost(
+                                        type,
+                                        chosenCommunity,
+                                        _titleController.text,
+                                        _bodyController.text,
+                                        false,
+                                        false);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.of(context).pop();

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 // import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
 
-import 'package:reddit_clone/models/recently_visited.dart';
+import 'package:reddit_clone/models/joined_communities.dart';
 
 // import 'package:reddit_clone/models/user.dart';
 // import 'package:reddit_clone/models/user_settings.dart';
@@ -228,12 +228,13 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<RecentlyVisited?> joinedcommunitites() async {
+  Future<JoinedCommunitites?> joinedcommunitites() async {
     Uri url = Uri.parse('$_baseUrl/user/joined-communities');
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+      return JoinedCommunitites.fromJson(json);
     } else {
       return null;
     }
