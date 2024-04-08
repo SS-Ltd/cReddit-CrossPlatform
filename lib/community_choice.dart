@@ -1,4 +1,3 @@
-import 'dart:js';
 import 'package:reddit_clone/models/joined_communities.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +18,7 @@ class CommunityChoice extends StatefulWidget {
 }
 
 class _CommunityChoiceState extends State<CommunityChoice> {
-
   List<JoinedCommunitites>? joinedCommunities = [];
-
 
   @override
   void initState() {
