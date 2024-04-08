@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CommunityChoice extends StatefulWidget {
-  const CommunityChoice({
+  CommunityChoice({
     super.key,
     required this.chosenCommunity,
   });
 
-  final String chosenCommunity;
+  String chosenCommunity;
 
   @override
   State<CommunityChoice> createState() {
@@ -58,7 +58,10 @@ class _CommunityChoiceState extends State<CommunityChoice> {
                   return ListTile(
                     title: Text(joinedCommunities![index].name),
                     onTap: () {
-                      Navigator.pop(context, joinedCommunities![index].name);
+                      setState(() {
+                        widget.chosenCommunity = joinedCommunities![index].name;
+                      });
+                      Navigator.pop(context);
                     },
                   );
                 },
