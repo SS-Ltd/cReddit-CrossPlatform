@@ -8,7 +8,6 @@ class AboutUserPopUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AlertDialog.adaptive(
-          backgroundColor: const Color(0xFFCCCCCC),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(0)),
           ),
