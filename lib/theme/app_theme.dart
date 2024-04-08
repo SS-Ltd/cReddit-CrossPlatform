@@ -11,12 +11,12 @@ class AppTheme {
     scaffoldBackgroundColor: Palette.backgroundColor,
     brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Palette.backgroundColor,
+      backgroundColor: Palette.appBar,
       elevation: 0,
       iconTheme: IconThemeData(color: Palette.whiteColor),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Palette.backgroundColor,
+      backgroundColor: Palette.appBar,
       selectedItemColor: Palette.whiteColor,
       unselectedItemColor: Palette.whiteColor,
     ),

@@ -9,8 +9,7 @@ import 'package:reddit_clone/services/NetworkServices.dart';
 class SubRedditPage extends StatefulWidget {
   final String subredditName;
 
-  const SubRedditPage({Key? key, required this.subredditName})
-      : super(key: key);
+  const SubRedditPage({super.key, required this.subredditName});
 
   @override
   State<SubRedditPage> createState() => _SubRedditPageState();
@@ -74,7 +73,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         preferredSize: const Size.fromHeight(65),
         child: AppBar(
           title: Text('r/${widget.subredditName}',
-              style: TextStyle(color: Colors.white)),
+              style: const TextStyle(color: Colors.white)),
           flexibleSpace: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -156,7 +155,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
           context: context,
           builder: (BuildContext context) {
             return Container(
-              color: const Color.fromRGBO(27, 27, 27, 1),
+              color: const Color.fromARGB(255, 10, 10, 10),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -207,7 +206,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
               CircleAvatar(
                 backgroundImage: _subredditIcon.isNotEmpty
                     ? NetworkImage(_subredditIcon)
-                    : NetworkImage('https://picsum.photos/200/300'),
+                    : const NetworkImage('https://picsum.photos/200/300'),
                 radius: 25,
               ),
               const SizedBox(width: 10),
@@ -216,12 +215,13 @@ class _SubRedditPageState extends State<SubRedditPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('r/${widget.subredditName}',
-                        style: TextStyle(fontSize: 16, color: Colors.white)),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.white)),
                     Row(
                       children: [
                         Text('$_subredditMembers members  ',
-                            style:
-                                TextStyle(fontSize: 12, color: Colors.white)),
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.white)),
                         Row(
                           children: [
                             Container(
@@ -234,7 +234,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
                             ),
                             const SizedBox(width: 4),
                             Text('$_subredditMembers online',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 12, color: Colors.white)),
                           ],
                         ),
@@ -260,7 +260,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
           const SizedBox(height: 10),
           const Text(
             'Welcome to the official subreddit of the osama.'
-            ' This is a place for all things osama.', //to be replaced with description when its done in backend
+            ' This is a place for all things osama.', 
+            //to be replaced with description when its done in backend
             style: TextStyle(color: Colors.white),
           ),
         ],

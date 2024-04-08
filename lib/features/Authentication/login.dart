@@ -23,9 +23,9 @@ class LoginScreen extends StatelessWidget {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: Palette.redditBlack,
+      backgroundColor: Palette.redditLogin,
       appBar: AppBar(
-        backgroundColor: Palette.redditBlack,
+        backgroundColor: Palette.redditLogin,
         title:
             SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
         centerTitle: true,
@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
               },
               child: const Text('Sign Up',
                   style: TextStyle(
-                      color: Palette.redditGrey,
+                      color: Palette.whiteColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold))),
         ],
@@ -49,8 +49,13 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text('Log in to Reddit',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            const Text(
+              'Log in to Reddit',
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.whiteColor),
+            ),
             const SizedBox(height: 20),
             ImageButton(
               text: 'Continue with Google',
@@ -132,7 +137,7 @@ class LoginScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CustomNavigationBar(),
+                        builder: (context) => const CustomNavigationBar(),
                       ),
                     );
                   }

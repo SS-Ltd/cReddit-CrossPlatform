@@ -8,6 +8,7 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
+import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
@@ -18,7 +19,9 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
+      backgroundColor: Palette.redditLogin,
       appBar: AppBar(
+        backgroundColor: Palette.redditLogin,
         title:
             SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
         centerTitle: true,
@@ -29,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
               },
               child: const Text('Log In',
                   style: TextStyle(
-                      color: Palette.redditGrey,
+                      color: Palette.whiteColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold))),
         ],
@@ -39,8 +42,13 @@ class SignUpScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text('Hi friend, Sign up!',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+            const Text(
+              'Hi friend, Sign up!',
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: Palette.whiteColor),
+            ),
             const SizedBox(height: 20),
             ImageButton(
               text: 'Continue with Google',
@@ -51,7 +59,7 @@ class SignUpScreen extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Divider(
-                    color: Palette.redditGrey,
+                    color: Palette.whiteColor,
                     height: 50,
                   ),
                 ),
@@ -59,7 +67,7 @@ class SignUpScreen extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Palette.redditDarkGrey)),
+                        color: Palette.whiteColor)),
                 Expanded(
                   child: Divider(
                     color: Palette.redditGrey,
@@ -88,22 +96,27 @@ class SignUpScreen extends StatelessWidget {
                       passwordController.text.isEmpty) {
                     // Show an error message
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please fill in all fields')),
+                      const SnackBar(
+                          content: Text('Please fill in all fields')),
                     );
                     return;
                   }
-                  bool signup = await context.read<NetworkService>().createUser(
-                      "osama2001",
-                      emailController.text,
-                      passwordController.text,
-                      "Man");
-                  if (signup) {
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to sign up')),
-                    );
-                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NameSuggestion()),
+                  );
+                  // bool signup = await context.read<NetworkService>().createUser(
+                  //     "osama2001",
+                  //     emailController.text,
+                  //     passwordController.text,
+                  //     "Man");
+                  // if (signup) {
+                  //   Navigator.pop(context);
+                  // } else {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('Failed to sign up')),
+                  //   );
+                  // }
                 }),
           ],
         ),
