@@ -118,12 +118,17 @@ class _HistoryPageState extends State<HistoryPage> {
           communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
+          profilePicture: postModel.profilePicture,
           imageUrl: '', // Assuming this is the image URL
           content: postModel.content,
           commentNumber: postModel.commentCount,
           shareNumber: 0, // Adjust accordingly if your model includes this info
           timeStamp: postModel.uploadDate,
           isHomePage: true, // Adjust based on your design/requirements
+          postId: postModel.postId,
+          votes: postModel.netVote,
+          isDownvoted: postModel.isDownvoted,
+          isUpvoted: postModel.isUpvoted,
         ),
         const Divider(height: 1, thickness: 1),
       ],

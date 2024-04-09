@@ -324,6 +324,20 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<PostModel>?> getHomeFeed() async {
+    Uri url = Uri.parse('$_baseUrl/post/home-feed?limit=25');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((postJson) => PostModel.fromJson(postJson))
+          .toList();
+    } else {
+      return null;
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {

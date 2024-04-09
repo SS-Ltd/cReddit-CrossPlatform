@@ -259,8 +259,14 @@ Widget mockPost() {
             ' over at Microsoft. Let me tell you, it was not bad.',
         commentNumber: 0,
         shareNumber: 0,
+        profilePicture:
+            'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
         timeStamp: DateTime.now(),
         isHomePage: false,
+        postId: '1',
+        votes: 0,
+        isDownvoted: false,
+        isUpvoted: false,
       ),
     ],
   );

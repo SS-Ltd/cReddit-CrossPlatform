@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
+import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
@@ -9,23 +11,33 @@ class Post extends StatefulWidget {
   final String communityName;
   final String userName;
   final String title;
+  final String profilePicture;
   final String imageUrl;
   final String content;
   final int commentNumber;
   final int shareNumber;
   final DateTime timeStamp;
   final bool isHomePage;
+  final String postId;
+  final bool isUpvoted;
+  final bool isDownvoted;
+  int votes;
 
-  const Post({
+  Post({
     required this.communityName,
     required this.userName,
     required this.title,
+    required this.profilePicture,
     required this.imageUrl,
     required this.content,
     this.commentNumber = 0,
     this.shareNumber = 0,
     required this.timeStamp,
     this.isHomePage = true,
+    required this.postId,
+    required this.votes,
+    required this.isUpvoted,
+    required this.isDownvoted,
     super.key,
   });
 
@@ -34,7 +46,6 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  int votes = 0;
   Timer? _timer;
 
   @override
@@ -53,10 +64,8 @@ class _PostState extends State<Post> {
                 children: [
                   Row(
                     children: [
-                      const CircleAvatar(
-                        //replace with user profile picture
-                        backgroundImage: NetworkImage(
-                            'https://www.w3schools.com/w3images/avatar2.png'),
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(widget.profilePicture),
                       ),
                       const SizedBox(width: 10),
                       widget.isHomePage
@@ -65,9 +74,9 @@ class _PostState extends State<Post> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NewPage()),
-                                          //replace with community page 
+                                      builder: (context) => SubRedditPage(
+                                            subredditName: widget.communityName,
+                                          )),
                                 );
                               },
                               child: Text(
@@ -92,8 +101,8 @@ class _PostState extends State<Post> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const NewPage()), 
-                                        //replace with profile page or widget
+                                              const AboutUserPopUp()),
+                                      //replace with profile page or widget
                                     );
                                   },
                                   child: Text(
@@ -111,26 +120,33 @@ class _PostState extends State<Post> {
               ),
             ),
           ),
-          // const SizedBox(height: 10),
           GestureDetector(
             onTap: widget.isHomePage
                 ? () {
+                    PostComments postComment = PostComments(
+                      communityName: widget.communityName,
+                      profilePicture: widget.profilePicture,
+                      userName: widget.userName,
+                      title: widget.title,
+                      imageUrl:
+                          'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                      content: widget.content,
+                      commentNumber: widget.commentNumber,
+                      shareNumber: widget.shareNumber,
+                      timeStamp: widget.timeStamp,
+                      isHomePage: false,
+                      postId: widget.postId,
+                      votes: widget.votes,
+                      isDownvoted: widget.isDownvoted,
+                      isUpvoted: widget.isUpvoted,
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:(context) => const PostComment(),
-                        // builder: (context) => Post(
-                        //   communityName: widget.communityName,
-                        //   userName: widget.userName,
-                        //   title: widget.title,
-                        //   imageUrl: widget.imageUrl,
-                        //   content: widget.content,
-                        //   commentNumber: widget.commentNumber,
-                        //   shareNumber: widget.shareNumber,
-                        //   timeStamp: widget.timeStamp,
-                        //   isHomePage: false,
-                        // ),
-                      ), //replace with post and comment page
+                        //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
+                        builder: (context) => CommentPage(
+                            postId: widget.postId, postComment: postComment),
+                      ),
                     );
                   }
                 : null,
@@ -142,7 +158,6 @@ class _PostState extends State<Post> {
               ),
             ),
           ),
-          // const SizedBox(height: 10),
           Visibility(
             visible: widget.imageUrl.isNotEmpty,
             child: GestureDetector(
@@ -179,22 +194,30 @@ class _PostState extends State<Post> {
           GestureDetector(
             onTap: widget.isHomePage
                 ? () {
+                    PostComments postComment = PostComments(
+                      communityName: widget.communityName,
+                      profilePicture: widget.profilePicture,
+                      userName: widget.userName,
+                      title: widget.title,
+                      imageUrl:
+                          'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                      content: widget.content,
+                      commentNumber: widget.commentNumber,
+                      shareNumber: widget.shareNumber,
+                      timeStamp: widget.timeStamp,
+                      isHomePage: false,
+                      postId: widget.postId,
+                      votes: widget.votes,
+                      isDownvoted: widget.isDownvoted,
+                      isUpvoted: widget.isUpvoted,
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:(context) => const PostComment(), 
-                        // builder: (context) => Post(
-                        //   communityName: widget.communityName,
-                        //   userName: widget.userName,
-                        //   title: widget.title,
-                        //   imageUrl: widget.imageUrl,
-                        //   content: widget.content,
-                        //   commentNumber: widget.commentNumber,
-                        //   shareNumber: widget.shareNumber,
-                        //   timeStamp: widget.timeStamp,
-                        //   isHomePage: false,
-                        // ),
-                      ), //replace with post and comment page
+                        //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
+                        builder: (context) => CommentPage(
+                            postId: widget.postId, postComment: postComment),
+                      ),
                     );
                   }
                 : null,
@@ -215,16 +238,16 @@ class _PostState extends State<Post> {
                 icon: const Icon(Icons.arrow_upward),
                 onPressed: () {
                   setState(() {
-                    votes++;
+                    widget.votes++;
                   });
                 },
               ),
-              Text(votes.toString()),
+              Text(widget.votes.toString()),
               IconButton(
                 icon: const Icon(Icons.arrow_downward),
                 onPressed: () {
                   setState(() {
-                    votes--;
+                    widget.votes--;
                   });
                 },
               ),
@@ -233,23 +256,28 @@ class _PostState extends State<Post> {
                 //other icon: add_comment,comment
                 onPressed: () {
                   PostComments postComment = PostComments(
-                        communityName: 'Entrepreneur',
-                        userName: 'throwaway123',
-                        title: 'Escaping corporate Hell and finding freedom',
-                        imageUrl: 'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-                        content: 'Man, let me have a  vent for a minute. Just got out of the shittiest '
-                                  'gig ever – being a "marketing specialist" for the supposed big boys'
-                                  ' over at Microsoft. Let me tell you, it was not bad.',
-                        commentNumber: 0,
-                        shareNumber: 0,
-                        timeStamp: DateTime.now(),
-                        isHomePage: false,
-                      );
+                    communityName: widget.communityName,
+                    profilePicture: widget.profilePicture,
+                    userName: widget.userName,
+                    title: widget.title,
+                    imageUrl:
+                        'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                    content: widget.content,
+                    commentNumber: widget.commentNumber,
+                    shareNumber: widget.shareNumber,
+                    timeStamp: widget.timeStamp,
+                    isHomePage: false,
+                    postId: widget.postId,
+                    votes: widget.votes,
+                    isDownvoted: widget.isDownvoted,
+                    isUpvoted: widget.isUpvoted,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
-                      builder: (context) => CommentPage(postId: 'd05cc9e5a4ba6941dccaaa4f',postComment: postComment),
+                      builder: (context) => CommentPage(
+                          postId: widget.postId, postComment: postComment),
                     ),
                   );
                 },

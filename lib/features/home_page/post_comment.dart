@@ -65,6 +65,8 @@ Widget mockPost() {
     children: [
       Post(
         communityName: 'Entrepreneur',
+        profilePicture:
+            'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
         userName: 'throwaway123',
         title: 'Escaping corporate Hell and finding freedom',
         imageUrl:
@@ -77,6 +79,10 @@ Widget mockPost() {
         shareNumber: 0,
         timeStamp: DateTime.now(),
         isHomePage: false,
+        postId: '1',
+        votes: 0,
+        isDownvoted: false,
+        isUpvoted: false,
       ),
       //CommentPage(),
     ],

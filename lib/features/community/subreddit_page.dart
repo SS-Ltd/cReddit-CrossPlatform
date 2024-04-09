@@ -126,11 +126,16 @@ class _SubRedditPageState extends State<SubRedditPage> {
           userName: postModel.username,
           title: postModel.title,
           imageUrl: '', // Assuming this is the image URL
+          profilePicture: postModel.profilePicture,
           content: postModel.content,
           commentNumber: postModel.commentCount,
           shareNumber: 0, // Adjust accordingly if your model includes this info
           timeStamp: postModel.uploadDate,
           isHomePage: true, // Adjust based on your design/requirements
+          postId: postModel.postId,
+          votes: postModel.netVote,
+          isDownvoted: postModel.isDownvoted,
+          isUpvoted: postModel.isUpvoted,
         ),
         const Divider(height: 1, thickness: 1),
       ],

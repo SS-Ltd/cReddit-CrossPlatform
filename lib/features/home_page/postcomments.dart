@@ -10,19 +10,29 @@ class PostComments extends StatelessWidget {
   final int commentNumber;
   final int shareNumber;
   final DateTime timeStamp;
+  final String profilePicture;
   final bool isHomePage;
+  final String postId;
+  final bool isDownvoted;
+  final bool isUpvoted;
+  int votes;
 
-  const PostComments({
+  PostComments({
     Key? key,
     required this.communityName,
     required this.userName,
     required this.title,
     required this.imageUrl,
+    required this.profilePicture,
     required this.content,
     required this.commentNumber,
     required this.shareNumber,
     required this.timeStamp,
     required this.isHomePage,
+    required this.postId,
+    required this.votes,
+    required this.isDownvoted,
+    required this.isUpvoted,
   }) : super(key: key);
 
   @override
@@ -33,12 +43,17 @@ class PostComments extends StatelessWidget {
           communityName: communityName,
           userName: userName,
           title: title,
+          profilePicture: profilePicture,
           imageUrl: imageUrl,
           content: content,
           commentNumber: commentNumber,
           shareNumber: shareNumber,
           timeStamp: timeStamp,
           isHomePage: isHomePage,
+          postId: postId,
+          votes: votes,
+          isDownvoted: isDownvoted,
+          isUpvoted: isUpvoted,
         ),
       ],
     );
