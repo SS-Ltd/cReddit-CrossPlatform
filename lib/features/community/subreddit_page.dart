@@ -130,8 +130,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
           content: postModel.content,
           commentNumber: postModel.commentCount,
           shareNumber: 0, // Adjust accordingly if your model includes this info
-          timeStamp: postModel.uploadDate,
-          isHomePage: true, 
+          timeStamp: postModel.uploadDate ?? DateTime.now(),
+          isHomePage: true,
           isSubRedditPage: true,
           postId: postModel.postId,
           votes: postModel.netVote,

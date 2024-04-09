@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                   content: post.content,
                   commentNumber: post.commentCount,
                   shareNumber: 0,
-                  timeStamp: post.uploadDate,
+                  timeStamp: post.uploadDate ?? DateTime.now(),
                   profilePicture: post.profilePicture,
                   isHomePage: true,
                   isSubRedditPage: false,

@@ -74,68 +74,69 @@ class _PostState extends State<Post> {
                       ),
                       const SizedBox(width: 10),
                       widget.isHomePage
-                        ? (widget.isSubRedditPage
-                          ? GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => 
-                                      const AboutUserPopUp()),
-                                );
-                              },
-                              child: Text(
-                                'r/${widget.userName}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            )
-                          : GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SubRedditPage(
-                                            subredditName: widget.communityName,
-                                          )),
-                                );
-                              },
-                              child: Text(
-                                'r/${widget.communityName}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ))
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'r/${widget.communityName}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const AboutUserPopUp()),
-                                    //replace with profile page or widget
-                                  );
-                                },
-                                child: Text(
-                                  'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                          ? (widget.isSubRedditPage
+                              ? GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AboutUserPopUp()),
+                                    );
+                                  },
+                                  child: Text(
+                                    'r/${widget.userName}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SubRedditPage(
+                                                subredditName:
+                                                    widget.communityName,
+                                              )),
+                                    );
+                                  },
+                                  child: Text(
+                                    'r/${widget.communityName}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ))
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'r/${widget.communityName}',
                                   style: const TextStyle(
-                                    color: Colors.blue,
+                                    color: Colors.grey,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AboutUserPopUp()),
+                                      //replace with profile page or widget
+                                    );
+                                  },
+                                  child: Text(
+                                    'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                    style: const TextStyle(
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                     ],
                   ),
                 ],
@@ -150,8 +151,7 @@ class _PostState extends State<Post> {
                       profilePicture: widget.profilePicture,
                       userName: widget.userName,
                       title: widget.title,
-                      imageUrl:
-                          '',
+                      imageUrl: '',
                       content: widget.content,
                       commentNumber: widget.commentNumber,
                       shareNumber: widget.shareNumber,
@@ -222,8 +222,7 @@ class _PostState extends State<Post> {
                       profilePicture: widget.profilePicture,
                       userName: widget.userName,
                       title: widget.title,
-                      imageUrl:
-                          '',
+                      imageUrl: '',
                       content: widget.content,
                       commentNumber: widget.commentNumber,
                       shareNumber: widget.shareNumber,
@@ -261,10 +260,12 @@ class _PostState extends State<Post> {
                 icon: const Icon(Icons.arrow_upward),
                 color: widget.isUpvoted ? Colors.red : Colors.grey,
                 onPressed: () async {
-                  bool a = await context.read<NetworkService>().postUpVote(widget.postId);
+                  bool a = await context
+                      .read<NetworkService>()
+                      .postUpVote(widget.postId);
                   setState(() {
                     print("upvote");
-                    if (widget.isUpvoted && !widget.isDownvoted){
+                    if (widget.isUpvoted && !widget.isDownvoted) {
                       widget.votes--;
                       widget.isUpvoted = false;
                     } else if (!widget.isUpvoted && widget.isDownvoted) {
@@ -278,17 +279,19 @@ class _PostState extends State<Post> {
                   });
                 },
               ),
-              Text(
-                widget.votes.toString(),
-                style: TextStyle(
-                  color: widget.isUpvoted ? Colors.red : (widget.isDownvoted ? Colors.blue : Colors.grey),  
-                )
-              ),
+              Text(widget.votes.toString(),
+                  style: TextStyle(
+                    color: widget.isUpvoted
+                        ? Colors.red
+                        : (widget.isDownvoted ? Colors.blue : Colors.grey),
+                  )),
               IconButton(
                 icon: const Icon(Icons.arrow_downward),
                 color: widget.isDownvoted ? Colors.blue : Colors.grey,
                 onPressed: () async {
-                  bool a = await context.read<NetworkService>().postDownVote(widget.postId);
+                  bool a = await context
+                      .read<NetworkService>()
+                      .postDownVote(widget.postId);
                   setState(() {
                     if (widget.isDownvoted && !widget.isUpvoted) {
                       widget.votes++;
@@ -313,8 +316,7 @@ class _PostState extends State<Post> {
                     profilePicture: widget.profilePicture,
                     userName: widget.userName,
                     title: widget.title,
-                    imageUrl:
-                        '',
+                    imageUrl: '',
                     content: widget.content,
                     commentNumber: widget.commentNumber,
                     shareNumber: widget.shareNumber,
