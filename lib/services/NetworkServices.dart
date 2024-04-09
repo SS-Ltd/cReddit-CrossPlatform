@@ -27,6 +27,7 @@ class NetworkService extends ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'username': username, 'password': password}));
 
+    print(response.body);
     if (response.statusCode == 200) {
       _updateCookie(response);
       _user = UserModel(username);
@@ -72,9 +73,21 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<String> getRandomName() async {
+    Uri url = Uri.parse('$_baseUrl/user/generate-username');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData['username'];
+    } else {
+      throw Exception('Failed to get random name');
+    }
+  }
+
   Future<bool> createUser(
       String username, String email, String password, String gender) async {
     final url = Uri.parse('$_baseUrl/user');
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -87,6 +100,7 @@ class NetworkService extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
+      print(response);
       return true;
     } else {
       print('Failed to create user: ${response.body}');
