@@ -36,17 +36,17 @@ class CommunityPageState extends State<CommunityPage> {
           return Text('Error: ${snapshot.error}');
         } else {
           return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.public, color: Palette.blueColor),
-                  SizedBox(width: 8),
-                  Text('Top Globally'),
-                ],
-              ),
-            ),
+            // appBar: AppBar(
+            //   automaticallyImplyLeading: false,
+            //   title: const Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       Icon(Icons.public, color: Palette.blueColor),
+            //       SizedBox(width: 8),
+            //       Text('Top Globally'),
+            //     ],
+            //   ),
+            // ),
             body: ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {

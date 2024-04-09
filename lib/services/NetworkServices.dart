@@ -5,9 +5,10 @@ import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/models/user_settings.dart';
+import 'package:path_provider/path_provider.dart';
 
 class NetworkService extends ChangeNotifier {
   static final NetworkService _instance = NetworkService._internal();
@@ -16,7 +17,7 @@ class NetworkService extends ChangeNotifier {
   NetworkService._internal();
 
   //String _baseUrl = 'http://10.0.2.2:3000';
-  String _baseUrl = 'http://192.168.1.15:3000';
+  String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -230,6 +231,15 @@ class NetworkService extends ChangeNotifier {
       return null;
     }
   }
+
+//   Future<File> downloadFile(String url, String filename) async {
+//   var request = await http.Client().get(Uri.parse(url));
+//   var bytes = request.bodyBytes;
+//   String dir = (await getApplicationDocumentsDirectory()).path;
+//   File file = File('$dir/$filename');
+//   await file.writeAsBytes(bytes);
+//   return file;
+// }
 
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];

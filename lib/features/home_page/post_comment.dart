@@ -50,7 +50,7 @@ class _PostCommentState extends State<PostComment> {
               onSelected: (Menu item) {},
               itemBuilder: (BuildContext context) => menuitems()),
           IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: const Icon(Icons.reddit, size: 30.0),
           ),
         ],

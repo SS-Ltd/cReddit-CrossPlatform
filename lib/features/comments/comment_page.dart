@@ -10,7 +10,8 @@ import 'package:reddit_clone/features/home_page/post.dart';
 
 class CommentPage extends StatefulWidget {
   final String postId;
-  const CommentPage({Key? key, required this.postId}) : super(key: key);
+  final Widget postComment;
+  const CommentPage({Key? key, required this.postId, required this.postComment}) : super(key: key);
 
   @override
   State<CommentPage> createState() {
@@ -40,7 +41,7 @@ class _CommentPageState extends State<CommentPage> {
     });
   }
 
-  Future<void> fetchComments(String postId) async {
+   Future<void> fetchComments(String postId) async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
     if (fetchedComments != null) {
@@ -54,10 +55,13 @@ class _CommentPageState extends State<CommentPage> {
           photo: comment.isImage ? File(comment.content) : null,
           contentType: comment.isImage,
           netVote: comment.netVote,
+          imageSource: 0,
         )).toList();
       });
     }
   }
+
+  
 
   void _calculateCommentPositions() {
     for (var key in _keys) {
@@ -104,7 +108,7 @@ class _CommentPageState extends State<CommentPage> {
               onSelected: (Menu item) {},
               itemBuilder: (BuildContext context) => menuitems()),
           IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: const Icon(Icons.reddit, size: 30.0),
           ),
         ],
@@ -116,7 +120,7 @@ class _CommentPageState extends State<CommentPage> {
             itemCount: _comments.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return mockPost();
+                return widget.postComment;
               } else if (index - 1 < _keys.length) {
                 return UserComment(
                   key: _keys[index - 1],
@@ -127,6 +131,7 @@ class _CommentPageState extends State<CommentPage> {
                   photo: _comments[index - 1].photo,
                   contentType: _comments[index - 1].contentType,
                   netVote: _comments[index - 1].netVote,
+                  imageSource: _comments[index - 1].imageSource, //may need to be fixed
                 );
               } else {
                 return const SizedBox.shrink();
@@ -166,9 +171,10 @@ class _CommentPageState extends State<CommentPage> {
                           timestamp: DateTime.now(),
                           photo: null,
                           contentType: contentType,
+                          imageSource: 2,
                         ));
                       } else if (contentType == true) {
-                        final File commentImage = File(result['content']);
+                        final File commentImage = result['content'];
                         _comments.add(UserComment(
                           avatar: 'assets/MonkeyDLuffy.png',
                           username: 'User123',
@@ -176,6 +182,7 @@ class _CommentPageState extends State<CommentPage> {
                           timestamp: DateTime.now(),
                           photo: commentImage,
                           contentType: contentType,
+                          imageSource: 1,
                         ));
                       }
                       // Add a GlobalKey for the new comment
