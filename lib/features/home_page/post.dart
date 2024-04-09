@@ -4,7 +4,6 @@ import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'dart:async';
 import '../../new_page.dart';
-import 'post_comment.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 
 class Post extends StatefulWidget {
@@ -143,7 +142,6 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
                             postId: widget.postId, postComment: postComment),
                       ),
@@ -214,7 +212,6 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
                             postId: widget.postId, postComment: postComment),
                       ),
@@ -275,7 +272,6 @@ class _PostState extends State<Post> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                       builder: (context) => CommentPage(
                           postId: widget.postId, postComment: postComment),
                     ),

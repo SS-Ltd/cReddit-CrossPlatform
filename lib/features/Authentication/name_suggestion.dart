@@ -48,8 +48,9 @@ class NameSuggestion extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
-                    "Most redditors use an anonymous username. You won't be able to change your username later.",
+                  const Text(
+                    "Most redditors use an anonymous username." 
+                    " You won't be able to change your username later.",
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
