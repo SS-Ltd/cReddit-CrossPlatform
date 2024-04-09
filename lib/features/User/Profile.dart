@@ -49,13 +49,30 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: widget._scaffoldKey,
-      endDrawer: const Rightsidebar(),
+        key: widget._scaffoldKey,
+        endDrawer: const Rightsidebar(),
+        appBar: AppBar(
+        backgroundColor: Colors.transparent, 
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search, size: 30.0),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.share, size: 30.0),
+          ),
+          PopupMenuButton<Menu>(
+            onSelected: (Menu item) {},
+            itemBuilder: (BuildContext context) => menuitems(),
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           _buildBackground(),
           _buildProfileContent(),
-          _buildAppBar(),
         ],
       ),
     );
@@ -66,7 +83,7 @@ class _ProfileState extends State<Profile> {
       children: [
         Container(
           height: 300,
-          padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           decoration: BoxDecoration(
             image: widget.bannerPicture.isNotEmpty
               ? DecorationImage(
@@ -95,7 +112,7 @@ class _ProfileState extends State<Profile> {
   Widget _buildProfileContent() {
   return SingleChildScrollView(
     child: Padding(
-    padding: const EdgeInsets.only(top: 100, left: 8.0, right: 8.0),
+    padding: const EdgeInsets.only( left: 8.0, right: 8.0),
     child: Column(
       children: [
         Row(

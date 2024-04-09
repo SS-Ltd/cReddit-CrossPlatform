@@ -101,7 +101,7 @@ class _PostState extends State<Post> {
                                             bannerPicture: '',
                                             followerCount: 0,
                                             cakeDay: '2024-03-25T15:37:33.339+00:00',
-                                            isOwnProfile: true,
+                                            isOwnProfile: false,
                                           ), //replace with profile page or widget
                                       )
                                     );
