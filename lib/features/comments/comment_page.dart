@@ -263,6 +263,7 @@ Widget mockPost() {
             'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
         timeStamp: DateTime.now(),
         isHomePage: false,
+        isSubRedditPage: false,
         postId: '1',
         votes: 0,
         isDownvoted: false,

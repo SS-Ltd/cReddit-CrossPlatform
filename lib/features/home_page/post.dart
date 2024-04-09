@@ -7,6 +7,7 @@ import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
+import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 
 class Post extends StatefulWidget {
@@ -20,6 +21,7 @@ class Post extends StatefulWidget {
   final int shareNumber;
   final DateTime timeStamp;
   final bool isHomePage;
+  final bool isSubRedditPage;
   final String postId;
   bool isUpvoted;
   bool isDownvoted;
@@ -36,6 +38,7 @@ class Post extends StatefulWidget {
     this.shareNumber = 0,
     required this.timeStamp,
     this.isHomePage = true,
+    required this.isSubRedditPage,
     required this.postId,
     required this.votes,
     required this.isUpvoted,
@@ -58,7 +61,7 @@ class _PostState extends State<Post> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
-            color: Colors.black,
+            color: Palette.backgroundColor,
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
@@ -71,7 +74,24 @@ class _PostState extends State<Post> {
                       ),
                       const SizedBox(width: 10),
                       widget.isHomePage
+                        ? (widget.isSubRedditPage
                           ? GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => 
+                                      const AboutUserPopUp()),
+                                );
+                              },
+                              child: Text(
+                                'r/${widget.userName}',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            )
+                          : GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -87,35 +107,35 @@ class _PostState extends State<Post> {
                                   color: Colors.grey,
                                 ),
                               ),
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'r/${widget.communityName}',
+                            ))
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'r/${widget.communityName}',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AboutUserPopUp()),
+                                    //replace with profile page or widget
+                                  );
+                                },
+                                child: Text(
+                                  'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
                                   style: const TextStyle(
-                                    color: Colors.grey,
+                                    color: Colors.blue,
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
-                                      //replace with profile page or widget
-                                    );
-                                  },
-                                  child: Text(
-                                    'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
+                          ),
                     ],
                   ),
                 ],
@@ -137,6 +157,7 @@ class _PostState extends State<Post> {
                       shareNumber: widget.shareNumber,
                       timeStamp: widget.timeStamp,
                       isHomePage: false,
+                      isSubRedditPage: false,
                       postId: widget.postId,
                       votes: widget.votes,
                       isDownvoted: widget.isDownvoted,
@@ -208,6 +229,7 @@ class _PostState extends State<Post> {
                       shareNumber: widget.shareNumber,
                       timeStamp: widget.timeStamp,
                       isHomePage: false,
+                      isSubRedditPage: false,
                       postId: widget.postId,
                       votes: widget.votes,
                       isDownvoted: widget.isDownvoted,
@@ -298,6 +320,7 @@ class _PostState extends State<Post> {
                     shareNumber: widget.shareNumber,
                     timeStamp: widget.timeStamp,
                     isHomePage: false,
+                    isSubRedditPage: false,
                     postId: widget.postId,
                     votes: widget.votes,
                     isDownvoted: widget.isDownvoted,

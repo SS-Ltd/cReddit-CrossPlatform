@@ -79,6 +79,7 @@ Widget mockPost() {
         shareNumber: 0,
         timeStamp: DateTime.now(),
         isHomePage: false,
+        isSubRedditPage: false,
         postId: '1',
         votes: 0,
         isDownvoted: false,

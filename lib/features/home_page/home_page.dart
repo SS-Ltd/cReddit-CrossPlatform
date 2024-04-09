@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> {
                   timeStamp: post.uploadDate,
                   profilePicture: post.profilePicture,
                   isHomePage: true,
+                  isSubRedditPage: false,
                   postId: post.postId,
                   votes: post.netVote,
                   isDownvoted: post.isDownvoted,
@@ -129,6 +130,7 @@ Widget mockPost() {
         profilePicture:
             'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
         isHomePage: true,
+        isSubRedditPage: false,
         postId: '123',
         votes: 0,
         isDownvoted: false,

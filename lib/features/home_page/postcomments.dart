@@ -12,6 +12,7 @@ class PostComments extends StatelessWidget {
   final DateTime timeStamp;
   final String profilePicture;
   final bool isHomePage;
+  final bool isSubRedditPage;
   final String postId;
   final bool isDownvoted;
   final bool isUpvoted;
@@ -29,6 +30,7 @@ class PostComments extends StatelessWidget {
     required this.shareNumber,
     required this.timeStamp,
     required this.isHomePage,
+    required this.isSubRedditPage,
     required this.postId,
     required this.votes,
     required this.isDownvoted,
@@ -50,6 +52,7 @@ class PostComments extends StatelessWidget {
           shareNumber: shareNumber,
           timeStamp: timeStamp,
           isHomePage: isHomePage,
+          isSubRedditPage: isSubRedditPage,
           postId: postId,
           votes: votes,
           isDownvoted: isDownvoted,

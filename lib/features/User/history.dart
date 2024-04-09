@@ -125,6 +125,7 @@ class _HistoryPageState extends State<HistoryPage> {
           shareNumber: 0, // Adjust accordingly if your model includes this info
           timeStamp: postModel.uploadDate,
           isHomePage: true, // Adjust based on your design/requirements
+          isSubRedditPage: false, 
           postId: postModel.postId,
           votes: postModel.netVote,
           isDownvoted: postModel.isDownvoted,
