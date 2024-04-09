@@ -8,7 +8,6 @@ class CommunityCard extends StatefulWidget {
   final String icon;
   final bool isJoined;
 
-
   const CommunityCard({
     Key? key,
     required this.name,
@@ -32,13 +31,20 @@ class CommunityCardState extends State<CommunityCard> {
   }
 
   @override
+  void dispose() {
+    isJoined.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromARGB(255, 12, 12, 12),
       shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20), // Adjust as needed
-      side: BorderSide(color: Colors.grey[800]!, width:0.75), // Adjust as needed
-    ),
+        borderRadius: BorderRadius.circular(20), // Adjust as needed
+        side: BorderSide(
+            color: Colors.grey[800]!, width: 0.75), // Adjust as needed
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

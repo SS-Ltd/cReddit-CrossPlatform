@@ -43,7 +43,7 @@ class _CommentPageState extends State<CommentPage> {
   Future<void> fetchComments(String postId) async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
-    if (fetchedComments != null) {
+    if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
         _comments = fetchedComments
