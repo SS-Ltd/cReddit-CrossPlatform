@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/rightsidebar.dart';
+import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +15,15 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<String> menuItems = ['Home', 'Popular', 'Watch', 'Latest'];
   bool isSelectItemClicked = false;
+  List<PostModel>? posts;
+
+  Future<void> fetchPosts() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final posts = await networkService.getHomeFeed();
+    if (posts != null) {
+      setState(() => this.posts = posts);
+    }
+  }
 
   Future<void> _refreshData() async {
     // Simulate loading data asynchronously
@@ -20,6 +32,12 @@ class _HomePageState extends State<HomePage> {
 
     // Once data is loaded, update the UI
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    fetchPosts();
+    super.initState();
   }
 
   @override
@@ -59,9 +77,31 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: ListView.builder(
-          itemCount: 5,
+          itemCount: posts?.length ?? 0,
           itemBuilder: (context, index) {
-            return mockPost();
+            final post = posts![index];
+            return Column(
+              children: [
+                Post(
+                  communityName: post.communityName ?? '',
+                  userName: post.username,
+                  title: post.title,
+                  imageUrl: '',
+                  content: post.content,
+                  commentNumber: post.commentCount,
+                  shareNumber: 0,
+                  timeStamp: post.uploadDate,
+                  profilePicture: post.profilePicture,
+                  isHomePage: true,
+                  postId: post.postId,
+                  votes: post.netVote,
+                  isDownvoted: post.isDownvoted,
+                  isUpvoted: post.isUpvoted,
+                ),
+                const Divider(
+                    height: 1, thickness: 1), // Add a thin horizontal line
+              ],
+            );
           },
         ),
       ),
@@ -86,7 +126,13 @@ Widget mockPost() {
         commentNumber: 0,
         shareNumber: 0,
         timeStamp: DateTime.now(),
+        profilePicture:
+            'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
         isHomePage: true,
+        postId: '123',
+        votes: 0,
+        isDownvoted: false,
+        isUpvoted: false,
       ),
       const Divider(height: 1, thickness: 1), // Add a thin horizontal line
     ],

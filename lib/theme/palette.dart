@@ -23,5 +23,6 @@ class Palette {
   static const Color greenColor = Color.fromRGBO(0, 204, 24, 1);
   static const Color blackColor = Colors.black;
   static const Color deepOrangeColor = Colors.deepOrange;
+  static const Color transparent = Colors.transparent;
 }
 

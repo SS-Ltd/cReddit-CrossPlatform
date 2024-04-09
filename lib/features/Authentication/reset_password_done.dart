@@ -39,6 +39,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
   @override
   void dispose() {
     timer?.cancel();
+    countdown.dispose();
+    canResend.dispose();
     super.dispose();
   }
 

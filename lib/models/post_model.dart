@@ -2,7 +2,7 @@ class PostModel {
   final String postId;
   final String type;
   final String username;
-  final String communityName;
+  final String? communityName;
   final String title;
   final String content;
   final String profilePicture;
@@ -11,8 +11,8 @@ class PostModel {
   final bool? isNSFW;
   final bool? isSpoiler;
   final bool? isApproved;
-  final bool? isUpvoted;
-  final bool? isDownvoted;
+  final bool isUpvoted;
+  final bool isDownvoted;
   final bool? isHidden;
   final bool? isSaved;
   final DateTime uploadDate;

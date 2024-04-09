@@ -21,21 +21,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   bool isCleared = false;
   bool isFieldTapped = false;
 
-  Future<void> submit() async {
-    try {
-      final response = await http.post(
-        Uri.parse(''),
-        body: {'email': emailController.text},
-      );
-
-      if (response.statusCode == 200) {
-        // Handle successful response
-      } else {
-        // Handle unsuccessful response
-      }
-    } catch (e) {
-      // Handle error
-    }
+  @override
+  void dispose() {
+    emailController.dispose();
+    isValidNotifier.dispose();
+    super.dispose();
   }
 
   @override
