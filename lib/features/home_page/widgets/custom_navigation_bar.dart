@@ -5,7 +5,7 @@ import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  const CustomNavigationBar({super.key});
+  const CustomNavigationBar({Key? key}) : super(key: key);
 
   @override
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();
@@ -17,7 +17,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final List<Widget> _pages = [
     HomePage(),
     const InboxNotificationPage(),
-
     // CommunitiesPage(),
     // CreatePage(),
     // ChatPage(),
@@ -37,6 +36,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             _currentIndex = index;
           });
         },
+        selectedFontSize: 12, // Adjust the selected font size
+        unselectedFontSize: 12, // Adjust the unselected font size
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(

@@ -2,7 +2,7 @@ class PostModel {
   final String postId;
   final String type;
   final String username;
-  final String communityName;
+  final String? communityName;
   final String title;
   final String content;
   final String profilePicture;
@@ -42,6 +42,7 @@ class PostModel {
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return PostModel(
       postId: json['_id'],
       type: json['type'],

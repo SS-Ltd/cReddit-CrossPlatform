@@ -5,7 +5,7 @@ import '../../new_page.dart';
 import 'post_comment.dart';
 
 class Post extends StatefulWidget {
-  final String communityName;
+  final String? communityName;
   final String userName;
   final String title;
   final String imageUrl;
@@ -115,7 +115,7 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:(context) => PostComment(),
+                        builder: (context) => PostComment(),
                         // builder: (context) => Post(
                         //   communityName: widget.communityName,
                         //   userName: widget.userName,
@@ -179,7 +179,7 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:(context) => PostComment(), 
+                        builder: (context) => PostComment(),
                         // builder: (context) => Post(
                         //   communityName: widget.communityName,
                         //   userName: widget.userName,
