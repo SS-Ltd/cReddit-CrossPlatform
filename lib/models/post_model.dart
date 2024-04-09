@@ -2,7 +2,7 @@ class PostModel {
   final String postId;
   final String type;
   final String username;
-  final String communityName;
+  final String? communityName;
   final String title;
   final String content;
   final String profilePicture;

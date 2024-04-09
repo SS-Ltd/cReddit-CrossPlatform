@@ -8,6 +8,7 @@ import 'package:reddit_clone/theme/theme.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
 import 'package:reddit_clone/features/community/community_page.dart';
 
+
 void main() {
   runApp(
     ChangeNotifierProvider(

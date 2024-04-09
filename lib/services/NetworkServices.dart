@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/models/user_settings.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:reddit_clone/models/joined_communities.dart';
 
 class NetworkService extends ChangeNotifier {
   static final NetworkService _instance = NetworkService._internal();
@@ -227,6 +228,95 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData.map((commentJson) => Comments.fromJson(commentJson)).toList();
+
+  Future<bool> createNewTextOrLinkPost(String type, String communityname,
+      String title, String content, bool isNSFW, bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': type,
+        'communityname': communityname,
+        'title': title,
+        'content': content,
+        'isNSFW': isNSFW,
+        'isSpoiler': isSpoiler,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> createNewImagePost(String communityname, String title,
+      String content, bool isNSFW, bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': 'Images & Video',
+        'communityname': communityname,
+        'title': title,
+        //'images' :
+        'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> createNewPollPost(
+      String communityname,
+      String title,
+      String content,
+      List<String> options,
+      String expDate,
+      bool isNSFW,
+      bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': 'Poll',
+        'communityname': communityname,
+        'title': title,
+        //'content' :
+        //'pollOptions' :
+        //'expirationDate' :
+        'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<List<JoinedCommunitites>?> joinedcommunitites() async {
+    Uri url = Uri.parse('$_baseUrl/user/joined-communities');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List<dynamic> responseData = json.decode(response.body);
+      List<JoinedCommunitites> joinedCommunitites = responseData
+          .map((item) => JoinedCommunitites.fromJson(item))
+          .toList();
+      return joinedCommunitites;
     } else {
       return null;
     }

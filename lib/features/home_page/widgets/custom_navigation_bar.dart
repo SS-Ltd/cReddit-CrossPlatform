@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
+import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
+import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/create_post.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
@@ -13,11 +16,14 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
+  bool isprofile = false;
   int _currentIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
     HomePage(),
     CommunityPage(),
+    const CreatePost(profile: false),
     const InboxNotificationPage(),
 
     
@@ -30,6 +36,23 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     final user = context.read<NetworkService>().user;
     print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: const [
+            Divider(
+              height: 20,
+              thickness: 1,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
+      endDrawer: const Rightsidebar(),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

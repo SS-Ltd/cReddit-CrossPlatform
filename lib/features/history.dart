@@ -97,7 +97,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
           Expanded(
             child: historyPosts == null
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
                     itemCount: historyPosts!.length,
                     itemBuilder: (context, index) {
@@ -115,7 +115,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Column(
       children: [
         Post(
-          communityName: postModel.communityName,
+          communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
           imageUrl: '', // Assuming this is the image URL

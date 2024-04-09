@@ -9,6 +9,7 @@ import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 
 class CommentPage extends StatefulWidget {
+
   final String postId;
   final Widget postComment;
   const CommentPage({Key? key, required this.postId, required this.postComment}) : super(key: key);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
@@ -48,9 +49,13 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
+    for (var subreddit in networkService.user?.recentlyVisited ?? []) {
+      print(subreddit.name);
+    }
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
+      networkService.user?.recentlyVisited.add(details);
       setState(() {
         print(details.icon);
         _subredditIcon = details.icon;
@@ -117,7 +122,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
     return Column(
       children: [
         Post(
-          communityName: postModel.communityName,
+          communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
           imageUrl: '', // Assuming this is the image URL
@@ -257,7 +262,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
           const SizedBox(height: 10),
           const Text(
             'Welcome to the official subreddit of the osama.'
-            ' This is a place for all things osama.', 
+            ' This is a place for all things osama.',
             //to be replaced with description when its done in backend
             style: TextStyle(color: Colors.white),
           ),

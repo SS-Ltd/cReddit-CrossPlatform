@@ -26,8 +26,8 @@ class Post extends StatefulWidget {
     this.shareNumber = 0,
     required this.timeStamp,
     this.isHomePage = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<Post> createState() => _PostState();
@@ -66,7 +66,8 @@ class _PostState extends State<Post> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const NewPage()), //replace with community page
+                                          const NewPage()),
+                                          //replace with community page 
                                 );
                               },
                               child: Text(
@@ -91,7 +92,8 @@ class _PostState extends State<Post> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const NewPage()), //replace with profile page or widget
+                                              const NewPage()), 
+                                        //replace with profile page or widget
                                     );
                                   },
                                   child: Text(
@@ -116,7 +118,7 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:(context) => PostComment(),
+                        builder:(context) => const PostComment(),
                         // builder: (context) => Post(
                         //   communityName: widget.communityName,
                         //   userName: widget.userName,
@@ -180,7 +182,7 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:(context) => PostComment(), 
+                        builder:(context) => const PostComment(), 
                         // builder: (context) => Post(
                         //   communityName: widget.communityName,
                         //   userName: widget.userName,
