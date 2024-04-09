@@ -6,7 +6,7 @@ import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/create_post.dart';
+import 'package:reddit_clone/features/post/create_post.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});

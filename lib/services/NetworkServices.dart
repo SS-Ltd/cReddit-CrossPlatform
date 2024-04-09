@@ -246,7 +246,7 @@ class NetworkService extends ChangeNotifier {
         'isSpoiler': isSpoiler,
       }),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return true;
     } else {
       print('Failed to create post: ${response.body}');
@@ -269,7 +269,7 @@ class NetworkService extends ChangeNotifier {
         'isNSFW': isNSFW,
       }),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return true;
     } else {
       print('Failed to create post: ${response.body}');
@@ -300,7 +300,7 @@ class NetworkService extends ChangeNotifier {
         'isNSFW': isNSFW,
       }),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return true;
     } else {
       print('Failed to create post: ${response.body}');
