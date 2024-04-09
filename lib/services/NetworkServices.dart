@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/community.dart';
+import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/models/user_settings.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:reddit_clone/models/joined_communities.dart';
 
 class NetworkService extends ChangeNotifier {
@@ -14,7 +17,8 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  String _baseUrl = 'http://10.0.2.2:3000';
+  //String _baseUrl = 'http://10.0.2.2:3000';
+  String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -205,6 +209,26 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<Community>> fetchTopCommunities() async {
+  Uri url = Uri.parse('$_baseUrl/subreddit/top?limit=25');
+  final response = await http.get(url, headers: _headers);
+  print(response.body);
+  if (response.statusCode == 200) {
+    final List<dynamic> jsonData = jsonDecode(response.body);
+    return jsonData.map((item) => Community.fromJson(item)).toList();
+  } else {
+    throw Exception('Failed to fetch top communities');
+  }
+}
+
+  Future<List<Comments>?> fetchCommentsForPost(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData.map((commentJson) => Comments.fromJson(commentJson)).toList();
+
   Future<bool> createNewTextOrLinkPost(String type, String communityname,
       String title, String content, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
@@ -297,6 +321,15 @@ class NetworkService extends ChangeNotifier {
       return null;
     }
   }
+
+//   Future<File> downloadFile(String url, String filename) async {
+//   var request = await http.Client().get(Uri.parse(url));
+//   var bytes = request.bodyBytes;
+//   String dir = (await getApplicationDocumentsDirectory()).path;
+//   File file = File('$dir/$filename');
+//   await file.writeAsBytes(bytes);
+//   return file;
+// }
 
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];

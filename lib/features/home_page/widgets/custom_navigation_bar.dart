@@ -4,6 +4,7 @@ import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/create_post.dart';
 
@@ -21,11 +22,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   final List<Widget> _pages = [
     HomePage(),
+    CommunityPage(),
     const CreatePost(profile: false),
     const InboxNotificationPage(),
 
-    // CommunitiesPage(),
-    // CreatePage(),
+    
+    //CreatePage(),
     // ChatPage(),
   ];
 

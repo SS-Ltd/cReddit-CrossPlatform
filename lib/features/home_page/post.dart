@@ -3,6 +3,7 @@ import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
+import 'package:reddit_clone/features/home_page/postcomments.dart';
 
 class Post extends StatefulWidget {
   final String communityName;
@@ -231,10 +232,24 @@ class _PostState extends State<Post> {
                 icon: const Icon(Icons.add_comment),
                 //other icon: add_comment,comment
                 onPressed: () {
+                  PostComments postComment = PostComments(
+                        communityName: 'Entrepreneur',
+                        userName: 'throwaway123',
+                        title: 'Escaping corporate Hell and finding freedom',
+                        imageUrl: 'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                        content: 'Man, let me have a  vent for a minute. Just got out of the shittiest '
+                                  'gig ever – being a "marketing specialist" for the supposed big boys'
+                                  ' over at Microsoft. Let me tell you, it was not bad.',
+                        commentNumber: 0,
+                        shareNumber: 0,
+                        timeStamp: DateTime.now(),
+                        isHomePage: false,
+                      );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CommentPage(),
+                      //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
+                      builder: (context) => CommentPage(postId: 'd05cc9e5a4ba6941dccaaa4f',postComment: postComment),
                     ),
                   );
                 },
