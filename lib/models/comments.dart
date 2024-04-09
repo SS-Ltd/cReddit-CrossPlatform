@@ -5,7 +5,9 @@ class Comments {
   final int netVote;
   final String content;
   final String createdAt;
-
+  final String commentId;
+  final bool isUpvoted;
+  final bool isDownvoted;
   Comments({
     required this.profilePicture,
     required this.username,
@@ -13,8 +15,9 @@ class Comments {
     required this.netVote,
     required this.content,
     required this.createdAt,
-
-
+    required this.commentId,
+    required this.isUpvoted,
+    required this.isDownvoted,
   });
 
   factory Comments.fromJson(Map<String, dynamic> json) {
@@ -25,6 +28,9 @@ class Comments {
       netVote: json['netVote'],
       content: json['content'],
       createdAt: json['createdAt'],
+      commentId: json['_id'],
+      isUpvoted: json['isUpvoted'],
+      isDownvoted: json['isDownvoted'],
     );
   }
 }

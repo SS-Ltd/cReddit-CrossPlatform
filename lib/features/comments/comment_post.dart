@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CommentPostPage extends StatefulWidget {
   final String commentContent;
-
-  const CommentPostPage({super.key, required this.commentContent});
+  final String postId;
+  const CommentPostPage(
+      {super.key, required this.commentContent, required this.postId});
 
   @override
   State<CommentPostPage> createState() {
@@ -61,7 +64,11 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   )),
-              onPressed: () {
+              onPressed: () async {
+                bool created = await context
+                    .read<NetworkService>()
+                    .createNewTextComment(widget.postId, _controller.text);
+                    print (created);
                 if (_controller.text.isNotEmpty) {
                   contentType = false; // Text is entered
                   Navigator.pop(context, {

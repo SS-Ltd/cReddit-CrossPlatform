@@ -168,7 +168,7 @@ class _PostState extends State<Post> {
                       MaterialPageRoute(
                         //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                            postId: widget.postId, postComment: postComment),
+                            postId: widget.postId, postComment: postComment, postContent: widget.content,),
                       ),
                     );
                   }
@@ -239,7 +239,7 @@ class _PostState extends State<Post> {
                       MaterialPageRoute(
                         //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                            postId: widget.postId, postComment: postComment),
+                            postId: widget.postId, postComment: postComment, postContent: widget.content),
                       ),
                     );
                   }
@@ -262,7 +262,7 @@ class _PostState extends State<Post> {
                 onPressed: () async {
                   bool a = await context
                       .read<NetworkService>()
-                      .postUpVote(widget.postId);
+                      .upVote(widget.postId);
                   setState(() {
                     print("upvote");
                     if (widget.isUpvoted && !widget.isDownvoted) {
@@ -291,7 +291,7 @@ class _PostState extends State<Post> {
                 onPressed: () async {
                   bool a = await context
                       .read<NetworkService>()
-                      .postDownVote(widget.postId);
+                      .downVote(widget.postId);
                   setState(() {
                     if (widget.isDownvoted && !widget.isUpvoted) {
                       widget.votes++;
@@ -333,7 +333,7 @@ class _PostState extends State<Post> {
                     MaterialPageRoute(
                       //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                       builder: (context) => CommentPage(
-                          postId: widget.postId, postComment: postComment),
+                          postId: widget.postId, postComment: postComment, postContent: widget.content),
                     ),
                   );
                 },

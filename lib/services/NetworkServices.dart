@@ -15,8 +15,8 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  //String _baseUrl = 'http://10.0.2.2:3000';
-  String _baseUrl = 'https://creddit.tech/API';
+  String _baseUrl = 'http://172.20.10.2:3000';
+  //String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -105,7 +105,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> postUpVote(String postId) async {
+  Future<bool> upVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
     final response = await http.patch(url, headers: _headers);
     print(response.statusCode);
@@ -116,7 +116,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> postDownVote(String postId) async {
+  Future<bool> downVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/downvote');
     final response = await http.patch(url, headers: _headers);
     print(response.statusCode);
@@ -208,6 +208,68 @@ class NetworkService extends ChangeNotifier {
           .toList();
     }
   }
+
+  // Future<bool> commentUpVote(String postId) async {
+  //   Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
+  //   final response = await http.patch(url, headers: _headers);
+  //   print(response.statusCode);
+  //   if (response.statusCode == 200) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // Future<bool> commentDownVote(String commentId) async {
+  //   Uri url = Uri.parse('$_baseUrl/comment/$commentId/downvote');
+  //   final response = await http.patch(url, headers: _headers);
+  //   print(response.statusCode);
+  //   if (response.statusCode == 200) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+
+
+  Future<bool> createNewTextComment(String postId, String content) async {
+    Uri url = Uri.parse('$_baseUrl/comment');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'postId': postId,
+        'content': content,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Failed to create comment: ${response.body}');
+      return false;
+    }
+  }
+
+  // Future<bool> createNewImageComment(String postId, String content) async {
+  //   Uri url = Uri.parse('$_baseUrl/comment');
+  //   final response = await http.post(
+  //     url,
+  //     headers: _headers,
+  //     body: jsonEncode({
+  //       'type': 'comment',
+  //       'postId': postId,
+  //       'content': content,
+  //     }),
+  //   );
+  //   if (response.statusCode == 200) {
+  //     return true;
+  //   } else {
+  //     print('Failed to create post: ${response.body}');
+  //     return false;
+  //   }
+  // }
+
 
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');

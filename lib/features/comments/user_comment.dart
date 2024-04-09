@@ -5,6 +5,8 @@ import 'reply_comment.dart';
 import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;
@@ -15,8 +17,9 @@ class UserComment extends StatefulWidget {
   final File? photo;
   final bool contentType;
   final int netVote;
-  final int imageSource; //0 from backend 1 from user 2 text
-
+  final int imageSource;      //0 from backend 1 from user 2 text
+  final String commentId;
+  final int hasVoted;         // 1 for upvote, -1 for downvote, 0 for no vote
   const UserComment({
     super.key,
     // may be the required keyword need to be removed
@@ -29,6 +32,8 @@ class UserComment extends StatefulWidget {
     required this.contentType,
     this.netVote = 0,
     required this.imageSource,
+    required this.commentId,
+    required this.hasVoted,
   });
 
   @override
@@ -42,7 +47,7 @@ class LinePainter extends CustomPainter {
       ..color = Colors.grey
       ..strokeWidth = 1.0;
 
-    canvas.drawLine(const Offset(10, 0), Offset(10, size.height), paint);
+    canvas.drawLine(const Offset(3, 0), Offset(3, size.height), paint);
   }
 
   @override
@@ -51,7 +56,7 @@ class LinePainter extends CustomPainter {
 
 class UserCommentState extends State<UserComment> {
   late int votes;
-  ValueNotifier<int> hasVoted = ValueNotifier<int>(0);
+  late ValueNotifier<int> hasVoted;
   Timer? _timer;
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
@@ -81,6 +86,8 @@ class UserCommentState extends State<UserComment> {
           photo: null,
           contentType: contentType,
           imageSource: 2,
+          commentId: widget.commentId, //may need to be updated
+          hasVoted: 0,
         ));
       } else if (contentType == true) {
         final File commentImage = File(result['content']);
@@ -92,6 +99,8 @@ class UserCommentState extends State<UserComment> {
           photo: commentImage,
           contentType: contentType,
           imageSource: 1,
+          commentId: widget.commentId, //may need to be updated
+          hasVoted: 0,
         ));
       }
     }
@@ -128,6 +137,7 @@ class UserCommentState extends State<UserComment> {
     super.initState();
     isMinimized = ValueNotifier<bool>(false);
     votes = widget.netVote;
+    hasVoted = ValueNotifier<int>(widget.hasVoted);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -286,10 +296,15 @@ class UserCommentState extends State<UserComment> {
                                   color: value == 1
                                       ? Palette.upvoteOrange
                                       : Palette.greyColor),
-                              onPressed: () {
-                                setState(() {
-                                  updateUpVote();
-                                });
+                              onPressed: () async {
+                                bool votedUp = await context
+                                    .read<NetworkService>()
+                                    .upVote(widget.commentId);
+                                if (votedUp) {
+                                  setState(() {
+                                    updateUpVote();
+                                  });
+                                }
                               },
                             );
                           },
@@ -318,10 +333,15 @@ class UserCommentState extends State<UserComment> {
                                   color: value == -1
                                       ? Palette.downvoteBlue
                                       : Palette.greyColor),
-                              onPressed: () {
-                                setState(() {
-                                  updateDownVote();
-                                });
+                              onPressed: () async {
+                                bool votedDown = await context
+                                    .read<NetworkService>()
+                                    .downVote(widget.commentId);
+                                if (votedDown) {
+                                  setState(() {
+                                    updateDownVote();
+                                  });
+                                }
                               },
                             );
                           },

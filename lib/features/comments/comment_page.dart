@@ -9,8 +9,9 @@ import 'package:reddit_clone/features/home_page/post.dart';
 class CommentPage extends StatefulWidget {
   final String postId;
   final Widget postComment;
+  final String postContent;
   const CommentPage(
-      {super.key, required this.postId, required this.postComment});
+      {super.key, required this.postId, required this.postComment, required this.postContent});
 
   @override
   State<CommentPage> createState() {
@@ -40,6 +41,16 @@ class _CommentPageState extends State<CommentPage> {
     });
   }
 
+  int mappingVotes(bool isUpvoted, bool isDownvoted) {
+    if (isUpvoted) {
+      return 1;
+    } else if (isDownvoted) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
   Future<void> fetchComments(String postId) async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
@@ -56,6 +67,8 @@ class _CommentPageState extends State<CommentPage> {
                   contentType: comment.isImage,
                   netVote: comment.netVote,
                   imageSource: 0,
+                  commentId: comment.commentId,
+                  hasVoted: mappingVotes(comment.isUpvoted, comment.isDownvoted),
                 ))
             .toList();
       });
@@ -132,6 +145,8 @@ class _CommentPageState extends State<CommentPage> {
                   netVote: _comments[index - 1].netVote,
                   imageSource:
                       _comments[index - 1].imageSource, //may need to be fixed
+                  commentId: _comments[index - 1].commentId,
+                  hasVoted: _comments[index - 1].hasVoted,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -154,8 +169,8 @@ class _CommentPageState extends State<CommentPage> {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CommentPostPage(
-                            commentContent: 'Your comment content here')),
+                        builder: (context) => CommentPostPage(postId: widget.postId,
+                            commentContent: widget.postContent)),
                   );
 
                   if (result != null) {
@@ -165,24 +180,28 @@ class _CommentPageState extends State<CommentPage> {
                       if (contentType == false) {
                         final String commentText = result['content'];
                         _comments.add(UserComment(
-                          avatar: 'assets/MonkeyDLuffy.png',
+                          avatar: 'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
                           username: 'User123',
                           content: commentText,
                           timestamp: DateTime.now(),
                           photo: null,
                           contentType: contentType,
                           imageSource: 2,
+                          commentId: 'ffbfbfg', // will be updated when i integrate create comment with backend
+                          hasVoted: 0,
                         ));
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
                         _comments.add(UserComment(
-                          avatar: 'assets/MonkeyDLuffy.png',
+                          avatar: 'https://fastly.picsum.photos/id/738/640/480.jpg?hmac=F5iMUNrB-seuQ9M--_buxQap8XU70oibItqbNAUntxA',
                           username: 'User123',
                           content: '',
                           timestamp: DateTime.now(),
                           photo: commentImage,
                           contentType: contentType,
                           imageSource: 1,
+                          commentId: 'ffbfbfg', // will be updated when i integrate create comment with backend
+                          hasVoted: 0,
                         ));
                       }
                       // Add a GlobalKey for the new comment
