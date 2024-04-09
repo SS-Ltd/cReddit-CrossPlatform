@@ -11,8 +11,8 @@ class PostModel {
   final bool? isNSFW;
   final bool? isSpoiler;
   final bool? isApproved;
-  final bool? isUpvoted;
-  final bool? isDownvoted;
+  final bool isUpvoted;
+  final bool isDownvoted;
   final bool? isHidden;
   final bool? isSaved;
   final DateTime uploadDate;

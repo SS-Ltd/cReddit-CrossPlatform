@@ -1,3 +1,5 @@
+import 'package:reddit_clone/models/subreddit.dart';
+
 class UserModel {
   final String username;
   final String displayName;
@@ -8,6 +10,8 @@ class UserModel {
   final int followers;
   final DateTime cakeDay;
   bool isLoggedIn = false;
+  final List<Subreddit> recentlyVisited = [];
+
 
   UserModel({
     required this.username,
@@ -36,5 +40,12 @@ class UserModel {
       followers: json['followers'],
       cakeDay: DateTime.parse(json['cakeDay']),
     );
+
+  void setrecentlyVisited(Subreddit communityName) {
+    recentlyVisited.add(communityName);
+  }
+
+  List<Subreddit> getrecentlyvisited(){
+    return recentlyVisited;
   }
 }

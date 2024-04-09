@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/rightsidebar.dart';
+import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
