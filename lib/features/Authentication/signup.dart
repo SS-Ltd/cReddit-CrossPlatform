@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
-import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reddit_clone/features/Authentication/google_button.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key});
@@ -49,11 +48,7 @@ class SignUpScreen extends StatelessWidget {
                   color: Palette.whiteColor),
             ),
             const SizedBox(height: 20),
-            ImageButton(
-              text: 'Continue with Google',
-              onPressed: () {},
-              iconPath: AssetsConstants.googleLogo,
-            ),
+            const GoogleButton(),
             const Row(
               children: <Widget>[
                 Expanded(

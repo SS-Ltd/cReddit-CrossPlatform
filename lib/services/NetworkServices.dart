@@ -23,20 +23,49 @@ class NetworkService extends ChangeNotifier {
   Future<void> login(String username, String password) async {
     print('Logging in...');
     Uri url = Uri.parse('$_baseUrl/user/login');
-    final response = await http.post(url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'password': password}));
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'username': username, 'password': password}),
+    );
 
     print(response.body);
     if (response.statusCode == 200) {
       _updateCookie(response);
-      _user = UserModel(username);
+      var data = jsonDecode(response.body);
+      _user = UserModel.fromJson(data);
       _user!.updateUserStatus(true);
       print('Logged in. Cookie: $_cookie');
     } else {
       print('Login failed: ${response.body}');
     }
     notifyListeners();
+  }
+
+  Future<bool> sendGoogleAccessToken(String googleAccessToken) async {
+    Uri url = Uri.parse('$_baseUrl/user/auth/google');
+    final response = await http.post(
+      url,
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'googleToken': googleAccessToken}),
+    );
+
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print('Access token sent successfully');
+      _updateCookie(response);
+      _user = UserModel.fromJson(jsonDecode(response.body));
+      _user!.updateUserStatus(true);
+      print('Logged in. Cookie: $_cookie');
+      return true;
+    } else {
+      print('Failed to send access token: ${response.body}');
+    }
+    notifyListeners();
+    return false;
   }
 
   Future<void> logout() async {
