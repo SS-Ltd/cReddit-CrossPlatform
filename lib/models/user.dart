@@ -12,7 +12,6 @@ class UserModel {
   bool isLoggedIn = false;
   final List<Subreddit> recentlyVisited = [];
 
-
   UserModel({
     required this.username,
     required this.displayName,
@@ -28,6 +27,14 @@ class UserModel {
     isLoggedIn = status;
   }
 
+  void setrecentlyVisited(Subreddit communityName) {
+    recentlyVisited.add(communityName);
+  }
+
+  List<Subreddit> getrecentlyvisited() {
+    return recentlyVisited;
+  }
+
   factory UserModel.fromJson(Map<String, dynamic> json) {
     print(json);
     return UserModel(
@@ -40,12 +47,5 @@ class UserModel {
       followers: json['followers'],
       cakeDay: DateTime.parse(json['cakeDay']),
     );
-
-  void setrecentlyVisited(Subreddit communityName) {
-    recentlyVisited.add(communityName);
-  }
-
-  List<Subreddit> getrecentlyvisited(){
-    return recentlyVisited;
   }
 }
