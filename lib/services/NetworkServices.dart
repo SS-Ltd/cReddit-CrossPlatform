@@ -75,6 +75,28 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> postUpVote(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
+    final response = await http.patch(url,headers: _headers);
+    print (response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+    Future<bool> postDownVote(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/downvote');
+    final response = await http.patch(url,headers: _headers);
+    print (response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> createUser(
       String username, String email, String password, String gender) async {
     final url = Uri.parse('$_baseUrl/user');

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
@@ -19,8 +21,8 @@ class Post extends StatefulWidget {
   final DateTime timeStamp;
   final bool isHomePage;
   final String postId;
-  final bool isUpvoted;
-  final bool isDownvoted;
+  bool isUpvoted;
+  bool isDownvoted;
   int votes;
 
   Post({
@@ -129,7 +131,7 @@ class _PostState extends State<Post> {
                       userName: widget.userName,
                       title: widget.title,
                       imageUrl:
-                          'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                          '',
                       content: widget.content,
                       commentNumber: widget.commentNumber,
                       shareNumber: widget.shareNumber,
@@ -200,7 +202,7 @@ class _PostState extends State<Post> {
                       userName: widget.userName,
                       title: widget.title,
                       imageUrl:
-                          'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                          '',
                       content: widget.content,
                       commentNumber: widget.commentNumber,
                       shareNumber: widget.shareNumber,
@@ -231,23 +233,52 @@ class _PostState extends State<Post> {
                     ? Text(widget.content)
                     : const SizedBox.shrink()),
           ),
-          // const SizedBox(height: 10),
           Row(
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_upward),
-                onPressed: () {
+                color: widget.isUpvoted ? Colors.red : Colors.grey,
+                onPressed: () async {
+                  bool a = await context.read<NetworkService>().postUpVote(widget.postId);
                   setState(() {
-                    widget.votes++;
+                    print("upvote");
+                    if (widget.isUpvoted && !widget.isDownvoted){
+                      widget.votes--;
+                      widget.isUpvoted = false;
+                    } else if (!widget.isUpvoted && widget.isDownvoted) {
+                      widget.votes += 2;
+                      widget.isUpvoted = true;
+                      widget.isDownvoted = false;
+                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes++;
+                      widget.isUpvoted = true;
+                    }
                   });
                 },
               ),
-              Text(widget.votes.toString()),
+              Text(
+                widget.votes.toString(),
+                style: TextStyle(
+                  color: widget.isUpvoted ? Colors.red : (widget.isDownvoted ? Colors.blue : Colors.grey),  
+                )
+              ),
               IconButton(
                 icon: const Icon(Icons.arrow_downward),
-                onPressed: () {
+                color: widget.isDownvoted ? Colors.blue : Colors.grey,
+                onPressed: () async {
+                  bool a = await context.read<NetworkService>().postDownVote(widget.postId);
                   setState(() {
-                    widget.votes--;
+                    if (widget.isDownvoted && !widget.isUpvoted) {
+                      widget.votes++;
+                      widget.isDownvoted = false;
+                    } else if (widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes -= 2;
+                      widget.isUpvoted = false;
+                      widget.isDownvoted = true;
+                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes--;
+                      widget.isDownvoted = true;
+                    }
                   });
                 },
               ),
@@ -261,7 +292,7 @@ class _PostState extends State<Post> {
                     userName: widget.userName,
                     title: widget.title,
                     imageUrl:
-                        'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                        '',
                     content: widget.content,
                     commentNumber: widget.commentNumber,
                     shareNumber: widget.shareNumber,
