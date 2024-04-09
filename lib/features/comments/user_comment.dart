@@ -135,7 +135,8 @@ class UserCommentState extends State<UserComment> {
   @override
   void dispose() {
     _timer?.cancel();
-
+    hasVoted.dispose();
+    isMinimized.dispose();
     super.dispose();
   }
 

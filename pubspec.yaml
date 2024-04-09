@@ -41,6 +41,7 @@ dependencies:
   flutter_quill: ^9.3.5
   logging: ^1.2.0
   device_info_plus: ^10.0.1
+  google_sign_in: ^6.2.1
   path_provider: ^2.1.2
   flutter_polls: ^0.1.6
  # android_intent_plus: ^5.0.1
