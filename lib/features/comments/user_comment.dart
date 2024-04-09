@@ -4,6 +4,7 @@ import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;
@@ -164,7 +165,13 @@ class UserCommentState extends State<UserComment> {
                       GestureDetector(
                         onTap: () {
                           // will be replaced with redirecting to user
-                          showOverlay(context, widget);
+                          //showOverlay(context, widget);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AboutUserPopUp()),
+                            //replace with profile page or widget
+                          );
                         },
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(widget.avatar),
@@ -175,7 +182,13 @@ class UserCommentState extends State<UserComment> {
                       GestureDetector(
                         onTap: () {
                           // will be replaced with redirecting to user
-                          showOverlay(context, widget);
+                          //showOverlay(context, widget);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AboutUserPopUp()),
+                            //replace with profile page or widget
+                          );
                         },
                         child: Text(
                           widget.username,
