@@ -21,4 +21,31 @@ class Community {
       isJoined: json['isJoined'],
     );
   }
+  
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Community &&
+        other.name == name &&
+        other.members == members &&
+        other.description == description &&
+        other.icon == icon &&
+        other.isJoined == isJoined;
+  }
+
+  @override
+  int get hashCode {
+    return name.hashCode ^
+        members.hashCode ^
+        description.hashCode ^
+        icon.hashCode ^
+        isJoined.hashCode;
+  }
+
+  @override
+  String toString() {
+    return 'Community{name: $name, members: $members, description: $description, icon: $icon, isJoined: $isJoined}';
+  }
+
 }

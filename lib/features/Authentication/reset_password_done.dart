@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
-
+import 'package:android_intent_plus/android_intent.dart';
 class ResetPasswordDone extends StatefulWidget {
   const ResetPasswordDone({super.key});
 
@@ -188,8 +188,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        final Logger logger = Logger('ResetPasswordDone');
-
+                        // final Logger logger = Logger('ResetPasswordDone');
                         // if (Platform.isAndroid) {
                         //   AndroidIntent intent = const AndroidIntent(
                         //     action: 'android.intent.action.MAIN',
