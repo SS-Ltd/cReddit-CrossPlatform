@@ -15,7 +15,7 @@ class PostModel {
   final bool isDownvoted;
   final bool? isHidden;
   final bool? isSaved;
-  final DateTime uploadDate;
+  final DateTime? uploadDate;
   final List<PollOption>? pollOptions;
   final DateTime? expirationDate;
 
@@ -59,7 +59,8 @@ class PostModel {
       isDownvoted: json['isDownvoted'],
       isHidden: json['isHidden'],
       isSaved: json['isSaved'],
-      uploadDate: DateTime.parse(json['createdAt']),
+      uploadDate:
+          DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
       pollOptions: json['pollOptions'] != null
           ? (json['pollOptions'] as List)
               .map((e) => PollOption.fromJson(e))

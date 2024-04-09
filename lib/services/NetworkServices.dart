@@ -107,8 +107,8 @@ class NetworkService extends ChangeNotifier {
 
   Future<bool> postUpVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
-    final response = await http.patch(url,headers: _headers);
-    print (response.statusCode);
+    final response = await http.patch(url, headers: _headers);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -116,10 +116,10 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-    Future<bool> postDownVote(String postId) async {
+  Future<bool> postDownVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/downvote');
-    final response = await http.patch(url,headers: _headers);
-    print (response.statusCode);
+    final response = await http.patch(url, headers: _headers);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -271,6 +271,7 @@ class NetworkService extends ChangeNotifier {
   Future<List<PostModel>?> getSavedPosts() async {
     final url = Uri.parse('$_baseUrl/user/saved');
     final response = await http.get(url, headers: _headers);
+    print("saved?");
     print(response.body);
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
