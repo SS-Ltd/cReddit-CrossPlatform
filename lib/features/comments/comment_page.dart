@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
-import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/theme/palette.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 
 class CommentPage extends StatefulWidget {
-
   final String postId;
   final Widget postComment;
-  const CommentPage({Key? key, required this.postId, required this.postComment}) : super(key: key);
+  const CommentPage(
+      {super.key, required this.postId, required this.postComment});
 
   @override
   State<CommentPage> createState() {
@@ -42,27 +40,27 @@ class _CommentPageState extends State<CommentPage> {
     });
   }
 
-   Future<void> fetchComments(String postId) async {
+  Future<void> fetchComments(String postId) async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
     if (fetchedComments != null) {
       setState(() {
         //comments = fetchedComments;
-        _comments = fetchedComments.map((comment) => UserComment(
-          avatar: comment.profilePicture,
-          username: comment.username,
-          content: comment.content,
-          timestamp: DateTime.parse(comment.createdAt),
-          photo: comment.isImage ? File(comment.content) : null,
-          contentType: comment.isImage,
-          netVote: comment.netVote,
-          imageSource: 0,
-        )).toList();
+        _comments = fetchedComments
+            .map((comment) => UserComment(
+                  avatar: comment.profilePicture,
+                  username: comment.username,
+                  content: comment.content,
+                  timestamp: DateTime.parse(comment.createdAt),
+                  photo: comment.isImage ? File(comment.content) : null,
+                  contentType: comment.isImage,
+                  netVote: comment.netVote,
+                  imageSource: 0,
+                ))
+            .toList();
       });
     }
   }
-
-  
 
   void _calculateCommentPositions() {
     for (var key in _keys) {
@@ -87,7 +85,7 @@ class _CommentPageState extends State<CommentPage> {
       }
     }
   }
-  
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -132,7 +130,8 @@ class _CommentPageState extends State<CommentPage> {
                   photo: _comments[index - 1].photo,
                   contentType: _comments[index - 1].contentType,
                   netVote: _comments[index - 1].netVote,
-                  imageSource: _comments[index - 1].imageSource, //may need to be fixed
+                  imageSource:
+                      _comments[index - 1].imageSource, //may need to be fixed
                 );
               } else {
                 return const SizedBox.shrink();
@@ -263,7 +262,6 @@ Widget mockPost() {
         timeStamp: DateTime.now(),
         isHomePage: false,
       ),
-      //CommentPage(),
     ],
   );
 }
