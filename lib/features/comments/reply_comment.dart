@@ -15,7 +15,9 @@ class ReplyPage extends StatefulWidget {
       required this.timestamp});
 
   @override
-  _ReplyPageState createState() => _ReplyPageState();
+  State<StatefulWidget> createState() {
+    return _ReplyPageState();
+  }
 }
 
 class _ReplyPageState extends State<ReplyPage> {

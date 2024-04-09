@@ -3,9 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
-
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/models/user_settings.dart';
+import 'package:reddit_clone/models/joined_communities.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/community.dart';
 
 class NetworkService extends ChangeNotifier {
   static final NetworkService _instance = NetworkService._internal();
@@ -13,7 +15,8 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  String _baseUrl = 'http://10.0.2.2:3000';
+  //String _baseUrl = 'http://10.0.2.2:3000';
+  String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -117,6 +120,30 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<Community>> fetchTopCommunities() async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/top?limit=25');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      return jsonData.map((item) => Community.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to fetch top communities');
+    }
+  }
+
+  Future<List<Comments>?> fetchCommentsForPost(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((commentJson) => Comments.fromJson(commentJson))
+          .toList();
+    }
+  }
+
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
@@ -199,6 +226,113 @@ class NetworkService extends ChangeNotifier {
       List<PostModel> posts =
           jsonData.map((item) => PostModel.fromJson(item)).toList();
       return posts;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> createNewTextOrLinkPost(String type, String communityname,
+      String title, String content, bool isNSFW, bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': type,
+        'communityname': communityname,
+        'title': title,
+        'content': content,
+        'isNSFW': isNSFW,
+        'isSpoiler': isSpoiler,
+      }),
+    );
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> createNewImagePost(String communityname, String title,
+      String content, bool isNSFW, bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': 'Images & Video',
+        'communityname': communityname,
+        'title': title,
+        //'images' :
+        'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
+      }),
+    );
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> createNewPollPost(
+      String communityname,
+      String title,
+      String content,
+      List<String> options,
+      String expDate,
+      bool isNSFW,
+      bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'type': 'Poll',
+        'communityname': communityname,
+        'title': title,
+        //'content' :
+        //'pollOptions' :
+        //'expirationDate' :
+        'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
+      }),
+    );
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      print('Failed to create post: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<List<JoinedCommunitites>?> joinedcommunitites() async {
+    Uri url = Uri.parse('$_baseUrl/user/joined-communities');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List<dynamic> responseData = json.decode(response.body);
+      List<JoinedCommunitites> joinedCommunitites = responseData
+          .map((item) => JoinedCommunitites.fromJson(item))
+          .toList();
+      return joinedCommunitites;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> getHomeFeed() async {
+    Uri url = Uri.parse('$_baseUrl/post/home-feed?limit=25');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((postJson) => PostModel.fromJson(postJson))
+          .toList();
     } else {
       return null;
     }

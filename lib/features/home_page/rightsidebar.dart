@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/history.dart';
-import 'package:reddit_clone/features/saved.dart';
+import 'package:reddit_clone/features/User/history.dart';
+import 'package:reddit_clone/features/User/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 

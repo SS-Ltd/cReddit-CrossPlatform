@@ -50,7 +50,7 @@ class _PostCommentState extends State<PostComment> {
               onSelected: (Menu item) {},
               itemBuilder: (BuildContext context) => menuitems()),
           IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: const Icon(Icons.reddit, size: 30.0),
           ),
         ],
@@ -61,21 +61,31 @@ class _PostCommentState extends State<PostComment> {
 }
 
 Widget mockPost() {
-  return Post(
-    communityName: 'Entrepreneur',
-    userName: 'throwaway123',
-    title: 'Escaping corporate Hell and finding freedom',
-    imageUrl:
-        'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-    // '',
-    content:
-        'Man, let me have a  vent for a minute. Just got out of the shittiest '
-        'gig ever – being a "marketing specialist" for the supposed big boys'
-        ' over at Microsoft. Let me tell you, it was not bad.',
-    commentNumber: 0,
-    shareNumber: 0,
-    timeStamp: DateTime.now(),
-    isHomePage: false,
+  return Column(
+    children: [
+      Post(
+        communityName: 'Entrepreneur',
+        profilePicture:
+            'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+        userName: 'throwaway123',
+        title: 'Escaping corporate Hell and finding freedom',
+        imageUrl:
+            'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+        content:
+            'Man, let me have a  vent for a minute. Just got out of the shittiest '
+            'gig ever – being a "marketing specialist" for the supposed big boys'
+            ' over at Microsoft. Let me tell you, it was not bad.',
+        commentNumber: 0,
+        shareNumber: 0,
+        timeStamp: DateTime.now(),
+        isHomePage: false,
+        postId: '1',
+        votes: 0,
+        isDownvoted: false,
+        isUpvoted: false,
+      ),
+      //CommentPage(),
+    ],
   );
 }
 
