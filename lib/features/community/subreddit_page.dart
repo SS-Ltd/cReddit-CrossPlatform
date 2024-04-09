@@ -7,7 +7,7 @@ import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
-  final String subredditName;
+  final String? subredditName;
 
   const SubRedditPage({super.key, required this.subredditName});
 

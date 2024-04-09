@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 
 class PostComments extends StatelessWidget {
-  final String communityName;
+  final String? communityName;
   final String userName;
   final String title;
   final String imageUrl;

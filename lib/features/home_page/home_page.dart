@@ -136,19 +136,24 @@ class PostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Post(
-        //   communityName: post.communityName,
-        //   userName: post.username,
-        //   title: post.title,
-        //   imageUrl: post.imageUrl,
-        //   content: post.content,
-        //   commentNumber: post.commentCount,
-        //   shareNumber: post.netVote,
-        //   timeStamp: post.createdAt,
-        //   isHomePage: true,
-        // ),
-        //for now fake with post title
-        Text(post.title),
+        //TODO Adjust the Post widget
+        Post(
+          communityName: post.communityName ?? '',
+          userName: post.username,
+          title: post.title,
+          imageUrl: '',
+          content: post.content,
+          commentNumber: post.commentCount,
+          shareNumber: 0,
+          timeStamp: post.uploadDate,
+          profilePicture: post.profilePicture,
+          isHomePage: true,
+          postId: post.postId,
+          votes: post.netVote,
+          isDownvoted: post.isDownvoted,
+          isUpvoted: post.isUpvoted,
+        ),
+
         const Divider(height: 200, thickness: 1), // Add a thin horizontal line
       ],
     );

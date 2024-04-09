@@ -219,7 +219,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<Subreddit?> getSubredditDetails(String subredditName) async {
+  Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
 
@@ -260,7 +260,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> fetchPostsForSubreddit(String subredditName) async {
+  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
     final response = await http.get(url, headers: _headers);
     print(response.body);
