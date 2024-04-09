@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
-import 'package:reddit_clone/features/Authentication/reset_password_done.dart';
-import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
-import 'package:reddit_clone/features/community/community_card.dart';
-import 'package:reddit_clone/features/community/community_page.dart';
 
 
 void main() {

@@ -23,7 +23,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final List<Widget> _pages = [
     HomePage(),
     CommunityPage(),
-    const CreatePost(profile: false),
+    const CreatePost(profile: true),
     const InboxNotificationPage(),
 
     

@@ -102,7 +102,11 @@ class _CreatePostState extends State<CreatePost> {
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.of(context).pop();
-                            } else {}
+                              print(chosenCommunity);
+                            } else {
+                              print(chosenCommunity);
+
+                            }
                           },
                     child: const Text('Post'),
                   )
