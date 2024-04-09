@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchPosts() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final posts = await networkService.getHomeFeed();
-    if (posts != null) {
+    if (posts != null && mounted) {
       setState(() => this.posts = posts);
     }
   }

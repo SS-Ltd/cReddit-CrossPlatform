@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'reset_password_done.dart';
@@ -199,14 +199,17 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                       .read<NetworkService>()
                                       .forgotPassword(emailController.text);
                                   print(reset);
+                                  // Hide the keyboard
+                                  FocusScope.of(context).unfocus();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const ResetPasswordDone()),
+                                            ResetPasswordDone(email: emailController.text)),
                                   );
                                 }
                               : null,
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 isValid == 1 ? Colors.deepOrange : Colors.grey,

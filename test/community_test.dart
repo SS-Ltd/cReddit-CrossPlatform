@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
-import 'package:reddit_clone/features/community/community_card.dart';
 import 'package:reddit_clone/models/community.dart';
 
 void main() {

@@ -3,11 +3,15 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
 import 'package:android_intent_plus/android_intent.dart';
+
 class ResetPasswordDone extends StatefulWidget {
-  const ResetPasswordDone({super.key});
+  String email;
+  ResetPasswordDone({required this.email, super.key});
 
   @override
   State<ResetPasswordDone> createState() => _ResetPasswordDoneState();
@@ -148,11 +152,31 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                           builder: (context, value, child) {
                             return GestureDetector(
                               onTap: value
-                                  ? () {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        '/',
-                                      );
+                                  ? () async {
+                                      bool reset = await context
+                                          .read<NetworkService>()
+                                          .forgotPassword(widget.email);
+                                          //print(reset);
+                                      if (reset) {
+                                        // Show a message to the user indicating that the email was resent successfully.
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                                'Email resent successfully',
+                                                style: TextStyle(
+                                                    color: Palette.whiteColor)),
+                                            duration:
+                                                const Duration(seconds: 3),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                            ),
+                                            behavior: SnackBarBehavior.floating,
+                                            backgroundColor: Palette.backgroundColor,
+                                          ),
+                                        );
+                                      }
                                     }
                                   : null,
                               child: Row(
@@ -161,8 +185,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                     'Resend',
                                     style: TextStyle(
                                       color: value
-                                          ? Palette.whiteColor
-                                          : Palette.blueColor,
+                                          ? Palette.blueColor
+                                          : Palette.greyColor,
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.bold,
                                     ),
