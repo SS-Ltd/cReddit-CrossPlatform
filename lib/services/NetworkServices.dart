@@ -26,19 +26,49 @@ class NetworkService extends ChangeNotifier {
   Future<void> login(String username, String password) async {
     print('Logging in...');
     Uri url = Uri.parse('$_baseUrl/user/login');
-    final response = await http.post(url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'password': password}));
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'username': username, 'password': password}),
+    );
 
+    print(response.body);
     if (response.statusCode == 200) {
       _updateCookie(response);
-      _user = UserModel(username);
+      var data = jsonDecode(response.body);
+      _user = UserModel.fromJson(data);
       _user!.updateUserStatus(true);
       print('Logged in. Cookie: $_cookie');
     } else {
       print('Login failed: ${response.body}');
     }
     notifyListeners();
+  }
+
+  Future<bool> sendGoogleAccessToken(String googleAccessToken) async {
+    Uri url = Uri.parse('$_baseUrl/user/auth/google');
+    final response = await http.post(
+      url,
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'googleToken': googleAccessToken}),
+    );
+
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print('Access token sent successfully');
+      _updateCookie(response);
+      _user = UserModel.fromJson(jsonDecode(response.body));
+      _user!.updateUserStatus(true);
+      print('Logged in. Cookie: $_cookie');
+      return true;
+    } else {
+      print('Failed to send access token: ${response.body}');
+    }
+    notifyListeners();
+    return false;
   }
 
   Future<void> logout() async {
@@ -75,9 +105,43 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> postUpVote(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
+    final response = await http.patch(url,headers: _headers);
+    print (response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+    Future<bool> postDownVote(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/downvote');
+    final response = await http.patch(url,headers: _headers);
+    print (response.statusCode);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<String> getRandomName() async {
+    Uri url = Uri.parse('$_baseUrl/user/generate-username');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData['username'];
+    } else {
+      throw Exception('Failed to get random name');
+    }
+  }
+
   Future<bool> createUser(
       String username, String email, String password, String gender) async {
     final url = Uri.parse('$_baseUrl/user');
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -90,6 +154,7 @@ class NetworkService extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
+      print(response);
       return true;
     } else {
       print('Failed to create user: ${response.body}');

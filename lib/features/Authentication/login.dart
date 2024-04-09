@@ -8,9 +8,9 @@ import 'package:reddit_clone/features/Authentication/forget_password.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
-import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
+import 'package:reddit_clone/features/Authentication/google_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -57,11 +57,7 @@ class LoginScreen extends StatelessWidget {
                   color: Palette.whiteColor),
             ),
             const SizedBox(height: 20),
-            ImageButton(
-              text: 'Continue with Google',
-              onPressed: () {},
-              iconPath: AssetsConstants.googleLogo,
-            ),
+            const GoogleButton(),
             const Row(
               children: <Widget>[
                 Expanded(
@@ -88,9 +84,7 @@ class LoginScreen extends StatelessWidget {
               key: _formKey,
               child: Column(
                 children: [
-                  AuthField(
-                      controller: emailController,
-                      labelText: 'Email or Username'),
+                  AuthField(controller: emailController, labelText: 'Username'),
                   const SizedBox(height: 20),
                   AuthField(
                       controller: passwordController,
@@ -132,8 +126,10 @@ class LoginScreen extends StatelessWidget {
                       .read<NetworkService>()
                       .login(emailController.text, passwordController.text);
                   final user = context.read<NetworkService>().user;
-
+                  print(user);
+                  print(user?.isLoggedIn);
                   if (user != null && user.isLoggedIn) {
+                    Navigator.popUntil(context, (route) => route.isFirst);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
