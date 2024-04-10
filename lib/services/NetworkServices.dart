@@ -342,14 +342,14 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> fetchUserPosts({
+  Future<List<PostModel>?> fetchHomeFeed({
     String sort = 'hot',
     String time = 'all',
     int page = 1,
     int limit = 5,
   }) async {
     String username = _user!.username;
-    final url = Uri.parse('$_baseUrl/user/$username/posts?'
+    final url = Uri.parse('$_baseUrl/post/home-feed?'
         'sort=$sort'
         '&time=$time'
         '&page=$page'
@@ -501,20 +501,6 @@ class NetworkService extends ChangeNotifier {
           .map((item) => JoinedCommunitites.fromJson(item))
           .toList();
       return joinedCommunitites;
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<PostModel>?> getHomeFeed() async {
-    Uri url = Uri.parse('$_baseUrl/post/home-feed?limit=50');
-    final response = await http.get(url, headers: _headers);
-    print(response.body);
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body);
-      return responseData
-          .map((postJson) => PostModel.fromJson(postJson))
-          .toList();
     } else {
       return null;
     }

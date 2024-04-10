@@ -27,7 +27,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getPosts(selectedMenuItem);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      getPosts(selectedMenuItem);
+    });
     _scrollController.addListener(_onScroll);
   }
 
@@ -48,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     });
     List<PostModel>? fetchedPosts = await context
         .read<NetworkService>()
-        .fetchUserPosts(page: page, sort: selectedItem.toLowerCase());
+        .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
     if (fetchedPosts != null && mounted) {
       setState(() {
         posts.addAll(fetchedPosts);
@@ -141,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                   isUpvoted: post.isUpvoted,
                 ),
                 const Divider(
-                    height: 200, thickness: 1), // Add a thin horizontal line
+                    height: 20, thickness: 1), // Add a thin horizontal line
               ],
             );
           },
@@ -150,58 +152,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// Widget mockPost() {
-//   return Column(
-//     children: [
-//       Post(
-//         communityName: 'Entrepreneur',
-//         userName: 'throwaway123',
-//         title: 'Escaping corporate Hell and finding freedom',
-//         imageUrl:
-//             'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-//         // '',
-//         content:
-//             'Man, let me have a  vent for a minute. Just got out of the shittiest '
-//             'gig ever – being a "marketing specialist" for the supposed big boys'
-//             ' over at Microsoft. Let me tell you, it was not bad.',
-//         commentNumber: 0,
-//         shareNumber: 0,
-//         timeStamp: DateTime.now(),
-//         profilePicture:
-//             'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-//         isHomePage: true,
-//         postId: '123',
-//         votes: 0,
-//         isDownvoted: false,
-//         isUpvoted: false,
-//       ),
-//       const Divider(height: 1, thickness: 1), // Add a thin horizontal line
-//     ],
-//   );
-// }
-
-// DropdownButton(
-//             value: shownvalue,
-//             icon: const Icon(Icons.arrow_downward),
-//             onChanged: (value) {
-//               setState(() {
-//                 shownvalue = value;
-//               });
-//             },
-//             items: list.map<DropdownMenuItem<String>>((String value) {
-//               return DropdownMenuItem<String>(value: value, child: Text(value));
-//             }).toList(),
-//           ),
-// DropdownButton(
-//             value: shownvalue,
-//             icon: const Icon(Icons.arrow_downward),
-//             onChanged: (value) {
-//               setState(() {
-//                 shownvalue = value;
-//               });
-//             },
-//             items: list.map<DropdownMenuItem<String>>((String value) {
-//               return DropdownMenuItem<String>(value: value, child: Text(value));
-//             }).toList(),
-//           ),
