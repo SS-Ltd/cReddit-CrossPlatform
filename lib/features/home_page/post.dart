@@ -13,6 +13,7 @@ import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 class PollOptions {
   String option;
   bool isVoted;
@@ -35,7 +36,7 @@ class Post extends StatefulWidget {
   int commentNumber;
   final String title;
   final String content;
-  List<PollOptions>? pollOptions;
+  List<PollsOption>? pollOptions;
   final int shareNumber;
   final DateTime timeStamp;
   final bool isHomePage;
@@ -69,23 +70,23 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   Timer? _timer;
-  late VideoPlayerController _videoController;
+  // late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-    if (isVideo(widget.content)) {
-      _videoController = VideoPlayerController.network(widget.content);
-      _initializeVideoPlayerFuture = _videoController.initialize();
-      _videoController.setLooping(true);
-    }
+    // if (isVideo(widget.content)) {
+    //   _videoController = VideoPlayerController.network(widget.content);
+    //   _initializeVideoPlayerFuture = _videoController.initialize();
+    //   _videoController.setLooping(true);
+    // }
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _videoController.dispose();
+    // _videoController.dispose();
     super.dispose();
   }
 
@@ -117,21 +118,22 @@ class _PostState extends State<Post> {
                           fit: BoxFit.cover,
                         )
                       : isVideo(widget.content)
-                          ? FutureBuilder(
-                              future: _initializeVideoPlayerFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.done) {
-                                  return AspectRatio(
-                                    aspectRatio:
-                                        _videoController.value.aspectRatio,
-                                    child: VideoPlayer(_videoController),
-                                  );
-                                } else {
-                                  return const CircularProgressIndicator();
-                                }
-                              },
-                            )
+                          ? const CircularProgressIndicator()
+                          // FutureBuilder(
+                          //     future: _initializeVideoPlayerFuture,
+                          //     builder: (context, snapshot) {
+                          //       if (snapshot.connectionState ==
+                          //           ConnectionState.done) {
+                          //         return AspectRatio(
+                          //           aspectRatio:
+                          //               _videoController.value.aspectRatio,
+                          //           child: VideoPlayer(_videoController),
+                          //         );
+                          //       } else {
+                          //         return const CircularProgressIndicator();
+                          //       }
+                          //     },
+                          //   )
                           : const SizedBox.shrink(),
                 ),
               ),
@@ -180,20 +182,40 @@ class _PostState extends State<Post> {
                   ? Text(widget.content)
                   : const SizedBox.shrink()),
         );
-      // case ('Poll'):
-      //   return FlutterPolls(
-      //     pollId: widget.postId,
-      //     onVoted: (){
-      //       print('Voted');
-      //     },
-      //     pollTitle: Text(widget.content),
-      //     pollOptions: widget.pollOptions!.map((option) {
-      //         return PollsOptions(
-      //           option: option.option,
-      //           votes: option.votes,
-      //           isVoted: option.isVoted);
-      //     }).toList(),
-      //   );
+      case ('Poll'):
+        if (widget.pollOptions == null) {
+          return const SizedBox.shrink();
+        } else {
+          return FlutterPolls(
+            pollId: widget.postId,
+            onVoted: (PollOption pollOption, int newTotalVotes) {
+              print('Voted: ${pollOption.id}');
+              return Future<bool>.value(true);
+            },
+            pollOptionsSplashColor: Colors.white,
+            votedProgressColor: Colors.grey.withOpacity(0.3),
+            votedBackgroundColor: Colors.grey.withOpacity(0.2),
+            pollTitle: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "",
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            pollOptions: widget.pollOptions!
+                .map(
+                  (e) => PollOption(
+                    id: "1",
+                    title: Text(
+                        "${e.option} (${e.votes} votes)"), // Displaying the vote count beside each option
+                    votes: e.votes ?? 0,
+                  ),
+                )
+                .toList(),
+          );
+        }
       case ('Link'):
         return GestureDetector(
           onTap: () async {
@@ -467,13 +489,13 @@ String formatTimestamp(DateTime timestamp) {
 
 bool isImage(String url) {
   return url.toLowerCase().endsWith('.jpg') ||
-         url.toLowerCase().endsWith('.jpeg') ||
-         url.toLowerCase().endsWith('.png') ||
-         url.toLowerCase().endsWith('.gif');
+      url.toLowerCase().endsWith('.jpeg') ||
+      url.toLowerCase().endsWith('.png') ||
+      url.toLowerCase().endsWith('.gif');
 }
 
 bool isVideo(String url) {
   return url.toLowerCase().endsWith('.mp4') ||
-         url.toLowerCase().endsWith('.webm') ||
-         url.toLowerCase().endsWith('.ogg');
+      url.toLowerCase().endsWith('.webm') ||
+      url.toLowerCase().endsWith('.ogg');
 }

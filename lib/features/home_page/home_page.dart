@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> {
                   timeStamp: post.uploadDate ?? DateTime.now(),
                   profilePicture: post.profilePicture,
                   isHomePage: true,
+                  pollOptions: post.pollOptions,
                   isSubRedditPage: false,
                   postId: post.postId,
                   votes: post.netVote,

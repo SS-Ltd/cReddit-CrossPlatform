@@ -16,7 +16,7 @@ class PostModel {
   final bool? isHidden;
   final bool? isSaved;
   final DateTime? uploadDate;
-  final List<PollOption>? pollOptions;
+  final List<PollsOption>? pollOptions;
   final DateTime? expirationDate;
 
   PostModel({
@@ -63,7 +63,7 @@ class PostModel {
           DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
       pollOptions: json['pollOptions'] != null
           ? (json['pollOptions'] as List)
-              .map((e) => PollOption.fromJson(e))
+              .map((e) => PollsOption.fromJson(e))
               .toList()
           : null,
       expirationDate: json['expirationDate'] != null
@@ -73,17 +73,18 @@ class PostModel {
   }
 }
 
-class PollOption {
+class PollsOption {
   final String? option;
   final bool? isVoted;
   final int? votes;
 
-  PollOption(
+  PollsOption(
       {required this.option, required this.isVoted, required this.votes});
 
-  factory PollOption.fromJson(Map<String, dynamic> json) {
-    return PollOption(
-      option: json['option'],
+  factory PollsOption.fromJson(Map<String, dynamic> json) {
+    print(json);
+    return PollsOption(
+      option: json['text'],
       isVoted: json['isVoted'],
       votes: json['votes'],
     );

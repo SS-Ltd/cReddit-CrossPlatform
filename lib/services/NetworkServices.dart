@@ -17,8 +17,7 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-
-  // String _baseUrl = 'http://172.20.10.2:3000';
+  // String _baseUrl = 'http://10.0.2.2:3000';
   String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
@@ -244,40 +243,40 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> createNewImageComment(
-    String postId, File imageFile) async {
-  Uri url = Uri.parse('$_baseUrl/comment');
+      String postId, File imageFile) async {
+    Uri url = Uri.parse('$_baseUrl/comment');
 
-  http.MultipartRequest request = http.MultipartRequest('POST', url);
+    http.MultipartRequest request = http.MultipartRequest('POST', url);
 
-  request.headers.addAll(_headers);
+    request.headers.addAll(_headers);
 
-  request.fields['postId'] = postId;
+    request.fields['postId'] = postId;
 
-  request.files.add(await http.MultipartFile.fromPath(
-    'images',
-    imageFile.path,
-    filename: basename(imageFile.path),
-  ));
+    request.files.add(await http.MultipartFile.fromPath(
+      'images',
+      imageFile.path,
+      filename: basename(imageFile.path),
+    ));
 
-  http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await request.send();
 
-  String responseBody = await response.stream.bytesToString();
-  print('Response body: $responseBody');
-  if (response.statusCode == 201 || response.statusCode == 200) {
-    var parsedJson = jsonDecode(responseBody);
-    if (parsedJson['commentId'] != null) {
-      String commentId = parsedJson['commentId'];
-      return {'success': true, 'commentId': commentId, 'user': _user};
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      var parsedJson = jsonDecode(responseBody);
+      if (parsedJson['commentId'] != null) {
+        String commentId = parsedJson['commentId'];
+        return {'success': true, 'commentId': commentId, 'user': _user};
+      } else {
+        print(
+            'Failed to create comment. "commentId" field is missing in the response body.');
+        return {'success': false, 'user': _user};
+      }
     } else {
-      print(
-          'Failed to create comment. "commentId" field is missing in the response body.');
+      print('Failed to create comment. Response body: $responseBody');
       return {'success': false, 'user': _user};
     }
-  } else {
-    print('Failed to create comment. Response body: $responseBody');
-    return {'success': false, 'user': _user};
   }
-}
 
   // Future<bool> createNewImageComment(String postId, String content) async {
   //   Uri url = Uri.parse('$_baseUrl/comment');
@@ -480,7 +479,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<PostModel>?> getHomeFeed() async {
-    Uri url = Uri.parse('$_baseUrl/post/home-feed?limit=25');
+    Uri url = Uri.parse('$_baseUrl/post/home-feed?limit=50');
     final response = await http.get(url, headers: _headers);
     print(response.body);
     if (response.statusCode == 200) {
