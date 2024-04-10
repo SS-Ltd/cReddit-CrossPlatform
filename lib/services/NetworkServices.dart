@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -209,45 +210,34 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  // Future<bool> commentUpVote(String postId) async {
-  //   Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
-  //   final response = await http.patch(url, headers: _headers);
-  //   print(response.statusCode);
-  //   if (response.statusCode == 200) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  // Future<bool> commentDownVote(String commentId) async {
-  //   Uri url = Uri.parse('$_baseUrl/comment/$commentId/downvote');
-  //   final response = await http.patch(url, headers: _headers);
-  //   print(response.statusCode);
-  //   if (response.statusCode == 200) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-
-
-  Future<bool> createNewTextComment(String postId, String content) async {
+  Future<Map<String, dynamic>> createNewTextComment(
+      String postId, String content) async {
     Uri url = Uri.parse('$_baseUrl/comment');
-    final response = await http.post(
-      url,
-      headers: _headers,
-      body: jsonEncode({
-        'postId': postId,
-        'content': content,
-      }),
-    );
-    if (response.statusCode == 200) {
-      return true;
+
+    http.MultipartRequest request = http.MultipartRequest('POST', url);
+
+    request.headers.addAll(_headers);
+
+    request.fields['postId'] = postId;
+    request.fields['content'] = content;
+
+    http.StreamedResponse response = await request.send();
+
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      var parsedJson = jsonDecode(responseBody);
+      if (parsedJson['commentId'] != null) {
+        String commentId = parsedJson['commentId'];
+        return {'success': true, 'commentId': commentId, 'user': _user};
+      } else {
+        print(
+            'Failed to create comment. "commentId" field is missing in the response body.');
+        return {'success': false, 'user': _user};
+      }
     } else {
-      print('Failed to create comment: ${response.body}');
-      return false;
+      print('Failed to create comment. Response body: $responseBody');
+      return {'success': false, 'user': _user};
     }
   }
 
@@ -269,7 +259,6 @@ class NetworkService extends ChangeNotifier {
   //     return false;
   //   }
   // }
-
 
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');

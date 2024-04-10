@@ -180,27 +180,27 @@ class _CommentPageState extends State<CommentPage> {
                       if (contentType == false) {
                         final String commentText = result['content'];
                         _comments.add(UserComment(
-                          avatar: 'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-                          username: 'User123',
+                          avatar: result['user'].profilePicture,
+                          username: result['user'].username,
                           content: commentText,
                           timestamp: DateTime.now(),
                           photo: null,
                           contentType: contentType,
                           imageSource: 2,
-                          commentId: 'ffbfbfg', // will be updated when i integrate create comment with backend
+                          commentId: result['commentId'],
                           hasVoted: 0,
                         ));
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
                         _comments.add(UserComment(
-                          avatar: 'https://fastly.picsum.photos/id/738/640/480.jpg?hmac=F5iMUNrB-seuQ9M--_buxQap8XU70oibItqbNAUntxA',
-                          username: 'User123',
+                          avatar: 'https://i.imgur.com/BoN9kdC.png',
+                          username: "result['user'].username",
                           content: '',
                           timestamp: DateTime.now(),
                           photo: commentImage,
                           contentType: contentType,
                           imageSource: 1,
-                          commentId: 'ffbfbfg', // will be updated when i integrate create comment with backend
+                          commentId: 'ddddf', // will be updated when i integrate create comment with backend
                           hasVoted: 0,
                         ));
                       }

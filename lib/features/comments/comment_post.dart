@@ -65,20 +65,29 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     fontWeight: FontWeight.bold,
                   )),
               onPressed: () async {
-                bool created = await context
+                
+
+                //print(result['success']);
+
+                if (_controller.text.isNotEmpty) {
+                  Map<String, dynamic> result = await context
                     .read<NetworkService>()
                     .createNewTextComment(widget.postId, _controller.text);
-                    print (created);
-                if (_controller.text.isNotEmpty) {
                   contentType = false; // Text is entered
                   Navigator.pop(context, {
                     'content': _controller.text,
-                    'contentType': contentType
+                    'contentType': contentType,
+                    'commentId': result['commentId'],
+                    'user': result['user']
                   });
                 } else if (_image != null) {
                   contentType = true; // Image is uploaded
-                  Navigator.pop(
-                      context, {'content': _image, 'contentType': contentType});
+                  Navigator.pop(context, {
+                    'content': _image,
+                    'contentType': contentType,
+                    //'commentId': result['commentId'],
+                    //'user': result['user']
+                  });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

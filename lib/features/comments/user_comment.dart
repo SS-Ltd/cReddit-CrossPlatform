@@ -17,9 +17,9 @@ class UserComment extends StatefulWidget {
   final File? photo;
   final bool contentType;
   final int netVote;
-  final int imageSource;      //0 from backend 1 from user 2 text
+  final int imageSource; //0 from backend 1 from user 2 text
   final String commentId;
-  final int hasVoted;         // 1 for upvote, -1 for downvote, 0 for no vote
+  final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
   const UserComment({
     super.key,
     // may be the required keyword need to be removed
@@ -171,7 +171,7 @@ class UserCommentState extends State<UserComment> {
                 children: [
                   Row(
                     children: [
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 55),
                       GestureDetector(
                         onTap: () {
                           // will be replaced with redirecting to user
@@ -232,16 +232,16 @@ class UserCommentState extends State<UserComment> {
                                 : widget.contentType == true &&
                                         widget.imageSource == 0
                                     ? Center(
-                                        child: Image.file(
-                                          widget.photo!,
+                                        child: Image.network(
+                                          widget.content,
                                           fit: BoxFit.cover,
                                         ),
                                       )
                                     : widget.contentType == true &&
                                             widget.imageSource == 1
                                         ? Center(
-                                            child: Image.network(
-                                              widget.content,
+                                            child: Image.file(
+                                              widget.photo!,
                                               fit: BoxFit.cover,
                                             ),
                                           )
@@ -252,7 +252,7 @@ class UserCommentState extends State<UserComment> {
                     ],
                   ),
                   if (!isMinimized.value) ...[
-                    const SizedBox(height: 10),
+                    //const SizedBox(height: 10),
                     if (widget.contentType == false) ...[
                       Text(
                         widget.content,
@@ -274,7 +274,7 @@ class UserCommentState extends State<UserComment> {
                         fit: BoxFit.cover,
                       ),
                     ],
-                    const SizedBox(height: 5),
+                    //const SizedBox(height: 5),
                     Row(
                       children: [
                         const Spacer(),
@@ -300,7 +300,7 @@ class UserCommentState extends State<UserComment> {
                                 bool votedUp = await context
                                     .read<NetworkService>()
                                     .upVote(widget.commentId);
-                                if (votedUp) {
+                                if (votedUp && mounted) {
                                   setState(() {
                                     updateUpVote();
                                   });
@@ -337,7 +337,7 @@ class UserCommentState extends State<UserComment> {
                                 bool votedDown = await context
                                     .read<NetworkService>()
                                     .downVote(widget.commentId);
-                                if (votedDown) {
+                                if (votedDown && mounted) {
                                   setState(() {
                                     updateDownVote();
                                   });
