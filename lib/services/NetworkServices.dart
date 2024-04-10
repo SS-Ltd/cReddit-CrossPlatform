@@ -492,6 +492,22 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> voteOnPoll(String postId, String pollOption) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/vote-poll');
+    final response = await http.patch(
+      url,
+      headers: _headers,
+      body: jsonEncode({'pollOption': pollOption}),
+    );
+
+    print('Vote Poll Response: ${response.body}');
+    if (response.statusCode == 200) {
+      return true; // Voting was successful
+    } else {
+      return false; // Voting failed
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {

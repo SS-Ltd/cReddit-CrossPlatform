@@ -188,9 +188,13 @@ class _PostState extends State<Post> {
         } else {
           return FlutterPolls(
             pollId: widget.postId,
-            onVoted: (PollOption pollOption, int newTotalVotes) {
-              print('Voted: ${pollOption.id}');
-              return Future<bool>.value(true);
+            onVoted: (PollOption pollOption, int newTotalVotes) async {
+              print(
+                  'Voted on option: ${pollOption.id} with new total votes: $newTotalVotes');
+              bool success =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .voteOnPoll(widget.postId, pollOption.id ?? '');
+              return success;
             },
             pollOptionsSplashColor: Colors.white,
             votedProgressColor: Colors.grey.withOpacity(0.3),
@@ -207,7 +211,7 @@ class _PostState extends State<Post> {
             pollOptions: widget.pollOptions!
                 .map(
                   (e) => PollOption(
-                    id: "1",
+                    id: e.option,
                     title: Text(
                         "${e.option} (${e.votes} votes)"), // Displaying the vote count beside each option
                     votes: e.votes ?? 0,
