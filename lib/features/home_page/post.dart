@@ -12,7 +12,7 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 class PollOptions {
   String option;
   bool isVoted;
@@ -194,6 +194,22 @@ class _PostState extends State<Post> {
       //           isVoted: option.isVoted);
       //     }).toList(),
       //   );
+      case ('Link'):
+        return GestureDetector(
+          onTap: () async {
+            if (await canLaunch(widget.content)) {
+              await launch(widget.content);
+            } else {
+              throw 'Could not launch $widget.content';
+            }
+          },
+          child: Text(
+            widget.content,
+            style: const TextStyle(
+              color: Colors.blue,
+            ),
+          ),
+        );
       default:
         return SizedBox.shrink();
     }
