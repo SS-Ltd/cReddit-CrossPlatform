@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
@@ -51,9 +52,59 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
         key: widget._scaffoldKey,
         endDrawer: const Rightsidebar(),
-        appBar: AppBar(
-        backgroundColor: Colors.transparent, 
-        elevation: 0,
+      //   appBar: AppBar(
+      //   backgroundColor: Colors.transparent, 
+      //   elevation: 0,
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () {},
+      //       icon: const Icon(Icons.search, size: 30.0),
+      //     ),
+      //     IconButton(
+      //       onPressed: () {},
+      //       icon: const Icon(Icons.share, size: 30.0),
+      //     ),
+      //     PopupMenuButton<Menu>(
+      //       onSelected: (Menu item) {},
+      //       itemBuilder: (BuildContext context) => menuitems(),
+      //     ),
+      //   ],
+      // ),
+        body: _buildProfileContent(),
+    );
+  }
+
+
+Widget _buildProfileContent() {
+  return CustomScrollView(
+    slivers: [
+      SliverAppBar(
+        // expandedHeight: 200,
+        flexibleSpace: Stack(
+          children: [
+            // Container(
+            //   decoration: const BoxDecoration(
+            //         gradient: LinearGradient(
+            //           begin: Alignment.topCenter,
+            //           end: Alignment.bottomCenter,
+            //           colors: [Colors.blue, Colors.black],
+            //         ),
+            //       ),
+            // ),
+            FlexibleSpaceBar(
+              // centerTitle: true,
+              title: Text(
+                widget.displayName,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        floating: false,
+        pinned: true,
         actions: [
           IconButton(
             onPressed: () {},
@@ -69,115 +120,116 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          _buildBackground(),
-          _buildProfileContent(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBackground() {
-    return Stack(
-      children: [
-        Container(
-          height: 300,
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          decoration: BoxDecoration(
-            image: widget.bannerPicture.isNotEmpty
-              ? DecorationImage(
-                  image: NetworkImage(widget.bannerPicture),
-                  fit: BoxFit.cover,
-                )
-              : null,
-          ),
-        ),
-        Container(
-          height: 300,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: widget.bannerPicture.isNotEmpty
-                ? [Colors.transparent, Colors.black]
-                : [Colors.blue, Colors.black],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProfileContent() {
-  return SingleChildScrollView(
-    child: Padding(
-    padding: const EdgeInsets.only( left: 8.0, right: 8.0),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      SliverToBoxAdapter(
+        child: Stack(
           children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(widget.profilePicture),
-              radius: 50,
-            ),
-            widget.isOwnProfile
-              ? Align(
-                  alignment: Alignment.bottomRight,
-                  child: EditButton(
-                    userName: widget.userName,
+            Container(
+              height: 190,
+              decoration: widget.bannerPicture.isNotEmpty
+              ? BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(widget.bannerPicture),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.7),
+                      BlendMode.dstATop,
+                    ),
                   ),
-                ) 
-              : Row(
-                  children: [
-                    ChatButton(
-                      userName: widget.userName,
-                      profileName: widget.displayName,
-                    ),
-                    FollowButton(
-                      userName: widget.userName,
-                      profileName: widget.profileName,
-                    ),
-                  ],
+                )
+              : const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.blue, Colors.black],
+                  ),
                 ),
-          ],
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            widget.displayName,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
-                style: const TextStyle(
-                  fontSize: 12,
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black],
                 ),
               ),
-            ],
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            widget.about,
-            style: const TextStyle(
-              fontSize: 12,
+              height: 190, 
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(top:10.0, left: 8.0, right: 8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(widget.profilePicture),
+                        radius: 50,
+                      ),
+                      widget.isOwnProfile
+                          ? Align(
+                              alignment: Alignment.bottomRight,
+                              child: EditButton(
+                                userName: widget.userName,
+                              ),
+                            )
+                          : Row(
+                              children: [
+                                ChatButton(
+                                  userName: widget.userName,
+                                  profileName: widget.displayName,
+                                ),
+                                FollowButton(
+                                  userName: widget.userName,
+                                  profileName: widget.profileName,
+                                ),
+                              ],
+                            ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.displayName,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'u/${widget.profileName} . ${_formattedCakeDay(widget.cakeDay)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: widget.about.isNotEmpty
+                        ? Text(
+                            widget.about,
+                            style: const TextStyle(
+                              fontSize: 12,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  const SizedBox(height: 10.0),
+                ],
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 10.0),
-        Container(
+      ),
+      SliverToBoxAdapter(
+        child: Container(
           color: const Color.fromARGB(255, 21, 21, 27),
           child: Padding(
             padding: EdgeInsets.all(8.0),
@@ -231,65 +283,42 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
-        // Expanded(
-          // child: 
-          Column(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 0.5,
-                color: Colors.grey,
-              ),
-              if (widget.selectedTab == TabSelection.posts) ...[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: 1.0,
-                    color: Colors.blue,
-                  ),
-                ),
-                // Text("Posts content here"),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return mockPost();
-                  },
-                ),
-                // for (int i = 0; i < 5; i++) mockPost(),
-              ],
-              if (widget.selectedTab == TabSelection.comments) ...[
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: 1.0,
-                    color: Colors.blue,
-                  ),
-                ),
-                Text("Comments content here"),
-              ],
-              if (widget.selectedTab == TabSelection.about) ...[
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: 1.0,
-                    color: Colors.blue,
-                  ),
-                ),
-                Text("About content here"),
-              ],
-            ],
+      ),
+      if (widget.selectedTab == TabSelection.posts) ...[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return mockPost();
+            },
+            childCount: 5,
           ),
-        // ),
+        ),
       ],
-    ),
-  ),
+      if (widget.selectedTab == TabSelection.comments) ...[
+        SliverToBoxAdapter(
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 20.0),
+            child: const Text("Comments content here"),
+          ),
+        ),
+      ],
+      if (widget.selectedTab == TabSelection.about) ...[
+        SliverToBoxAdapter(
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 20.0),
+            child: const Text("About content here"),
+          ),
+        ),
+      ],
+    ],
   );
 }
+
+
+
+
 
 
   Widget mockPost() {
