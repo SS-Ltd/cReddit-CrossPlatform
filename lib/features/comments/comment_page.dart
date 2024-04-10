@@ -9,9 +9,12 @@ import 'package:reddit_clone/features/home_page/post.dart';
 class CommentPage extends StatefulWidget {
   final String postId;
   final Widget postComment;
-  final String postContent;
+  final String postTitle;
   const CommentPage(
-      {super.key, required this.postId, required this.postComment, required this.postContent});
+      {super.key,
+      required this.postId,
+      required this.postComment,
+      required this.postTitle});
 
   @override
   State<CommentPage> createState() {
@@ -68,7 +71,8 @@ class _CommentPageState extends State<CommentPage> {
                   netVote: comment.netVote,
                   imageSource: 0,
                   commentId: comment.commentId,
-                  hasVoted: mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  hasVoted:
+                      mappingVotes(comment.isUpvoted, comment.isDownvoted),
                 ))
             .toList();
       });
@@ -169,17 +173,19 @@ class _CommentPageState extends State<CommentPage> {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CommentPostPage(postId: widget.postId,
-                            commentContent: widget.postContent)),
+                        builder: (context) => CommentPostPage(
+                            postId: widget.postId,
+                            commentContent: widget.postTitle)),
                   );
 
                   if (result != null) {
                     final bool contentType = result['contentType'];
 
                     setState(() {
+                      UserComment? newComment;
                       if (contentType == false) {
                         final String commentText = result['content'];
-                        _comments.add(UserComment(
+                        newComment = UserComment(
                           avatar: result['user'].profilePicture,
                           username: result['user'].username,
                           content: commentText,
@@ -188,11 +194,11 @@ class _CommentPageState extends State<CommentPage> {
                           contentType: contentType,
                           imageSource: 2,
                           commentId: result['commentId'],
-                          hasVoted: 0,
-                        ));
+                          hasVoted: 1,
+                        );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
-                        _comments.add(UserComment(
+                        newComment = UserComment(
                           avatar: result['user'].profilePicture,
                           username: result['user'].username,
                           content: '',
@@ -200,13 +206,18 @@ class _CommentPageState extends State<CommentPage> {
                           photo: commentImage,
                           contentType: contentType,
                           imageSource: 1,
-                          commentId: result['commentId'],
-                          hasVoted: 0,
-                        ));
+                          commentId: result[
+                              'commentId'],
+                          hasVoted: 1,
+                        );
                       }
-                      // Add a GlobalKey for the new comment
-                      _keys.add(GlobalKey());
-                      _calculateCommentPositions();
+                      if (newComment != null) {
+                        // Insert the new comment at the beginning of the list
+                        _comments.insert(0, newComment);
+                        // Add a GlobalKey for the new comment
+                        _keys.insert(0, GlobalKey());
+                        _calculateCommentPositions();
+                      }
                     });
                   }
                 },

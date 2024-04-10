@@ -168,7 +168,7 @@ class _PostState extends State<Post> {
                       MaterialPageRoute(
                         //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                            postId: widget.postId, postComment: postComment, postContent: widget.content,),
+                            postId: widget.postId, postComment: postComment, postTitle: widget.title,),
                       ),
                     );
                   }
@@ -239,7 +239,7 @@ class _PostState extends State<Post> {
                       MaterialPageRoute(
                         //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                            postId: widget.postId, postComment: postComment, postContent: widget.content),
+                            postId: widget.postId, postComment: postComment, postTitle: widget.title),
                       ),
                     );
                   }
@@ -333,7 +333,7 @@ class _PostState extends State<Post> {
                     MaterialPageRoute(
                       //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                       builder: (context) => CommentPage(
-                          postId: widget.postId, postComment: postComment, postContent: widget.content),
+                          postId: widget.postId, postComment: postComment, postTitle: widget.title),
                     ),
                   );
                 },

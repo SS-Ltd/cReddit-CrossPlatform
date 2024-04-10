@@ -65,14 +65,12 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     fontWeight: FontWeight.bold,
                   )),
               onPressed: () async {
-                
-
                 //print(result['success']);
 
                 if (_controller.text.isNotEmpty) {
                   Map<String, dynamic> result = await context
-                    .read<NetworkService>()
-                    .createNewTextComment(widget.postId, _controller.text);
+                      .read<NetworkService>()
+                      .createNewTextComment(widget.postId, _controller.text);
 
                   contentType = false; // Text is entered
                   Navigator.pop(context, {
@@ -83,8 +81,8 @@ class _CommentPostPageState extends State<CommentPostPage> {
                   });
                 } else if (_image != null) {
                   Map<String, dynamic> result = await context
-                    .read<NetworkService>()
-                    .createNewImageComment(widget.postId, _image!);
+                      .read<NetworkService>()
+                      .createNewImageComment(widget.postId, _image!);
                   contentType = true; // Image is uploaded
                   Navigator.pop(context, {
                     'content': _image,

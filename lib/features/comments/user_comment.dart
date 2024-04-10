@@ -20,6 +20,7 @@ class UserComment extends StatefulWidget {
   final int imageSource; //0 from backend 1 from user 2 text
   final String commentId;
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
+
   const UserComment({
     super.key,
     // may be the required keyword need to be removed
@@ -30,7 +31,7 @@ class UserComment extends StatefulWidget {
     required this.timestamp,
     this.photo,
     required this.contentType,
-    this.netVote = 0,
+    this.netVote = 1,
     required this.imageSource,
     required this.commentId,
     required this.hasVoted,
@@ -281,7 +282,7 @@ class UserCommentState extends State<UserComment> {
                         IconButton(
                           icon: const Icon(Icons.more_vert),
                           onPressed: () {
-                            showOverlay(context, widget);
+                            showOverlay(context, widget ,7);
                           },
                         ),
                         IconButton(
@@ -398,12 +399,13 @@ String formatTimestamp(DateTime timestamp) {
   }
 }
 
-void showOverlay(BuildContext context, UserComment card) {
+void showOverlay(BuildContext context, UserComment card ,int numOfTiles) {
+  double height = numOfTiles * 56;
   OverlayEntry overlayEntry = OverlayEntry(
     builder: (context) => Positioned(
       left: 8,
       right: 8,
-      bottom: MediaQuery.of(context).size.height * 0.46,
+      bottom: height,
       child: Material(
         color: Colors.transparent,
         child: StaticCommentCard(
@@ -411,6 +413,9 @@ void showOverlay(BuildContext context, UserComment card) {
           username: card.username,
           timestamp: card.timestamp,
           content: card.content,
+          contentType: card.contentType,
+          photo: card.photo,
+          imageSource: card.imageSource,
         ),
       ),
     ),
