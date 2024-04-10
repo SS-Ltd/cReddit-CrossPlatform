@@ -73,6 +73,7 @@ class _CommentPostPageState extends State<CommentPostPage> {
                   Map<String, dynamic> result = await context
                     .read<NetworkService>()
                     .createNewTextComment(widget.postId, _controller.text);
+
                   contentType = false; // Text is entered
                   Navigator.pop(context, {
                     'content': _controller.text,
@@ -81,12 +82,15 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     'user': result['user']
                   });
                 } else if (_image != null) {
+                  Map<String, dynamic> result = await context
+                    .read<NetworkService>()
+                    .createNewImageComment(widget.postId, _image!);
                   contentType = true; // Image is uploaded
                   Navigator.pop(context, {
                     'content': _image,
                     'contentType': contentType,
-                    //'commentId': result['commentId'],
-                    //'user': result['user']
+                    'commentId': result['commentId'],
+                    'user': result['user']
                   });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

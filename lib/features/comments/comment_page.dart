@@ -193,14 +193,14 @@ class _CommentPageState extends State<CommentPage> {
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
                         _comments.add(UserComment(
-                          avatar: 'https://i.imgur.com/BoN9kdC.png',
-                          username: "result['user'].username",
+                          avatar: result['user'].profilePicture,
+                          username: result['user'].username,
                           content: '',
                           timestamp: DateTime.now(),
                           photo: commentImage,
                           contentType: contentType,
                           imageSource: 1,
-                          commentId: 'ddddf', // will be updated when i integrate create comment with backend
+                          commentId: result['commentId'],
                           hasVoted: 0,
                         ));
                       }

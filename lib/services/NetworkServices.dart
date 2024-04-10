@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
@@ -9,6 +10,7 @@ import 'package:reddit_clone/models/user_settings.dart';
 import 'package:reddit_clone/models/joined_communities.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/community.dart';
+import 'package:path/path.dart';
 
 class NetworkService extends ChangeNotifier {
   static final NetworkService _instance = NetworkService._internal();
@@ -240,6 +242,42 @@ class NetworkService extends ChangeNotifier {
       return {'success': false, 'user': _user};
     }
   }
+
+  Future<Map<String, dynamic>> createNewImageComment(
+    String postId, File imageFile) async {
+  Uri url = Uri.parse('$_baseUrl/comment');
+
+  http.MultipartRequest request = http.MultipartRequest('POST', url);
+
+  request.headers.addAll(_headers);
+
+  request.fields['postId'] = postId;
+
+  request.files.add(await http.MultipartFile.fromPath(
+    'images',
+    imageFile.path,
+    filename: basename(imageFile.path),
+  ));
+
+  http.StreamedResponse response = await request.send();
+
+  String responseBody = await response.stream.bytesToString();
+  print('Response body: $responseBody');
+  if (response.statusCode == 201 || response.statusCode == 200) {
+    var parsedJson = jsonDecode(responseBody);
+    if (parsedJson['commentId'] != null) {
+      String commentId = parsedJson['commentId'];
+      return {'success': true, 'commentId': commentId, 'user': _user};
+    } else {
+      print(
+          'Failed to create comment. "commentId" field is missing in the response body.');
+      return {'success': false, 'user': _user};
+    }
+  } else {
+    print('Failed to create comment. Response body: $responseBody');
+    return {'success': false, 'user': _user};
+  }
+}
 
   // Future<bool> createNewImageComment(String postId, String content) async {
   //   Uri url = Uri.parse('$_baseUrl/comment');
