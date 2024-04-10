@@ -30,7 +30,7 @@ class Post extends StatefulWidget {
   final String postId;
   final String postType;
   final String userName;
-  final String communityName;
+  final String? communityName;
   final String profilePicture;
   int votes;
   int commentNumber;

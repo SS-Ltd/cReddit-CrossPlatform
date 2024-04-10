@@ -9,7 +9,7 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/post/create_post.dart';
 
 class CustomNavigationBar extends StatefulWidget {
-  const CustomNavigationBar({super.key});
+  const CustomNavigationBar({Key? key}) : super(key: key);
 
   @override
   State<CustomNavigationBar> createState() => _CustomNavigationBarState();
@@ -26,7 +26,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const CreatePost(profile: true),
     const InboxNotificationPage(),
 
-    
     //CreatePage(),
     // ChatPage(),
   ];
@@ -62,6 +61,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             _currentIndex = index;
           });
         },
+        selectedFontSize: 12, // Adjust the selected font size
+        unselectedFontSize: 12, // Adjust the unselected font size
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(

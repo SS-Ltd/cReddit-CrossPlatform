@@ -42,6 +42,7 @@ class PostModel {
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return PostModel(
       postId: json['_id'],
       type: json['type'],

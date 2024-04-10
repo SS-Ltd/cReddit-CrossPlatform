@@ -329,7 +329,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<Subreddit?> getSubredditDetails(String subredditName) async {
+  Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
 
@@ -342,7 +342,35 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> fetchPostsForSubreddit(String subredditName) async {
+  Future<List<PostModel>?> fetchUserPosts({
+    String sort = 'hot',
+    String time = 'all',
+    int page = 1,
+    int limit = 5,
+  }) async {
+    String username = _user!.username;
+    final url = Uri.parse('$_baseUrl/user/$username/posts?'
+        'sort=$sort'
+        '&time=$time'
+        '&page=$page'
+        '&limit=$limit');
+
+    final response =
+        await http.get(url, headers: {'accept': 'application/json'});
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      List<PostModel> posts = responseData
+          .map<PostModel>((postJson) => PostModel.fromJson(postJson))
+          .toList();
+      return posts;
+    } else {
+      print('Error Fetching User Posts: ${response.body}');
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
     final response = await http.get(url, headers: _headers);
     print(response.body);
