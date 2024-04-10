@@ -5,7 +5,7 @@ class PostComments extends StatelessWidget {
   final String communityName;
   final String userName;
   final String title;
-  final String imageUrl;
+  final String postType;
   final String content;
   final int commentNumber;
   final int shareNumber;
@@ -23,7 +23,7 @@ class PostComments extends StatelessWidget {
     required this.communityName,
     required this.userName,
     required this.title,
-    required this.imageUrl,
+    required this.postType,
     required this.profilePicture,
     required this.content,
     required this.commentNumber,
@@ -46,7 +46,7 @@ class PostComments extends StatelessWidget {
           userName: userName,
           title: title,
           profilePicture: profilePicture,
-          imageUrl: imageUrl,
+          postType: postType,
           content: content,
           commentNumber: commentNumber,
           shareNumber: shareNumber,

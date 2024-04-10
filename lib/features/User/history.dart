@@ -119,7 +119,7 @@ class _HistoryPageState extends State<HistoryPage> {
           userName: postModel.username,
           title: postModel.title,
           profilePicture: postModel.profilePicture,
-          imageUrl: '', // Assuming this is the image URL
+          postType: postModel.type,
           content: postModel.content,
           commentNumber: postModel.commentCount,
           shareNumber: 0, // Adjust accordingly if your model includes this info

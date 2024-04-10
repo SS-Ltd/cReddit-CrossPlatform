@@ -125,7 +125,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
           communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
-          imageUrl: '', // Assuming this is the image URL
+          postType: postModel.type,  
           profilePicture: postModel.profilePicture,
           content: postModel.content,
           commentNumber: postModel.commentCount,
