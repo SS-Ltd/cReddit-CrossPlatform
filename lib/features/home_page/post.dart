@@ -8,24 +8,7 @@ import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'post_comment.dart';
-import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/features/home_page/postcomments.dart';
-import 'package:flutter_polls/flutter_polls.dart';
-import 'package:video_player/video_player.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:reddit_clone/features/User/profile.dart';
 
-class PollOptions {
-  String option;
-  bool isVoted;
-  int votes;
-
-  PollOptions({
-    required this.option,
-    required this.isVoted,
-    required this.votes,
-  });
-}
 
 class Post extends StatefulWidget {
   final String postId;
@@ -321,8 +304,7 @@ class _PostState extends State<Post> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const AboutUserPopUp()),
-                                      //replace with profile page or widget
+                                              const NewPage()), //replace with profile page or widget
                                     );
                                   },
                                   child: Text(
