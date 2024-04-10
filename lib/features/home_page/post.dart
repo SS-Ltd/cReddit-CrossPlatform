@@ -7,8 +7,10 @@ import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
-import 'post_comment.dart';
-
+import 'package:flutter_polls/flutter_polls.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'postcomments.dart';
+import '../../theme/palette.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -191,11 +193,11 @@ class _PostState extends State<Post> {
             pollOptionsSplashColor: Colors.white,
             votedProgressColor: Colors.grey.withOpacity(0.3),
             votedBackgroundColor: Colors.grey.withOpacity(0.2),
-            pollTitle: Align(
+            pollTitle: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "",
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                 ),
               ),
@@ -260,8 +262,9 @@ class _PostState extends State<Post> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
+                                          builder: (context) => AboutUserPopUp(
+                                                userName: widget.userName,
+                                              )),
                                     );
                                   },
                                   child: Text(
@@ -304,7 +307,9 @@ class _PostState extends State<Post> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const NewPage()), //replace with profile page or widget
+                                              AboutUserPopUp(
+                                                userName: widget.userName,
+                                              )),
                                     );
                                   },
                                   child: Text(

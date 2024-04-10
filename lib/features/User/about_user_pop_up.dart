@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
+import 'package:reddit_clone/features/User/Profile.dart';
+import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class AboutUserPopUp extends StatelessWidget {
-  const AboutUserPopUp({super.key});
+  final String userName;
+
+  const AboutUserPopUp({required this.userName, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +21,11 @@ class AboutUserPopUp extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text('u/(username)')],
+                children: [
+                  Text('u/$userName'),
+                ],
               ),
               const SizedBox(height: 10),
               Row(
@@ -46,7 +55,27 @@ class AboutUserPopUp extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 25),
                 child: ArrowButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      UserModel myUser = await context
+                          .read<NetworkService>()
+                          .getUserDetails(userName);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(
+                            userName: myUser.username,
+                            profileName: myUser.username,
+                            displayName: myUser.displayName,
+                            profilePicture: myUser.profilePicture,
+                            followerCount: myUser.followers,
+                            about: myUser.about!,
+                            cakeDay: myUser.cakeDay.toString(),
+                            bannerPicture: myUser.banner!,
+                            isOwnProfile: true,
+                          ),
+                        ),
+                      );
+                    },
                     buttonText: 'View Profile',
                     buttonIcon: Icons.person,
                     hasarrow: false),

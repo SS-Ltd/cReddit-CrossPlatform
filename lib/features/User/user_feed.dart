@@ -30,16 +30,14 @@ class _UserState extends State<UserFeed> {
     );
   }
 
-    Widget mockPost() {
+  Widget mockPost() {
     return Column(
       children: [
         Post(
           communityName: 'Entrepreneur',
           userName: 'throwaway123',
           title: 'Escaping corporate Hell and finding freedom',
-          imageUrl: 
-              'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-              // '',
+          postType: "Normal",
           content:
               'Man, let me have a  vent for a minute. Just got out of the shittiest '
               'gig ever – being a "marketing specialist" for the supposed big boys'
@@ -47,7 +45,14 @@ class _UserState extends State<UserFeed> {
           commentNumber: 0,
           shareNumber: 0,
           timeStamp: DateTime.now(),
+          profilePicture:
+              'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
           isHomePage: true,
+          isSubRedditPage: false,
+          postId: '123',
+          votes: 0,
+          isDownvoted: false,
+          isUpvoted: false,
         ),
         const Divider(height: 1, thickness: 1), // Add a thin horizontal line
       ],
