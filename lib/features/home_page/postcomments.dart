@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/post_model.dart';
 
 class PostComments extends StatelessWidget {
   final String communityName;
@@ -16,6 +17,7 @@ class PostComments extends StatelessWidget {
   final String postId;
   final bool isDownvoted;
   final bool isUpvoted;
+  final List<PollsOption>? pollOptions;
   int votes;
 
   PostComments({
@@ -35,6 +37,7 @@ class PostComments extends StatelessWidget {
     required this.votes,
     required this.isDownvoted,
     required this.isUpvoted,
+    this.pollOptions,
   }) : super(key: key);
 
   @override
@@ -49,6 +52,7 @@ class PostComments extends StatelessWidget {
           postType: postType,
           content: content,
           commentNumber: commentNumber,
+          pollOptions: pollOptions,
           shareNumber: shareNumber,
           timeStamp: timeStamp,
           isHomePage: isHomePage,

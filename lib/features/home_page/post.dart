@@ -152,6 +152,7 @@ class _PostState extends State<Post> {
                     postType: widget.postType,
                     content: widget.content,
                     commentNumber: widget.commentNumber,
+                    pollOptions: widget.pollOptions,
                     shareNumber: widget.shareNumber,
                     timeStamp: widget.timeStamp,
                     isHomePage: false,
@@ -186,7 +187,14 @@ class _PostState extends State<Post> {
         if (widget.pollOptions == null) {
           return const SizedBox.shrink();
         } else {
+          bool voted = false;
+          for (PollsOption option in widget.pollOptions!) {
+            if (option.isVoted == true) {
+              voted = true;
+            }
+          }
           return FlutterPolls(
+            hasVoted: false,
             pollId: widget.postId,
             onVoted: (PollOption pollOption, int newTotalVotes) async {
               print(
@@ -340,6 +348,7 @@ class _PostState extends State<Post> {
                       userName: widget.userName,
                       title: widget.title,
                       postType: widget.postType,
+                      pollOptions: widget.pollOptions,
                       content: widget.content,
                       commentNumber: widget.commentNumber,
                       shareNumber: widget.shareNumber,
@@ -436,6 +445,7 @@ class _PostState extends State<Post> {
                     title: widget.title,
                     postType: widget.postType,
                     content: widget.content,
+                    pollOptions: widget.pollOptions,
                     commentNumber: widget.commentNumber,
                     shareNumber: widget.shareNumber,
                     timeStamp: widget.timeStamp,
