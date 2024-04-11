@@ -17,8 +17,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  // String _baseUrl = 'http://10.0.2.2:3000';
-  String _baseUrl = 'https://creddit.tech/API';
+  String _baseUrl = 'http://192.168.1.19:3000';
+  //String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -226,7 +226,7 @@ class NetworkService extends ChangeNotifier {
 
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
-    if (response.statusCode == 201 || response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {
         String commentId = parsedJson['commentId'];
@@ -262,7 +262,7 @@ class NetworkService extends ChangeNotifier {
 
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
-    if (response.statusCode == 201 || response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {
         String commentId = parsedJson['commentId'];
@@ -278,24 +278,27 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  // Future<bool> createNewImageComment(String postId, String content) async {
-  //   Uri url = Uri.parse('$_baseUrl/comment');
-  //   final response = await http.post(
-  //     url,
-  //     headers: _headers,
-  //     body: jsonEncode({
-  //       'type': 'comment',
-  //       'postId': postId,
-  //       'content': content,
-  //     }),
-  //   );
-  //   if (response.statusCode == 200) {
-  //     return true;
-  //   } else {
-  //     print('Failed to create post: ${response.body}');
-  //     return false;
-  //   }
-  // }
+  Future<bool> joinSubReddit(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
+    final response = await http.post(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> disJoinSubReddit(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
+    final response = await http.delete(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');

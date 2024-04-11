@@ -77,7 +77,7 @@ class _PostState extends State<Post> {
   void initState() {
     super.initState();
     if (isVideo(widget.content)) {
-      _videoController = VideoPlayerController.network(widget.content);
+      _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.content));
       _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
         setState(() {
           _controllerInitialized =
