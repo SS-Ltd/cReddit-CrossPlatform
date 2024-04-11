@@ -9,7 +9,7 @@ import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.da
 
 class Gender extends StatelessWidget {
   final Map<String, dynamic> userData;
-  Gender({Key? key, required this.userData}) : super(key: key);
+  Gender({super.key, required this.userData});
 
   final List<String> userGender = [
     "Man",
@@ -27,7 +27,7 @@ class Gender extends StatelessWidget {
     if (signup) {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => CustomNavigationBar()));
+          MaterialPageRoute(builder: (context) => const CustomNavigationBar()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to sign up')),
@@ -56,7 +56,7 @@ class Gender extends StatelessWidget {
               // Handle skip action
               signup(context);
             },
-            child: Text(
+            child: const Text(
               "Skip",
               style: TextStyle(color: Colors.white),
             ),
@@ -72,7 +72,7 @@ class Gender extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                Text(
+                const Text(
                   'How do you identify?',
                   style: TextStyle(
                     fontSize: 30,
@@ -90,10 +90,8 @@ class Gender extends StatelessWidget {
                         signup(context);
                         // Handle gender selection
                       },
-                      child:
-                          Text(gender, style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           vertical: 16,
                           horizontal: 20,
                         ),
@@ -101,7 +99,8 @@ class Gender extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      //style for button using the predefined style in the palette
+                      child: Text(gender,
+                          style: const TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),

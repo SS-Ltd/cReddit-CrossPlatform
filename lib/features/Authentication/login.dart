@@ -7,7 +7,7 @@ import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/features/Authentication/forget_password.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 import 'package:reddit_clone/features/Authentication/google_button.dart';

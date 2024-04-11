@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
