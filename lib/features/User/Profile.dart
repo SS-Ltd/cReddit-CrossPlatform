@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/features/home_page/select_item.dart';
 // import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
@@ -43,6 +44,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  // final List<String> feedMenuItems = ['hot', 'top', 'new'];
   String _formattedCakeDay(String cakeDay) {
     DateTime parsedDate = DateTime.parse(cakeDay);
     return DateFormat('dd MMM yyyy').format(parsedDate);
@@ -52,25 +54,6 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: widget._scaffoldKey,
-      // endDrawer: const Rightsidebar(),
-      //   appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.search, size: 30.0),
-      //     ),
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.share, size: 30.0),
-      //     ),
-      //     PopupMenuButton<Menu>(
-      //       onSelected: (Menu item) {},
-      //       itemBuilder: (BuildContext context) => menuitems(),
-      //     ),
-      //   ],
-      // ),
       body: _buildProfileContent(),
     );
   }
@@ -79,20 +62,9 @@ class _ProfileState extends State<Profile> {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          // expandedHeight: 200,
           flexibleSpace: Stack(
             children: [
-              // Container(
-              //   decoration: const BoxDecoration(
-              //         gradient: LinearGradient(
-              //           begin: Alignment.topCenter,
-              //           end: Alignment.bottomCenter,
-              //           colors: [Colors.blue, Colors.black],
-              //         ),
-              //       ),
-              // ),
               FlexibleSpaceBar(
-                // centerTitle: true,
                 title: Text(
                   widget.displayName,
                   style: const TextStyle(
@@ -323,6 +295,24 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget postsFeed(){
+    return Column(
+      children: [
+        // SelectItem(
+        //   menuItems: feedMenuItems,
+        //     onMenuItemSelected: (String selectedItem) {
+        //       // Handle menu item selection here
+        //       setState(() {
+                
+        //       });
+        //       print('Selected: $selectedItem');
+        //     },
+        // ),
+
+      ],
+    );
+  }
+
   Widget mockPost() {
     return Column(
       children: [
@@ -447,4 +437,43 @@ List<PopupMenuEntry<Menu>> menuitems() {
       ),
     ),
   ];
+}
+
+
+class DropdownButton extends StatefulWidget {
+  const DropdownButton({super.key, required String value, required Icon icon});
+
+  @override
+  State<DropdownButton> createState() => _DropdownButtonState();
+}
+
+const List<String> list = <String>['top', 'hot', 'new'];
+class _DropdownButtonState extends State<DropdownButton> {
+  String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      elevation: 16,
+      style: const TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
+      ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
 }
