@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/Authentication/gender.dart';
-import 'package:reddit_clone/services/NetworkServices.dart'; // Import NetworkServices
+import 'package:reddit_clone/services/networkServices.dart'; // Import NetworkServices
 
 class NameSuggestion extends StatefulWidget {
   final Map<String, dynamic> userData;

@@ -7,7 +7,7 @@ import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/features/settings/muted_communities.dart';
 import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class AccountSettings extends StatelessWidget {
   const AccountSettings({super.key});

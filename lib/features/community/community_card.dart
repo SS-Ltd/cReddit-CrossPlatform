@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class CommunityCard extends StatefulWidget {
   final String name;

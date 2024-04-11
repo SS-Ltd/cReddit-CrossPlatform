@@ -4,7 +4,7 @@ import 'package:reddit_clone/features/settings/account_settings.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/selection_button.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
