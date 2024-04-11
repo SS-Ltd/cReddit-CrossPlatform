@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/savedcomments.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SavedComments extends StatefulWidget {
@@ -11,7 +11,7 @@ class SavedComments extends StatefulWidget {
 }
 
 class _SavedCommentsState extends State<SavedComments> {
-  List<Comments>? savedComments;
+  List<SavedCommentsModel>? savedComments;
   bool isLoading = false;
   int page = 1;
   final ScrollController _scrollController = ScrollController();
@@ -36,20 +36,22 @@ class _SavedCommentsState extends State<SavedComments> {
       isLoading = true;
     });
 
-    List<Comments>? newComments =
+    List<SavedCommentsModel>? newComments =
         await Provider.of<NetworkService>(context, listen: false)
             .fetchSavedComments(page: page);
 
-    if (newComments != null && newComments.isNotEmpty) {
+    if (mounted) {
+      if (newComments != null && newComments.isNotEmpty) {
+        setState(() {
+          savedComments = (savedComments ?? []) + newComments;
+          page++; // Prepare the next page
+        });
+      }
+
       setState(() {
-        savedComments = (savedComments ?? []) + newComments;
-        page++; // Prepare the next page
+        isLoading = false;
       });
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   void _onScroll() {
@@ -77,10 +79,25 @@ class _SavedCommentsState extends State<SavedComments> {
           );
   }
 
-  Widget commentWidget(Comments comment) {
-    return ListTile(
-      title: Text(comment.content),
-      subtitle: Text('By ${comment.content}'),
+  Widget commentWidget(SavedCommentsModel comment) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          comment.title,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 4),
+        Text(
+          '${comment.username} . ${comment.communityName}',
+          style: TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        SizedBox(height: 4),
+        Text(
+          comment.content,
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
     );
   }
 }

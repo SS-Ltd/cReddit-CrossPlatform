@@ -37,14 +37,16 @@ class _SavedPostsState extends State<SavedPosts> {
       });
       List<PostModel>? newPosts =
           await context.read<NetworkService>().getSavedPosts(page: page);
-      if (newPosts != null && mounted) {
-        setState(() {
-          posts.addAll(newPosts);
-          page++;
-          isLoading = false;
-        });
-      } else {
-        setState(() => isLoading = false);
+      if (mounted) {
+        if (newPosts != null) {
+          setState(() {
+            posts.addAll(newPosts);
+            page++;
+            isLoading = false;
+          });
+        } else {
+          setState(() => isLoading = false);
+        }
       }
     }
   }
