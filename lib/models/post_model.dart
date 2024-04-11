@@ -50,7 +50,8 @@ class PostModel {
       communityName: json['communityName'],
       title: json['title'],
       content: json['content'],
-      profilePicture: json['profilePicture'] ?? '',
+      profilePicture:
+          json['profilePicture'] is String ? json['profilePicture'] : '',
       netVote: json['netVote'],
       commentCount: json['commentCount'],
       isNSFW: json['isNSFW'],
