@@ -117,33 +117,33 @@ class _PostState extends State<Post> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ClipRRect(
-                  // borderRadius: BorderRadius.circular(10.0),
-                  // child: isImage(widget.content)
-                  //     ? Image.network(
-                  //         widget.content,
-                  //         width: double.infinity,
-                  //         fit: BoxFit.cover,
-                  //       )
-                  //     : (isVideo(widget.content) &&
-                  //             _videoController.value.isInitialized)
-                  //         ? //const CircularProgressIndicator() :
-                  //         FutureBuilder(
-                  //             future: _initializeVideoPlayerFuture,
-                  //             builder: (context, snapshot) {
-                  //               if (snapshot.connectionState ==
-                  //                   ConnectionState.done) {
-                  //                 return AspectRatio(
-                  //                   aspectRatio:
-                  //                       _videoController.value.aspectRatio,
-                  //                   child: VideoPlayer(_videoController),
-                  //                 );
-                  //               } else {
-                  //                 return const CircularProgressIndicator();
-                  //               }
-                  //             },
-                  //           )
-                  //         : const SizedBox.shrink(),
-                ),
+                    // borderRadius: BorderRadius.circular(10.0),
+                    // child: isImage(widget.content)
+                    //     ? Image.network(
+                    //         widget.content,
+                    //         width: double.infinity,
+                    //         fit: BoxFit.cover,
+                    //       )
+                    //     : (isVideo(widget.content) &&
+                    //             _videoController.value.isInitialized)
+                    //         ? //const CircularProgressIndicator() :
+                    //         FutureBuilder(
+                    //             future: _initializeVideoPlayerFuture,
+                    //             builder: (context, snapshot) {
+                    //               if (snapshot.connectionState ==
+                    //                   ConnectionState.done) {
+                    //                 return AspectRatio(
+                    //                   aspectRatio:
+                    //                       _videoController.value.aspectRatio,
+                    //                   child: VideoPlayer(_videoController),
+                    //                 );
+                    //               } else {
+                    //                 return const CircularProgressIndicator();
+                    //               }
+                    //             },
+                    //           )
+                    //         : const SizedBox.shrink(),
+                    ),
               ),
             ],
           ),

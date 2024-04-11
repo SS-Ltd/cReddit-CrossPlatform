@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
-import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 import '../../models/post_model.dart';
@@ -27,14 +26,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      getPosts(selectedMenuItem);
-    });
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        getPosts(selectedMenuItem);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -65,7 +67,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
+    if (_scrollController.hasClients &&
+        _scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
       getPosts(selectedMenuItem); // Fetch more posts when user reaches end
@@ -91,7 +94,6 @@ class _HomePageState extends State<HomePage> {
             SelectItem(
               menuItems: menuItems,
               onMenuItemSelected: (String selectedItem) {
-                // Handle menu item selection here
                 setState(() {
                   selectedMenuItem = selectedItem;
                 });
@@ -118,10 +120,10 @@ class _HomePageState extends State<HomePage> {
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: ListView.builder(
-          controller: _scrollController, // Attach ScrollController here
+          controller: _scrollController,
           itemCount: posts.length,
           itemBuilder: (context, index) {
-            final post = posts![index];
+            final post = posts[index];
             return Column(
               children: [
                 Post(
