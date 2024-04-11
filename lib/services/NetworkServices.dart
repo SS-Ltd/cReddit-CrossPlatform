@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/savedcomments.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
 import 'package:reddit_clone/models/user.dart';
@@ -465,7 +466,7 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/upvoted?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-
+    print(response.body);
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -655,7 +656,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<Comments>?> fetchSavedComments(
+  Future<List<SavedCommentsModel>?> fetchSavedComments(
       {int page = 1, int limit = 20}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
@@ -663,7 +664,7 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
-          .map((commentJson) => Comments.fromJson(commentJson))
+          .map((commentJson) => SavedCommentsModel.fromJson(commentJson))
           .toList();
     } else {
       // Handle error or empty case appropriately
