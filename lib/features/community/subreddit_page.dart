@@ -7,7 +7,7 @@ import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
-  final String subredditName;
+  final String? subredditName;
 
   const SubRedditPage({super.key, required this.subredditName});
 
@@ -125,13 +125,14 @@ class _SubRedditPageState extends State<SubRedditPage> {
           communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
-          imageUrl: '', // Assuming this is the image URL
+          postType: postModel.type,  
           profilePicture: postModel.profilePicture,
           content: postModel.content,
           commentNumber: postModel.commentCount,
           shareNumber: 0, // Adjust accordingly if your model includes this info
-          timeStamp: postModel.uploadDate,
-          isHomePage: true, // Adjust based on your design/requirements
+          timeStamp: postModel.uploadDate ?? DateTime.now(),
+          isHomePage: true,
+          isSubRedditPage: true,
           postId: postModel.postId,
           votes: postModel.netVote,
           isDownvoted: postModel.isDownvoted,

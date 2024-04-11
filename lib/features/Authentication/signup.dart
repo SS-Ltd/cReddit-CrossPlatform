@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
-import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reddit_clone/features/Authentication/google_button.dart';
 
 class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
+  SignUpScreen({Key? key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -48,11 +46,7 @@ class SignUpScreen extends StatelessWidget {
                   color: Palette.whiteColor),
             ),
             const SizedBox(height: 20),
-            ImageButton(
-              text: 'Continue with Google',
-              onPressed: () {},
-              iconPath: AssetsConstants.googleLogo,
-            ),
+            const GoogleButton(),
             const Row(
               children: <Widget>[
                 Expanded(
@@ -75,8 +69,7 @@ class SignUpScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            AuthField(
-                controller: emailController, labelText: 'Email or Username'),
+            AuthField(controller: emailController, labelText: 'Email'),
             const SizedBox(height: 20),
             AuthField(
                 controller: passwordController,
@@ -87,38 +80,60 @@ class SignUpScreen extends StatelessWidget {
             ),
             if (!isKeyboardOpen) const AgreementText(),
             const SizedBox(height: 20),
-            FullWidthButton(
-                text: "Continue",
-                onPressed: () async {
-                  if (emailController.text.isEmpty ||
-                      passwordController.text.isEmpty) {
-                    // Show an error message
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Please fill in all fields')),
+            Visibility(
+                visible: !isKeyboardOpen,
+                child: FullWidthButton(
+                  text: "Continue",
+                  onPressed: () async {
+                    if (emailController.text.isEmpty ||
+                        passwordController.text.isEmpty) {
+                      // Show an error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please fill in all fields')),
+                      );
+                      return;
+                    }
+                    if (!isValidEmail(emailController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Invalid email address')),
+                      );
+                      return;
+                    }
+                    if (!isValidPassword(passwordController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
+                      );
+                      return;
+                    }
+                    Map<String, dynamic> userData = {
+                      'email': emailController.text,
+                      'password': passwordController.text,
+                    };
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              NameSuggestion(userData: userData)),
                     );
-                    return;
-                  }
-                  bool signup = await context.read<NetworkService>().createUser(
-                      "osama2001",
-                      emailController.text,
-                      passwordController.text,
-                      "Man");
-                  if (signup) {
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Failed to sign up')),
-                    );
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => NameSuggestion()),
-                  );
-                }),
+                  },
+                )),
           ],
         ),
       ),
     );
+  }
+
+  bool isValidEmail(String email) {
+    return RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+        .hasMatch(email);
+  }
+
+  bool isValidPassword(String password) {
+    return password.length >= 8 &&
+        password.contains(RegExp(r'[A-Z]')) &&
+        password.contains(RegExp(r'[a-z]'));
   }
 }

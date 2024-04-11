@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/post_model.dart';
 
 class PostComments extends StatelessWidget {
-  final String communityName;
+  final String? communityName;
   final String userName;
   final String title;
-  final String imageUrl;
+  final String postType;
   final String content;
   final int commentNumber;
   final int shareNumber;
   final DateTime timeStamp;
   final String profilePicture;
   final bool isHomePage;
+  final bool isSubRedditPage;
   final String postId;
   final bool isDownvoted;
   final bool isUpvoted;
+  final List<PollsOption>? pollOptions;
   int votes;
 
   PostComments({
@@ -22,17 +25,19 @@ class PostComments extends StatelessWidget {
     required this.communityName,
     required this.userName,
     required this.title,
-    required this.imageUrl,
+    required this.postType,
     required this.profilePicture,
     required this.content,
     required this.commentNumber,
     required this.shareNumber,
     required this.timeStamp,
     required this.isHomePage,
+    required this.isSubRedditPage,
     required this.postId,
     required this.votes,
     required this.isDownvoted,
     required this.isUpvoted,
+    this.pollOptions,
   });
 
   @override
@@ -44,12 +49,14 @@ class PostComments extends StatelessWidget {
           userName: userName,
           title: title,
           profilePicture: profilePicture,
-          imageUrl: imageUrl,
+          postType: postType,
           content: content,
           commentNumber: commentNumber,
+          pollOptions: pollOptions,
           shareNumber: shareNumber,
           timeStamp: timeStamp,
           isHomePage: isHomePage,
+          isSubRedditPage: isSubRedditPage,
           postId: postId,
           votes: votes,
           isDownvoted: isDownvoted,

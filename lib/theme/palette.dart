@@ -15,6 +15,7 @@ class Palette {
   static const Color appBar = Color.fromARGB(255, 18, 18, 18);
   static const Color inputField = Color.fromARGB(255, 39, 39, 39);
   static const Color inputFieldLabel = Color.fromARGB(255, 143, 143, 143);
+  static const Color settingsHeading = Color.fromARGB(255, 10, 10, 10);
 
   static const Color redditLogin = Color.fromARGB(255,66, 66, 66);
   static const Color blueColor = Color.fromRGBO(29, 155, 240, 1);
@@ -26,5 +27,7 @@ class Palette {
   static const Color blackColor = Colors.black;
   static const Color deepOrangeColor = Colors.deepOrange;
   static const Color transparent = Colors.transparent;
+  static const Color blueJoinColor = Color.fromARGB(255, 3, 69, 168);
+  static const Color blueJoinedColor = Color.fromARGB(255, 122, 169, 238);
 }
 

@@ -9,8 +9,14 @@ import 'package:reddit_clone/features/home_page/post.dart';
 class CommentPage extends StatefulWidget {
   final String postId;
   final Widget postComment;
+  final String postTitle;
+  final String username;
   const CommentPage(
-      {super.key, required this.postId, required this.postComment});
+      {super.key,
+      required this.postId,
+      required this.postComment,
+      required this.postTitle,
+      required this.username});
 
   @override
   State<CommentPage> createState() {
@@ -40,10 +46,20 @@ class _CommentPageState extends State<CommentPage> {
     });
   }
 
+  int mappingVotes(bool isUpvoted, bool isDownvoted) {
+    if (isUpvoted) {
+      return 1;
+    } else if (isDownvoted) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
   Future<void> fetchComments(String postId) async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
-    if (fetchedComments != null) {
+    if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
         _comments = fetchedComments
@@ -56,6 +72,10 @@ class _CommentPageState extends State<CommentPage> {
                   contentType: comment.isImage,
                   netVote: comment.netVote,
                   imageSource: 0,
+                  commentId: comment.commentId,
+                  hasVoted:
+                      mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  isSaved: comment.isSaved,
                 ))
             .toList();
       });
@@ -105,7 +125,10 @@ class _CommentPageState extends State<CommentPage> {
           ),
           PopupMenuButton(
               onSelected: (Menu item) {},
-              itemBuilder: (BuildContext context) => menuitems()),
+              itemBuilder: (BuildContext context) {
+                
+                return menuitems();
+              }),
           IconButton(
             onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: const Icon(Icons.reddit, size: 30.0),
@@ -132,6 +155,9 @@ class _CommentPageState extends State<CommentPage> {
                   netVote: _comments[index - 1].netVote,
                   imageSource:
                       _comments[index - 1].imageSource, //may need to be fixed
+                  commentId: _comments[index - 1].commentId,
+                  hasVoted: _comments[index - 1].hasVoted,
+                  isSaved: _comments[index - 1].isSaved,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -154,40 +180,52 @@ class _CommentPageState extends State<CommentPage> {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CommentPostPage(
-                            commentContent: 'Your comment content here')),
+                        builder: (context) => CommentPostPage(
+                            postId: widget.postId,
+                            commentContent: widget.postTitle)),
                   );
 
                   if (result != null) {
                     final bool contentType = result['contentType'];
 
                     setState(() {
+                      UserComment? newComment;
                       if (contentType == false) {
                         final String commentText = result['content'];
-                        _comments.add(UserComment(
-                          avatar: 'assets/MonkeyDLuffy.png',
-                          username: 'User123',
+                        newComment = UserComment(
+                          avatar: result['user'].profilePicture,
+                          username: result['user'].username,
                           content: commentText,
                           timestamp: DateTime.now(),
                           photo: null,
                           contentType: contentType,
                           imageSource: 2,
-                        ));
+                          commentId: result['commentId'],
+                          hasVoted: 1,
+                          isSaved: true,
+                        );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
-                        _comments.add(UserComment(
-                          avatar: 'assets/MonkeyDLuffy.png',
-                          username: 'User123',
+                        newComment = UserComment(
+                          avatar: result['user'].profilePicture,
+                          username: result['user'].username,
                           content: '',
                           timestamp: DateTime.now(),
                           photo: commentImage,
                           contentType: contentType,
                           imageSource: 1,
-                        ));
+                          commentId: result['commentId'],
+                          hasVoted: 1,
+                          isSaved: true,
+                        );
                       }
-                      // Add a GlobalKey for the new comment
-                      _keys.add(GlobalKey());
-                      _calculateCommentPositions();
+                      if (newComment != null) {
+                        // Insert the new comment at the beginning of the list
+                        _comments.insert(0, newComment);
+                        // Add a GlobalKey for the new comment
+                        _keys.insert(0, GlobalKey());
+                        _calculateCommentPositions();
+                      }
                     });
                   }
                 },
@@ -226,22 +264,137 @@ class _CommentPageState extends State<CommentPage> {
       ),
     );
   }
+
+  List<PopupMenuEntry<Menu>> menuitems() {
+    return <PopupMenuEntry<Menu>>[
+      //////////////////////////////////////////
+      (widget.username != context.read<NetworkService>().user?.username)
+          ? const PopupMenuItem<Menu>(
+              value: Menu.share,
+              child: ListTile(
+                leading: Icon(Icons.share),
+                title: Text('Share'),
+              ))
+          : const PopupMenuItem(
+              child: SizedBox(),
+            ),
+      const PopupMenuItem<Menu>(
+          value: Menu.subscribe,
+          child: ListTile(
+            leading: Icon(Icons.add_alert),
+            title: Text('Subscribe'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.save,
+          child: ListTile(
+            leading: Icon(Icons.bookmark_add_outlined),
+            title: Text('Save'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.copytext,
+          child: ListTile(
+            leading: Icon(Icons.copy),
+            title: Text('Copy text'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.edit,
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Edit'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.addpostflair,
+          child: ListTile(
+            leading: Icon(Icons.add),
+            title: Text('Add post flair'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.markspoiler,
+          child: ListTile(
+            leading: Icon(Icons.warning),
+            title: Text('Mark spoiler'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.markNSFW,
+          child: ListTile(
+            leading: Icon(Icons.warning),
+            title: Text('Mark NSFW'),
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.markasbrandaffiliate,
+          child: ListTile(
+            leading: Icon(Icons.warning),
+            title: Text('Mark as brand affiliate'),
+          )),
+      PopupMenuItem<Menu>(
+          value: Menu.delete,
+          child: ListTile(
+            leading: const Icon(Icons.delete),
+            title: const Text('Delete'),
+            onTap: () async {
+              bool isDeleted = await context
+                  .read<NetworkService>()
+                  .deletepost(widget.postId);
+              if (isDeleted) {
+                //show snackbar
+              }
+            },
+          )),
+      PopupMenuItem<Menu>(
+          value: Menu.report,
+          child: ListTile(
+            leading: const Icon(Icons.report),
+            title: const Text('Report'),
+            onTap: () async {
+              print(widget.postId);
+              bool isReported = await context
+                  .read<NetworkService>()
+                  .reportPost(widget.postId);
+              if (isReported) {
+                //show snackbar
+              }
+            },
+          )),
+
+      const PopupMenuItem<Menu>(
+          value: Menu.block,
+          child: ListTile(
+            leading: Icon(Icons.block),
+            title: Text('Block'),
+          )),
+      PopupMenuItem<Menu>(
+          value: Menu.hide,
+          child: ListTile(
+            leading: const Icon(Icons.hide_source),
+            title: const Text('hide'),
+            onTap: () async {
+              bool isHidden = await context
+                  .read<NetworkService>()
+                  .hidepost(widget.postId, true);
+              if (isHidden) {
+                //show snackbar
+              }
+            },
+          )),
+    ];
+  }
 }
 
 enum Menu {
   share,
   subscribe,
-  save,
+  save, //done
   copytext,
   edit,
   addpostflair,
   markspoiler,
   markNSFW,
   markasbrandaffiliate,
-  report,
+  delete, //done
+
+  report, //done
   block,
-  hide,
-  delete
+  hide, //done
 }
 
 Widget mockPost() {
@@ -251,8 +404,7 @@ Widget mockPost() {
         communityName: 'Entrepreneur',
         userName: 'throwaway123',
         title: 'Escaping corporate Hell and finding freedom',
-        imageUrl:
-            'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+        postType: 'Normal',
         content:
             'Man, let me have a  vent for a minute. Just got out of the shittiest '
             'gig ever – being a "marketing specialist" for the supposed big boys'
@@ -263,6 +415,7 @@ Widget mockPost() {
             'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
         timeStamp: DateTime.now(),
         isHomePage: false,
+        isSubRedditPage: false,
         postId: '1',
         votes: 0,
         isDownvoted: false,
@@ -270,71 +423,4 @@ Widget mockPost() {
       ),
     ],
   );
-}
-
-List<PopupMenuEntry<Menu>> menuitems() {
-  return <PopupMenuEntry<Menu>>[
-    //////////////////////////////////////////
-    const PopupMenuItem<Menu>(
-        value: Menu.share,
-        child: ListTile(
-          leading: Icon(Icons.share),
-          title: Text('Share'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.subscribe,
-        child: ListTile(
-          leading: Icon(Icons.add_alert),
-          title: Text('Subscribe'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.save,
-        child: ListTile(
-          leading: Icon(Icons.bookmark_add_outlined),
-          title: Text('Share'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.copytext,
-        child: ListTile(
-          leading: Icon(Icons.copy),
-          title: Text('Copy text'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.edit,
-        child: ListTile(
-          leading: Icon(Icons.edit),
-          title: Text('Edit'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.addpostflair,
-        child: ListTile(
-          leading: Icon(Icons.add),
-          title: Text('Add post flair'),
-        )),
-
-    const PopupMenuItem<Menu>(
-        value: Menu.markspoiler,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Mark spoiler'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.markNSFW,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Mark NSFW'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.markasbrandaffiliate,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Mark as brand affiliate'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.report,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Report'),
-        )),
-  ];
 }

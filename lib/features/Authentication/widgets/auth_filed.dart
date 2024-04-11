@@ -44,13 +44,15 @@ class _AuthFieldState extends State<AuthField> {
         validator: (value) {
           if (value == null || value.isEmpty || value.trim().isEmpty) {
             return 'Please enter ${widget.labelText}';
-          } 
+          }
           return null;
         },
         decoration: InputDecoration(
           
           filled: true,
-          fillColor: Palette.inputField,
+          fillColor: Palette.whiteColor,
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: 20, vertical: 15), // Adjust padding here
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(color: Colors.transparent),

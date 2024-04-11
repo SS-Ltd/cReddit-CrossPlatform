@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/comments/saved_comments.dart';
 import 'package:reddit_clone/features/post/saved_posts.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SavedPage extends StatefulWidget {
   const SavedPage({super.key});

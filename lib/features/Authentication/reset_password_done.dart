@@ -3,11 +3,16 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
+//import 'package:android_intent_plus/android_intent.dart';
 
 class ResetPasswordDone extends StatefulWidget {
-  const ResetPasswordDone({super.key});
+  String email;
+  ResetPasswordDone({required this.email, super.key});
 
   @override
   State<ResetPasswordDone> createState() => _ResetPasswordDoneState();
@@ -39,6 +44,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
   @override
   void dispose() {
     timer?.cancel();
+    countdown.dispose();
+    canResend.dispose();
     super.dispose();
   }
 
@@ -144,11 +151,18 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                           builder: (context, value, child) {
                             return GestureDetector(
                               onTap: value
-                                  ? () {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        '/',
-                                      );
+                                  ? () async {
+                                      bool reset = await context
+                                          .read<NetworkService>()
+                                          .forgotPassword(widget.email);
+                                          //print(reset);
+                                      if (mounted && reset) {
+                                        // Show a message to the user indicating that the email was resent successfully.
+                                        CustomSnackBar(
+                                          context: context,
+                                          content: 'Email resent successfully',
+                                        ).show();
+                                      }
                                     }
                                   : null,
                               child: Row(
@@ -157,8 +171,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                     'Resend',
                                     style: TextStyle(
                                       color: value
-                                          ? Palette.whiteColor
-                                          : Palette.blueColor,
+                                          ? Palette.blueColor
+                                          : Palette.greyColor,
                                       decoration: TextDecoration.underline,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -184,8 +198,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        final Logger logger = Logger('ResetPasswordDone');
-
+                        // final Logger logger = Logger('ResetPasswordDone');
                         // if (Platform.isAndroid) {
                         //   AndroidIntent intent = const AndroidIntent(
                         //     action: 'android.intent.action.MAIN',

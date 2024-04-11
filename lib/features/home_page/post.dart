@@ -1,38 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
+import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
+import 'package:flutter_polls/flutter_polls.dart';
+import 'package:video_player/video_player.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class PollOptions {
+  String option;
+  bool isVoted;
+  int votes;
+
+  PollOptions({
+    required this.option,
+    required this.isVoted,
+    required this.votes,
+  });
+}
 
 class Post extends StatefulWidget {
-  final String communityName;
+  final String postId;
+  final String postType;
   final String userName;
-  final String title;
+  final String? communityName;
   final String profilePicture;
-  final String imageUrl;
+  int votes;
+  int commentNumber;
+  final String title;
   final String content;
-  final int commentNumber;
+  List<PollsOption>? pollOptions;
   final int shareNumber;
   final DateTime timeStamp;
   final bool isHomePage;
-  final String postId;
-  final bool isUpvoted;
-  final bool isDownvoted;
-  int votes;
+  final bool isSubRedditPage;
+  bool isUpvoted;
+  bool isDownvoted;
 
   Post({
     required this.communityName,
     required this.userName,
     required this.title,
     required this.profilePicture,
-    required this.imageUrl,
+    this.pollOptions,
+    required this.postType,
     required this.content,
     this.commentNumber = 0,
     this.shareNumber = 0,
     required this.timeStamp,
     this.isHomePage = true,
+    required this.isSubRedditPage,
     required this.postId,
     required this.votes,
     required this.isUpvoted,
@@ -45,7 +68,196 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  Timer? _timer;
+  late VideoPlayerController _videoController;
+  late Future<void> _initializeVideoPlayerFuture;
+  bool _controllerInitialized =
+      false; // Flag to track if controller is initialized
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (isVideo(widget.content)) {
+  //     _videoController =
+  //         VideoPlayerController.networkUrl(Uri.parse(widget.content));
+  //     _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
+  //       setState(() {
+  //         _controllerInitialized =
+  //             true; // Set to true upon successful initialization
+  //         _videoController.setLooping(true);
+  //       });
+  //     });
+  //   }
+  // }
+
+  @override
+  void dispose() {
+    if (_controllerInitialized) {
+      _videoController.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget _buildContent() {
+    switch (widget.postType) {
+      case ("Images & Video"):
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NewPage(),
+                //replace with image screen
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ClipRRect(
+                    // borderRadius: BorderRadius.circular(10.0),
+                    // child: isImage(widget.content)
+                    //     ? Image.network(
+                    //         widget.content,
+                    //         width: double.infinity,
+                    //         fit: BoxFit.cover,
+                    //       )
+                    //     : (isVideo(widget.content) &&
+                    //             _videoController.value.isInitialized)
+                    //         ? //const CircularProgressIndicator() :
+                    //         FutureBuilder(
+                    //             future: _initializeVideoPlayerFuture,
+                    //             builder: (context, snapshot) {
+                    //               if (snapshot.connectionState ==
+                    //                   ConnectionState.done) {
+                    //                 return AspectRatio(
+                    //                   aspectRatio:
+                    //                       _videoController.value.aspectRatio,
+                    //                   child: VideoPlayer(_videoController),
+                    //                 );
+                    //               } else {
+                    //                 return const CircularProgressIndicator();
+                    //               }
+                    //             },
+                    //           )
+                    //         : const SizedBox.shrink(),
+                    ),
+              ),
+            ],
+          ),
+        );
+      case ('Post'):
+        return GestureDetector(
+          onTap: widget.isHomePage
+              ? () {
+                  PostComments postComment = PostComments(
+                    communityName: widget.communityName,
+                    profilePicture: widget.profilePicture,
+                    userName: widget.userName,
+                    title: widget.title,
+                    postType: widget.postType,
+                    content: widget.content,
+                    commentNumber: widget.commentNumber,
+                    pollOptions: widget.pollOptions,
+                    shareNumber: widget.shareNumber,
+                    timeStamp: widget.timeStamp,
+                    isHomePage: false,
+                    isSubRedditPage: false,
+                    postId: widget.postId,
+                    votes: widget.votes,
+                    isDownvoted: widget.isDownvoted,
+                    isUpvoted: widget.isUpvoted,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommentPage(
+                        postId: widget.postId,
+                        postComment: postComment,
+                        postTitle: widget.title,
+                        username: widget.userName,
+                      ),
+                    ),
+                  );
+                }
+              : null,
+          child: widget.isHomePage
+              ? (Text(
+                  widget.content,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ))
+              : (!widget.isHomePage
+                  ? Text(widget.content)
+                  : const SizedBox.shrink()),
+        );
+      case ('Poll'):
+        if (widget.pollOptions == null) {
+          return const SizedBox.shrink();
+        } else {
+          bool voted = false;
+          for (PollsOption option in widget.pollOptions!) {
+            if (option.isVoted == true) {
+              voted = true;
+            }
+          }
+          return FlutterPolls(
+            hasVoted: false,
+            pollId: widget.postId,
+            onVoted: (PollOption pollOption, int newTotalVotes) async {
+              print(
+                  'Voted on option: ${pollOption.id} with new total votes: $newTotalVotes');
+              bool success =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .voteOnPoll(widget.postId, pollOption.id ?? '');
+              return success;
+            },
+            pollOptionsSplashColor: Colors.white,
+            votedProgressColor: Colors.grey.withOpacity(0.3),
+            votedBackgroundColor: Colors.grey.withOpacity(0.2),
+            pollTitle: const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            pollOptions: widget.pollOptions!
+                .map(
+                  (e) => PollOption(
+                    id: e.option,
+                    title: Text(
+                        "${e.option} (${e.votes} votes)"), // Displaying the vote count beside each option
+                    votes: e.votes ?? 0,
+                  ),
+                )
+                .toList(),
+          );
+        }
+      case ('Link'):
+        return GestureDetector(
+          onTap: () async {
+            if (await canLaunch(widget.content)) {
+              await launch(widget.content);
+            } else {
+              throw 'Could not launch $widget.content';
+            }
+          },
+          child: Text(
+            widget.content,
+            style: const TextStyle(
+              color: Colors.blue,
+            ),
+          ),
+        );
+      default:
+        return SizedBox.shrink();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +267,7 @@ class _PostState extends State<Post> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
-            color: Colors.black,
+            color: Palette.backgroundColor,
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
@@ -68,23 +280,40 @@ class _PostState extends State<Post> {
                       ),
                       const SizedBox(width: 10),
                       widget.isHomePage
-                          ? GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SubRedditPage(
-                                            subredditName: widget.communityName,
-                                          )),
-                                );
-                              },
-                              child: Text(
-                                'r/${widget.communityName}',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            )
+                          ? (widget.isSubRedditPage
+                              ? GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
+                                  },
+                                  child: Text(
+                                    'r/${widget.userName}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SubRedditPage(
+                                                subredditName:
+                                                    widget.communityName,
+                                              )),
+                                    );
+                                  },
+                                  child: Text(
+                                    'r/${widget.communityName}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ))
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -96,13 +325,12 @@ class _PostState extends State<Post> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
-                                      //replace with profile page or widget
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
+                                    //replace with profile page or widget
                                   },
                                   child: Text(
                                     'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
@@ -127,13 +355,14 @@ class _PostState extends State<Post> {
                       profilePicture: widget.profilePicture,
                       userName: widget.userName,
                       title: widget.title,
-                      imageUrl:
-                          'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                      postType: widget.postType,
+                      pollOptions: widget.pollOptions,
                       content: widget.content,
                       commentNumber: widget.commentNumber,
                       shareNumber: widget.shareNumber,
                       timeStamp: widget.timeStamp,
                       isHomePage: false,
+                      isSubRedditPage: false,
                       postId: widget.postId,
                       votes: widget.votes,
                       isDownvoted: widget.isDownvoted,
@@ -143,7 +372,11 @@ class _PostState extends State<Post> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => CommentPage(
-                            postId: widget.postId, postComment: postComment),
+                          postId: widget.postId,
+                          postComment: postComment,
+                          postTitle: widget.title,
+                          username: widget.userName,
+                        ),
                       ),
                     );
                   }
@@ -156,95 +389,57 @@ class _PostState extends State<Post> {
               ),
             ),
           ),
-          Visibility(
-            visible: widget.imageUrl.isNotEmpty,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    // builder: (context) => ImageScreen(imageUrl: widget.imageUrl),
-                    builder: (context) => const NewPage(),
-                    //replace with image screen
-                  ),
-                );
-              },
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.network(
-                        widget.imageUrl,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                ],
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: widget.isHomePage
-                ? () {
-                    PostComments postComment = PostComments(
-                      communityName: widget.communityName,
-                      profilePicture: widget.profilePicture,
-                      userName: widget.userName,
-                      title: widget.title,
-                      imageUrl:
-                          'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-                      content: widget.content,
-                      commentNumber: widget.commentNumber,
-                      shareNumber: widget.shareNumber,
-                      timeStamp: widget.timeStamp,
-                      isHomePage: false,
-                      postId: widget.postId,
-                      votes: widget.votes,
-                      isDownvoted: widget.isDownvoted,
-                      isUpvoted: widget.isUpvoted,
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommentPage(
-                            postId: widget.postId, postComment: postComment),
-                      ),
-                    );
-                  }
-                : null,
-            child: widget.isHomePage && widget.imageUrl.isEmpty
-                ? (Text(
-                    widget.content,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ))
-                : (!widget.isHomePage
-                    ? Text(widget.content)
-                    : const SizedBox.shrink()),
-          ),
-          // const SizedBox(height: 10),
+          _buildContent(),
           Row(
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_upward),
-                onPressed: () {
+                color: widget.isUpvoted ? Colors.red : Colors.grey,
+                onPressed: () async {
+                  bool a = await context
+                      .read<NetworkService>()
+                      .upVote(widget.postId);
                   setState(() {
-                    widget.votes++;
+                    print("upvote");
+                    if (widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes--;
+                      widget.isUpvoted = false;
+                    } else if (!widget.isUpvoted && widget.isDownvoted) {
+                      widget.votes += 2;
+                      widget.isUpvoted = true;
+                      widget.isDownvoted = false;
+                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes++;
+                      widget.isUpvoted = true;
+                    }
                   });
                 },
               ),
-              Text(widget.votes.toString()),
+              Text(widget.votes.toString(),
+                  style: TextStyle(
+                    color: widget.isUpvoted
+                        ? Colors.red
+                        : (widget.isDownvoted ? Colors.blue : Colors.grey),
+                  )),
               IconButton(
                 icon: const Icon(Icons.arrow_downward),
-                onPressed: () {
+                color: widget.isDownvoted ? Colors.blue : Colors.grey,
+                onPressed: () async {
+                  bool a = await context
+                      .read<NetworkService>()
+                      .downVote(widget.postId);
                   setState(() {
-                    widget.votes--;
+                    if (widget.isDownvoted && !widget.isUpvoted) {
+                      widget.votes++;
+                      widget.isDownvoted = false;
+                    } else if (widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes -= 2;
+                      widget.isUpvoted = false;
+                      widget.isDownvoted = true;
+                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes--;
+                      widget.isDownvoted = true;
+                    }
                   });
                 },
               ),
@@ -257,13 +452,14 @@ class _PostState extends State<Post> {
                     profilePicture: widget.profilePicture,
                     userName: widget.userName,
                     title: widget.title,
-                    imageUrl:
-                        'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
+                    postType: widget.postType,
                     content: widget.content,
+                    pollOptions: widget.pollOptions,
                     commentNumber: widget.commentNumber,
                     shareNumber: widget.shareNumber,
                     timeStamp: widget.timeStamp,
                     isHomePage: false,
+                    isSubRedditPage: false,
                     postId: widget.postId,
                     votes: widget.votes,
                     isDownvoted: widget.isDownvoted,
@@ -273,7 +469,11 @@ class _PostState extends State<Post> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentPage(
-                          postId: widget.postId, postComment: postComment),
+                        postId: widget.postId,
+                        postComment: postComment,
+                        postTitle: widget.title,
+                        username: widget.userName,
+                      ),
                     ),
                   );
                 },
@@ -309,4 +509,17 @@ String formatTimestamp(DateTime timestamp) {
   } else {
     return '${difference.inSeconds}s';
   }
+}
+
+bool isImage(String url) {
+  return url.toLowerCase().endsWith('.jpg') ||
+      url.toLowerCase().endsWith('.jpeg') ||
+      url.toLowerCase().endsWith('.png') ||
+      url.toLowerCase().endsWith('.gif');
+}
+
+bool isVideo(String url) {
+  return url.toLowerCase().endsWith('.mp4') ||
+      url.toLowerCase().endsWith('.webm') ||
+      url.toLowerCase().endsWith('.ogg');
 }

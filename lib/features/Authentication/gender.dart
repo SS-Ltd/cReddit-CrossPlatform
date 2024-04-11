@@ -1,17 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 
 class Gender extends StatelessWidget {
-  Gender({Key? key}) : super(key: key);
+  final Map<String, dynamic> userData;
+  Gender({Key? key, required this.userData}) : super(key: key);
 
-  final List<String> userGender = ['Male', 'Female'];
+  final List<String> userGender = [
+    "Man",
+    "Woman",
+    "I Prefer Not To Say",
+    "None"
+  ];
+
+  void signup(BuildContext context) async {
+    bool signup = await context.read<NetworkService>().createUser(
+        userData["username"],
+        userData["email"],
+        userData["password"],
+        userData["gender"]);
+    if (signup) {
+      Navigator.popUntil(context, (route) => route.isFirst);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => CustomNavigationBar()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to sign up')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    userData["gender"] = "None";
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
@@ -28,6 +54,7 @@ class Gender extends StatelessWidget {
           TextButton(
             onPressed: () {
               // Handle skip action
+              signup(context);
             },
             child: Text(
               "Skip",
@@ -59,6 +86,8 @@ class Gender extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 10),
                     child: ElevatedButton(
                       onPressed: () {
+                        userData['gender'] = gender;
+                        signup(context);
                         // Handle gender selection
                       },
                       child:
@@ -83,7 +112,7 @@ class Gender extends StatelessWidget {
               child: FullWidthButton(
                 text: "Continue",
                 onPressed: () async {
-                  // Handle continue button press
+                  signup(context);
                 },
               ),
             ),

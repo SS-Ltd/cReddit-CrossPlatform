@@ -15,8 +15,8 @@ class PostModel {
   final bool isDownvoted;
   final bool? isHidden;
   final bool? isSaved;
-  final DateTime uploadDate;
-  final List<PollOption>? pollOptions;
+  final DateTime? uploadDate;
+  final List<PollsOption>? pollOptions;
   final DateTime? expirationDate;
 
   PostModel({
@@ -42,6 +42,7 @@ class PostModel {
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return PostModel(
       postId: json['_id'],
       type: json['type'],
@@ -49,7 +50,8 @@ class PostModel {
       communityName: json['communityName'],
       title: json['title'],
       content: json['content'],
-      profilePicture: json['profilePicture'],
+      profilePicture:
+          json['profilePicture'] is String ? json['profilePicture'] : '',
       netVote: json['netVote'],
       commentCount: json['commentCount'],
       isNSFW: json['isNSFW'],
@@ -59,10 +61,11 @@ class PostModel {
       isDownvoted: json['isDownvoted'],
       isHidden: json['isHidden'],
       isSaved: json['isSaved'],
-      uploadDate: DateTime.parse(json['createdAt']),
+      uploadDate:
+          DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
       pollOptions: json['pollOptions'] != null
           ? (json['pollOptions'] as List)
-              .map((e) => PollOption.fromJson(e))
+              .map((e) => PollsOption.fromJson(e))
               .toList()
           : null,
       expirationDate: json['expirationDate'] != null
@@ -72,17 +75,18 @@ class PostModel {
   }
 }
 
-class PollOption {
+class PollsOption {
   final String? option;
   final bool? isVoted;
   final int? votes;
 
-  PollOption(
+  PollsOption(
       {required this.option, required this.isVoted, required this.votes});
 
-  factory PollOption.fromJson(Map<String, dynamic> json) {
-    return PollOption(
-      option: json['option'],
+  factory PollsOption.fromJson(Map<String, dynamic> json) {
+    print(json);
+    return PollsOption(
+      option: json['text'],
       isVoted: json['isVoted'],
       votes: json['votes'],
     );

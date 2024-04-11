@@ -11,7 +11,9 @@ class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});
 
   @override
-  State<CustomNavigationBar> createState() => _CustomNavigationBarState();
+  State<StatefulWidget> createState() {
+    return _CustomNavigationBarState();
+  }
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
@@ -20,12 +22,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
-    HomePage(),
+    const HomePage(),
     CommunityPage(),
-    const CreatePost(profile: true),
+    const CreatePost(profile: false),
     const InboxNotificationPage(),
 
-    
     //CreatePage(),
     // ChatPage(),
   ];
@@ -51,9 +52,40 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           ],
         ),
       ),
+      appBar: (_currentIndex != 2) ? AppBar(
+        title: (_currentIndex == 0)
+            ? ElevatedButton(
+                onPressed: () {},
+                child: const Text('Home'),
+              )
+            : (_currentIndex == 1)
+                ? Title(
+                    color: Palette.whiteColor,
+                    child: const Text('Communities'),
+                  )
+                : (_currentIndex == 3)
+                    ? Title(
+                        color: Palette.whiteColor,
+                        child: const Text('Chat'),
+                      )
+                    : Title(
+                        color: Palette.whiteColor,
+                        child: const Text('Inbox'),
+                      ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search, size: 30.0),
+          ),
+          IconButton(
+            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+            icon: const Icon(Icons.reddit, size: 30.0),
+          ),
+        ],
+      ) : null,
       endDrawer: const Rightsidebar(),
       body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: (_currentIndex != 2) ? BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (int index) {
@@ -61,6 +93,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             _currentIndex = index;
           });
         },
+        selectedFontSize: 14, // Adjust the selected font size
+        unselectedFontSize: 12, // Adjust the unselected font size
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
@@ -71,7 +105,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications), label: 'Inbox'),
         ],
-      ),
+      ) : null,
     );
   }
 }
