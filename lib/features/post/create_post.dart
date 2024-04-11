@@ -84,6 +84,8 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
+                            print(chosenCommunity);
+
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
@@ -125,8 +127,8 @@ class _CreatePostState extends State<CreatePost> {
                 : ElevatedButton(
                     onPressed: _istitleempty
                         ? null
-                        : () {
-                            Navigator.push(
+                        : () async {
+                            final returneddata = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 fullscreenDialog: true,
@@ -135,6 +137,9 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                               ),
                             );
+                            setState(() {
+                              chosenCommunity = returneddata.toString();
+                            });
                           },
                     //in this case we will go to choose the community
                     child: const Text('Next')),
