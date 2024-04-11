@@ -8,6 +8,7 @@ class Comments {
   final String commentId;
   final bool isUpvoted;
   final bool isDownvoted;
+  final bool isSaved;
   Comments({
     required this.profilePicture,
     required this.username,
@@ -18,6 +19,7 @@ class Comments {
     required this.commentId,
     required this.isUpvoted,
     required this.isDownvoted,
+    required this.isSaved,
   });
 
   factory Comments.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class Comments {
       commentId: json['_id'],
       isUpvoted: json['isUpvoted'],
       isDownvoted: json['isDownvoted'],
+      isSaved: !json['isSaved'],
     );
   }
 }

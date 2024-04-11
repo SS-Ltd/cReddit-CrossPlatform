@@ -300,6 +300,18 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> saveOrUnsaveComment(String commentId, bool isSaved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/save');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isSaved': isSaved}));
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
