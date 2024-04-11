@@ -8,7 +8,7 @@ import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
-import 'package:android_intent_plus/android_intent.dart';
+//import 'package:android_intent_plus/android_intent.dart';
 
 class ResetPasswordDone extends StatefulWidget {
   String email;

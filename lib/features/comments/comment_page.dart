@@ -346,6 +346,7 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.report),
             title: const Text('Report'),
             onTap: () async {
+              print(widget.postId);
               bool isReported = await context
                   .read<NetworkService>()
                   .reportPost(widget.postId);
