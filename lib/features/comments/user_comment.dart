@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
@@ -8,17 +9,18 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/features/comments/edit_comment.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;
   final String username;
-  final String content;
+  String content;
   final int level;
   final DateTime timestamp;
-  final File? photo;
+  File? photo;
   final bool contentType;
   final int netVote;
-  final int imageSource; //0 from backend 1 from user 2 text
+  int imageSource; //0 from backend 1 from user 2 text
   final String commentId;
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
   bool isSaved;
@@ -64,6 +66,8 @@ class UserCommentState extends State<UserComment> {
   Timer? _timer;
   List<UserComment> replies = [];
   late ValueNotifier<bool> isMinimized;
+  late ValueNotifier<String> content;
+  late ValueNotifier<File?> photo;
 
   void _addReply() async {
     final result = await Navigator.push(
@@ -144,6 +148,8 @@ class UserCommentState extends State<UserComment> {
     isMinimized = ValueNotifier<bool>(false);
     votes = widget.netVote;
     hasVoted = ValueNotifier<int>(widget.hasVoted);
+    content = ValueNotifier<String>(widget.content);
+    photo = ValueNotifier<File?>(widget.photo);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -153,6 +159,8 @@ class UserCommentState extends State<UserComment> {
   void dispose() {
     _timer?.cancel();
     hasVoted.dispose();
+    content.dispose();
+    photo.dispose();
     isMinimized.dispose();
     super.dispose();
   }
@@ -228,27 +236,49 @@ class UserCommentState extends State<UserComment> {
                             child: widget.contentType == false
                                 ? Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      widget.content.split('\n')[0],
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontSize: 12, color: Colors.grey),
+                                    child: ValueListenableBuilder<String>(
+                                      valueListenable: content,
+                                      builder: (context, value, child) {
+                                        return Text(
+                                          value.split('\n')[0],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        );
+                                      },
                                     ),
                                   )
                                 : widget.contentType == true &&
                                         widget.imageSource == 0
                                     ? Center(
-                                        child: Image.network(
-                                          widget.content,
-                                          fit: BoxFit.cover,
+                                        child: ValueListenableBuilder<String>(
+                                          valueListenable: content,
+                                          builder: (context, value, child) {
+                                            return Image.network(
+                                              value,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
                                         ),
                                       )
                                     : widget.contentType == true &&
                                             widget.imageSource == 1
                                         ? Center(
-                                            child: Image.file(
-                                              widget.photo!,
-                                              fit: BoxFit.cover,
+                                            child:
+                                                ValueListenableBuilder<File?>(
+                                              valueListenable: photo,
+                                              builder: (context, value, child) {
+                                                if (value != null) {
+                                                  return Image.file(
+                                                    value,
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                } else {
+                                                  return Container(); // return an empty container when the file is null
+                                                }
+                                              },
                                             ),
                                           )
                                         : Container(),
@@ -260,25 +290,44 @@ class UserCommentState extends State<UserComment> {
                   if (!isMinimized.value) ...[
                     //const SizedBox(height: 10),
                     if (widget.contentType == false) ...[
-                      Text(
-                        widget.content,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
+                      ValueListenableBuilder<String>(
+                        valueListenable: content,
+                        builder: (context, value, child) {
+                          return Text(
+                            value,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
                       ),
                     ] else if (widget.contentType == true &&
                         widget.imageSource == 0) ...[
-                      Image.network(
-                        widget.content,
-                        fit: BoxFit.cover,
+                      ValueListenableBuilder<String>(
+                        valueListenable: content,
+                        builder: (context, value, child) {
+                          return Image.network(
+                            value,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     ] else if (widget.contentType == true &&
                         widget.imageSource == 1) ...[
-                      Image.file(
-                        widget.photo!,
-                        fit: BoxFit.cover,
-                      ),
+                      ValueListenableBuilder<File?>(
+                        valueListenable: photo,
+                        builder: (context, value, child) {
+                          if (value != null) {
+                            return Image.file(
+                              value,
+                              fit: BoxFit.cover,
+                            );
+                          } else {
+                            return Container(); // return an empty container when the file is null
+                          }
+                        },
+                      )
                     ],
                     //const SizedBox(height: 5),
                     Row(
@@ -287,9 +336,8 @@ class UserCommentState extends State<UserComment> {
                         IconButton(
                           icon: const Icon(Icons.more_vert),
                           onPressed: () {
-                            UserModel user = context
-                                            .read<NetworkService>()
-                                            .getUser();
+                            UserModel user =
+                                context.read<NetworkService>().getUser();
                             double height = 8 * 56;
                             OverlayEntry overlayEntry = OverlayEntry(
                               builder: (context) => Positioned(
@@ -298,15 +346,25 @@ class UserCommentState extends State<UserComment> {
                                 bottom: height,
                                 child: Material(
                                   color: Colors.transparent,
-                                  child: StaticCommentCard(
-                                    avatar: widget.avatar,
-                                    username: widget.username,
-                                    timestamp: widget.timestamp,
-                                    content: widget.content,
-                                    contentType: widget.contentType,
-                                    photo: widget.photo,
-                                    imageSource: widget.imageSource,
-                                  ),
+                                  child: ValueListenableBuilder<String>(
+  valueListenable: content,
+  builder: (context, contentValue, child) {
+    return ValueListenableBuilder<File?>(
+      valueListenable: photo,
+      builder: (context, photoValue, child) {
+        return StaticCommentCard(
+          avatar: widget.avatar,
+          username: widget.username,
+          timestamp: widget.timestamp,
+          content: contentValue,
+          contentType: widget.contentType,
+          photo: photoValue,
+          imageSource: widget.imageSource,
+        );
+      },
+    );
+  },
+)
                                 ),
                               ),
                             );
@@ -325,12 +383,54 @@ class UserCommentState extends State<UserComment> {
                                         ListTile(
                                           leading: const Icon(Icons.edit),
                                           title: const Text('Edit comment'),
-                                          onTap: () {
+                                          onTap: () async {
                                             // Handle edit comment
+                                            Navigator.pop(context);
+                                            final result = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditCommentPage(
+                                                  commentId: widget.commentId,
+                                                  commentContent:
+                                                      widget.content,
+                                                  contentType:
+                                                      widget.contentType,
+                                                  photo: widget.photo,
+                                                  imageSource:
+                                                      widget.imageSource,
+                                                ),
+                                              ),
+                                            );
+                                            if (result != null) {
+                                              final bool contentType =
+                                                  result['contentType'];
+                                              print(result);
+                                              setState(() {
+                                                if (contentType == false) {
+                                                  content.value =
+                                                      result['content'];
+                                                } else if (contentType ==
+                                                        true &&
+                                                    result['imageSource'] ==
+                                                        0) {
+                                                  content.value =
+                                                      result['content'];
+                                                } else if (contentType ==
+                                                        true &&
+                                                    result['imageSource'] ==
+                                                        1) {
+                                                  photo.value =
+                                                      result['content'];
+                                                  widget.imageSource = 1;
+                                                }
+                                              });
+                                            }
                                           },
                                         ),
                                       ListTile(
-                                        leading: const Icon(Icons.share_outlined),
+                                        leading:
+                                            const Icon(Icons.share_outlined),
                                         title: const Text('Share'),
                                         onTap: () {
                                           Navigator.pop(context);
@@ -339,7 +439,7 @@ class UserCommentState extends State<UserComment> {
                                       ListTile(
                                         leading: const Icon(Icons.save_alt),
                                         title: Text(
-                                            widget.isSaved ? 'Save' : 'Saved'),
+                                            widget.isSaved ? 'Save' : 'Unsave'),
                                         onTap: () async {
                                           bool saved = await context
                                               .read<NetworkService>()
@@ -347,6 +447,12 @@ class UserCommentState extends State<UserComment> {
                                                   widget.commentId,
                                                   widget.isSaved);
                                           if (saved) {
+                                            CustomSnackBar(
+                                              context: context,
+                                              content: widget.isSaved
+                                                  ? 'Comment saved!'
+                                                  : 'Comment unsaved!',
+                                            ).show();
                                             widget.isSaved = !widget.isSaved;
                                             Navigator.pop(context);
                                           }
@@ -355,22 +461,23 @@ class UserCommentState extends State<UserComment> {
                                       ListTile(
                                         leading: const Icon(
                                             Icons.notifications_outlined),
-                                        title:
-                                            const Text('Get reply notification'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.copy_outlined),
-                                        title: const Text('Copy text'),
+                                        title: const Text(
+                                            'Get reply notification'),
                                         onTap: () {
                                           Navigator.pop(context);
                                         },
                                       ),
                                       ListTile(
                                         leading:
-                                            const Icon(Icons.merge_type_outlined),
+                                            const Icon(Icons.copy_outlined),
+                                        title: const Text('Copy text'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(
+                                            Icons.merge_type_outlined),
                                         title: const Text('Collapse thread'),
                                         onTap: () {
                                           Navigator.pop(context);
@@ -394,7 +501,8 @@ class UserCommentState extends State<UserComment> {
                                           },
                                         ),
                                       ListTile(
-                                        leading: const Icon(Icons.flag_outlined),
+                                        leading:
+                                            const Icon(Icons.flag_outlined),
                                         title: const Text('Report'),
                                         onTap: () async {
                                           bool reported = await context

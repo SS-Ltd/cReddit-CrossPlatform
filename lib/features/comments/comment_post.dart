@@ -27,20 +27,41 @@ class _CommentPostPageState extends State<CommentPostPage> {
   bool contentType = false; // false for text, true for image
 
   Future getImage() async {
-    if (_isImagePickerOpen || _isTextFieldFilled) {
-      return;
-    }
-    _isImagePickerOpen = true;
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  if (_isImagePickerOpen || _isTextFieldFilled) {
+    return;
+  }
+  _isImagePickerOpen = true;
+
+  // Show a dialog to let the user choose between the gallery and the camera
+  final source = await showDialog<ImageSource>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Choose image source'),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Gallery'),
+          onPressed: () => Navigator.pop(context, ImageSource.gallery),
+        ),
+        TextButton(
+          child: const Text('Camera'),
+          onPressed: () => Navigator.pop(context, ImageSource.camera),
+        ),
+      ],
+    ),
+  );
+
+  if (source != null) {
+    final pickedFile = await picker.pickImage(source: source);
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _controller.clear();
       }
     });
-
-    _isImagePickerOpen = false;
   }
+
+  _isImagePickerOpen = false;
+}
 
   @override
   Widget build(BuildContext context) {

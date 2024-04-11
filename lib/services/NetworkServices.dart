@@ -74,8 +74,8 @@ class NetworkService extends ChangeNotifier {
   }
 
   getUser() {
-  return _user;
-}
+    return _user;
+  }
 
   Future<void> logout() async {
     Uri url = Uri.parse('$_baseUrl/user/logout');
@@ -279,6 +279,50 @@ class NetworkService extends ChangeNotifier {
     } else {
       print('Failed to create comment. Response body: $responseBody');
       return {'success': false, 'user': _user};
+    }
+  }
+
+  Future<bool> editTextComment(String commentId, String content) async {
+    Uri url = Uri.parse('$_baseUrl/comment/$commentId');
+
+    http.MultipartRequest request = http.MultipartRequest('PATCH', url);
+
+    request.headers.addAll(_headers);
+
+    request.fields['content'] = content;
+
+    http.StreamedResponse response = await request.send();
+
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> editImageComment(String commentId, File imageFile) async {
+    Uri url = Uri.parse('$_baseUrl/comment/$commentId');
+
+    http.MultipartRequest request = http.MultipartRequest('PATCH', url);
+
+    request.headers.addAll(_headers);
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'images',
+      imageFile.path,
+      filename: basename(imageFile.path),
+    ));
+
+    http.StreamedResponse response = await request.send();
+
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
     }
   }
 
