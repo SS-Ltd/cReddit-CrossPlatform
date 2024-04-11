@@ -7,7 +7,6 @@ import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
-import 'post_comment.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
@@ -61,32 +60,33 @@ class Post extends StatefulWidget {
     required this.votes,
     required this.isUpvoted,
     required this.isDownvoted,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<Post> createState() => _PostState();
 }
 
 class _PostState extends State<Post> {
-  Timer? _timer;
-  // late VideoPlayerController _videoController;
+  //Timer? _timer;
+  late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-    // if (isVideo(widget.content)) {
-    //   _videoController = VideoPlayerController.network(widget.content);
-    //   _initializeVideoPlayerFuture = _videoController.initialize();
-    //   _videoController.setLooping(true);
-    // }
+    if (isVideo(widget.content)) {
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.content));
+      _initializeVideoPlayerFuture = _videoController.initialize();
+      _videoController.setLooping(true);
+    }
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    // _videoController.dispose();
+    //   _timer?.cancel();///
+    _videoController.dispose();
     super.dispose();
   }
 
@@ -118,22 +118,22 @@ class _PostState extends State<Post> {
                           fit: BoxFit.cover,
                         )
                       : isVideo(widget.content)
-                          ? const CircularProgressIndicator()
-                          // FutureBuilder(
-                          //     future: _initializeVideoPlayerFuture,
-                          //     builder: (context, snapshot) {
-                          //       if (snapshot.connectionState ==
-                          //           ConnectionState.done) {
-                          //         return AspectRatio(
-                          //           aspectRatio:
-                          //               _videoController.value.aspectRatio,
-                          //           child: VideoPlayer(_videoController),
-                          //         );
-                          //       } else {
-                          //         return const CircularProgressIndicator();
-                          //       }
-                          //     },
-                          //   )
+                          ? //const CircularProgressIndicator() :
+                          FutureBuilder(
+                              future: _initializeVideoPlayerFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return AspectRatio(
+                                    aspectRatio:
+                                        _videoController.value.aspectRatio,
+                                    child: VideoPlayer(_videoController),
+                                  );
+                                } else {
+                                  return const CircularProgressIndicator();
+                                }
+                              },
+                            )
                           : const SizedBox.shrink(),
                 ),
               ),
@@ -207,11 +207,11 @@ class _PostState extends State<Post> {
             pollOptionsSplashColor: Colors.white,
             votedProgressColor: Colors.grey.withOpacity(0.3),
             votedBackgroundColor: Colors.grey.withOpacity(0.2),
-            pollTitle: Align(
+            pollTitle: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "",
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                 ),
               ),
