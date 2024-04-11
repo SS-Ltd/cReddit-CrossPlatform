@@ -73,6 +73,7 @@ class _CommentPageState extends State<CommentPage> {
                   commentId: comment.commentId,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  isSaved: comment.isSaved,
                 ))
             .toList();
       });
@@ -151,6 +152,7 @@ class _CommentPageState extends State<CommentPage> {
                       _comments[index - 1].imageSource, //may need to be fixed
                   commentId: _comments[index - 1].commentId,
                   hasVoted: _comments[index - 1].hasVoted,
+                  isSaved: _comments[index - 1].isSaved,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -195,6 +197,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 2,
                           commentId: result['commentId'],
                           hasVoted: 1,
+                          isSaved: true,
                         );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
@@ -209,6 +212,7 @@ class _CommentPageState extends State<CommentPage> {
                           commentId: result[
                               'commentId'],
                           hasVoted: 1,
+                          isSaved: true,
                         );
                       }
                       if (newComment != null) {
