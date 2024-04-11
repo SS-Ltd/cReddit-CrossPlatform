@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';

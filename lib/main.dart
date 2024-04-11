@@ -5,7 +5,6 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 import 'package:reddit_clone/services/google_service.dart';
 
-
 void main() {
   runApp(MultiProvider(
     providers: [

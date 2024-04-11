@@ -4,7 +4,7 @@ import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';

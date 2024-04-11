@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'reset_password_done.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';

@@ -8,7 +8,7 @@ import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
 
 class UserComment extends StatefulWidget {
