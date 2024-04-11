@@ -21,7 +21,7 @@ class PostComments extends StatelessWidget {
   int votes;
 
   PostComments({
-    Key? key,
+    super.key,
     required this.communityName,
     required this.userName,
     required this.title,
@@ -38,7 +38,7 @@ class PostComments extends StatelessWidget {
     required this.isDownvoted,
     required this.isUpvoted,
     this.pollOptions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
