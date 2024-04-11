@@ -434,7 +434,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName) async {
-    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts?sort=new');
     final response = await http.get(url, headers: _headers);
     print(response.body);
     if (response.statusCode == 200) {
@@ -447,10 +447,24 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> getSavedPosts() async {
-    final url = Uri.parse('$_baseUrl/user/saved');
+  Future<List<PostModel>?> getSavedPosts({int page = 1, int limit = 10}) async {
+    final url = Uri.parse('$_baseUrl/user/saved-posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print("saved?");
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      List<PostModel> posts =
+          jsonData.map((item) => PostModel.fromJson(item)).toList();
+      return posts;
+    } else {
+      print("Error fetching saved posts: ${response.body}");
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> getUserHistory(
+      {int page = 1, int limit = 10}) async {
+    final url = Uri.parse('$_baseUrl/user/history?page=$page&limit=$limit');
+    final response = await http.get(url, headers: _headers);
     print(response.body);
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
@@ -462,8 +476,40 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> getUserHistory() async {
-    final url = Uri.parse('$_baseUrl/user/history');
+  Future<List<PostModel>?> getUpvotedPosts(
+      {int page = 1, int limit = 10}) async {
+    final url = Uri.parse('$_baseUrl/user/upvoted?page=$page&limit=$limit');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      List<PostModel> posts =
+          jsonData.map((item) => PostModel.fromJson(item)).toList();
+      return posts;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> getDownvotedPosts(
+      {int page = 1, int limit = 10}) async {
+    final url = Uri.parse('$_baseUrl/user/downvoted?page=$page&limit=$limit');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      List<PostModel> posts =
+          jsonData.map((item) => PostModel.fromJson(item)).toList();
+      return posts;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> getHiddenPosts(
+      {int page = 1, int limit = 10}) async {
+    final url =
+        Uri.parse('$_baseUrl/user/hidden-posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     print(response.body);
     if (response.statusCode == 200) {
