@@ -24,5 +24,7 @@ class Palette {
   static const Color blackColor = Colors.black;
   static const Color deepOrangeColor = Colors.deepOrange;
   static const Color transparent = Colors.transparent;
+  static const Color blueJoinColor = Color.fromARGB(255, 3, 69, 168);
+  static const Color blueJoinedColor = Color.fromARGB(255, 122, 169, 238);
 }
 

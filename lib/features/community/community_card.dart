@@ -25,6 +25,21 @@ class CommunityCard extends StatefulWidget {
 
 class CommunityCardState extends State<CommunityCard> {
   late final ValueNotifier<bool> isJoined;
+  Future<bool>? _future;
+
+  Future<bool> joinOrDisjoinSubreddit() async {
+    bool result;
+    if (!isJoined.value) {
+      result = await context.read<NetworkService>().joinSubReddit(widget.name);
+    } else {
+      result =
+          await context.read<NetworkService>().disJoinSubReddit(widget.name);
+    }
+    if (mounted && result) {
+      isJoined.value = !isJoined.value;
+    }
+    return result;
+  }
 
   @override
   void initState() {
@@ -80,33 +95,52 @@ class CommunityCardState extends State<CommunityCard> {
                 ValueListenableBuilder<bool>(
                   valueListenable: isJoined,
                   builder: (context, value, child) {
-                    return ElevatedButton(
-                      onPressed: () async {
-                        bool result;
-                        if (!isJoined.value) {
-                          result = await context
-                              .read<NetworkService>()
-                              .joinSubReddit(widget.name);
-                        } else {
-                          result = await context
-                              .read<NetworkService>()
-                              .disJoinSubReddit(widget.name);
-                        }
-                        if(mounted && result){
-                          isJoined.value = !isJoined.value;
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            value ? Palette.transparent : Palette.blueColor,
-                        foregroundColor:
-                            value ? Palette.blueColor : Palette.whiteColor,
-                        side: value
-                            ? const BorderSide(
-                                color: Palette.blueColor, width: 2.0)
-                            : BorderSide.none,
+                    return SizedBox(
+                      height: 33,
+                      child: ButtonTheme(
+                        minWidth: 0,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _future = joinOrDisjoinSubreddit();
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: const StadiumBorder(),
+                            backgroundColor: value
+                                ? Palette.transparent
+                                : Palette.blueJoinColor,
+                            foregroundColor: value
+                                ? Palette.blueJoinedColor
+                                : Palette.whiteColor,
+                            side: value
+                                ? const BorderSide(
+                                    color: Palette.blueJoinedColor, width: 2.0)
+                                : BorderSide.none,
+                            padding: EdgeInsets.zero, // Add this line
+                          ),
+                          child: FutureBuilder<bool>(
+                            future: _future,
+                            builder: (BuildContext context,
+                                AsyncSnapshot<bool> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Palette.blueJoinedColor),
+                                  ),
+                                );
+                              } else {
+                                return Text(isJoined.value ? 'Joined' : 'Join');
+                              }
+                            },
+                          ),
+                        ),
                       ),
-                      child: Text(value ? 'Joined' : 'Join'),
                     );
                   },
                 ),
