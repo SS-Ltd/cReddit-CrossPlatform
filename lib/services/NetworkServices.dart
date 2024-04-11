@@ -18,7 +18,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
   //String _baseUrl = 'http://192.168.1.19:3000';
-  String _baseUrl = 'https://creddit.tech/API';
+  final String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -112,7 +112,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> upVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
     final response = await http.patch(url, headers: _headers);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -123,7 +122,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> downVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/downvote');
     final response = await http.patch(url, headers: _headers);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -158,10 +156,8 @@ class NetworkService extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
-      print(response);
       return true;
     } else {
-      print('Failed to create user: ${response.body}');
       return false;
     }
   }
@@ -210,6 +206,8 @@ class NetworkService extends ChangeNotifier {
       return responseData
           .map((commentJson) => Comments.fromJson(commentJson))
           .toList();
+    } else {
+      return null;
     }
   }
 
@@ -227,19 +225,15 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
 
     String responseBody = await response.stream.bytesToString();
-    print('Response body: $responseBody');
     if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {
         String commentId = parsedJson['commentId'];
         return {'success': true, 'commentId': commentId, 'user': _user};
       } else {
-        print(
-            'Failed to create comment. "commentId" field is missing in the response body.');
         return {'success': false, 'user': _user};
       }
     } else {
-      print('Failed to create comment. Response body: $responseBody');
       return {'success': false, 'user': _user};
     }
   }
@@ -263,19 +257,15 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
 
     String responseBody = await response.stream.bytesToString();
-    print('Response body: $responseBody');
     if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {
         String commentId = parsedJson['commentId'];
         return {'success': true, 'commentId': commentId, 'user': _user};
       } else {
-        print(
-            'Failed to create comment. "commentId" field is missing in the response body.');
         return {'success': false, 'user': _user};
       }
     } else {
-      print('Failed to create comment. Response body: $responseBody');
       return {'success': false, 'user': _user};
     }
   }
@@ -372,7 +362,6 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 201) {
       return true;
     } else {
-      print('Failed to create community: ${response.body}');
       return false;
     }
   }
@@ -426,7 +415,6 @@ class NetworkService extends ChangeNotifier {
           .toList();
       return posts;
     } else {
-      print('Error Fetching User Posts: ${response.body}');
       return null;
     }
   }
@@ -436,7 +424,6 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse(
         '$_baseUrl/subreddit/$subredditName/posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -456,7 +443,6 @@ class NetworkService extends ChangeNotifier {
           jsonData.map((item) => PostModel.fromJson(item)).toList();
       return posts;
     } else {
-      print("Error fetching saved posts: ${response.body}");
       return null;
     }
   }
@@ -538,10 +524,8 @@ class NetworkService extends ChangeNotifier {
       }),
     );
     if (response.statusCode == 201) {
-      print(response.body);
       return true;
     } else {
-      print('Failed to create post: ${response.body}');
       return false;
     }
   }
@@ -605,7 +589,6 @@ class NetworkService extends ChangeNotifier {
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
       final List<dynamic> responseData = jsonDecode(response.body);
       List<JoinedCommunitites> joinedCommunitites = responseData
           .map((item) => JoinedCommunitites.fromJson(item))
@@ -623,8 +606,6 @@ class NetworkService extends ChangeNotifier {
       headers: _headers,
       body: jsonEncode({'pollOption': pollOption}),
     );
-
-    print('Vote Poll Response: ${response.body}');
     if (response.statusCode == 200) {
       return true; // Voting was successful
     } else {
@@ -680,7 +661,6 @@ class NetworkService extends ChangeNotifier {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData

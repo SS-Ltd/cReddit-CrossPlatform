@@ -157,9 +157,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                       bool reset = await context
                                           .read<NetworkService>()
                                           .forgotPassword(widget.email);
-                                          //print(reset);
                                       if (mounted && reset) {
-                                        // Show a message to the user indicating that the email was resent successfully.
+// Show a message to the user indicating that the email was resent successfully.
                                         CustomSnackBar(
                                           context: context,
                                           content: 'Email resent successfully',

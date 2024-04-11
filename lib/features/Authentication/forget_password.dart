@@ -198,18 +198,16 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                   bool reset = await context
                                       .read<NetworkService>()
                                       .forgotPassword(emailController.text);
-                                  print(reset);
                                   // Hide the keyboard
                                   FocusScope.of(context).unfocus();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            ResetPasswordDone(email: emailController.text)),
+                                        builder: (context) => ResetPasswordDone(
+                                            email: emailController.text)),
                                   );
                                 }
                               : null,
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 isValid == 1 ? Colors.deepOrange : Colors.grey,
