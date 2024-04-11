@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/features/home_page/rightsidebar.dart';
-import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 import '../../models/post_model.dart';
 
 class HomePage extends StatefulWidget {
+
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<StatefulWidget> createState() {
+    return _HomePageState();
+  }
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+ // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<String> menuItems = ['Hot', 'Top', 'New'];
   String selectedMenuItem = 'Hot'; // Store the selected menu item here
   String lastType = "Hot";
@@ -82,41 +85,41 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        leading: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.menu, size: 30.0),
-            ),
-            SelectItem(
-              menuItems: menuItems,
-              onMenuItemSelected: (String selectedItem) {
-                setState(() {
-                  selectedMenuItem = selectedItem;
-                });
-                getPosts(
-                    selectedItem); // Fetch posts for the selected menu item
-                print('Selected: $selectedItem');
-              },
-            ),
-          ],
-        ),
-        leadingWidth: 150,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, size: 30.0),
-          ),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-            icon: const Icon(Icons.reddit, size: 30.0),
-          ),
-        ],
-      ),
-      endDrawer: const Rightsidebar(),
+      // key: _scaffoldKey,
+      // appBar: AppBar(
+      //   leading: Row(
+      //     mainAxisSize: MainAxisSize.max,
+      //     children: [
+      //       IconButton(
+      //         onPressed: () {},
+      //         icon: const Icon(Icons.menu, size: 30.0),
+      //       ),
+      //       SelectItem(
+      //         menuItems: menuItems,
+      //         onMenuItemSelected: (String selectedItem) {
+      //           setState(() {
+      //             selectedMenuItem = selectedItem;
+      //           });
+      //           getPosts(
+      //               selectedItem); // Fetch posts for the selected menu item
+      //           print('Selected: $selectedItem');
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      //   leadingWidth: 150,
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () {},
+      //       icon: const Icon(Icons.search, size: 30.0),
+      //     ),
+      //     IconButton(
+      //       onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
+      //       icon: const Icon(Icons.reddit, size: 30.0),
+      //     ),
+      //   ],
+      // ),
+      // endDrawer: const Rightsidebar(),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: ListView.builder(
