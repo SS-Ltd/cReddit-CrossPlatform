@@ -77,7 +77,8 @@ class _PostState extends State<Post> {
   void initState() {
     super.initState();
     if (isVideo(widget.content)) {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.content));
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.content));
       _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
         setState(() {
           _controllerInitialized =
@@ -173,9 +174,11 @@ class _PostState extends State<Post> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentPage(
-                          postId: widget.postId,
-                          postComment: postComment,
-                          postTitle: widget.title),
+                        postId: widget.postId,
+                        postComment: postComment,
+                        postTitle: widget.title,
+                        username: widget.userName,
+                      ),
                     ),
                   );
                 }
@@ -280,12 +283,11 @@ class _PostState extends State<Post> {
                           ? (widget.isSubRedditPage
                               ? GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
                                   },
                                   child: Text(
                                     'r/${widget.userName}',
@@ -323,13 +325,12 @@ class _PostState extends State<Post> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
-                                      //replace with profile page or widget
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
+                                    //replace with profile page or widget
                                   },
                                   child: Text(
                                     'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
@@ -372,9 +373,11 @@ class _PostState extends State<Post> {
                       MaterialPageRoute(
                         //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                            postId: widget.postId,
-                            postComment: postComment,
-                            postTitle: widget.title),
+                          postId: widget.postId,
+                          postComment: postComment,
+                          postTitle: widget.title,
+                          username: widget.userName,
+                        ),
                       ),
                     );
                   }
@@ -468,9 +471,11 @@ class _PostState extends State<Post> {
                     MaterialPageRoute(
                       //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                       builder: (context) => CommentPage(
-                          postId: widget.postId,
-                          postComment: postComment,
-                          postTitle: widget.title),
+                        postId: widget.postId,
+                        postComment: postComment,
+                        postTitle: widget.title,
+                        username: widget.userName,
+                      ),
                     ),
                   );
                 },
