@@ -34,7 +34,6 @@ class NetworkService extends ChangeNotifier {
       body: jsonEncode({'username': username, 'password': password}),
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
       _updateCookie(response);
       var data = jsonDecode(response.body);
@@ -58,7 +57,6 @@ class NetworkService extends ChangeNotifier {
       body: jsonEncode({'googleToken': googleAccessToken}),
     );
 
-    print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('Access token sent successfully');
       _updateCookie(response);
@@ -86,7 +84,7 @@ class NetworkService extends ChangeNotifier {
   Future<void> getUserSettings() async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
@@ -194,7 +192,7 @@ class NetworkService extends ChangeNotifier {
   Future<List<Community>> fetchTopCommunities() async {
     Uri url = Uri.parse('$_baseUrl/subreddit/top?limit=25');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
       return jsonData.map((item) => Community.fromJson(item)).toList();
@@ -206,7 +204,7 @@ class NetworkService extends ChangeNotifier {
   Future<List<Comments>?> fetchCommentsForPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -329,7 +327,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> joinSubReddit(String subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
     final response = await http.post(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -340,7 +338,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> disJoinSubReddit(String subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
     final response = await http.delete(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -352,7 +350,7 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': isSaved}));
-    print(response.body);
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -433,10 +431,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName) async {
-    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts?sort=new');
+  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName,
+      {int page = 1, int limit = 10}) async {
+    Uri url = Uri.parse(
+        '$_baseUrl/subreddit/$subredditName/posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -465,7 +465,7 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/history?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -480,7 +480,7 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/upvoted?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -495,7 +495,7 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/downvoted?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -511,7 +511,7 @@ class NetworkService extends ChangeNotifier {
     final url =
         Uri.parse('$_baseUrl/user/hidden-posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -634,7 +634,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> deletepost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId');
     final response = await http.delete(url, headers: _headers);
-    print(response);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -646,7 +645,6 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': value}));
-    print(response);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -658,7 +656,6 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/lock');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isLocked': value}));
-    print(response);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -670,11 +667,27 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/hide');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isHidden': value}));
-    print(response);
     if (response.statusCode == 200) {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<Comments>?> fetchSavedComments(
+      {int page = 1, int limit = 20}) async {
+    Uri url =
+        Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((commentJson) => Comments.fromJson(commentJson))
+          .toList();
+    } else {
+      // Handle error or empty case appropriately
+      return null;
     }
   }
 
@@ -694,7 +707,7 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
     print(response.statusCode);
-    print(response.body);
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
