@@ -101,8 +101,9 @@ class _CreatePostState extends State<CreatePost> {
                                         false);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
-                              Navigator.of(context).pop();
                               print(chosenCommunity);
+                              print(newpost);
+                              Navigator.of(context).pop();
                             } else {
                               print(chosenCommunity);
 

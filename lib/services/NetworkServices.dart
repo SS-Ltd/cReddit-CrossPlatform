@@ -484,11 +484,11 @@ class NetworkService extends ChangeNotifier {
       headers: _headers,
       body: jsonEncode({
         'type': type,
-        'communityname': communityname,
+        'communityName': communityname,
         'title': title,
         'content': content,
-        'isNSFW': isNSFW,
         'isSpoiler': isSpoiler,
+        'isNSFW': isNSFW,
       }),
     );
     if (response.statusCode == 201) {
@@ -647,6 +647,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> reportPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
+    print(response.statusCode);
     print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
