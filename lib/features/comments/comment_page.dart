@@ -10,11 +10,13 @@ class CommentPage extends StatefulWidget {
   final String postId;
   final Widget postComment;
   final String postTitle;
+  final String username;
   const CommentPage(
       {super.key,
       required this.postId,
       required this.postComment,
-      required this.postTitle});
+      required this.postTitle,
+      required this.username});
 
   @override
   State<CommentPage> createState() {
@@ -122,7 +124,10 @@ class _CommentPageState extends State<CommentPage> {
           ),
           PopupMenuButton(
               onSelected: (Menu item) {},
-              itemBuilder: (BuildContext context) => menuitems()),
+              itemBuilder: (BuildContext context) {
+                
+                return menuitems();
+              }),
           IconButton(
             onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: const Icon(Icons.reddit, size: 30.0),
@@ -259,12 +264,16 @@ class _CommentPageState extends State<CommentPage> {
   List<PopupMenuEntry<Menu>> menuitems() {
     return <PopupMenuEntry<Menu>>[
       //////////////////////////////////////////
-      const PopupMenuItem<Menu>(
-          value: Menu.share,
-          child: ListTile(
-            leading: Icon(Icons.share),
-            title: Text('Share'),
-          )),
+      (widget.username != context.read<NetworkService>().user?.username)
+          ? const PopupMenuItem<Menu>(
+              value: Menu.share,
+              child: ListTile(
+                leading: Icon(Icons.share),
+                title: Text('Share'),
+              ))
+          : const PopupMenuItem(
+              child: SizedBox(),
+            ),
       const PopupMenuItem<Menu>(
           value: Menu.subscribe,
           child: ListTile(
@@ -322,10 +331,9 @@ class _CommentPageState extends State<CommentPage> {
               bool isDeleted = await context
                   .read<NetworkService>()
                   .deletepost(widget.postId);
-                  if(isDeleted)
-                  {
-                    //show snackbar
-                  }
+              if (isDeleted) {
+                //show snackbar
+              }
             },
           )),
       PopupMenuItem<Menu>(
@@ -333,15 +341,14 @@ class _CommentPageState extends State<CommentPage> {
           child: ListTile(
             leading: const Icon(Icons.report),
             title: const Text('Report'),
-          onTap: () async {
+            onTap: () async {
               bool isReported = await context
                   .read<NetworkService>()
                   .reportpost(widget.postId);
-                  if(isReported)
-                  {
-                    //show snackbar
-                  }
-            }, 
+              if (isReported) {
+                //show snackbar
+              }
+            },
           )),
 
       const PopupMenuItem<Menu>(
@@ -355,14 +362,13 @@ class _CommentPageState extends State<CommentPage> {
           child: ListTile(
             leading: const Icon(Icons.hide_source),
             title: const Text('hide'),
-          onTap: () async {
+            onTap: () async {
               bool isHidden = await context
                   .read<NetworkService>()
                   .hidepost(widget.postId, true);
-                  if(isHidden)
-                  {
-                    //show snackbar
-                  }
+              if (isHidden) {
+                //show snackbar
+              }
             },
           )),
     ];
