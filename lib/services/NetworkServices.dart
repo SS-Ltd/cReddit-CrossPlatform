@@ -522,6 +522,77 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> deletepost(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId');
+    final response = await http.delete(url, headers: _headers);
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> saveandunsavepost(String postId, bool value) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/save');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isSaved': value}));
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> lockpost(String postId, bool value) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/lock');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isLocked': value}));
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+    Future<bool> hidepost(String postId, bool value) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/hide');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isHidden': value}));
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+//////////////////////////////////////////check
+  Future<bool> followpost(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/follow');
+    final response = await http.patch(url,
+        headers: _headers);
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+      Future<bool> reportpost(String postId) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/report');
+    final response = await http.post(url,
+        headers: _headers);
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
