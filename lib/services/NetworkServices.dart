@@ -560,7 +560,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-    Future<bool> hidepost(String postId, bool value) async {
+  Future<bool> hidepost(String postId, bool value) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/hide');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isHidden': value}));
@@ -571,11 +571,11 @@ class NetworkService extends ChangeNotifier {
       return false;
     }
   }
+
 //////////////////////////////////////////check
   Future<bool> followpost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/follow');
-    final response = await http.patch(url,
-        headers: _headers);
+    final response = await http.patch(url, headers: _headers);
     print(response);
     if (response.statusCode == 200) {
       return true;
@@ -584,10 +584,9 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-      Future<bool> reportpost(String postId) async {
+  Future<bool> reportpost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
-    final response = await http.post(url,
-        headers: _headers);
+    final response = await http.post(url, headers: _headers);
     print(response);
     if (response.statusCode == 200) {
       return true;

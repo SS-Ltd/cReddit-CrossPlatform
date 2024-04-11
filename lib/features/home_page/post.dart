@@ -77,7 +77,8 @@ class _PostState extends State<Post> {
   void initState() {
     super.initState();
     if (isVideo(widget.content)) {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.content));
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.content));
       _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
         setState(() {
           _controllerInitialized =
@@ -280,12 +281,11 @@ class _PostState extends State<Post> {
                           ? (widget.isSubRedditPage
                               ? GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
                                   },
                                   child: Text(
                                     'r/${widget.userName}',
@@ -323,13 +323,12 @@ class _PostState extends State<Post> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AboutUserPopUp()),
-                                      //replace with profile page or widget
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
+                                    //replace with profile page or widget
                                   },
                                   child: Text(
                                     'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
