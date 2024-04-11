@@ -68,25 +68,31 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  //Timer? _timer;
   late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;
+  bool _controllerInitialized =
+      false; // Flag to track if controller is initialized
 
   @override
   void initState() {
     super.initState();
     if (isVideo(widget.content)) {
-      _videoController =
-          VideoPlayerController.networkUrl(Uri.parse(widget.content));
-      _initializeVideoPlayerFuture = _videoController.initialize();
-      _videoController.setLooping(true);
+      _videoController = VideoPlayerController.network(widget.content);
+      _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
+        setState(() {
+          _controllerInitialized =
+              true; // Set to true upon successful initialization
+          _videoController.setLooping(true);
+        });
+      });
     }
   }
 
   @override
   void dispose() {
-    //   _timer?.cancel();///
-    _videoController.dispose();
+    if (_controllerInitialized) {
+      _videoController.dispose();
+    }
     super.dispose();
   }
 
@@ -117,7 +123,8 @@ class _PostState extends State<Post> {
                           width: double.infinity,
                           fit: BoxFit.cover,
                         )
-                      : isVideo(widget.content)
+                      : (isVideo(widget.content) &&
+                              _videoController.value.isInitialized)
                           ? //const CircularProgressIndicator() :
                           FutureBuilder(
                               future: _initializeVideoPlayerFuture,
