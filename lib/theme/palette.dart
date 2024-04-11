@@ -13,6 +13,7 @@ class Palette {
   
   static const Color backgroundColor = Color.fromARGB(255, 19, 19, 19);
   static const Color appBar = Color.fromARGB(255, 18, 18, 18);
+  static const Color settingsHeading = Color.fromARGB(255, 10, 10, 10);
 
   static const Color blueColor = Color.fromRGBO(29, 155, 240, 1);
   static const Color whiteColor = Colors.white;
