@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 class CommentPostPage extends StatefulWidget {
   final String commentContent;
@@ -65,13 +66,17 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     fontWeight: FontWeight.bold,
                   )),
               onPressed: () async {
-                //print(result['success']);
-
                 if (_controller.text.isNotEmpty) {
                   Map<String, dynamic> result = await context
                       .read<NetworkService>()
                       .createNewTextComment(widget.postId, _controller.text);
-
+                  if (mounted && result['success'] == false) {
+                    CustomSnackBar(
+                      context: context,
+                      content: 'Failed to post comment',
+                    ).show();
+                    return;
+                  }
                   contentType = false; // Text is entered
                   Navigator.pop(context, {
                     'content': _controller.text,
@@ -83,7 +88,14 @@ class _CommentPostPageState extends State<CommentPostPage> {
                   Map<String, dynamic> result = await context
                       .read<NetworkService>()
                       .createNewImageComment(widget.postId, _image!);
-                  contentType = true; // Image is uploaded
+                  if (mounted && result['success'] == false) {
+                    CustomSnackBar(
+                      context: context,
+                      content: 'Failed to post comment',
+                    ).show();
+                    return;
+                  }
+                  contentType = true; // Image is entered
                   Navigator.pop(context, {
                     'content': _image,
                     'contentType': contentType,
@@ -91,16 +103,10 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     'user': result['user']
                   });
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Please enter a comment'),
-                      duration: const Duration(seconds: 3),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  CustomSnackBar(
+                    context: context,
+                    content: 'Please enter a comment',
+                  ).show();
                 }
               }),
         ],

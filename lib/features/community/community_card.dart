@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class CommunityCard extends StatefulWidget {
   final String name;
@@ -79,8 +81,20 @@ class CommunityCardState extends State<CommunityCard> {
                   valueListenable: isJoined,
                   builder: (context, value, child) {
                     return ElevatedButton(
-                      onPressed: () {
-                        isJoined.value = !isJoined.value;
+                      onPressed: () async {
+                        bool result;
+                        if (!isJoined.value) {
+                          result = await context
+                              .read<NetworkService>()
+                              .joinSubReddit(widget.name);
+                        } else {
+                          result = await context
+                              .read<NetworkService>()
+                              .disJoinSubReddit(widget.name);
+                        }
+                        if(mounted && result){
+                          isJoined.value = !isJoined.value;
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
