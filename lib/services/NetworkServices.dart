@@ -599,7 +599,9 @@ class NetworkService extends ChangeNotifier {
   Future<bool> reportpost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
+    print('Report');
     print(response);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
