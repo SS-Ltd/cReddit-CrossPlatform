@@ -348,7 +348,7 @@ class _CommentPageState extends State<CommentPage> {
             onTap: () async {
               bool isReported = await context
                   .read<NetworkService>()
-                  .reportpost(widget.postId);
+                  .reportPost(widget.postId);
               if (isReported) {
                 //show snackbar
               }

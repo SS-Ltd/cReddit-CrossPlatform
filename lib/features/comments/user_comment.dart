@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
@@ -21,7 +22,7 @@ class UserComment extends StatefulWidget {
   final String commentId;
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
   bool isSaved;
-  
+
   UserComment({
     super.key,
     // may be the required keyword need to be removed
@@ -286,7 +287,10 @@ class UserCommentState extends State<UserComment> {
                         IconButton(
                           icon: const Icon(Icons.more_vert),
                           onPressed: () {
-                            double height = 7 * 56;
+                            UserModel user = context
+                                            .read<NetworkService>()
+                                            .getUser();
+                            double height = 8 * 56;
                             OverlayEntry overlayEntry = OverlayEntry(
                               builder: (context) => Positioned(
                                 left: 8,
@@ -314,69 +318,95 @@ class UserCommentState extends State<UserComment> {
                               backgroundColor:
                                   const Color.fromARGB(255, 19, 19, 19),
                               builder: (context) {
-                                return Wrap(
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: const Icon(Icons.share_outlined),
-                                      title: const Text('Share'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.save_alt),
-                                      title: Text(widget.isSaved ? 'Save' : 'Saved'),
-                                      onTap: () async {
-                                        bool saved = await context
-                                            .read<NetworkService>()
-                                            .saveOrUnsaveComment(
-                                                widget.commentId,
-                                                widget.isSaved);
-                                        if (saved) {
-                                          widget.isSaved = !widget.isSaved;
+                                return SingleChildScrollView(
+                                  child: Column(
+                                    children: <Widget>[
+                                      if (widget.username == user.username)
+                                        ListTile(
+                                          leading: const Icon(Icons.edit),
+                                          title: const Text('Edit comment'),
+                                          onTap: () {
+                                            // Handle edit comment
+                                          },
+                                        ),
+                                      ListTile(
+                                        leading: const Icon(Icons.share_outlined),
+                                        title: const Text('Share'),
+                                        onTap: () {
                                           Navigator.pop(context);
-                                        }
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(
-                                          Icons.notifications_outlined),
-                                      title:
-                                          const Text('Get reply notification'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.copy_outlined),
-                                      title: const Text('Copy text'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading:
-                                          const Icon(Icons.merge_type_outlined),
-                                      title: const Text('Collapse thread'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.block_outlined),
-                                      title: const Text('Block account'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.flag_outlined),
-                                      title: const Text('Report'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(Icons.save_alt),
+                                        title: Text(
+                                            widget.isSaved ? 'Save' : 'Saved'),
+                                        onTap: () async {
+                                          bool saved = await context
+                                              .read<NetworkService>()
+                                              .saveOrUnsaveComment(
+                                                  widget.commentId,
+                                                  widget.isSaved);
+                                          if (saved) {
+                                            widget.isSaved = !widget.isSaved;
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(
+                                            Icons.notifications_outlined),
+                                        title:
+                                            const Text('Get reply notification'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(Icons.copy_outlined),
+                                        title: const Text('Copy text'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading:
+                                            const Icon(Icons.merge_type_outlined),
+                                        title: const Text('Collapse thread'),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      if (widget.username == user.username)
+                                        ListTile(
+                                          leading: const Icon(Icons.delete),
+                                          title: const Text('Delete comment'),
+                                          onTap: () {
+                                            // Handle delete comment
+                                          },
+                                        ),
+                                      if (widget.username != user.username)
+                                        ListTile(
+                                          leading:
+                                              const Icon(Icons.block_outlined),
+                                          title: const Text('Block account'),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ListTile(
+                                        leading: const Icon(Icons.flag_outlined),
+                                        title: const Text('Report'),
+                                        onTap: () async {
+                                          bool reported = await context
+                                              .read<NetworkService>()
+                                              .reportPost(widget.commentId);
+                                          if (reported) {
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 );
                               },
                             ).then((_) {
@@ -498,4 +528,3 @@ String formatTimestamp(DateTime timestamp) {
     return '${difference.inSeconds}s';
   }
 }
-

@@ -73,6 +73,10 @@ class NetworkService extends ChangeNotifier {
     return false;
   }
 
+  getUser() {
+  return _user;
+}
+
   Future<void> logout() async {
     Uri url = Uri.parse('$_baseUrl/user/logout');
     final response = await http.get(url, headers: _headers);
@@ -596,11 +600,11 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> reportpost(String postId) async {
+  Future<bool> reportPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
-    print(response);
-    if (response.statusCode == 200) {
+    print(response.body);
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       return false;
