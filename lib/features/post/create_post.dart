@@ -89,16 +89,23 @@ class _CreatePostState extends State<CreatePost> {
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
+                                    //poll post
                                     .read<NetworkService>()
                                     .createNewPollPost(
                                         chosenCommunity,
                                         _titleController.text,
-                                        '',
-                                        _optionControllers.cast(),
-                                        '',
+                                        'ay habal',
+                                        _optionControllers
+                                            .where((controller) =>
+                                                controller.text.isNotEmpty)
+                                            .map(
+                                                (controller) => controller.text)
+                                            .toList(),
+                                        '4-15-2024', //month-day-year
                                         false,
                                         false)
                                 : await context
+                                    //text or link post
                                     .read<NetworkService>()
                                     .createNewTextOrLinkPost(
                                         type,

@@ -569,9 +569,9 @@ class NetworkService extends ChangeNotifier {
         'type': 'Poll',
         'communityname': communityname,
         'title': title,
-        //'content' :
-        //'pollOptions' :
-        //'expirationDate' :
+        'content' : content,
+        'pollOptions' : options, 
+        'expirationDate' : expDate,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
