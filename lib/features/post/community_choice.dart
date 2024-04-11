@@ -30,6 +30,10 @@ class _CommunityChoiceState extends State<CommunityChoice> {
     joinedCommunities =
         await Provider.of<NetworkService>(context, listen: false)
             .joinedcommunitites();
+    print(joinedCommunities!);
+    setState(() {
+      
+    });
   }
 
   @override
@@ -47,7 +51,7 @@ class _CommunityChoiceState extends State<CommunityChoice> {
         ),
         body: joinedCommunities == null
             ? const Center(
-                child: CircularProgressIndicator(),
+                child: Text('Go to communities '),
               )
             : ListView.builder(
                 itemCount: joinedCommunities!.length,
@@ -55,10 +59,8 @@ class _CommunityChoiceState extends State<CommunityChoice> {
                   return ListTile(
                     title: Text(joinedCommunities![index].name),
                     onTap: () {
-                      setState(() {
-                        widget.chosenCommunity = joinedCommunities![index].name;
-                      });
-                      Navigator.pop(context);
+                      print(joinedCommunities![index].name);
+                      Navigator.of(context).pop(joinedCommunities![index].name);
                     },
                   );
                 },

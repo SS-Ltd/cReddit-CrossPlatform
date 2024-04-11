@@ -436,7 +436,7 @@ class NetworkService extends ChangeNotifier {
   Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+    //print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -492,6 +492,7 @@ class NetworkService extends ChangeNotifier {
       }),
     );
     if (response.statusCode == 201) {
+      print(response.body);
       return true;
     } else {
       print('Failed to create post: ${response.body}');
@@ -559,7 +560,7 @@ class NetworkService extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      final List<dynamic> responseData = json.decode(response.body);
+      final List<dynamic> responseData = jsonDecode(response.body);
       List<JoinedCommunitites> joinedCommunitites = responseData
           .map((item) => JoinedCommunitites.fromJson(item))
           .toList();
