@@ -6,8 +6,7 @@ class AboutUserPopUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AlertDialog.adaptive(
+    return AlertDialog.adaptive(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(0)),
           ),
@@ -68,7 +67,7 @@ class AboutUserPopUp extends StatelessWidget {
                     hasarrow: false),
               ),
             ],
-          )),
+          ),
     );
   }
 }
