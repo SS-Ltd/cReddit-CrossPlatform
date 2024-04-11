@@ -200,7 +200,7 @@ class NetworkService extends ChangeNotifier {
   Future<List<Comments>?> fetchCommentsForPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
     final response = await http.get(url, headers: _headers);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -569,9 +569,9 @@ class NetworkService extends ChangeNotifier {
         'type': 'Poll',
         'communityname': communityname,
         'title': title,
-        'content' : content,
-        'pollOptions' : options, 
-        'expirationDate' : expDate,
+        'content': content,
+        'pollOptions': options,
+        'expirationDate': expDate,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
@@ -656,7 +656,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SavedCommentsModel>?> fetchSavedComments(
+  Future<List<Comments>?> fetchSavedComments(
       {int page = 1, int limit = 20}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
@@ -664,7 +664,7 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
-          .map((commentJson) => SavedCommentsModel.fromJson(commentJson))
+          .map((commentJson) => Comments.fromJson(commentJson))
           .toList();
     } else {
       // Handle error or empty case appropriately

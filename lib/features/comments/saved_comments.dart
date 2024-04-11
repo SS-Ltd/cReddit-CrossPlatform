@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
-import 'package:reddit_clone/models/savedcomments.dart';
-
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class SavedComments extends StatefulWidget {
   const SavedComments({super.key});
@@ -13,7 +14,7 @@ class SavedComments extends StatefulWidget {
 }
 
 class _SavedCommentsState extends State<SavedComments> {
-  List<SavedCommentsModel>? savedComments;
+  List<Comments>? savedComments;
   bool isLoading = false;
   int page = 1;
   final ScrollController _scrollController = ScrollController();
@@ -38,7 +39,7 @@ class _SavedCommentsState extends State<SavedComments> {
       isLoading = true;
     });
 
-    List<SavedCommentsModel>? newComments =
+    List<Comments>? newComments =
         await Provider.of<NetworkService>(context, listen: false)
             .fetchSavedComments(page: page);
 
@@ -64,6 +65,16 @@ class _SavedCommentsState extends State<SavedComments> {
     }
   }
 
+  int mappingVotes(bool isUpvoted, bool isDownvoted) {
+    if (isUpvoted) {
+      return 1;
+    } else if (isDownvoted) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return savedComments == null
@@ -73,33 +84,29 @@ class _SavedCommentsState extends State<SavedComments> {
             itemCount: savedComments!.length + (isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < savedComments!.length) {
-                return commentWidget(savedComments![index]);
+                return UserComment(
+                  avatar: savedComments![index].profilePicture,
+                  username: savedComments![index].username,
+                  content: savedComments![index].content,
+                  timestamp: DateTime.parse(savedComments![index].createdAt),
+                  photo: savedComments![index].isImage
+                      ? File(savedComments![index].content)
+                      : null,
+                  contentType: savedComments![index].isImage,
+                  imageSource: 0,
+                  commentId: savedComments![index].commentId,
+                  hasVoted: mappingVotes(savedComments![index].isUpvoted,
+                      savedComments![index].isDownvoted),
+                  isSaved: savedComments![index].isSaved,
+                  netVote: savedComments![index].netVote,
+                  communityName: savedComments![index].communityName!,
+                  postId: savedComments![index].postId!,
+                  title: savedComments![index].title!,
+                );
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
             },
           );
-  }
-
-  Widget commentWidget(SavedCommentsModel comment) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          comment.title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 4),
-        Text(
-          '${comment.username} . ${comment.communityName}',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        SizedBox(height: 4),
-        Text(
-          comment.content,
-          style: TextStyle(fontSize: 16),
-        ),
-      ],
-    );
   }
 }
