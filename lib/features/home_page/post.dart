@@ -7,6 +7,8 @@ import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
+import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'postcomments.dart';
@@ -16,7 +18,7 @@ class Post extends StatefulWidget {
   final String postId;
   final String postType;
   final String userName;
-  final String communityName;
+  final String? communityName;
   final String profilePicture;
   int votes;
   int commentNumber;
@@ -47,32 +49,40 @@ class Post extends StatefulWidget {
     required this.votes,
     required this.isUpvoted,
     required this.isDownvoted,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<Post> createState() => _PostState();
 }
 
 class _PostState extends State<Post> {
-  Timer? _timer;
-  // late VideoPlayerController _videoController;
+  late VideoPlayerController _videoController;
   late Future<void> _initializeVideoPlayerFuture;
+  bool _controllerInitialized =
+      false; // Flag to track if controller is initialized
 
-  @override
-  void initState() {
-    super.initState();
-    // if (isVideo(widget.content)) {
-    //   _videoController = VideoPlayerController.network(widget.content);
-    //   _initializeVideoPlayerFuture = _videoController.initialize();
-    //   _videoController.setLooping(true);
-    // }
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (isVideo(widget.content)) {
+  //     _videoController =
+  //         VideoPlayerController.networkUrl(Uri.parse(widget.content));
+  //     _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
+  //       setState(() {
+  //         _controllerInitialized =
+  //             true; // Set to true upon successful initialization
+  //         _videoController.setLooping(true);
+  //       });
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
-    _timer?.cancel();
-    // _videoController.dispose();
+    if (_controllerInitialized) {
+      _videoController.dispose();
+    }
     super.dispose();
   }
 
@@ -96,32 +106,33 @@ class _PostState extends State<Post> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: isImage(widget.content)
-                      ? Image.network(
-                          widget.content,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                      : isVideo(widget.content)
-                          ? const CircularProgressIndicator()
-                          // FutureBuilder(
-                          //     future: _initializeVideoPlayerFuture,
-                          //     builder: (context, snapshot) {
-                          //       if (snapshot.connectionState ==
-                          //           ConnectionState.done) {
-                          //         return AspectRatio(
-                          //           aspectRatio:
-                          //               _videoController.value.aspectRatio,
-                          //           child: VideoPlayer(_videoController),
-                          //         );
-                          //       } else {
-                          //         return const CircularProgressIndicator();
-                          //       }
-                          //     },
-                          //   )
-                          : const SizedBox.shrink(),
-                ),
+                    // borderRadius: BorderRadius.circular(10.0),
+                    // child: isImage(widget.content)
+                    //     ? Image.network(
+                    //         widget.content,
+                    //         width: double.infinity,
+                    //         fit: BoxFit.cover,
+                    //       )
+                    //     : (isVideo(widget.content) &&
+                    //             _videoController.value.isInitialized)
+                    //         ? //const CircularProgressIndicator() :
+                    //         FutureBuilder(
+                    //             future: _initializeVideoPlayerFuture,
+                    //             builder: (context, snapshot) {
+                    //               if (snapshot.connectionState ==
+                    //                   ConnectionState.done) {
+                    //                 return AspectRatio(
+                    //                   aspectRatio:
+                    //                       _videoController.value.aspectRatio,
+                    //                   child: VideoPlayer(_videoController),
+                    //                 );
+                    //               } else {
+                    //                 return const CircularProgressIndicator();
+                    //               }
+                    //             },
+                    //           )
+                    //         : const SizedBox.shrink(),
+                    ),
               ),
             ],
           ),
@@ -152,9 +163,11 @@ class _PostState extends State<Post> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentPage(
-                          postId: widget.postId,
-                          postComment: postComment,
-                          postTitle: widget.title),
+                        postId: widget.postId,
+                        postComment: postComment,
+                        postTitle: widget.title,
+                        username: widget.userName,
+                      ),
                     ),
                   );
                 }
@@ -259,13 +272,11 @@ class _PostState extends State<Post> {
                           ? (widget.isSubRedditPage
                               ? GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AboutUserPopUp(
-                                                userName: widget.userName,
-                                              )),
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
                                   },
                                   child: Text(
                                     'r/${widget.userName}',
@@ -303,14 +314,12 @@ class _PostState extends State<Post> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AboutUserPopUp(
-                                                userName: widget.userName,
-                                              )),
-                                    );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return const AboutUserPopUp();
+                                        });
+                                    //replace with profile page or widget
                                   },
                                   child: Text(
                                     'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
@@ -351,11 +360,12 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                            postId: widget.postId,
-                            postComment: postComment,
-                            postTitle: widget.title),
+                          postId: widget.postId,
+                          postComment: postComment,
+                          postTitle: widget.title,
+                          username: widget.userName,
+                        ),
                       ),
                     );
                   }
@@ -447,11 +457,12 @@ class _PostState extends State<Post> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                       builder: (context) => CommentPage(
-                          postId: widget.postId,
-                          postComment: postComment,
-                          postTitle: widget.title),
+                        postId: widget.postId,
+                        postComment: postComment,
+                        postTitle: widget.title,
+                        username: widget.userName,
+                      ),
                     ),
                   );
                 },

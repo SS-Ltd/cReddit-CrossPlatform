@@ -4,6 +4,7 @@ import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
@@ -67,7 +68,12 @@ class _CreatePostState extends State<CreatePost> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CustomNavigationBar(),
+              ),
+            );
           },
         ),
         actions: [
@@ -78,6 +84,8 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
+                            print(chosenCommunity);
+
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
@@ -101,11 +109,17 @@ class _CreatePostState extends State<CreatePost> {
                                         false);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
-                              Navigator.of(context).pop();
                               print(chosenCommunity);
+                              print(newpost);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CustomNavigationBar(),
+                                ),
+                              );
                             } else {
                               print(chosenCommunity);
-
                             }
                           },
                     child: const Text('Post'),
@@ -113,8 +127,8 @@ class _CreatePostState extends State<CreatePost> {
                 : ElevatedButton(
                     onPressed: _istitleempty
                         ? null
-                        : () {
-                            Navigator.push(
+                        : () async {
+                            final returneddata = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 fullscreenDialog: true,
@@ -123,6 +137,9 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                               ),
                             );
+                            setState(() {
+                              chosenCommunity = returneddata.toString();
+                            });
                           },
                     //in this case we will go to choose the community
                     child: const Text('Next')),

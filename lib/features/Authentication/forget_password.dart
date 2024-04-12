@@ -35,9 +35,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Palette.redditLogin,
         appBar: AppBar(
-          backgroundColor: Palette.redditLogin,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -116,7 +114,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Palette.inputField,
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: emailController.text.isEmpty
@@ -130,10 +128,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                           onChanged: (value) {
                             isValidNotifier.value = isValidEmail(value);
                           },
+                          style: const TextStyle(color: Palette.whiteColor),
                           decoration: InputDecoration(
                             labelText: 'Email or username',
                             labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 71, 70, 70),
+                              color: Palette.inputFieldLabel,
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.only(

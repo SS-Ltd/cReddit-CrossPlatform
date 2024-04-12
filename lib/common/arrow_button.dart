@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/theme/theme.dart';
 
 class ArrowButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -28,6 +29,7 @@ class ArrowButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(0.0),
             ),
           ),
+        backgroundColor: MaterialStateProperty.all<Color>(Palette.appBar),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,14 +37,25 @@ class ArrowButton extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(buttonIcon),
+                Icon(
+                  buttonIcon,
+                  color: Palette.whiteColor,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(buttonText),
-                      if (optional.isNotEmpty) Text(optional),
+                      Text(
+                        buttonText,
+                        style: const TextStyle(
+                            color: Palette.whiteColor, fontSize: 16),
+                      ),
+                      if (optional.isNotEmpty)
+                        Text(
+                          optional,
+                          style: const TextStyle(color: Palette.whiteColor),
+                        ),
                     ],
                   ),
                 ),
@@ -52,7 +65,10 @@ class ArrowButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 hasarrow
-                    ? const Icon(Icons.arrow_forward)
+                    ? const Icon(
+                        Icons.arrow_forward,
+                        color: Palette.whiteColor,
+                      )
                     : const SizedBox.shrink(),
               ],
             ),

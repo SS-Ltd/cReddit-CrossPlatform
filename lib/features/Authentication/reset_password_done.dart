@@ -5,9 +5,10 @@ import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
-import 'package:android_intent_plus/android_intent.dart';
+//import 'package:android_intent_plus/android_intent.dart';
 
 class ResetPasswordDone extends StatefulWidget {
   String email;
@@ -55,9 +56,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Palette.redditLogin,
         appBar: AppBar(
-          backgroundColor: Palette.redditLogin,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -157,25 +156,12 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                           .read<NetworkService>()
                                           .forgotPassword(widget.email);
                                           //print(reset);
-                                      if (reset) {
+                                      if (mounted && reset) {
                                         // Show a message to the user indicating that the email was resent successfully.
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: const Text(
-                                                'Email resent successfully',
-                                                style: TextStyle(
-                                                    color: Palette.whiteColor)),
-                                            duration:
-                                                const Duration(seconds: 3),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            behavior: SnackBarBehavior.floating,
-                                            backgroundColor: Palette.backgroundColor,
-                                          ),
-                                        );
+                                        CustomSnackBar(
+                                          context: context,
+                                          content: 'Email resent successfully',
+                                        ).show();
                                       }
                                     }
                                   : null,

@@ -23,9 +23,7 @@ class LoginScreen extends StatelessWidget {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: Palette.redditLogin,
       appBar: AppBar(
-        backgroundColor: Palette.redditLogin,
         title:
             SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
         centerTitle: true,
@@ -118,28 +116,31 @@ class LoginScreen extends StatelessWidget {
             ),
             if (!isKeyboardOpen) const AgreementText(),
             const SizedBox(height: 20),
-            FullWidthButton(
-              text: "Continue",
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  await context
-                      .read<NetworkService>()
-                      .login(emailController.text, passwordController.text);
-                  final user = context.read<NetworkService>().user;
-                  print(user);
-                  print(user?.isLoggedIn);
-                  if (user != null && user.isLoggedIn) {
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CustomNavigationBar(),
-                      ),
-                    );
+            Visibility(
+              visible: !isKeyboardOpen,
+              child: FullWidthButton(
+                text: "Continue",
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    await context
+                        .read<NetworkService>()
+                        .login(emailController.text, passwordController.text);
+                    final user = context.read<NetworkService>().user;
+                    print(user);
+                    print(user?.isLoggedIn);
+                    if (user != null && user.isLoggedIn) {
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CustomNavigationBar(),
+                        ),
+                      );
+                    }
                   }
-                }
-              },
-            ),
+                },
+              ),
+            )
           ],
         ),
       ),

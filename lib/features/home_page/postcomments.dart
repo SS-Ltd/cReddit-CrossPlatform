@@ -3,7 +3,7 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 
 class PostComments extends StatelessWidget {
-  final String communityName;
+  final String? communityName;
   final String userName;
   final String title;
   final String postType;
@@ -21,7 +21,7 @@ class PostComments extends StatelessWidget {
   int votes;
 
   PostComments({
-    Key? key,
+    super.key,
     required this.communityName,
     required this.userName,
     required this.title,
@@ -38,7 +38,7 @@ class PostComments extends StatelessWidget {
     required this.isDownvoted,
     required this.isUpvoted,
     this.pollOptions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

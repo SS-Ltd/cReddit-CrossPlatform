@@ -26,16 +26,6 @@ class MyApp extends StatelessWidget {
       title: 'Create a community',
       theme: AppTheme.darkTheme,
       home: LoginScreen(),
-      // home: CommunityCard(
-      //   avatarUrl:
-      //       'assets/MonkeyDLuffy.png',
-      //   title: 'Flutter',
-      //   members: 1000,
-      //   description:
-      //       'A community for Flutter developers to share knowledge and ask questions.',
-      // ),
-
-      //home: CommunityPage(),
     );
   }
 }

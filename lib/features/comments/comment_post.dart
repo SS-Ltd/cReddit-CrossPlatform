@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 class CommentPostPage extends StatefulWidget {
   final String commentContent;
@@ -26,20 +27,41 @@ class _CommentPostPageState extends State<CommentPostPage> {
   bool contentType = false; // false for text, true for image
 
   Future getImage() async {
-    if (_isImagePickerOpen || _isTextFieldFilled) {
-      return;
-    }
-    _isImagePickerOpen = true;
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  if (_isImagePickerOpen || _isTextFieldFilled) {
+    return;
+  }
+  _isImagePickerOpen = true;
+
+  // Show a dialog to let the user choose between the gallery and the camera
+  final source = await showDialog<ImageSource>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Choose image source'),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Gallery'),
+          onPressed: () => Navigator.pop(context, ImageSource.gallery),
+        ),
+        TextButton(
+          child: const Text('Camera'),
+          onPressed: () => Navigator.pop(context, ImageSource.camera),
+        ),
+      ],
+    ),
+  );
+
+  if (source != null) {
+    final pickedFile = await picker.pickImage(source: source);
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _controller.clear();
       }
     });
-
-    _isImagePickerOpen = false;
   }
+
+  _isImagePickerOpen = false;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +87,17 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     fontWeight: FontWeight.bold,
                   )),
               onPressed: () async {
-                //print(result['success']);
-
                 if (_controller.text.isNotEmpty) {
                   Map<String, dynamic> result = await context
                       .read<NetworkService>()
                       .createNewTextComment(widget.postId, _controller.text);
-
+                  if (mounted && result['success'] == false) {
+                    CustomSnackBar(
+                      context: context,
+                      content: 'Failed to post comment',
+                    ).show();
+                    return;
+                  }
                   contentType = false; // Text is entered
                   Navigator.pop(context, {
                     'content': _controller.text,
@@ -83,7 +109,14 @@ class _CommentPostPageState extends State<CommentPostPage> {
                   Map<String, dynamic> result = await context
                       .read<NetworkService>()
                       .createNewImageComment(widget.postId, _image!);
-                  contentType = true; // Image is uploaded
+                  if (mounted && result['success'] == false) {
+                    CustomSnackBar(
+                      context: context,
+                      content: 'Failed to post comment',
+                    ).show();
+                    return;
+                  }
+                  contentType = true; // Image is entered
                   Navigator.pop(context, {
                     'content': _image,
                     'contentType': contentType,
@@ -91,16 +124,10 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     'user': result['user']
                   });
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Please enter a comment'),
-                      duration: const Duration(seconds: 3),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  CustomSnackBar(
+                    context: context,
+                    content: 'Please enter a comment',
+                  ).show();
                 }
               }),
         ],

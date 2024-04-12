@@ -42,6 +42,7 @@ class PostModel {
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return PostModel(
       postId: json['_id'],
       type: json['type'],
@@ -49,7 +50,8 @@ class PostModel {
       communityName: json['communityName'],
       title: json['title'],
       content: json['content'],
-      profilePicture: json['profilePicture'] ?? '',
+      profilePicture:
+          json['profilePicture'] is String ? json['profilePicture'] : '',
       netVote: json['netVote'],
       commentCount: json['commentCount'],
       isNSFW: json['isNSFW'],

@@ -5,40 +5,79 @@ import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
 
 class SavedPosts extends StatefulWidget {
-  const SavedPosts({super.key});
+  const SavedPosts({Key? key}) : super(key: key);
 
   @override
-  State<SavedPosts> createState() => _SavedPostsState();
+  _SavedPostsState createState() => _SavedPostsState();
 }
 
 class _SavedPostsState extends State<SavedPosts> {
-  List<PostModel>? savedPosts;
+  List<PostModel> posts = [];
+  bool isLoading = false;
+  int page = 1;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    fetchSavedPosts();
+    _scrollController.addListener(_onScroll);
+    _fetchSavedPosts();
   }
 
-  Future<void> fetchSavedPosts() async {
-    final posts = await Provider.of<NetworkService>(context, listen: false)
-        .getSavedPosts();
-    if (posts != null) {
-      setState(() => savedPosts = posts);
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchSavedPosts() async {
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+      List<PostModel>? newPosts =
+          await context.read<NetworkService>().getSavedPosts(page: page);
+      if (newPosts != null && mounted) {
+        setState(() {
+          posts.addAll(newPosts);
+          page++;
+          isLoading = false;
+        });
+      } else {
+        setState(() => isLoading = false);
+      }
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.atEdge &&
+        _scrollController.position.pixels != 0 &&
+        !isLoading) {
+      _fetchSavedPosts();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: savedPosts == null
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: savedPosts!.length,
-              itemBuilder: (context, index) {
-                return postWidget(savedPosts![index]);
-              },
-            ),
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {
+          posts.clear();
+          page = 1;
+        });
+        await _fetchSavedPosts();
+      },
+      child: ListView.builder(
+        controller: _scrollController,
+        itemCount: posts.length + (isLoading ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index < posts.length) {
+            return postWidget(posts[index]); // Your post widget here
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 

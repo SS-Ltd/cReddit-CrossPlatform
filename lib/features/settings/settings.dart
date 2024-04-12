@@ -23,7 +23,7 @@ class _SettingsState extends State<Settings> {
         future: context.read<NetworkService>().getUserSettings(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -41,6 +41,7 @@ class _SettingsState extends State<Settings> {
               body: SingleChildScrollView(
                 child: Center(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Heading(text: 'General'),
                       ArrowButton(
