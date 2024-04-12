@@ -210,7 +210,7 @@ class _CreatePostState extends State<CreatePost> {
                                           buttonText: 'Spoiler',
                                           buttonicon: Icons.warning_amber,
                                           onPressed: () {},
-                                          spoilervalue: isspoiler,),
+                                          switchvalue: isspoiler,),
                                     ],
                                   ),
                                 );
