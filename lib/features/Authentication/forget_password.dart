@@ -6,7 +6,8 @@ import 'reset_password_done.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:reddit_clone/theme/palette.dart';
-//import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:reddit_clone/constants/assets_constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
@@ -35,20 +36,18 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: Palette.redditLogin,
+        backgroundColor: Palette.backgroundColor,
         appBar: AppBar(
-          backgroundColor: Palette.redditLogin,
+          backgroundColor: Palette.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: Image.asset(
-            'assets/reddit_icon.png',
-            fit: BoxFit.cover,
-            height: 50,
-          ),
+          title:
+            SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
+            
           centerTitle: true,
           actions: <Widget>[
             Padding(
@@ -116,11 +115,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Palette.textFormFieldgreyColor,
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: emailController.text.isEmpty
-                                ? Colors.grey
+                                ? Palette.textFormFieldgreyColor
                                 : (isValid == 1 ? Colors.green : Colors.red),
                             width: 1.5,
                           ),
@@ -133,7 +132,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                           decoration: InputDecoration(
                             labelText: 'Email or username',
                             labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 71, 70, 70),
+                              color: Palette.greyColor,
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.only(

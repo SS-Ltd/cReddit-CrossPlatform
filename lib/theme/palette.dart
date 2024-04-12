@@ -27,5 +27,6 @@ class Palette {
   static const Color transparent = Colors.transparent;
   static const Color blueJoinColor = Color.fromARGB(255, 3, 69, 168);
   static const Color blueJoinedColor = Color.fromARGB(255, 122, 169, 238);
+  static const Color textFormFieldgreyColor= Color.fromARGB(255, 40, 39, 39);
 }
 
