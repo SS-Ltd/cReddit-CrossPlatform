@@ -470,7 +470,6 @@ class NetworkService extends ChangeNotifier {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
     } else {
-      // Failed to fetch details or handle specific error
       return null;
     }
   }
@@ -479,8 +478,6 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/user/$username');
     final response = await http.get(url, headers: _headers);
 
-    print(response.body);
-    print(username);
     if(response.statusCode == 403)
     {
       refreshToken();
@@ -490,7 +487,6 @@ class NetworkService extends ChangeNotifier {
       final json = jsonDecode(response.body);
       return UserModel.fromJson(json);
     } else {
-      // Failed to fetch details or handle specific error
       throw Exception('Failed to fetch user details');
     }
   }
@@ -508,7 +504,6 @@ class NetworkService extends ChangeNotifier {
       final json = jsonDecode(response.body);
       return UserModel.fromJson(json);
     } else {
-      // Failed to fetch details or handle specific error
       throw Exception('Failed to fetch user details');
     }
   }
