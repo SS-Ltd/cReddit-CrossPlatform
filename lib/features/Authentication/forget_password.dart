@@ -115,7 +115,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Palette.textFormFieldgreyColor,
+                          color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: emailController.text.isEmpty
@@ -129,10 +129,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                           onChanged: (value) {
                             isValidNotifier.value = isValidEmail(value);
                           },
+                          style: const TextStyle(color: Palette.whiteColor),
                           decoration: InputDecoration(
                             labelText: 'Email or username',
                             labelStyle: const TextStyle(
-                              color: Palette.greyColor,
+                              color: Color.fromARGB(255, 71, 70, 70),
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.only(

@@ -10,20 +10,9 @@ import '../../new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
-import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-class PollOptions {
-  String option;
-  bool isVoted;
-  int votes;
-
-  PollOptions({
-    required this.option,
-    required this.isVoted,
-    required this.votes,
-  });
-}
+import 'postcomments.dart';
+import '../../theme/palette.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -371,7 +360,6 @@ class _PostState extends State<Post> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
                           postId: widget.postId,
                           postComment: postComment,
@@ -469,7 +457,6 @@ class _PostState extends State<Post> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                       builder: (context) => CommentPage(
                         postId: widget.postId,
                         postComment: postComment,

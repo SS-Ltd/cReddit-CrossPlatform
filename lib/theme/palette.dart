@@ -13,14 +13,16 @@ class Palette {
   
   static const Color backgroundColor = Color.fromARGB(255, 19, 19, 19);
   static const Color appBar = Color.fromARGB(255, 18, 18, 18);
+  static const Color inputField = Color.fromARGB(255, 39, 39, 39);
+  static const Color inputFieldLabel = Color.fromARGB(255, 143, 143, 143);
   static const Color settingsHeading = Color.fromARGB(255, 10, 10, 10);
 
+  static const Color redditLogin = Color.fromARGB(255,66, 66, 66);
   static const Color blueColor = Color.fromRGBO(29, 155, 240, 1);
   static const Color whiteColor = Colors.white;
   static const Color greyColor = Colors.grey;
   static const Color redColor = Color.fromRGBO(249, 25, 127, 1);
   static const Color orangeColor = Colors.deepOrange;
-  static const Color redditLogin = Color.fromARGB(255,66, 66, 66);
   static const Color greenColor = Color.fromRGBO(0, 204, 24, 1);
   static const Color blackColor = Colors.black;
   static const Color deepOrangeColor = Colors.deepOrange;
