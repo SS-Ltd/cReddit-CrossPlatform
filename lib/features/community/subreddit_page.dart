@@ -20,6 +20,11 @@ class _SubRedditPageState extends State<SubRedditPage> {
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
   List<PostModel> subredditPosts = [];
+  int page = 1;
+  bool hasMore =
+      true; // to track if more items are available to prevent unnecessary requests
+  bool isLoading = false; // to track loading state
+  final ScrollController _scrollController = ScrollController();
 
   String _subredditIcon = '';
   String _subredditBanner = 'https://picsum.photos/200/300';
@@ -30,20 +35,54 @@ class _SubRedditPageState extends State<SubRedditPage> {
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     fetchSubredditDetails();
     fetchPosts();
   }
 
-  Future<void> fetchPosts() async {
-    final networkService = Provider.of<NetworkService>(context, listen: false);
-    final subredditName = widget.subredditName;
-    final posts = await networkService.fetchPostsForSubreddit2(subredditName);
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-    if (posts != null) {
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        hasMore &&
+        !isLoading) {
+      fetchPosts(); // Load more posts
+    }
+  }
+
+  Future<void> fetchPosts() async {
+    if (isLoading || !hasMore)
+      return; // Exit if already loading or no more posts to load
+
+    setState(() {
+      isLoading = true; // Set loading state to true
+    });
+
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final posts = await networkService.fetchPostsForSubreddit(
+        widget.subredditName!,
+        page: page,
+        sort: currentSort.toLowerCase());
+
+    if (posts != null && posts.isNotEmpty) {
       setState(() {
-        subredditPosts = posts;
+        subredditPosts.addAll(posts);
+        page++; // Increment page to load the next batch next time
+      });
+    } else {
+      setState(() {
+        hasMore = false; // No more posts to load
       });
     }
+
+    setState(() {
+      isLoading = false; // Set loading state to false
+    });
   }
 
   Future<void> fetchSubredditDetails() async {
@@ -70,46 +109,46 @@ class _SubRedditPageState extends State<SubRedditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(65),
-        child: AppBar(
-          title: Text('r/${widget.subredditName}',
-              style: const TextStyle(color: Colors.white)),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(_subredditBanner),
-                fit: BoxFit.cover,
-              ),
+      appBar: AppBar(
+        title: Text('r/${widget.subredditName}',
+            style: const TextStyle(color: Colors.white)),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(_subredditBanner),
+              fit: BoxFit.cover,
             ),
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: <Widget>[
-            _iconButtonWithBackground(Icons.search, () {}),
-            _iconButtonWithBackground(Icons.share_outlined, () {}),
-            _iconButtonWithBackground(Icons.more_vert, () {}),
-          ],
         ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: <Widget>[
+          _iconButtonWithBackground(Icons.search, () {}),
+          _iconButtonWithBackground(Icons.share_outlined, () {}),
+          _iconButtonWithBackground(Icons.more_vert, () {}),
+        ],
       ),
       body: CustomScrollView(
-        slivers: [
+        controller: _scrollController,
+        slivers: <Widget>[
           SliverToBoxAdapter(child: _subredditInfo()),
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-          ),
           SliverToBoxAdapter(child: _sortingOptions()),
-          // Inside CustomScrollView
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                // Use the postWidget method to create a widget for each post
-                return postWidget(subredditPosts[index]);
+              (context, index) {
+                if (index < subredditPosts.length) {
+                  return postWidget(subredditPosts[index]);
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
               },
-              childCount: subredditPosts
-                  .length, // Set the count to the length of subredditPosts
+              childCount: hasMore
+                  ? subredditPosts.length + 1
+                  : subredditPosts
+                      .length, // Add extra space for a loading indicator if more items are coming
             ),
           ),
         ],
@@ -124,7 +163,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
           communityName: postModel.communityName ?? '',
           userName: postModel.username,
           title: postModel.title,
-          postType: postModel.type,  
+          postType: postModel.type,
           profilePicture: postModel.profilePicture,
           content: postModel.content,
           commentNumber: postModel.commentCount,
@@ -197,7 +236,18 @@ class _SubRedditPageState extends State<SubRedditPage> {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: onTap,
+      onTap: () {
+        if (currentSort != title) {
+          setState(() {
+            currentSort = title; // Update the current sort
+            subredditPosts.clear(); // Clear existing posts
+            page = 1; // Reset pagination
+            hasMore = true; // Reset the 'hasMore' flag to enable new fetches
+          });
+          Navigator.pop(context); // Close the sort selection modal
+          fetchPosts(); // Fetch new sorted posts
+        }
+      },
     );
   }
 
