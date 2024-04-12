@@ -376,7 +376,7 @@ class _ProfileState extends State<Profile> {
                   timeStamp: DateTime.now(),
                   profilePicture: post.profilePicture,
                   isHomePage: true,
-                  isSubRedditPage: true,
+                  isSubRedditPage: false,
                   postId: post.postId,
                   votes: post.netVote,
                   isDownvoted: post.isDownvoted,

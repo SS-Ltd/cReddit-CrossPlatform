@@ -87,6 +87,7 @@ class NetworkService extends ChangeNotifier {
   Future<void> getUserSettings() async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     final response = await http.get(url, headers: _headers);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getUserSettings();
@@ -98,6 +99,36 @@ class NetworkService extends ChangeNotifier {
     } else {
       print('Failed to fetch user settings: ${response.body}');
     }
+  }
+
+  /*
+    Uri url = Uri.parse('$_baseUrl/comment');
+
+    http.MultipartRequest request = http.MultipartRequest('POST', url);
+
+    request.headers.addAll(_headers);
+
+    request.fields['postId'] = postId;
+    request.fields['content'] = content;
+
+    http.StreamedResponse response = await request.send();
+
+    String responseBody = await response.stream.bytesToString();
+  */
+
+  Future<void> updateUserSettings(String newName) async {
+    Uri url = Uri.parse('$_baseUrl/user/settings');
+
+    http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.headers.addAll(_headers);
+
+    Map<String, dynamic> json = {
+      'displayName': newName,
+    };
+    request.fields['profile'] = jsonEncode(json);
+    http.StreamedResponse response = await request.send();
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
   }
 
   Future<bool> forgotPassword(String username) async {
