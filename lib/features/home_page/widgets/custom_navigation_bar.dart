@@ -37,6 +37,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
     List<Subreddit>? listRecentlyVisited = recentlyvisited!.toList();
+    int listsize = listRecentlyVisited.length;
+
     print(showrecently);
     print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
@@ -84,7 +86,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                               : (listRecentlyVisited.length),
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(listRecentlyVisited[index].name),
+                          title: Text(
+                              listRecentlyVisited[listsize - 1 - index].name),
                         );
                       },
                     ),
