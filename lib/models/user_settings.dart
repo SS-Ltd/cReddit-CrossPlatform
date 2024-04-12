@@ -1,28 +1,28 @@
 class UserSettings {
   final Account account;
   final Profile profile;
-  final SafetyAndPrivacy safetyAndPrivacy;
-  final FeedSettings feedSettings;
-  final Notifications notifications;
-  final EmailSettings emailSettings;
+  //final SafetyAndPrivacy safetyAndPrivacy;
+  // final FeedSettings feedSettings;
+  //final Notifications notifications;
+  //final EmailSettings emailSettings;
 
   UserSettings({
     required this.account,
     required this.profile,
-    required this.safetyAndPrivacy,
-    required this.feedSettings,
-    required this.notifications,
-    required this.emailSettings,
+    //required this.safetyAndPrivacy,
+    //required this.feedSettings,
+    //required this.notifications,
+    //required this.emailSettings,
   });
 
   factory UserSettings.fromJson(Map<String, dynamic> json) {
     return UserSettings(
       account: Account.fromJson(json['account']),
       profile: Profile.fromJson(json['profile']),
-      safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['safetyAndPrivacy']),
-      feedSettings: FeedSettings.fromJson(json['feedSettings']),
-      notifications: Notifications.fromJson(json['notifications']),
-      emailSettings: EmailSettings.fromJson(json['email']),
+      //safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['safetyAndPrivacy']),
+      //feedSettings: FeedSettings.fromJson(json['feedSettings']),
+      //  notifications: Notifications.fromJson(json['notifications']),
+      //    emailSettings: EmailSettings.fromJson(json['email']),
     );
   }
 }
@@ -65,14 +65,6 @@ class Profile {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
-    print(json['displayName']);
-    print(json['about']);
-    print(json['socialLinks']);
-    print(json['avatar']);
-    print(json['banner']);
-    print(json['isNSFW']);
-    print(json['allowFollow']);
-    print(json['isContentVisible']);
     List<SocialLink> socialLinks = (json['socialLinks'] as List)
         .map((socialLinkJson) => SocialLink.fromJson(socialLinkJson))
         .toList();
@@ -118,8 +110,8 @@ class SafetyAndPrivacy {
 
   factory SafetyAndPrivacy.fromJson(Map<String, dynamic> json) {
     return SafetyAndPrivacy(
-      blockedUsers: List<String>.from(json['blockedUsers']),
-      mutedCommunities: List<String>.from(json['mutedCommunities']),
+      blockedUsers: List<String>.from(json['blockedUsers']['username']),
+      mutedCommunities: List<String>.from(json['mutedCommunities']['name']),
     );
   }
 }
