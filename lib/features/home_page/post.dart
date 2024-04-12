@@ -174,11 +174,15 @@ class _PostState extends State<Post> {
                 }
               : null,
           child: widget.isHomePage
-              ? (Text(
-                  widget.content,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ))
+              ? Semantics(
+                  identifier: 'PostContent',
+                  label: "Post Content",
+                  child: (Text(
+                    widget.content,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+                )
               : (!widget.isHomePage
                   ? Text(widget.content)
                   : const SizedBox.shrink()),
@@ -276,7 +280,8 @@ class _PostState extends State<Post> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return AboutUserPopUp(userName: widget.userName);
+                                          return AboutUserPopUp(
+                                              userName: widget.userName);
                                         });
                                   },
                                   child: Text(
@@ -318,7 +323,8 @@ class _PostState extends State<Post> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return AboutUserPopUp(userName: widget.userName);
+                                          return AboutUserPopUp(
+                                              userName: widget.userName);
                                         });
                                     //replace with profile page or widget
                                   },
