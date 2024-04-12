@@ -203,7 +203,7 @@ class UserCommentState extends State<UserComment> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AboutUserPopUp()),
+                                  builder: (context) => AboutUserPopUp(userName: widget.username)),
                               //replace with profile page or widget
                             );
                           },
@@ -220,7 +220,7 @@ class UserCommentState extends State<UserComment> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AboutUserPopUp()),
+                                  builder: (context) => AboutUserPopUp(userName: widget.username)),
                               //replace with profile page or widget
                             );
                           },

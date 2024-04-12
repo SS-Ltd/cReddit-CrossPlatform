@@ -19,8 +19,8 @@ class ForgetPassword extends StatefulWidget {
 class _ForgetPasswordState extends State<ForgetPassword> {
   final TextEditingController emailController = TextEditingController();
   final ValueNotifier<int> isValidNotifier = ValueNotifier<int>(0);
-  bool isCleared = false;
-  bool isFieldTapped = false;
+  // bool isCleared = false;
+  // bool isFieldTapped = false;
 
   @override
   void dispose() {
@@ -115,7 +115,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Palette.inputField,
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: emailController.text.isEmpty
@@ -133,7 +133,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                           decoration: InputDecoration(
                             labelText: 'Email or username',
                             labelStyle: const TextStyle(
-                              color: Color.fromARGB(255, 71, 70, 70),
+                              color: Palette.inputFieldLabel,
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.only(

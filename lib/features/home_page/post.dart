@@ -13,6 +13,7 @@ import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'postcomments.dart';
 import '../../theme/palette.dart';
+import 'package:video_player/video_player.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -275,7 +276,7 @@ class _PostState extends State<Post> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return const AboutUserPopUp();
+                                          return AboutUserPopUp(userName: widget.userName);
                                         });
                                   },
                                   child: Text(
@@ -317,7 +318,7 @@ class _PostState extends State<Post> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return const AboutUserPopUp();
+                                          return AboutUserPopUp(userName: widget.userName);
                                         });
                                     //replace with profile page or widget
                                   },

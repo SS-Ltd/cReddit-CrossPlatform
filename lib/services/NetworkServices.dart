@@ -498,36 +498,37 @@ class NetworkService extends ChangeNotifier {
 
   Future<List<PostModel>?> fetchPostsForSubreddit(String subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
-  Future<List<PostModel>?> fetchHomeFeed({
-    String sort = 'hot',
-    String time = 'all',
-    int page = 1,
-    int limit = 5,
-  }) async {
-    String username = _user!.username;
-    final url = Uri.parse('$_baseUrl/post/home-feed?'
-        'sort=$sort'
-        '&time=$time'
-        '&page=$page'
-        '&limit=$limit');
+    Future<List<PostModel>?> fetchHomeFeed({
+      String sort = 'hot',
+      String time = 'all',
+      int page = 1,
+      int limit = 5,
+    }) async {
+      String username = _user!.username;
+      final url = Uri.parse('$_baseUrl/post/home-feed?'
+          'sort=$sort'
+          '&time=$time'
+          '&page=$page'
+          '&limit=$limit');
 
-    final response =
-        await http.get(url, headers: {'accept': 'application/json'});
+      final response =
+          await http.get(url, headers: {'accept': 'application/json'});
 
-    if (response.statusCode == 403) {
-      refreshToken();
-      return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
+      if (response.statusCode == 403) {
+        refreshToken();
+        return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
+      }
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = json.decode(response.body);
+        List<PostModel> posts = responseData
+            .map<PostModel>((postJson) => PostModel.fromJson(postJson))
+            .toList();
+        return posts;
+      } else {
+        return null;
+      }
     }
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body);
-      List<PostModel> posts = responseData
-          .map<PostModel>((postJson) => PostModel.fromJson(postJson))
-          .toList();
-      return posts;
-    } else {
-      return null;
-    }
-  }}
+  }
 
   Future<List<PostModel>?> fetchPostsForSubreddit2(String? subredditName,
       {int page = 1, int limit = 10}) async {

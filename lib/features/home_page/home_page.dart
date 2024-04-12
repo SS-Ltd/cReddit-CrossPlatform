@@ -53,20 +53,20 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = true;
     });
-    List<PostModel>? fetchedPosts = await context
-        .read<NetworkService>()
-        .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
-    if (fetchedPosts != null && mounted) {
-      setState(() {
-        posts.addAll(fetchedPosts);
-        isLoading = false;
-        page++; // Increment page for the next fetch
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    // List<PostModel>? fetchedPosts = await context
+    //     .read<NetworkService>()
+    //     .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
+    // if (fetchedPosts != null && mounted) {
+    //   setState(() {
+    //     posts.addAll(fetchedPosts);
+    //     isLoading = false;
+    //     page++; // Increment page for the next fetch
+    //   });
+    // } else {
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // }
   }
 
   void _onScroll() {
