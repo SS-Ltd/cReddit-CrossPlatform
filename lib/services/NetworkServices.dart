@@ -25,7 +25,7 @@ class NetworkService extends ChangeNotifier {
   UserSettings? _userSettings;
   UserSettings? get userSettings => _userSettings;
 
-  Future<void> login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     print('Logging in...');
     Uri url = Uri.parse('$_baseUrl/user/login');
     final response = await http.post(
@@ -40,10 +40,13 @@ class NetworkService extends ChangeNotifier {
       _user = UserModel.fromJson(data);
       _user!.updateUserStatus(true);
       print('Logged in. Cookie: $_cookie');
+      notifyListeners();
+      return true;
     } else {
       print('Login failed: ${response.body}');
     }
     notifyListeners();
+    return false;
   }
 
   Future<bool> sendGoogleAccessToken(String googleAccessToken) async {
