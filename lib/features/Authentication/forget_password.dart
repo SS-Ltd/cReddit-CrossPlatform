@@ -109,79 +109,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
               const SizedBox(height: 32),
 
               // Email or username input field
-              ValueListenableBuilder<int>(
-                valueListenable: isValidNotifier,
-                builder: (BuildContext context, int isValid, Widget? child) {
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Palette.textFormFieldgreyColor,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: emailController.text.isEmpty
-                                ? Palette.textFormFieldgreyColor
-                                : (isValid == 1 ? Colors.green : Colors.red),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: TextFormField(
-                          controller: emailController,
-                          onChanged: (value) {
-                            isValidNotifier.value = isValidEmail(value);
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Email or username',
-                            labelStyle: const TextStyle(
-                              color: Palette.greyColor,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.only(
-                                left: 15, top: 5, bottom: 10),
-                            suffixIcon: emailController.text.isNotEmpty
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      isValidNotifier.value == 1
-                                          // If the text is valid,
-                                          // show the green icon
-                                          ? const Icon(Icons.check_sharp,
-                                              color: Colors.green)
-                                          // If the text is not valid,
-                                          // show the red icon
-                                          : const Icon(Icons.error_outline,
-                                              color: Colors.red),
-                                      IconButton(
-                                        onPressed: () {
-                                          emailController.clear();
-                                          isValidNotifier.value = 0;
-                                        },
-                                        icon: const Icon(Icons.clear),
-                                      ),
-                                    ],
-                                  )
-                                : null,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      if (isValid == -1 && emailController.text.isNotEmpty)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Not a valid email address',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  );
-                },
+              CustomTextField(
+                controller: emailController,
+                isValidNotifier: isValidNotifier,
+                labelText: 'Email or Username',
+                invalidText: 'Not a valid email address',
               ),
 
               Expanded(

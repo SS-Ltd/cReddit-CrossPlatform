@@ -3,14 +3,14 @@ import 'package:reddit_clone/theme/palette.dart';
 
 
 class CustomTextField extends StatelessWidget {
-  final TextEditingController emailController;
+  final TextEditingController controller;
   final ValueNotifier<int> isValidNotifier;
   final String labelText;
   final String invalidText;
 
   const CustomTextField({
     Key? key,
-    required this.emailController,
+    required this.controller,
     required this.isValidNotifier,
     required this.labelText,
     required this.invalidText,
@@ -28,14 +28,14 @@ class CustomTextField extends StatelessWidget {
                 color: Palette.inputField,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color: emailController.text.isEmpty
+                  color: controller.text.isEmpty
                       ? Palette.textFormFieldgreyColor
                       : (isValid == 1 ? Colors.green : Colors.red),
                   width: 1.5,
                 ),
               ),
               child: TextFormField(
-                controller: emailController,
+                controller: controller,
                 onChanged: (value) {
                   isValidNotifier.value = isValidEmail(value);
                 },
@@ -48,7 +48,7 @@ class CustomTextField extends StatelessWidget {
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.only(
                       left: 15, top: 5, bottom: 10),
-                  suffixIcon: emailController.text.isNotEmpty
+                  suffixIcon: controller.text.isNotEmpty
                       ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -59,7 +59,7 @@ class CustomTextField extends StatelessWidget {
                                     color: Colors.red),
                             IconButton(
                               onPressed: () {
-                                emailController.clear();
+                                controller.clear();
                                 isValidNotifier.value = 0;
                               },
                               icon: const Icon(Icons.clear),
@@ -71,14 +71,14 @@ class CustomTextField extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            if (isValid == -1 && emailController.text.isNotEmpty)
+            if (isValid == -1 && controller.text.isNotEmpty)
               Padding(
-                padding: EdgeInsets.only(left: 16),
+                padding: const EdgeInsets.only(left: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     invalidText,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.red,
                       fontSize: 12,
                     ),

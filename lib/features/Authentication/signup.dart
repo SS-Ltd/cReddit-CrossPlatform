@@ -12,9 +12,20 @@ class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final ValueNotifier<bool> isFormFilled = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
+    emailController.addListener(() {
+      isFormFilled.value =
+          emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+    });
+
+    passwordController.addListener(() {
+      isFormFilled.value =
+          emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+    });
+
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
       backgroundColor: Palette.backgroundColor,
@@ -71,7 +82,7 @@ class SignUpScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            AuthField(controller: emailController, labelText: 'Email'),
+            AuthField(controller: emailController, labelText: 'Email', showClearButton: true,),
             const SizedBox(height: 20),
             AuthField(
                 controller: passwordController,
@@ -84,41 +95,26 @@ class SignUpScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Visibility(
                 visible: !isKeyboardOpen,
-                child: FullWidthButton(
-                  text: "Continue",
-                  onPressed: () async {
-                    if (emailController.text.isEmpty ||
-                        passwordController.text.isEmpty) {
-                      // Show an error message
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Please fill in all fields')),
-                      );
-                      return;
-                    }
-                    if (!isValidEmail(emailController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Invalid email address')),
-                      );
-                      return;
-                    }
-                    if (!isValidPassword(passwordController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
-                      );
-                      return;
-                    }
-                    Map<String, dynamic> userData = {
-                      'email': emailController.text,
-                      'password': passwordController.text,
-                    };
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              NameSuggestion(userData: userData)),
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: isFormFilled,
+                  builder: (context, isFilled, child) {
+                    return ElevatedButton(
+                      onPressed: isFilled
+                          ? () async {
+                              // Your code...
+                            }
+                          : null,
+                      child: const Text('Continue'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isFilled == true ? Colors.deepOrange : Colors.grey,
+                        foregroundColor:
+                            isFilled == true ? Colors.white : Colors.black,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
                     );
                   },
                 )),
