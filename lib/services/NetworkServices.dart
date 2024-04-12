@@ -479,6 +479,13 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/user/$username');
     final response = await http.get(url, headers: _headers);
 
+    print(response.body);
+    print(username);
+    if(response.statusCode == 403)
+    {
+      refreshToken();
+      getUserDetails(username);
+    }
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return UserModel.fromJson(json);
@@ -492,6 +499,11 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/user');
     final response = await http.get(url, headers: _headers);
 
+    if(response.statusCode == 403)
+    {
+      refreshToken();
+      getMyDetails();
+    }
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return UserModel.fromJson(json);
