@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
@@ -25,6 +26,11 @@ class UserComment extends StatefulWidget {
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
   bool isSaved;
 
+  //for saved comments
+  final String communityName;
+  final String postId; //
+  final String title; //
+
   UserComment({
     super.key,
     // may be the required keyword need to be removed
@@ -40,6 +46,9 @@ class UserComment extends StatefulWidget {
     required this.commentId,
     required this.hasVoted,
     required this.isSaved,
+    this.communityName = '',
+    this.postId = '',
+    this.title = '',
   });
 
   @override
@@ -186,48 +195,76 @@ class UserCommentState extends State<UserComment> {
                   Row(
                     children: [
                       const SizedBox(height: 55),
-                      GestureDetector(
-                        onTap: () {
-                          // will be replaced with redirecting to user
-                          //showOverlay(context, widget);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutUserPopUp()),
-                            //replace with profile page or widget
-                          );
-                        },
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(widget.avatar),
-                          //radius: 18,
+                      if (widget.communityName == '') ...[
+                        GestureDetector(
+                          onTap: () {
+                            // will be replaced with redirecting to user
+                            //showOverlay(context, widget);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AboutUserPopUp()),
+                              //replace with profile page or widget
+                            );
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(widget.avatar),
+                            //radius: 18,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          // will be replaced with redirecting to user
-                          //showOverlay(context, widget);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AboutUserPopUp()),
-                            //replace with profile page or widget
-                          );
-                        },
-                        child: Text(
-                          widget.username,
-                          style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () {
+                            // will be replaced with redirecting to user
+                            //showOverlay(context, widget);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AboutUserPopUp()),
+                              //replace with profile page or widget
+                            );
+                          },
+                          child: Text(
+                            widget.username,
+                            style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        formatTimestamp(widget.timestamp),
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
+                        const SizedBox(width: 10),
+                        Text(
+                          formatTimestamp(widget.timestamp),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ] else ...[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Aligns the text to the start of the axis
+                            children: <Widget>[
+                              Text(
+                                widget.title,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow
+                                    .ellipsis, // This will fade the text at the end if it is longer than one line.
+                                maxLines:
+                                    1, // The max number of lines the text can occupy.
+                              ),
+                              SizedBox(
+                                  height:
+                                      4), // Provides spacing of 4 logical pixels between title and username/community.
+                              Text(
+                                '${widget.username} . r/${widget.communityName}  .  ${formatTimestamp(widget.timestamp)}',
+                                style:
+                                    TextStyle(fontSize: 14, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                       if (isMinimized.value) ...[
                         const SizedBox(width: 10),
                         Expanded(
@@ -345,27 +382,27 @@ class UserCommentState extends State<UserComment> {
                                 right: 8,
                                 bottom: height,
                                 child: Material(
-                                  color: Colors.transparent,
-                                  child: ValueListenableBuilder<String>(
-  valueListenable: content,
-  builder: (context, contentValue, child) {
-    return ValueListenableBuilder<File?>(
-      valueListenable: photo,
-      builder: (context, photoValue, child) {
-        return StaticCommentCard(
-          avatar: widget.avatar,
-          username: widget.username,
-          timestamp: widget.timestamp,
-          content: contentValue,
-          contentType: widget.contentType,
-          photo: photoValue,
-          imageSource: widget.imageSource,
-        );
-      },
-    );
-  },
-)
-                                ),
+                                    color: Colors.transparent,
+                                    child: ValueListenableBuilder<String>(
+                                      valueListenable: content,
+                                      builder: (context, contentValue, child) {
+                                        return ValueListenableBuilder<File?>(
+                                          valueListenable: photo,
+                                          builder:
+                                              (context, photoValue, child) {
+                                            return StaticCommentCard(
+                                              avatar: widget.avatar,
+                                              username: widget.username,
+                                              timestamp: widget.timestamp,
+                                              content: contentValue,
+                                              contentType: widget.contentType,
+                                              photo: photoValue,
+                                              imageSource: widget.imageSource,
+                                            );
+                                          },
+                                        );
+                                      },
+                                    )),
                               ),
                             );
 

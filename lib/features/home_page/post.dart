@@ -373,7 +373,7 @@ class _PostState extends State<Post> {
                       MaterialPageRoute(
                         //builder: (context) => CommentPage(postId: '6614799910f5d8c658ac1681',postComment: postComment),
                         builder: (context) => CommentPage(
-                          postId: "eef6dceb1554c5b825881db3",
+                          postId: widget.postId,
                           postComment: postComment,
                           postTitle: widget.title,
                           username: widget.userName,

@@ -163,6 +163,9 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                           context: context,
                                           content: 'Email resent successfully',
                                         ).show();
+                                        countdown.value = 5;
+                                        startCountdown();
+                                        canResend.value = false;
                                       }
                                     }
                                   : null,
@@ -199,17 +202,15 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        // final Logger logger = Logger('ResetPasswordDone');
-                        // if (Platform.isAndroid) {
-                        //   AndroidIntent intent = const AndroidIntent(
-                        //     action: 'android.intent.action.MAIN',
-                        //     package: 'com.google.android.gm',
-                        //     category: 'android.intent.category.LAUNCHER',
-                        //   );
-                        //   intent.launch().catchError((e) {
-                        //     logger.severe("Error opening Gmail app: $e");
-                        //   });
-                        // }
+                        final url = Uri.parse('mailto:');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        } else {
+                          CustomSnackBar(
+                            context: context,
+                            content: 'Could not launch $url',
+                          ).show();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Palette.deepOrangeColor,
