@@ -5,6 +5,7 @@ import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/switch_button.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
@@ -45,6 +46,8 @@ class _CreatePostState extends State<CreatePost> {
   bool _insertpoll = false;
   int count = 0;
   String _pollendsin = "2 Day";
+
+  bool isspoiler = false;
 
   Future getImage() async {
     final image = await picker.pickImage(source: ImageSource.gallery);
@@ -87,6 +90,7 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
+                          print(isspoiler);
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
@@ -180,30 +184,38 @@ class _CreatePostState extends State<CreatePost> {
                           ),
                           onPressed: () {
                             showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return BottomSheet(
-                                      onClosing: () {},
-                                      builder: (context) => Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  const Text('Add tags'),
-                                                  ElevatedButton(
-                                                    onPressed: () {},
-                                                    child: const Text('Apply'),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ));
-                                });
+                              context: context,
+                              builder: (BuildContext context) {
+                                return BottomSheet(
+                                  onClosing: () {
+                                    print(isspoiler);
+                                  },
+                                  builder: (context) => Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text('Add tags'),
+                                          ElevatedButton(
+                                            onPressed: () {},
+                                            child: const Text('Apply'),
+                                          ),
+                                        ],
+                                      ),
+                                      SwitchButton(
+                                          buttonText: 'Spoiler',
+                                          buttonicon: Icons.warning_amber,
+                                          onPressed: () {},
+                                          spoilervalue: isspoiler,),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
                           },
                           child: const Text('Add tags & flair'),
                         ),
