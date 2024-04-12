@@ -78,7 +78,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             ),
             showrecently
                 ? SingleChildScrollView(
+                    padding: EdgeInsets.zero,
                     child: ListView.builder(
+                      padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       itemCount:
                           (listRecentlyVisited!.length > 3 && showall == false)
