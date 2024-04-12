@@ -420,6 +420,21 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> blockUser(String username) async {
+    Uri url = Uri.parse('$_baseUrl/user/block/$username');
+    final response = await http.post(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return blockUser(username);
+    }
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
