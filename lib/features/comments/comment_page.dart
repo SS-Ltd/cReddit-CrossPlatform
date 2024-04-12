@@ -114,7 +114,12 @@ class _CommentPageState extends State<CommentPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: const Icon(Icons.arrow_back, size: 30.0),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 30,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -127,7 +132,6 @@ class _CommentPageState extends State<CommentPage> {
           PopupMenuButton(
               onSelected: (Menu item) {},
               itemBuilder: (BuildContext context) {
-                
                 return menuitems();
               }),
           IconButton(
