@@ -476,13 +476,13 @@ class UserCommentState extends State<UserComment> {
                                       ListTile(
                                         leading: const Icon(Icons.save_alt),
                                         title: Text(
-                                            widget.isSaved ? 'Save' : 'Unsave'),
+                                            widget.isSaved ? 'Unsave' : 'Save'),
                                         onTap: () async {
                                           bool saved = await context
                                               .read<NetworkService>()
                                               .saveOrUnsaveComment(
                                                   widget.commentId,
-                                                  widget.isSaved);
+                                                  !widget.isSaved);
                                           if (saved) {
                                             CustomSnackBar(
                                               context: context,

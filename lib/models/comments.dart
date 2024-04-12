@@ -42,7 +42,7 @@ class Comments {
       commentId: json['_id'],
       isUpvoted: json['isUpvoted'],
       isDownvoted: json['isDownvoted'],
-      isSaved: !json['isSaved'],
+      isSaved: json['isSaved'],
       communityName: json['communityName'] ?? json['parentPostUsername'] ?? '',
       postId: json['postID'] is String ? json['postID'] : '',
       title: json['title'] ?? '',

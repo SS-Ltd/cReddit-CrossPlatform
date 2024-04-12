@@ -202,7 +202,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 2,
                           commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: true,
+                          isSaved: false,
                         );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
@@ -216,7 +216,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 1,
                           commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: true,
+                          isSaved: false,
                         );
                       }
                       if (newComment != null) {
