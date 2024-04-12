@@ -104,7 +104,6 @@ class NetworkService extends ChangeNotifier {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'info': username}),
     );
-
     if (response.statusCode == 403) {
       refreshToken();
       return forgotPassword(username);

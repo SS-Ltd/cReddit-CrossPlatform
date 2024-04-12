@@ -8,6 +8,8 @@ import 'package:flutter/gestures.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reddit_clone/common/CustomTextField.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
@@ -45,9 +47,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
               Navigator.pop(context);
             },
           ),
-          title:
-            SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
-            
+          title: SvgPicture.asset(AssetsConstants.redditLogo,
+              width: 50, height: 50),
           centerTitle: true,
           actions: <Widget>[
             Padding(
@@ -115,7 +116,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Palette.inputField,
+                          color: Palette.textFormFieldgreyColor,
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: emailController.text.isEmpty
@@ -129,11 +130,10 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                           onChanged: (value) {
                             isValidNotifier.value = isValidEmail(value);
                           },
-                          style: const TextStyle(color: Palette.whiteColor),
                           decoration: InputDecoration(
                             labelText: 'Email or username',
                             labelStyle: const TextStyle(
-                              color: Palette.inputFieldLabel,
+                              color: Palette.greyColor,
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.only(
@@ -200,12 +200,24 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                       .forgotPassword(emailController.text);
                                   // Hide the keyboard
                                   FocusScope.of(context).unfocus();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ResetPasswordDone(
-                                            email: emailController.text)),
-                                  );
+                                  if (reset) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ResetPasswordDone(
+                                                  email: emailController.text)),
+                                    );
+                                    CustomSnackBar(
+                                            context: context,
+                                            content: 'Email sent successfuly')
+                                        .show();
+                                  } else {
+                                    CustomSnackBar(
+                                            context: context,
+                                            content: 'Email not found')
+                                        .show();
+                                  }
                                 }
                               : null,
                           style: ElevatedButton.styleFrom(
