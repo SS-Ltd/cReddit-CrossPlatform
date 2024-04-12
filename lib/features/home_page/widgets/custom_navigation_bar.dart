@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
+import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
+import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
@@ -23,17 +25,22 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   bool showall = false;
   bool isprofile = false;
   int _currentIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String selectedMenuItem = "Hot"; // Store the selected menu item here
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const CommunityPage(),
-    const CreatePost(profile: false),
-    const InboxNotificationPage(),
-  ];
+  final List<String> menuItems = ['Hot', 'Top', 'New'];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Widget> _pages = [];
 
   @override
   Widget build(BuildContext context) {
+    _pages = [
+      HomePage(selectedMenuItem: selectedMenuItem),
+      const CommunityPage(),
+      const CreatePost(profile: false),
+      const InboxNotificationPage(),
+    ];
+    final menuState = Provider.of<MenuState>(context, listen: false);
+
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
     List<Subreddit>? listRecentlyVisited = recentlyvisited!.toList();
@@ -106,9 +113,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       appBar: (_currentIndex != 2)
           ? AppBar(
               title: (_currentIndex == 0)
-                  ? ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Home'),
+                  ? SelectItem(
+                      menuItems: menuItems,
+                      onMenuItemSelected: (String selectedItem) {
+                        if (selectedItem != selectedMenuItem) {
+                          setState(() {
+                            selectedMenuItem = selectedItem;
+                          });
+                        }
+                        print('Selected: $selectedItem');
+                      },
                     )
                   : (_currentIndex == 1)
                       ? Title(
@@ -147,7 +161,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   _currentIndex = index;
                 });
               },
-              selectedFontSize: 14, // Adjust the selected font size
+              selectedFontSize: 12, // Adjust the selected font size
               unselectedFontSize: 12, // Adjust the unselected font size
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
