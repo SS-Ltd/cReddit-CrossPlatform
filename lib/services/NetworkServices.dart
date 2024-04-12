@@ -200,7 +200,7 @@ class NetworkService extends ChangeNotifier {
   Future<List<Comments>?> fetchCommentsForPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
     final response = await http.get(url, headers: _headers);
-
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -340,7 +340,7 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': isSaved}));
-
+    print(response.body);
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {

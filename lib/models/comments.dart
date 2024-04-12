@@ -34,7 +34,8 @@ class Comments {
       commentId: json['_id'],
       isUpvoted: json['isUpvoted'],
       isDownvoted: json['isDownvoted'],
-      isSaved: !json['isSaved'],
+      isSaved: json['isSaved'],
+      
     );
   }
 }

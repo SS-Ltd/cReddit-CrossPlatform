@@ -345,27 +345,27 @@ class UserCommentState extends State<UserComment> {
                                 right: 8,
                                 bottom: height,
                                 child: Material(
-                                  color: Colors.transparent,
-                                  child: ValueListenableBuilder<String>(
-  valueListenable: content,
-  builder: (context, contentValue, child) {
-    return ValueListenableBuilder<File?>(
-      valueListenable: photo,
-      builder: (context, photoValue, child) {
-        return StaticCommentCard(
-          avatar: widget.avatar,
-          username: widget.username,
-          timestamp: widget.timestamp,
-          content: contentValue,
-          contentType: widget.contentType,
-          photo: photoValue,
-          imageSource: widget.imageSource,
-        );
-      },
-    );
-  },
-)
-                                ),
+                                    color: Colors.transparent,
+                                    child: ValueListenableBuilder<String>(
+                                      valueListenable: content,
+                                      builder: (context, contentValue, child) {
+                                        return ValueListenableBuilder<File?>(
+                                          valueListenable: photo,
+                                          builder:
+                                              (context, photoValue, child) {
+                                            return StaticCommentCard(
+                                              avatar: widget.avatar,
+                                              username: widget.username,
+                                              timestamp: widget.timestamp,
+                                              content: contentValue,
+                                              contentType: widget.contentType,
+                                              photo: photoValue,
+                                              imageSource: widget.imageSource,
+                                            );
+                                          },
+                                        );
+                                      },
+                                    )),
                               ),
                             );
 
@@ -439,13 +439,13 @@ class UserCommentState extends State<UserComment> {
                                       ListTile(
                                         leading: const Icon(Icons.save_alt),
                                         title: Text(
-                                            widget.isSaved ? 'Save' : 'Unsave'),
+                                            widget.isSaved ? 'Unsave' : 'Save'),
                                         onTap: () async {
                                           bool saved = await context
                                               .read<NetworkService>()
                                               .saveOrUnsaveComment(
                                                   widget.commentId,
-                                                  widget.isSaved);
+                                                  !widget.isSaved);
                                           if (saved) {
                                             CustomSnackBar(
                                               context: context,
