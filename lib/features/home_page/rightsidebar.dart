@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/features/comments/reply_comment.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
@@ -193,7 +194,7 @@ class _RightsidebarState extends State<Rightsidebar> {
                   ),
                   VerticalDivider(
                       color: Colors.grey[800], thickness: 1, width: 20),
-                  const Expanded(
+                  Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -202,7 +203,7 @@ class _RightsidebarState extends State<Rightsidebar> {
                         Column(
                           children: [
                             Text(
-                              "2y",
+                              formatTimestamp(user!.cakeDay),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -230,9 +231,11 @@ class _RightsidebarState extends State<Rightsidebar> {
                 padding: EdgeInsets.zero,
                 children: [
                   _buildListTile(
-                      icon: Icons.person, text: 'My Profile', 
-                      onTap: ()async {
-                        UserModel myUser = await context.read<NetworkService>().getMyDetails();
+                      icon: Icons.person,
+                      text: 'My Profile',
+                      onTap: () async {
+                        UserModel myUser =
+                            await context.read<NetworkService>().getMyDetails();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -243,7 +246,7 @@ class _RightsidebarState extends State<Rightsidebar> {
                               profilePicture: myUser.profilePicture,
                               followerCount: myUser.followers,
                               about: myUser.about!,
-                                cakeDay: myUser.cakeDay.toString(),
+                              cakeDay: myUser.cakeDay.toString(),
                               bannerPicture: myUser.banner!,
                               isOwnProfile: true,
                             ),
@@ -324,5 +327,20 @@ class _RightsidebarState extends State<Rightsidebar> {
       title: Text(text, style: const TextStyle(color: Colors.white)),
       onTap: onTap,
     );
+  }
+}
+
+String formatTimestamp(DateTime timestamp) {
+  final now = DateTime.now();
+  final difference = now.difference(timestamp);
+
+  if (difference.inDays > 0) {
+    return '${difference.inDays}d';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours}h';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes}m';
+  } else {
+    return '${difference.inSeconds}s';
   }
 }

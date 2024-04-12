@@ -3,7 +3,7 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 
 class PostComments extends StatelessWidget {
-  final String? communityName;
+  final String communityName;
   final String userName;
   final String title;
   final String postType;

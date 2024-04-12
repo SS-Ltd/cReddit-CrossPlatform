@@ -33,7 +33,7 @@ class Comments {
   factory Comments.fromJson(Map<String, dynamic> json) {
     return Comments(
       profilePicture:
-          json['profilePicture'] == null ? '' : json['profilePicture'],
+          json['profilePicture'] is String ? json['profilePicture'] : '',
       username: json['username'],
       isImage: json['isImage'] == null ? false : json['isImage'],
       netVote: json['netVote'],

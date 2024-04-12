@@ -849,6 +849,27 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<Comments>?> fetchUserComments(
+      {int page = 1, int limit = 20}) async {
+    Uri url = Uri.parse(
+        '$_baseUrl/user/${user?.username}/comments?page=$page&limit=$limit');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchUserComments(page: page, limit: limit);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((commentJson) => Comments.fromJson(commentJson))
+          .toList();
+    } else {
+      // Handle error or empty case appropriately
+      return null;
+    }
+  }
+
 //////////////////////////////////////////check
   Future<bool> followpost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/follow');
