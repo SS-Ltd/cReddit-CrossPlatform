@@ -213,9 +213,13 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchTopCommunities();
     }
+    print(response.body);
     if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
-      return jsonData.map((item) => Community.fromJson(item)).toList();
+      final Map<String, dynamic> jsonData = jsonDecode(
+          response.body); // change List<dynamic> to Map<String, dynamic>
+      final List<dynamic> communities = jsonData[
+          'topCommunities']; // replace 'communities' with the actual key in the JSON response
+      return communities.map((item) => Community.fromJson(item)).toList();
     } else {
       throw Exception('Failed to fetch top communities');
     }

@@ -6,10 +6,11 @@ import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 
 class CommentPage extends StatefulWidget {
   final String postId;
-  final Widget postComment;
+  final Post postComment;
   final String postTitle;
   final String username;
   const CommentPage(
@@ -114,7 +115,15 @@ class _CommentPageState extends State<CommentPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: const Icon(Icons.arrow_back, size: 30.0),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            size: 30,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -127,7 +136,6 @@ class _CommentPageState extends State<CommentPage> {
           PopupMenuButton(
               onSelected: (Menu item) {},
               itemBuilder: (BuildContext context) {
-                
                 return menuitems();
               }),
           IconButton(
