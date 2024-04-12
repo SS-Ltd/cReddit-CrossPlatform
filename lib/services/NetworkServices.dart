@@ -477,9 +477,8 @@ class NetworkService extends ChangeNotifier {
   Future<UserModel> getUserDetails(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/$username');
     final response = await http.get(url, headers: _headers);
-
-    if(response.statusCode == 403)
-    {
+    print(response.body);
+    if (response.statusCode == 403) {
       refreshToken();
       getUserDetails(username);
     }
@@ -495,8 +494,7 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/user');
     final response = await http.get(url, headers: _headers);
 
-    if(response.statusCode == 403)
-    {
+    if (response.statusCode == 403) {
       refreshToken();
       getMyDetails();
     }
@@ -514,7 +512,6 @@ class NetworkService extends ChangeNotifier {
     int page = 1,
     int limit = 5,
   }) async {
-    String username = _user!.username;
     final url = Uri.parse('$_baseUrl/post/home-feed?'
         'sort=$sort'
         '&time=$time'
@@ -527,6 +524,38 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 403) {
       refreshToken();
       return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      List<PostModel> posts = responseData
+          .map<PostModel>((postJson) => PostModel.fromJson(postJson))
+          .toList();
+      return posts;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<PostModel>?> fetchUserPosts(
+    String username, {
+    String sort = 'hot',
+    String time = 'all',
+    int page = 1,
+    int limit = 5,
+  }) async {
+    final url = Uri.parse('$_baseUrl/user/$username/posts?'
+        'sort=$sort'
+        '&time=$time'
+        '&page=$page'
+        '&limit=$limit');
+
+    final response =
+        await http.get(url, headers: {'accept': 'application/json'});
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchUserPosts(username,
+          sort: sort, time: time, page: page, limit: limit);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
@@ -860,15 +889,15 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<Comments>?> fetchUserComments(
+  Future<List<Comments>?> fetchUserComments(String username,
       {int page = 1, int limit = 20}) async {
-    Uri url = Uri.parse(
-        '$_baseUrl/user/${user?.username}/comments?page=$page&limit=$limit');
+    Uri url =
+        Uri.parse('$_baseUrl/user/$username/comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
-      return fetchUserComments(page: page, limit: limit);
+      return fetchUserComments(username, page: page, limit: limit);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
