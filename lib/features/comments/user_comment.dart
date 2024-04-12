@@ -198,15 +198,12 @@ class UserCommentState extends State<UserComment> {
                       if (widget.communityName == '') ...[
                         GestureDetector(
                           onTap: () {
-                            // will be replaced with redirecting to user
-                            //showOverlay(context, widget);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AboutUserPopUp(
-                                      userName: widget.username)),
-                              //replace with profile page or widget
-                            );
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AboutUserPopUp(
+                                      userName: widget.username);
+                                });
                           },
                           child: CircleAvatar(
                             backgroundImage: NetworkImage(widget.avatar),
@@ -216,15 +213,12 @@ class UserCommentState extends State<UserComment> {
                         const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () {
-                            // will be replaced with redirecting to user
-                            //showOverlay(context, widget);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AboutUserPopUp(
-                                      userName: widget.username)),
-                              //replace with profile page or widget
-                            );
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AboutUserPopUp(
+                                      userName: widget.username);
+                                });
                           },
                           child: Text(
                             widget.username,
