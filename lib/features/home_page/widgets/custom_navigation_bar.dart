@@ -25,26 +25,25 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   bool showall = false;
   bool isprofile = false;
   int _currentIndex = 0;
-  String selectedMenuItem = "Hot"; // Store the selected menu item here
 
   final List<String> menuItems = ['Hot', 'Top', 'New'];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Widget> _pages = [];
+  final List<Widget> _pages = [
+    const HomePage(),
+    const CommunityPage(),
+    const CreatePost(profile: false),
+    const InboxNotificationPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    _pages = [
-      HomePage(selectedMenuItem: selectedMenuItem),
-      const CommunityPage(),
-      const CreatePost(profile: false),
-      const InboxNotificationPage(),
-    ];
     final menuState = Provider.of<MenuState>(context, listen: false);
 
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
     List<Subreddit>? listRecentlyVisited = recentlyvisited!.toList();
     int listsize = listRecentlyVisited.length;
+    String selectedMenuItem = "Hot"; // Store the selected menu item here
 
     print(showrecently);
     print('User is logged in: ${user?.isLoggedIn}');
@@ -116,10 +115,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   ? SelectItem(
                       menuItems: menuItems,
                       onMenuItemSelected: (String selectedItem) {
-                        if (selectedItem != selectedMenuItem) {
-                          setState(() {
-                            selectedMenuItem = selectedItem;
-                          });
+                        if (menuState.selectedMenuItem != selectedItem) {
+                          menuState.setSelectedMenuItem(selectedItem);
                         }
                         print('Selected: $selectedItem');
                       },

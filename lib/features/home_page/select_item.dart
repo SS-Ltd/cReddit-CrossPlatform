@@ -27,26 +27,23 @@ class _SelectItemState extends State<SelectItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      // Wrap the SelectItem with Expanded
-      child: DropdownButton<String>(
-        value: selectedItem,
-        underline: Container(),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedItem = newValue!;
-            if (widget.onMenuItemSelected != null) {
-              widget.onMenuItemSelected!(selectedItem);
-            }
-          });
-        },
-        items: widget.menuItems.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
+    return DropdownButton<String>(
+      value: selectedItem,
+      underline: Container(),
+      onChanged: (String? newValue) {
+        setState(() {
+          selectedItem = newValue!;
+          if (widget.onMenuItemSelected != null) {
+            widget.onMenuItemSelected!(selectedItem);
+          }
+        });
+      },
+      items: widget.menuItems.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 import '../../models/post_model.dart';
 
 class HomePage extends StatefulWidget {
-  final String selectedMenuItem;
-  const HomePage({super.key, required this.selectedMenuItem});
+  const HomePage({Key? key});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,27 +16,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<String> menuItems = ['Hot', 'Top', 'New'];
-  // Store the selected menu item here
-  String lastType = "Hot";
   List<PostModel> posts = [];
   bool isLoading = false;
   int page = 1;
+  String lastType = '';
+  late String selectedMenuItem;
 
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    posts.clear();
-    page = 1;
     _scrollController.addListener(_onScroll);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        getPosts(widget.selectedMenuItem);
-      }
-    });
   }
 
   @override
@@ -44,6 +35,18 @@ class _HomePageState extends State<HomePage> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    selectedMenuItem = Provider.of<MenuState>(context).selectedMenuItem;
+    if (selectedMenuItem != lastType) {
+      lastType = selectedMenuItem;
+      page = 1;
+      posts.clear();
+      getPosts(selectedMenuItem);
+    }
   }
 
   Future<void> getPosts(String selectedItem) async {
@@ -57,7 +60,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         posts.addAll(fetchedPosts);
         isLoading = false;
-        page++; // Increment page for the next fetch
+        page++;
       });
     } else {
       setState(() {
@@ -71,13 +74,12 @@ class _HomePageState extends State<HomePage> {
         _scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
-      getPosts(
-          widget.selectedMenuItem); // Fetch more posts when user reaches end
+      getPosts(selectedMenuItem);
     }
   }
 
   Future<void> _refreshData() async {
-    await getPosts(widget.selectedMenuItem);
+    await getPosts(selectedMenuItem);
   }
 
   @override
@@ -111,7 +113,9 @@ class _HomePageState extends State<HomePage> {
                   isUpvoted: post.isUpvoted,
                 ),
                 const Divider(
-                    height: 20, thickness: 1), // Add a thin horizontal line
+                  height: 20,
+                  thickness: 1,
+                ), // Add a thin horizontal line
               ],
             );
           },
