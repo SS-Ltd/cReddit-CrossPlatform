@@ -4,7 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
 import 'package:reddit_clone/features/User/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
+import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/features/User/profile.dart';
+import 'package:reddit_clone/features/User/profile.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -146,7 +150,26 @@ class _RightsidebarState extends State<Rightsidebar> {
                 padding: EdgeInsets.zero,
                 children: [
                   _buildListTile(
-                      icon: Icons.person, text: 'My Profile', onTap: () {}),
+                      icon: Icons.person, text: 'My Profile', 
+                      onTap: ()async {
+                        UserModel myUser = await context.read<NetworkService>().getMyDetails();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Profile(
+                              userName: myUser.username,
+                              profileName: myUser.username,
+                              displayName: myUser.displayName,
+                              profilePicture: myUser.profilePicture,
+                              followerCount: myUser.followers,
+                              about: myUser.about!,
+                                cakeDay: myUser.cakeDay.toString(),
+                              bannerPicture: myUser.banner!,
+                              isOwnProfile: true,
+                            ),
+                          ),
+                        );
+                      }),
                   _buildListTile(
                       icon: Icons.group_add,
                       text: 'Create a Community',
