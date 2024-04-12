@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
 import 'package:reddit_clone/features/User/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/theme/Palette.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -40,12 +42,89 @@ class _RightsidebarState extends State<Rightsidebar> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 //update this with button
-                child: Text(
-                  'u/${user?.username ?? 'Username'}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                child: TextButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BottomSheet(
+                          onClosing: () {},
+                          builder: (context) => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                child: Row(
+                                  children: [Text('Accounts')],
+                                ),
+                              ),
+                              Divider(color: Colors.grey[800]),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.person,
+                                          color: Colors.white),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'u/${user?.username ?? 'Username'}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      const Icon(
+                                        Icons.check,
+                                        color: Palette.blueJoinColor,
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            await context
+                                                .read<NetworkService>()
+                                                .logout();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginScreen(),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.login))
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.keyboard_arrow_down_sharp),
+                  label: Text(
+                    'u/${user?.username ?? 'Username'}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
                   ),
                 ),
               ),

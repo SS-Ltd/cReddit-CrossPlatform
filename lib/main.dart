@@ -8,6 +8,7 @@ import 'package:reddit_clone/services/google_service.dart';
 void main() {
   runApp(MultiProvider(
     providers: [
+      
       ChangeNotifierProvider(create: (context) => NetworkService()),
       ChangeNotifierProvider(
           create: (context) =>
