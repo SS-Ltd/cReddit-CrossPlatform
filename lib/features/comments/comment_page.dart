@@ -5,6 +5,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 
 class CommentPage extends StatefulWidget {
   final String postId;
@@ -111,9 +112,9 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        key: _scaffoldKey,
-        // leading: const Icon(Icons.menu, size: 30.0),
+        leading: const Icon(Icons.arrow_back, size: 30.0),
         actions: [
           IconButton(
             onPressed: () {},
@@ -135,6 +136,7 @@ class _CommentPageState extends State<CommentPage> {
           ),
         ],
       ),
+      endDrawer: const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
           return ListView.builder(
