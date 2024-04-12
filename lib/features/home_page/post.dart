@@ -13,15 +13,15 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'postcomments.dart';
-import '../../theme/palette.dart';
+// import 'postcomments.dart';
+// import '../../theme/palette.dart';
 import 'package:video_player/video_player.dart';
 
 class Post extends StatefulWidget {
   final String postId;
   final String postType;
   final String userName;
-  final String? communityName;
+  final String communityName;
   final String profilePicture;
   int votes;
   int commentNumber;
@@ -36,6 +36,7 @@ class Post extends StatefulWidget {
   bool isDownvoted;
 
   Post({
+    Key? key,
     required this.communityName,
     required this.userName,
     required this.title,
@@ -52,8 +53,7 @@ class Post extends StatefulWidget {
     required this.votes,
     required this.isUpvoted,
     required this.isDownvoted,
-    super.key,
-  });
+  }) : super(key: key);
 
   @override
   State<Post> createState() => _PostState();
@@ -70,7 +70,7 @@ class _PostState extends State<Post> {
   //   super.initState();
   //   if (isVideo(widget.content)) {
   //     _videoController =
-  //         VideoPlayerController.networkUrl(Uri.parse(widget.content));
+  //         VideoPlayerController.network(Uri.parse(widget.content));
   //     _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
   //       setState(() {
   //         _controllerInitialized =
@@ -287,40 +287,50 @@ class _PostState extends State<Post> {
                                         });
                                   },
                                   child: Text(
-                                    'r/${widget.userName}',
+                                    'u/${widget.userName}',
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
                                   ),
                                 )
-                              : GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SubRedditPage(
-                                                subredditName:
-                                                    widget.communityName,
-                                              )),
-                                    );
-                                  },
-                                  child: Text(
-                                    'r/${widget.communityName}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ))
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'r/${widget.communityName}',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                GestureDetector(
+                              : (widget.communityName.isEmpty
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AboutUserPopUp(
+                                                  userName: widget.userName);
+                                            });
+                                      },
+                                      child: Text(
+                                        'u/${widget.userName}',
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SubRedditPage(
+                                                    subredditName:
+                                                        widget.communityName,
+                                                  )),
+                                        );
+                                      },
+                                      child: Text(
+                                        'r/${widget.communityName}',
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )))
+                          : (widget.communityName.isEmpty
+                              ? GestureDetector(
                                   onTap: () {
                                     showDialog(
                                         context: context,
@@ -328,17 +338,42 @@ class _PostState extends State<Post> {
                                           return AboutUserPopUp(
                                               userName: widget.userName);
                                         });
-                                    //replace with profile page or widget
                                   },
                                   child: Text(
-                                    'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                    'u/${widget.userName}',
                                     style: const TextStyle(
-                                      color: Colors.blue,
+                                      color: Colors.grey,
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'r/${widget.communityName}',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AboutUserPopUp(
+                                                  userName: widget.userName);
+                                            });
+                                        //replace with profile page or widget
+                                      },
+                                      child: Text(
+                                        'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ))
                     ],
                   ),
                 ],
