@@ -87,7 +87,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
-    for (var subreddit in networkService.user?.recentlyVisited ?? []) {
+    for (var subreddit in networkService.user?.recentlyVisited ?? {}) {
       print(subreddit.name);
     }
     final details =

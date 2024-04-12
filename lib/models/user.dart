@@ -10,7 +10,7 @@ class UserModel {
   final int followers;
   final DateTime cakeDay;
   bool isLoggedIn = false;
-  final List<Subreddit> recentlyVisited = [];
+  final Set<Subreddit> recentlyVisited = {};
 
   UserModel({
     required this.username,
@@ -31,7 +31,7 @@ class UserModel {
     recentlyVisited.add(communityName);
   }
 
-  List<Subreddit> getrecentlyvisited() {
+  Set<Subreddit> getrecentlyvisited() {
     return recentlyVisited;
   }
 
