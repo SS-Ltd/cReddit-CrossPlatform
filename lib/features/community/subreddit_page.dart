@@ -84,9 +84,11 @@ class _SubRedditPageState extends State<SubRedditPage> {
       return; // Exit if already loading or no more posts to load
     }  
 
-    setState(() {
-      isLoading = true; // Set loading state to true
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true; // Set loading state to true
+      });
+    }
 
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final posts = await networkService.fetchPostsForSubreddit(
@@ -95,19 +97,25 @@ class _SubRedditPageState extends State<SubRedditPage> {
         sort: currentSort.toLowerCase());
 
     if (posts != null && posts.isNotEmpty) {
-      setState(() {
-        subredditPosts.addAll(posts);
-        page++; // Increment page to load the next batch next time
-      });
+      if (mounted) {
+        setState(() {
+          subredditPosts.addAll(posts);
+          page++; // Increment page to load the next batch next time
+        });
+      }
     } else {
-      setState(() {
-        hasMore = false; // No more posts to load
-      });
+      if (mounted) {
+        setState(() {
+          hasMore = false; // No more posts to load
+        });
+      }
     }
 
-    setState(() {
-      isLoading = false; // Set loading state to false
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false; // Set loading state to false
+      });
+    }
   }
 
   Future<void> fetchSubredditDetails() async {

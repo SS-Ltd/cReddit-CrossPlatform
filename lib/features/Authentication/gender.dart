@@ -62,9 +62,9 @@ class Gender extends StatelessWidget {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: Palette.redditLogin,
+      backgroundColor: Palette.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Palette.redditLogin,
+        backgroundColor: Palette.backgroundColor,
         title: SvgPicture.asset(
           AssetsConstants.redditLogo,
           width: 50,

@@ -58,8 +58,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
-    List<Subreddit>? listRecentlyVisited = recentlyvisited!.toList();
-    int listsize = listRecentlyVisited.length;
+    List<Subreddit>? listRecentlyVisited = recentlyvisited?.toList();
+    int listsize = listRecentlyVisited?.length ?? 0;
     String selectedMenuItem = "Hot"; // Store the selected menu item here
 
     print('User is logged in: ${user?.isLoggedIn}');
@@ -104,14 +104,18 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      itemCount:
-                          (listRecentlyVisited!.length > 3 && showall == false)
-                              ? 3
-                              : (listRecentlyVisited.length),
+                      itemCount: (listRecentlyVisited != null &&
+                              listRecentlyVisited.length > 3 &&
+                              showall == false)
+                          ? 3
+                          : (listRecentlyVisited?.length ?? 0),
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(
-                              listRecentlyVisited[listsize - 1 - index].name),
+                          title: Text(listRecentlyVisited != null
+                              ? listRecentlyVisited[
+                                      listRecentlyVisited.length - 1 - index]
+                                  .name
+                              : ''),
                         );
                       },
                     ),
