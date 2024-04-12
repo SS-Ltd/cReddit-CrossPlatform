@@ -246,14 +246,14 @@ class UserCommentState extends State<UserComment> {
                             children: <Widget>[
                               Text(
                                 widget.title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                                 overflow: TextOverflow
                                     .ellipsis, // This will fade the text at the end if it is longer than one line.
                                 maxLines:
                                     1, // The max number of lines the text can occupy.
                               ),
-                              SizedBox(
+                              const SizedBox(
                                   height:
                                       4), // Provides spacing of 4 logical pixels between title and username/community.
                               Text(
@@ -375,7 +375,12 @@ class UserCommentState extends State<UserComment> {
                           onPressed: () {
                             UserModel user =
                                 context.read<NetworkService>().getUser();
-                            double height = 8 * 56;
+                            double height;
+                            if (widget.username == user.username) {
+                              height = 8 * 56;
+                            } else {
+                              height = 7 * 56;
+                            }
                             OverlayEntry overlayEntry = OverlayEntry(
                               builder: (context) => Positioned(
                                 left: 8,
@@ -421,7 +426,6 @@ class UserCommentState extends State<UserComment> {
                                           leading: const Icon(Icons.edit),
                                           title: const Text('Edit comment'),
                                           onTap: () async {
-                                            // Handle edit comment
                                             Navigator.pop(context);
                                             final result = await Navigator.push(
                                               context,
@@ -487,8 +491,8 @@ class UserCommentState extends State<UserComment> {
                                             CustomSnackBar(
                                               context: context,
                                               content: widget.isSaved
-                                                  ? 'Comment saved!'
-                                                  : 'Comment unsaved!',
+                                                  ? 'Comment Unsaved!'
+                                                  : 'Comment Saved!',
                                             ).show();
                                             widget.isSaved = !widget.isSaved;
                                             Navigator.pop(context);
@@ -524,8 +528,24 @@ class UserCommentState extends State<UserComment> {
                                         ListTile(
                                           leading: const Icon(Icons.delete),
                                           title: const Text('Delete comment'),
-                                          onTap: () {
-                                            // Handle delete comment
+                                          onTap: () async {
+                                            bool deleted = await context
+                                                .read<NetworkService>()
+                                                .deleteComment(
+                                                    widget.commentId);
+                                            if (deleted) {
+                                              CustomSnackBar(
+                                                context: context,
+                                                content: 'Comment Deleted!',
+                                              ).show();
+                                              Navigator.pop(context);
+                                            } else {
+                                              CustomSnackBar(
+                                                context: context,
+                                                content:
+                                                    'Failed to delete comment!',
+                                              ).show();
+                                            }
                                           },
                                         ),
                                       if (widget.username != user.username)

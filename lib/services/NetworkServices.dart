@@ -402,6 +402,21 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> deleteComment(String commentId) async {
+    Uri url = Uri.parse('$_baseUrl/comment/$commentId');
+    final response = await http.delete(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return deleteComment(commentId);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
@@ -825,7 +840,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> reportPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
-    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return reportPost(postId);

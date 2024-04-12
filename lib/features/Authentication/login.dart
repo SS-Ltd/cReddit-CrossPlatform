@@ -50,7 +50,7 @@ class LoginScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
             const Text(
-              'Log in to Reddit',
+              'Log in to cReddit',
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,

@@ -445,7 +445,7 @@ class _PostState extends State<Post> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.add_comment),
+                icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
                 onPressed: () {
                   PostComments postComment = PostComments(
