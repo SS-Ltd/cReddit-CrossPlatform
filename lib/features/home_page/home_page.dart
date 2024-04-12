@@ -6,7 +6,8 @@ import 'package:reddit_clone/services/networkServices.dart';
 import '../../models/post_model.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String selectedMenuItem;
+  const HomePage({super.key, required this.selectedMenuItem});
 
   @override
   State<StatefulWidget> createState() {
@@ -17,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<String> menuItems = ['Hot', 'Top', 'New'];
-  String selectedMenuItem = 'Hot'; // Store the selected menu item here
+  // Store the selected menu item here
   String lastType = "Hot";
   List<PostModel> posts = [];
   bool isLoading = false;
@@ -28,10 +29,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    posts.clear();
+    page = 1;
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
-        getPosts(selectedMenuItem);
+        getPosts(widget.selectedMenuItem);
       }
     });
   }
@@ -44,11 +47,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> getPosts(String selectedItem) async {
-    if (selectedMenuItem != lastType) {
-      posts.clear();
-      page = 1;
-      lastType = selectedItem;
-    }
     setState(() {
       isLoading = true;
     });
@@ -73,52 +71,18 @@ class _HomePageState extends State<HomePage> {
         _scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
-      getPosts(selectedMenuItem); // Fetch more posts when user reaches end
+      getPosts(
+          widget.selectedMenuItem); // Fetch more posts when user reaches end
     }
   }
 
   Future<void> _refreshData() async {
-    await getPosts(selectedMenuItem);
+    await getPosts(widget.selectedMenuItem);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: _scaffoldKey,
-      // appBar: AppBar(
-      //   leading: Row(
-      //     mainAxisSize: MainAxisSize.max,
-      //     children: [
-      //       IconButton(
-      //         onPressed: () {},
-      //         icon: const Icon(Icons.menu, size: 30.0),
-      //       ),
-      //       SelectItem(
-      //         menuItems: menuItems,
-      //         onMenuItemSelected: (String selectedItem) {
-      //           setState(() {
-      //             selectedMenuItem = selectedItem;
-      //           });
-      //           getPosts(
-      //               selectedItem); // Fetch posts for the selected menu item
-      //           print('Selected: $selectedItem');
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      //   leadingWidth: 150,
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.search, size: 30.0),
-      //     ),
-      //     IconButton(
-      //       onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-      //       icon: const Icon(Icons.reddit, size: 30.0),
-      //     ),
-      //   ],
-      // ),
-      // endDrawer: const Rightsidebar(),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: ListView.builder(
