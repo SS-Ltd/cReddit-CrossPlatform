@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
@@ -388,56 +390,68 @@ class _PostState extends State<Post> {
           _buildContent(),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_upward),
-                color: widget.isUpvoted ? Colors.red : Colors.grey,
-                onPressed: () async {
-                  bool a = await context
-                      .read<NetworkService>()
-                      .upVote(widget.postId);
-                  setState(() {
-                    print("upvote");
-                    if (widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes--;
-                      widget.isUpvoted = false;
-                    } else if (!widget.isUpvoted && widget.isDownvoted) {
-                      widget.votes += 2;
-                      widget.isUpvoted = true;
-                      widget.isDownvoted = false;
-                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes++;
-                      widget.isUpvoted = true;
-                    }
-                  });
-                },
+              Semantics(
+                identifier: 'post Upvote',
+                label: 'post Upvote',
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_upward),
+                  color: widget.isUpvoted ? Colors.red : Colors.grey,
+                  onPressed: () async {
+                    bool a = await context
+                        .read<NetworkService>()
+                        .upVote(widget.postId);
+                    setState(() {
+                      print("upvote");
+                      if (widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes--;
+                        widget.isUpvoted = false;
+                      } else if (!widget.isUpvoted && widget.isDownvoted) {
+                        widget.votes += 2;
+                        widget.isUpvoted = true;
+                        widget.isDownvoted = false;
+                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes++;
+                        widget.isUpvoted = true;
+                      }
+                    });
+                  },
+                ),
               ),
-              Text(widget.votes.toString(),
-                  style: TextStyle(
-                    color: widget.isUpvoted
-                        ? Colors.red
-                        : (widget.isDownvoted ? Colors.blue : Colors.grey),
-                  )),
-              IconButton(
-                icon: const Icon(Icons.arrow_downward),
-                color: widget.isDownvoted ? Colors.blue : Colors.grey,
-                onPressed: () async {
-                  bool a = await context
-                      .read<NetworkService>()
-                      .downVote(widget.postId);
-                  setState(() {
-                    if (widget.isDownvoted && !widget.isUpvoted) {
-                      widget.votes++;
-                      widget.isDownvoted = false;
-                    } else if (widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes -= 2;
-                      widget.isUpvoted = false;
-                      widget.isDownvoted = true;
-                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes--;
-                      widget.isDownvoted = true;
-                    }
-                  });
-                },
+              Semantics(
+                identifier: 'post votes',
+                label: 'post votes',
+                child: Text(widget.votes.toString(),
+                    style: TextStyle(
+                      color: widget.isUpvoted
+                          ? Colors.red
+                          : (widget.isDownvoted ? Colors.blue : Colors.grey),
+                    )),
+              ),
+              Semantics(
+                identifier: 'post Downvote',
+                label: 'post Downvote',
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_downward),
+                  color: widget.isDownvoted ? Colors.blue : Colors.grey,
+                  onPressed: () async {
+                    bool a = await context
+                        .read<NetworkService>()
+                        .downVote(widget.postId);
+                    setState(() {
+                      if (widget.isDownvoted && !widget.isUpvoted) {
+                        widget.votes++;
+                        widget.isDownvoted = false;
+                      } else if (widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes -= 2;
+                        widget.isUpvoted = false;
+                        widget.isDownvoted = true;
+                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes--;
+                        widget.isDownvoted = true;
+                      }
+                    });
+                  },
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.chat_bubble_outline),
