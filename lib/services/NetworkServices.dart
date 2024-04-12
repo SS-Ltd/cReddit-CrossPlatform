@@ -470,6 +470,34 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<UserModel> getUserDetails(String username) async {
+    Uri url = Uri.parse('$_baseUrl/user/$username');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return UserModel.fromJson(json);
+    } else {
+      // Failed to fetch details or handle specific error
+      throw Exception('Failed to fetch user details');
+    }
+  }
+
+  Future<UserModel> getMyDetails() async {
+    Uri url = Uri.parse('$_baseUrl/user');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return UserModel.fromJson(json);
+    } else {
+      // Failed to fetch details or handle specific error
+      throw Exception('Failed to fetch user details');
+    }
+  }
+
+  Future<List<PostModel>?> fetchPostsForSubreddit(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
   Future<List<PostModel>?> fetchHomeFeed({
     String sort = 'hot',
     String time = 'all',

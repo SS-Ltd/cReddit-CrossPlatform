@@ -62,7 +62,9 @@ class _ReportButtonState extends State<ReportButton> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
-                      "Help fellow redditors by reporting things that break the rules. Let us know what's happening, and we'll look into it.",
+                      "Help fellow redditors by reporting things that break the"
+                      " rules. Let us know what's happening, and we'll look" 
+                      " into it.",
                       style: TextStyle(color: Colors.white70),
                     ),
                   ),

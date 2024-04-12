@@ -23,9 +23,7 @@ class LoginScreen extends StatelessWidget {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: Palette.redditLogin,
       appBar: AppBar(
-        backgroundColor: Palette.redditLogin,
         title:
             SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
         centerTitle: true,
