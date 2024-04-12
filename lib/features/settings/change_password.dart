@@ -18,7 +18,9 @@ class _ChangePasswordState extends State<ChangePassword> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _obscureText = true;
+  bool _obscureTextCurrent = true;
+  bool _obscureTextNew = true;
+  bool _obscureTextConfirm = true;
 
   @override
   void dispose() {
@@ -28,9 +30,21 @@ class _ChangePasswordState extends State<ChangePassword> {
     super.dispose();
   }
 
-  void _toggle() {
+  void _toggleCurrent() {
     setState(() {
-      _obscureText = !_obscureText;
+      _obscureTextCurrent = !_obscureTextCurrent;
+    });
+  }
+
+  void _toggleNew() {
+    setState(() {
+      _obscureTextNew = !_obscureTextNew;
+    });
+  }
+
+  void _toggleConfirm() {
+    setState(() {
+      _obscureTextConfirm = !_obscureTextConfirm;
     });
   }
 
@@ -79,16 +93,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                     children: [
                       TextFormField(
                         controller: _currentPasswordController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureTextCurrent,
                         decoration: InputDecoration(
                           labelText: 'Current password',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              _obscureTextCurrent
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
-                            onPressed: _toggle,
+                            onPressed: _toggleCurrent,
                           ),
                         ),
                         validator: (value) {
@@ -116,16 +130,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       TextFormField(
                         controller: _newPasswordController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureTextNew,
                         decoration: InputDecoration(
                           labelText: 'New password',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              _obscureTextNew
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
-                            onPressed: _toggle,
+                            onPressed: _toggleNew,
                           ),
                         ),
                         validator: (value) {
@@ -137,16 +151,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       TextFormField(
                         controller: _confirmPasswordController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureTextConfirm,
                         decoration: InputDecoration(
                           labelText: 'Confirm new password',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              _obscureTextConfirm
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
-                            onPressed: _toggle,
+                            onPressed: _toggleConfirm,
                           ),
                         ),
                         validator: (value) {
