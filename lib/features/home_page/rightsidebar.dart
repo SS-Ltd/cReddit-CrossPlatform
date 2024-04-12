@@ -38,7 +38,8 @@ class _RightsidebarState extends State<Rightsidebar> {
             Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                //update this with button
                 child: Text(
                   'u/${user?.username ?? 'Username'}',
                   style: const TextStyle(

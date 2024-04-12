@@ -84,7 +84,10 @@ class NetworkService extends ChangeNotifier {
   Future<void> getUserSettings() async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getUserSettings();
+    }
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
@@ -102,6 +105,10 @@ class NetworkService extends ChangeNotifier {
       body: jsonEncode({'info': username}),
     );
 
+    if (response.statusCode == 403) {
+      refreshToken();
+      return forgotPassword(username);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -112,6 +119,10 @@ class NetworkService extends ChangeNotifier {
   Future<bool> upVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/upvote');
     final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return upVote(postId);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -122,6 +133,10 @@ class NetworkService extends ChangeNotifier {
   Future<bool> downVote(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/downvote');
     final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return downVote(postId);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -132,6 +147,10 @@ class NetworkService extends ChangeNotifier {
   Future<String> getRandomName() async {
     Uri url = Uri.parse('$_baseUrl/user/generate-username');
     final response = await http.get(url);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getRandomName();
+    }
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       return responseData['username'];
@@ -154,7 +173,10 @@ class NetworkService extends ChangeNotifier {
         'gender': gender,
       }),
     );
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createUser(username, email, password, gender);
+    }
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -188,7 +210,10 @@ class NetworkService extends ChangeNotifier {
   Future<List<Community>> fetchTopCommunities() async {
     Uri url = Uri.parse('$_baseUrl/subreddit/top?limit=25');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchTopCommunities();
+    }
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
       return jsonData.map((item) => Community.fromJson(item)).toList();
@@ -201,6 +226,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
     final response = await http.get(url, headers: _headers);
     print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchCommentsForPost(postId);
+    }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -225,6 +254,10 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
 
     String responseBody = await response.stream.bytesToString();
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createNewTextComment(postId, content);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {
@@ -257,6 +290,10 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
 
     String responseBody = await response.stream.bytesToString();
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createNewImageComment(postId, imageFile);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {
@@ -283,6 +320,10 @@ class NetworkService extends ChangeNotifier {
 
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
+    if (response.statusCode == 403) {
+      refreshToken();
+      return editTextComment(commentId, content);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -307,6 +348,10 @@ class NetworkService extends ChangeNotifier {
 
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
+    if (response.statusCode == 403) {
+      refreshToken();
+      return editImageComment(commentId, imageFile);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -317,7 +362,10 @@ class NetworkService extends ChangeNotifier {
   Future<bool> joinSubReddit(String subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
     final response = await http.post(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return joinSubReddit(subredditName);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -328,7 +376,10 @@ class NetworkService extends ChangeNotifier {
   Future<bool> disJoinSubReddit(String subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
     final response = await http.delete(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return disJoinSubReddit(subredditName);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -340,7 +391,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': isSaved}));
-    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return saveOrUnsaveComment(commentId, isSaved);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -358,7 +412,10 @@ class NetworkService extends ChangeNotifier {
         'isNSFW': isNSFW,
       }),
     );
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createCommunity(name, isNSFW);
+    }
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -369,7 +426,10 @@ class NetworkService extends ChangeNotifier {
   Future<bool> isSubredditNameAvailable(String name) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/is-name-available/$name');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return isSubredditNameAvailable(name);
+    }
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
       return body['available'] ?? false;
@@ -382,7 +442,10 @@ class NetworkService extends ChangeNotifier {
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSubredditDetails(subredditName);
+    }
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
@@ -408,6 +471,10 @@ class NetworkService extends ChangeNotifier {
     final response =
         await http.get(url, headers: {'accept': 'application/json'});
 
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       List<PostModel> posts = responseData
@@ -424,6 +491,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse(
         '$_baseUrl/subreddit/$subredditName/posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchPostsForSubreddit(subredditName, page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -437,6 +508,10 @@ class NetworkService extends ChangeNotifier {
   Future<List<PostModel>?> getSavedPosts({int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/saved-posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSavedPosts(page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -451,7 +526,14 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/history?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getUserHistory(page: page, limit: limit);
+    }
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getUserHistory(page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -467,6 +549,10 @@ class NetworkService extends ChangeNotifier {
     final url = Uri.parse('$_baseUrl/user/upvoted?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getUpvotedPosts(page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -481,7 +567,10 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/downvoted?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getDownvotedPosts(page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -497,7 +586,10 @@ class NetworkService extends ChangeNotifier {
     final url =
         Uri.parse('$_baseUrl/user/hidden-posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getHiddenPosts(page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(response.body);
       List<PostModel> posts =
@@ -523,6 +615,11 @@ class NetworkService extends ChangeNotifier {
         'isNSFW': isNSFW,
       }),
     );
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createNewTextOrLinkPost(
+          type, communityname, title, content, isNSFW, isSpoiler);
+    }
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -545,6 +642,11 @@ class NetworkService extends ChangeNotifier {
         'isNSFW': isNSFW,
       }),
     );
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createNewImagePost(
+          communityname, title, content, isNSFW, isSpoiler);
+    }
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -569,13 +671,18 @@ class NetworkService extends ChangeNotifier {
         'type': 'Poll',
         'communityname': communityname,
         'title': title,
-        'content' : content,
-        'pollOptions' : options, 
-        'expirationDate' : expDate,
+        'content': content,
+        'pollOptions': options,
+        'expirationDate': expDate,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
     );
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createNewPollPost(
+          communityname, title, content, options, expDate, isNSFW, isSpoiler);
+    }
     if (response.statusCode == 201) {
       return true;
     } else {
@@ -587,7 +694,10 @@ class NetworkService extends ChangeNotifier {
   Future<List<JoinedCommunitites>?> joinedcommunitites() async {
     Uri url = Uri.parse('$_baseUrl/user/joined-communities');
     final response = await http.get(url, headers: _headers);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return joinedcommunitites();
+    }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<JoinedCommunitites> joinedCommunitites = responseData
@@ -606,6 +716,10 @@ class NetworkService extends ChangeNotifier {
       headers: _headers,
       body: jsonEncode({'pollOption': pollOption}),
     );
+    if (response.statusCode == 403) {
+      refreshToken();
+      return voteOnPoll(postId, pollOption);
+    }
     if (response.statusCode == 200) {
       return true; // Voting was successful
     } else {
@@ -616,6 +730,10 @@ class NetworkService extends ChangeNotifier {
   Future<bool> deletepost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId');
     final response = await http.delete(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return deletepost(postId);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -627,6 +745,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': value}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return saveandunsavepost(postId, value);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -638,6 +760,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/lock');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isLocked': value}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return lockpost(postId, value);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -649,6 +775,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/hide');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isHidden': value}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return hidepost(postId, value);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -656,15 +786,19 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SavedCommentsModel>?> fetchSavedComments(
+  Future<List<Comments>?> fetchSavedComments(
       {int page = 1, int limit = 20}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchSavedComments(page: page, limit: limit);
+    }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
-          .map((commentJson) => SavedCommentsModel.fromJson(commentJson))
+          .map((commentJson) => Comments.fromJson(commentJson))
           .toList();
     } else {
       // Handle error or empty case appropriately
@@ -677,6 +811,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/follow');
     final response = await http.patch(url, headers: _headers);
     print(response);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return followpost(postId);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -688,11 +826,76 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
     print(response.statusCode);
-
+    if (response.statusCode == 403) {
+      refreshToken();
+      return reportPost(postId);
+    }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<String> updatepassword(
+      String newPassword, String confirmPassword, String oldPassword) async {
+    Uri url = Uri.parse('$_baseUrl/user/change-password');
+    final response = await http.patch(url,
+        headers: _headers,
+        body: jsonEncode({
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+          'confirmPassword': confirmPassword
+        }));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 400) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> updateemail(String newemail, String password) async {
+    Uri url = Uri.parse('$_baseUrl/user/change-email');
+    final response = await http.patch(url,
+        headers: _headers,
+        body: jsonEncode({'password': password, 'newEmail': newemail}));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 400) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> resetusername(String email) async {
+    Uri url = Uri.parse('$_baseUrl/user/forgot-username');
+    final response = await http.post(url,
+        headers: _headers, body: jsonEncode({'email': email}));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 404) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> resetpassword(String email, String username) async {
+    Uri url = Uri.parse('$_baseUrl/user/forgot-password');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({'username': username, 'email': email}));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 404) {
+      return response.body;
+    } else if (response.statusCode == 500) {
+      return response.body;
+    } else {
+      return "";
     }
   }
 

@@ -9,6 +9,11 @@ class Comments {
   final bool isUpvoted;
   final bool isDownvoted;
   final bool isSaved;
+
+  final String? communityName;
+  final String? postId; //
+  final String? title; //
+
   Comments({
     required this.profilePicture,
     required this.username,
@@ -20,6 +25,9 @@ class Comments {
     required this.isUpvoted,
     required this.isDownvoted,
     required this.isSaved,
+    this.communityName = '',
+    this.postId = '',
+    this.title = '',
   });
 
   factory Comments.fromJson(Map<String, dynamic> json) {
@@ -35,7 +43,9 @@ class Comments {
       isUpvoted: json['isUpvoted'],
       isDownvoted: json['isDownvoted'],
       isSaved: json['isSaved'],
-      
+      communityName: json['communityName'] ?? json['parentPostUsername'] ?? '',
+      postId: json['postID'] is String ? json['postID'] : '',
+      title: json['title'] ?? '',
     );
   }
 }

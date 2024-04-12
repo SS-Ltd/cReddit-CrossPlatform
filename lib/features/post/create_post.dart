@@ -58,6 +58,9 @@ class _CreatePostState extends State<CreatePost> {
 
   @override
   void dispose() {
+    _titleController.dispose();
+    _bodyController.dispose();
+    _linkController.dispose();
     super.dispose();
   }
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class ResetUsername extends StatefulWidget {
   const ResetUsername({super.key});
@@ -84,6 +87,7 @@ class _ResetUsernameState extends State<ResetUsername> {
               children: [
                 TextButton(
                   onPressed: () {
+                    _emailController.clear();
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
@@ -96,7 +100,14 @@ class _ResetUsernameState extends State<ResetUsername> {
                   child: const Text('CANCEL'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      String changeresponse =
+                          await context.read<NetworkService>().resetusername(
+                                _emailController.text,
+                              );
+                              print(changeresponse);
+                    }
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(

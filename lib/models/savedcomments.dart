@@ -1,6 +1,6 @@
 class SavedCommentsModel {
   final String username;
-  final String communityName;
+  final String communityName; //
   final bool isUpvoted;
   final bool isDownvoted;
   final String commentId;
@@ -8,8 +8,8 @@ class SavedCommentsModel {
   final int netVote;
   final String content;
   final String createdAt;
-  final String postId;
-  final String title;
+  final String postId; //
+  final String title; //
 
   SavedCommentsModel({
     required this.username,
