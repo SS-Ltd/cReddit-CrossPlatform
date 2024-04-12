@@ -102,6 +102,7 @@ class _SavedCommentsState extends State<SavedComments> {
                   communityName: savedComments![index].communityName!,
                   postId: savedComments![index].postId!,
                   title: savedComments![index].title!,
+                  comment: savedComments![index],
                 );
               } else {
                 return const Center(child: CircularProgressIndicator());

@@ -17,8 +17,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  // String _baseUrl = 'http://192.168.1.7:3000';
-  final String _baseUrl = 'https://creddit.tech/API';
+  String _baseUrl = 'http://192.168.1.7:3000';
+  //final String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -297,6 +297,7 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return createNewImageComment(postId, imageFile);
     }
+    print(responseBody);
     if (response.statusCode == 200 || response.statusCode == 201) {
       var parsedJson = jsonDecode(responseBody);
       if (parsedJson['commentId'] != null) {

@@ -10,7 +10,7 @@ class Comments {
   final bool isDownvoted;
   final bool isSaved;
 
-  final String? communityName;
+  String? communityName;
   final String? postId; //
   final String? title; //
 

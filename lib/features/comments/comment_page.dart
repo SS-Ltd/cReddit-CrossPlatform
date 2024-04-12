@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
+import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
@@ -64,6 +65,7 @@ class _CommentPageState extends State<CommentPage> {
     if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
+        fetchedComments.map((e) =>  e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
                   avatar: comment.profilePicture,
@@ -78,6 +80,7 @@ class _CommentPageState extends State<CommentPage> {
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
                   isSaved: comment.isSaved,
+                  comment: comment,
                 ))
             .toList();
       });
@@ -168,6 +171,7 @@ class _CommentPageState extends State<CommentPage> {
                   commentId: _comments[index - 1].commentId,
                   hasVoted: _comments[index - 1].hasVoted,
                   isSaved: _comments[index - 1].isSaved,
+                  comment: _comments[index - 1].comment,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -194,14 +198,29 @@ class _CommentPageState extends State<CommentPage> {
                             postId: widget.postId,
                             commentContent: widget.postTitle)),
                   );
-
                   if (result != null) {
                     final bool contentType = result['contentType'];
-
+                    
                     setState(() {
                       UserComment? newComment;
+                      
+
                       if (contentType == false) {
                         final String commentText = result['content'];
+                        Comments comment = Comments(
+                          profilePicture: result['user'].profilePicture,
+                          username: result['user'].username,
+                          isImage: contentType,
+                          netVote: 1,
+                          content: commentText,
+                          createdAt: DateTime.now().toString(),
+                          commentId: result['commentId'],
+                          isUpvoted: false,
+                          isDownvoted: false,
+                          isSaved: false,
+                          
+                          
+                        );
                         newComment = UserComment(
                           avatar: result['user'].profilePicture,
                           username: result['user'].username,
@@ -213,9 +232,23 @@ class _CommentPageState extends State<CommentPage> {
                           commentId: result['commentId'],
                           hasVoted: 1,
                           isSaved: false,
+                          comment: comment,
                         );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
+                        Comments comment = Comments(
+                          profilePicture: result['user'].profilePicture,
+                          username: result['user'].username,
+                          isImage: contentType,
+                          netVote: 1,
+                          content: '',
+                          createdAt: DateTime.now().toString(),
+                          commentId: result['commentId'],
+                          isUpvoted: false,
+                          isDownvoted: false,
+                          isSaved: false,
+                          
+                        );
                         newComment = UserComment(
                           avatar: result['user'].profilePicture,
                           username: result['user'].username,
@@ -227,8 +260,10 @@ class _CommentPageState extends State<CommentPage> {
                           commentId: result['commentId'],
                           hasVoted: 1,
                           isSaved: false,
+                          comment: comment,
                         );
                       }
+                      
                       if (newComment != null) {
                         // Insert the new comment at the beginning of the list
                         _comments.insert(0, newComment);

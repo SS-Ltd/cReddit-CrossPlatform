@@ -11,6 +11,7 @@ import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
+import 'package:reddit_clone/models/comments.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;
@@ -26,6 +27,7 @@ class UserComment extends StatefulWidget {
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
   bool isSaved;
 
+  final Comments comment;
   //for saved comments
   final String communityName;
   final String postId; //
@@ -49,6 +51,7 @@ class UserComment extends StatefulWidget {
     this.communityName = '',
     this.postId = '',
     this.title = '',
+    required this.comment,
   });
 
   @override
@@ -83,8 +86,8 @@ class UserCommentState extends State<UserComment> {
       context,
       MaterialPageRoute(
         builder: (context) => ReplyPage(
-          commentContent: widget.content,
-          username: widget.username,
+          commentContent: widget.comment.content,
+          username: widget.comment.username,
           timestamp: widget.timestamp,
         ),
       ),
@@ -93,35 +96,36 @@ class UserCommentState extends State<UserComment> {
     if (result != null) {
       final bool contentType = result['contentType'];
 
-      if (contentType == false) {
-        final String commentText = result['content'];
-        replies.add(UserComment(
-          avatar: 'assets/MonkeyDLuffy.png',
-          username: 'User123',
-          content: commentText,
-          timestamp: DateTime.now(),
-          photo: null,
-          contentType: contentType,
-          imageSource: 2,
-          commentId: widget.commentId, //may need to be updated
-          hasVoted: 0,
-          isSaved: false,
-        ));
-      } else if (contentType == true) {
-        final File commentImage = File(result['content']);
-        replies.add(UserComment(
-          avatar: 'assets/MonkeyDLuffy.png',
-          username: 'User123',
-          content: '',
-          timestamp: DateTime.now(),
-          photo: commentImage,
-          contentType: contentType,
-          imageSource: 1,
-          commentId: widget.commentId, //may need to be updated
-          hasVoted: 0,
-          isSaved: false,
-        ));
-      }
+      // if (contentType == false) {
+      //   final String commentText = result['content'];
+      //   replies.add(UserComment(
+      //     avatar: 'assets/MonkeyDLuffy.png',
+      //     username: 'User123',
+      //     content: commentText,
+      //     timestamp: DateTime.now(),
+      //     photo: null,
+      //     contentType: contentType,
+      //     imageSource: 2,
+      //     commentId: widget.comment.commentId, //may need to be updated
+      //     hasVoted: 0,
+      //     isSaved: false,
+      //   ));
+      // } else if (contentType == true) {
+      //   final File commentImage = File(result['content']);
+      //   replies.add(UserComment(
+      //     avatar: 'assets/MonkeyDLuffy.png',
+      //     username: 'User123',
+      //     content: '',
+      //     timestamp: DateTime.now(),
+      //     photo: commentImage,
+      //     contentType: contentType,
+      //     imageSource: 1,
+      //     commentId: widget.comment.commentId, //may need to be updated
+      //     hasVoted: 0,
+      //     isSaved: false,
+          
+      //   ));
+      // }
     }
   }
 
@@ -155,7 +159,7 @@ class UserCommentState extends State<UserComment> {
   void initState() {
     super.initState();
     isMinimized = ValueNotifier<bool>(false);
-    votes = widget.netVote;
+    votes = widget.comment.netVote;
     hasVoted = ValueNotifier<int>(widget.hasVoted);
     content = ValueNotifier<String>(widget.content);
     photo = ValueNotifier<File?>(widget.photo);
@@ -195,18 +199,18 @@ class UserCommentState extends State<UserComment> {
                   Row(
                     children: [
                       const SizedBox(height: 55),
-                      if (widget.communityName == '') ...[
+                      if (widget.comment.communityName == '') ...[
                         GestureDetector(
                           onTap: () {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AboutUserPopUp(
-                                      userName: widget.username);
+                                      userName: widget.comment.username);
                                 });
                           },
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(widget.avatar),
+                            backgroundImage: NetworkImage(widget.comment.profilePicture),
                             //radius: 18,
                           ),
                         ),
@@ -217,11 +221,11 @@ class UserCommentState extends State<UserComment> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AboutUserPopUp(
-                                      userName: widget.username);
+                                      userName: widget.comment.username);
                                 });
                           },
                           child: Text(
-                            widget.username,
+                            widget.comment.username,
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 14,
@@ -241,7 +245,7 @@ class UserCommentState extends State<UserComment> {
                                 .start, // Aligns the text to the start of the axis
                             children: <Widget>[
                               Text(
-                                widget.title,
+                                widget.comment.title ?? '',
                                 style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                                 overflow: TextOverflow
@@ -253,7 +257,7 @@ class UserCommentState extends State<UserComment> {
                                   height:
                                       4), // Provides spacing of 4 logical pixels between title and username/community.
                               Text(
-                                '${widget.username} . r/${widget.communityName}  .  ${formatTimestamp(widget.timestamp)}',
+                                '${widget.comment.username} . r/${widget.comment.communityName}  .  ${formatTimestamp(DateTime.parse(widget.comment.createdAt))}',
                                 style:
                                     TextStyle(fontSize: 14, color: Colors.grey),
                               ),
@@ -266,7 +270,7 @@ class UserCommentState extends State<UserComment> {
                         Expanded(
                           child: SizedBox(
                             height: 50,
-                            child: widget.contentType == false
+                            child: widget.comment.isImage == false
                                 ? Align(
                                     alignment: Alignment.centerLeft,
                                     child: ValueListenableBuilder<String>(
@@ -283,7 +287,7 @@ class UserCommentState extends State<UserComment> {
                                       },
                                     ),
                                   )
-                                : widget.contentType == true &&
+                                : widget.comment.isImage == true &&
                                         widget.imageSource == 0
                                     ? Center(
                                         child: ValueListenableBuilder<String>(
@@ -296,7 +300,7 @@ class UserCommentState extends State<UserComment> {
                                           },
                                         ),
                                       )
-                                    : widget.contentType == true &&
+                                    : widget.comment.isImage == true &&
                                             widget.imageSource == 1
                                         ? Center(
                                             child:
@@ -322,7 +326,7 @@ class UserCommentState extends State<UserComment> {
                   ),
                   if (!isMinimized.value) ...[
                     //const SizedBox(height: 10),
-                    if (widget.contentType == false) ...[
+                    if (widget.comment.isImage == false) ...[
                       ValueListenableBuilder<String>(
                         valueListenable: content,
                         builder: (context, value, child) {
@@ -335,7 +339,7 @@ class UserCommentState extends State<UserComment> {
                           );
                         },
                       ),
-                    ] else if (widget.contentType == true &&
+                    ] else if (widget.comment.isImage == true &&
                         widget.imageSource == 0) ...[
                       ValueListenableBuilder<String>(
                         valueListenable: content,
@@ -346,7 +350,7 @@ class UserCommentState extends State<UserComment> {
                           );
                         },
                       ),
-                    ] else if (widget.contentType == true &&
+                    ] else if (widget.comment.isImage == true &&
                         widget.imageSource == 1) ...[
                       ValueListenableBuilder<File?>(
                         valueListenable: photo,
@@ -373,7 +377,7 @@ class UserCommentState extends State<UserComment> {
                                 context.read<NetworkService>().getUser();
                             int numofTiles;
                             numofTiles =
-                                (widget.username == user.username) ? 8 : 7;
+                                (widget.comment.username == user.username) ? 8 : 7;
                             showCommentOptions(user, numofTiles);
                           },
                         ),
@@ -395,7 +399,7 @@ class UserCommentState extends State<UserComment> {
                                 onPressed: () async {
                                   bool votedUp = await context
                                       .read<NetworkService>()
-                                      .upVote(widget.commentId);
+                                      .upVote(widget.comment.commentId);
                                   if (votedUp && mounted) {
                                     setState(() {
                                       updateUpVote();
@@ -440,7 +444,7 @@ class UserCommentState extends State<UserComment> {
                                 onPressed: () async {
                                   bool votedDown = await context
                                       .read<NetworkService>()
-                                      .downVote(widget.commentId);
+                                      .downVote(widget.comment.commentId);
                                   if (votedDown && mounted) {
                                     setState(() {
                                       updateDownVote();
@@ -500,11 +504,11 @@ class UserCommentState extends State<UserComment> {
                   valueListenable: photo,
                   builder: (context, photoValue, child) {
                     return StaticCommentCard(
-                      avatar: widget.avatar,
-                      username: widget.username,
+                      avatar: widget.comment.profilePicture,
+                      username: widget.comment.username,
                       timestamp: widget.timestamp,
                       content: contentValue,
-                      contentType: widget.contentType,
+                      contentType: widget.comment.isImage,
                       photo: photoValue,
                       imageSource: widget.imageSource,
                     );
@@ -524,7 +528,7 @@ class UserCommentState extends State<UserComment> {
         return SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              if (widget.username == user.username)
+              if (widget.comment.username == user.username)
                 ListTile(
                   leading: const Icon(Icons.edit),
                   title: const Text('Edit comment'),
@@ -534,10 +538,10 @@ class UserCommentState extends State<UserComment> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditCommentPage(
-                          commentId: widget.commentId,
+                          commentId: widget.comment.commentId,
                           commentContent: widget.content,
-                          contentType: widget.contentType,
-                          photo: widget.photo,
+                          contentType: widget.comment.isImage,
+                          photo: widget.comment.isImage ? File(widget.comment.content) : null,
                           imageSource: widget.imageSource,
                         ),
                       ),
@@ -573,7 +577,7 @@ class UserCommentState extends State<UserComment> {
                 onTap: () async {
                   bool saved = await context
                       .read<NetworkService>()
-                      .saveOrUnsaveComment(widget.commentId, !widget.isSaved);
+                      .saveOrUnsaveComment(widget.comment.commentId, !widget.isSaved);
                   if (saved) {
                     CustomSnackBar(
                       context: context,
@@ -607,14 +611,14 @@ class UserCommentState extends State<UserComment> {
                   Navigator.pop(context);
                 },
               ),
-              if (widget.username == user.username)
+              if (widget.comment.username == user.username)
                 ListTile(
                   leading: const Icon(Icons.delete),
                   title: const Text('Delete comment'),
                   onTap: () async {
                     bool deleted = await context
                         .read<NetworkService>()
-                        .deleteComment(widget.commentId);
+                        .deleteComment(widget.comment.commentId);
                     if (deleted) {
                       CustomSnackBar(
                         context: context,
@@ -629,14 +633,14 @@ class UserCommentState extends State<UserComment> {
                     }
                   },
                 ),
-              if (widget.username != user.username)
+              if (widget.comment.username != user.username)
                 ListTile(
                   leading: const Icon(Icons.block_outlined),
                   title: const Text('Block account'),
                   onTap: () async {
                     // bool blocked = await context
                     //     .read<NetworkService>()
-                    //     .blockUser(widget.username);
+                    //     .blockUser(widget.comment.username);
                     // if (blocked) {
                     //   CustomSnackBar(
                     //       context: context, content: 'User blocked!');
@@ -653,7 +657,7 @@ class UserCommentState extends State<UserComment> {
                 onTap: () async {
                   bool reported = await context
                       .read<NetworkService>()
-                      .reportPost(widget.commentId);
+                      .reportPost(widget.comment.commentId);
                   if (reported) {
                     Navigator.pop(context);
                   }

@@ -116,6 +116,7 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     ).show();
                     return;
                   }
+                  print('aloooooo');
                   contentType = true; // Image is entered
                   Navigator.pop(context, {
                     'content': _image,
