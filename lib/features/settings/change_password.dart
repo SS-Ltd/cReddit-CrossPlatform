@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/settings/forgot_password.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -91,7 +93,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Please enter your password';
+                            return 'Please enter your current password';
                           }
                           return null;
                         },
@@ -150,6 +152,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your password';
+                          } else if (value != _newPasswordController.text) {
+                            return 'Passwords do not match';
                           }
                           return null;
                         },
@@ -171,7 +175,17 @@ class _ChangePasswordState extends State<ChangePassword> {
                               child: const Text('Cancel'),
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  String changeresponse = await context
+                                      .read<NetworkService>()
+                                      .updatepassword(
+                                          _newPasswordController.text,
+                                          _confirmPasswordController.text,
+                                          _currentPasswordController.text);
+                                  Navigator.pop(context);
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(150, 40)),
                               child: const Text('Save'),

@@ -568,9 +568,9 @@ class NetworkService extends ChangeNotifier {
         'type': 'Poll',
         'communityname': communityname,
         'title': title,
-        'content' : content,
-        'pollOptions' : options, 
-        'expirationDate' : expDate,
+        'content': content,
+        'pollOptions': options,
+        'expirationDate': expDate,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
@@ -692,6 +692,68 @@ class NetworkService extends ChangeNotifier {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<String> updatepassword(
+      String newPassword, String confirmPassword, String oldPassword) async {
+    Uri url = Uri.parse('$_baseUrl/user/change-password');
+    final response = await http.patch(url,
+        headers: _headers,
+        body: jsonEncode({
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+          'confirmPassword': confirmPassword
+        }));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 400) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> updateemail(String newemail, String password) async {
+    Uri url = Uri.parse('$_baseUrl/user/change-email');
+    final response = await http.patch(url,
+        headers: _headers,
+        body: jsonEncode({'password': password, 'newEmail': newemail}));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 400) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> resetusername(String email) async {
+    Uri url = Uri.parse('$_baseUrl/user/forgot-username');
+    final response = await http.post(url,
+        headers: _headers, body: jsonEncode({'email': email}));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 404) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> resetpassword(String email, String username) async {
+    Uri url = Uri.parse('$_baseUrl/user/forgot-password');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({'username': username, 'email': email}));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else if (response.statusCode == 404) {
+      return response.body;
+    } else if (response.statusCode == 500) {
+      return response.body;
+    } else {
+      return "";
     }
   }
 
