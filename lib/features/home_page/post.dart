@@ -144,12 +144,30 @@ class _PostState extends State<Post> {
         return GestureDetector(
           onTap: widget.isHomePage
               ? () {
+                  Post postComment = Post(
+                    communityName: widget.communityName,
+                    profilePicture: widget.profilePicture,
+                    userName: widget.userName,
+                    title: widget.title,
+                    postType: widget.postType,
+                    content: widget.content,
+                    commentNumber: widget.commentNumber,
+                    pollOptions: widget.pollOptions,
+                    shareNumber: widget.shareNumber,
+                    timeStamp: widget.timeStamp,
+                    isHomePage: false,
+                    isSubRedditPage: false,
+                    postId: widget.postId,
+                    votes: widget.votes,
+                    isDownvoted: widget.isDownvoted,
+                    isUpvoted: widget.isUpvoted,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentPage(
                         postId: widget.postId,
-                        postComment: widget,
+                        postComment: postComment,
                         postTitle: widget.title,
                         username: widget.userName,
                       ),
@@ -365,12 +383,30 @@ class _PostState extends State<Post> {
           GestureDetector(
             onTap: widget.isHomePage
                 ? () {
+                    Post postComment = Post(
+                      communityName: widget.communityName,
+                      profilePicture: widget.profilePicture,
+                      userName: widget.userName,
+                      title: widget.title,
+                      postType: widget.postType,
+                      pollOptions: widget.pollOptions,
+                      content: widget.content,
+                      commentNumber: widget.commentNumber,
+                      shareNumber: widget.shareNumber,
+                      timeStamp: widget.timeStamp,
+                      isHomePage: false,
+                      isSubRedditPage: false,
+                      postId: widget.postId,
+                      votes: widget.votes,
+                      isDownvoted: widget.isDownvoted,
+                      isUpvoted: widget.isUpvoted,
+                    );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => CommentPage(
                           postId: widget.postId,
-                          postComment: widget,
+                          postComment: postComment,
                           postTitle: widget.title,
                           username: widget.userName,
                         ),
@@ -456,12 +492,30 @@ class _PostState extends State<Post> {
                 icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
                 onPressed: () {
+                  Post postComment = Post(
+                    communityName: widget.communityName,
+                    profilePicture: widget.profilePicture,
+                    userName: widget.userName,
+                    title: widget.title,
+                    postType: widget.postType,
+                    content: widget.content,
+                    pollOptions: widget.pollOptions,
+                    commentNumber: widget.commentNumber,
+                    shareNumber: widget.shareNumber,
+                    timeStamp: widget.timeStamp,
+                    isHomePage: false,
+                    isSubRedditPage: false,
+                    postId: widget.postId,
+                    votes: widget.votes,
+                    isDownvoted: widget.isDownvoted,
+                    isUpvoted: widget.isUpvoted,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentPage(
                         postId: widget.postId,
-                        postComment: widget,
+                        postComment: postComment,
                         postTitle: widget.title,
                         username: widget.userName,
                       ),

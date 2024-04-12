@@ -371,209 +371,10 @@ class UserCommentState extends State<UserComment> {
                           onPressed: () {
                             UserModel user =
                                 context.read<NetworkService>().getUser();
-                            double height;
-                            if (widget.username == user.username) {
-                              height = 8 * 56;
-                            } else {
-                              height = 7 * 56;
-                            }
-                            OverlayEntry overlayEntry = OverlayEntry(
-                              builder: (context) => Positioned(
-                                left: 8,
-                                right: 8,
-                                bottom: height,
-                                child: Material(
-                                    color: Colors.transparent,
-                                    child: ValueListenableBuilder<String>(
-                                      valueListenable: content,
-                                      builder: (context, contentValue, child) {
-                                        return ValueListenableBuilder<File?>(
-                                          valueListenable: photo,
-                                          builder:
-                                              (context, photoValue, child) {
-                                            return StaticCommentCard(
-                                              avatar: widget.avatar,
-                                              username: widget.username,
-                                              timestamp: widget.timestamp,
-                                              content: contentValue,
-                                              contentType: widget.contentType,
-                                              photo: photoValue,
-                                              imageSource: widget.imageSource,
-                                            );
-                                          },
-                                        );
-                                      },
-                                    )),
-                              ),
-                            );
-
-                            Overlay.of(context).insert(overlayEntry);
-
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor:
-                                  const Color.fromARGB(255, 19, 19, 19),
-                              builder: (context) {
-                                return SingleChildScrollView(
-                                  child: Column(
-                                    children: <Widget>[
-                                      if (widget.username == user.username)
-                                        ListTile(
-                                          leading: const Icon(Icons.edit),
-                                          title: const Text('Edit comment'),
-                                          onTap: () async {
-                                            Navigator.pop(context);
-                                            final result = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditCommentPage(
-                                                  commentId: widget.commentId,
-                                                  commentContent:
-                                                      widget.content,
-                                                  contentType:
-                                                      widget.contentType,
-                                                  photo: widget.photo,
-                                                  imageSource:
-                                                      widget.imageSource,
-                                                ),
-                                              ),
-                                            );
-                                            if (result != null) {
-                                              final bool contentType =
-                                                  result['contentType'];
-                                              print(result);
-                                              setState(() {
-                                                if (contentType == false) {
-                                                  content.value =
-                                                      result['content'];
-                                                } else if (contentType ==
-                                                        true &&
-                                                    result['imageSource'] ==
-                                                        0) {
-                                                  content.value =
-                                                      result['content'];
-                                                } else if (contentType ==
-                                                        true &&
-                                                    result['imageSource'] ==
-                                                        1) {
-                                                  photo.value =
-                                                      result['content'];
-                                                  widget.imageSource = 1;
-                                                }
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.share_outlined),
-                                        title: const Text('Share'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.save_alt),
-                                        title: Text(
-                                            widget.isSaved ? 'Unsave' : 'Save'),
-                                        onTap: () async {
-                                          bool saved = await context
-                                              .read<NetworkService>()
-                                              .saveOrUnsaveComment(
-                                                  widget.commentId,
-                                                  !widget.isSaved);
-                                          if (saved) {
-                                            CustomSnackBar(
-                                              context: context,
-                                              content: widget.isSaved
-                                                  ? 'Comment Unsaved!'
-                                                  : 'Comment Saved!',
-                                            ).show();
-                                            widget.isSaved = !widget.isSaved;
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(
-                                            Icons.notifications_outlined),
-                                        title: const Text(
-                                            'Get reply notification'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.copy_outlined),
-                                        title: const Text('Copy text'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(
-                                            Icons.merge_type_outlined),
-                                        title: const Text('Collapse thread'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      if (widget.username == user.username)
-                                        ListTile(
-                                          leading: const Icon(Icons.delete),
-                                          title: const Text('Delete comment'),
-                                          onTap: () async {
-                                            bool deleted = await context
-                                                .read<NetworkService>()
-                                                .deleteComment(
-                                                    widget.commentId);
-                                            if (deleted) {
-                                              CustomSnackBar(
-                                                context: context,
-                                                content: 'Comment Deleted!',
-                                              ).show();
-                                              Navigator.pop(context);
-                                            } else {
-                                              CustomSnackBar(
-                                                context: context,
-                                                content:
-                                                    'Failed to delete comment!',
-                                              ).show();
-                                            }
-                                          },
-                                        ),
-                                      if (widget.username != user.username)
-                                        ListTile(
-                                          leading:
-                                              const Icon(Icons.block_outlined),
-                                          title: const Text('Block account'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.flag_outlined),
-                                        title: const Text('Report'),
-                                        onTap: () async {
-                                          bool reported = await context
-                                              .read<NetworkService>()
-                                              .reportPost(widget.commentId);
-                                          if (reported) {
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ).then((_) {
-                              // Remove the overlay entry after the modal bottom sheet is dismissed
-                              overlayEntry.remove();
-                            });
+                            int numofTiles;
+                            numofTiles =
+                                (widget.username == user.username) ? 8 : 7;
+                            showCommentOptions(user, numofTiles);
                           },
                         ),
                         IconButton(
@@ -680,6 +481,192 @@ class UserCommentState extends State<UserComment> {
         ),
       ],
     );
+  }
+
+  void showCommentOptions(UserModel user, int numofTiles) {
+    double height = numofTiles * 56;
+
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: 8,
+        right: 8,
+        bottom: height,
+        child: Material(
+            color: Colors.transparent,
+            child: ValueListenableBuilder<String>(
+              valueListenable: content,
+              builder: (context, contentValue, child) {
+                return ValueListenableBuilder<File?>(
+                  valueListenable: photo,
+                  builder: (context, photoValue, child) {
+                    return StaticCommentCard(
+                      avatar: widget.avatar,
+                      username: widget.username,
+                      timestamp: widget.timestamp,
+                      content: contentValue,
+                      contentType: widget.contentType,
+                      photo: photoValue,
+                      imageSource: widget.imageSource,
+                    );
+                  },
+                );
+              },
+            )),
+      ),
+    );
+
+    Overlay.of(context).insert(overlayEntry);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              if (widget.username == user.username)
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: const Text('Edit comment'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditCommentPage(
+                          commentId: widget.commentId,
+                          commentContent: widget.content,
+                          contentType: widget.contentType,
+                          photo: widget.photo,
+                          imageSource: widget.imageSource,
+                        ),
+                      ),
+                    );
+                    if (result != null) {
+                      final bool contentType = result['contentType'];
+                      print(result);
+                      setState(() {
+                        if (contentType == false) {
+                          content.value = result['content'];
+                        } else if (contentType == true &&
+                            result['imageSource'] == 0) {
+                          content.value = result['content'];
+                        } else if (contentType == true &&
+                            result['imageSource'] == 1) {
+                          photo.value = result['content'];
+                          widget.imageSource = 1;
+                        }
+                      });
+                    }
+                  },
+                ),
+              ListTile(
+                leading: const Icon(Icons.share_outlined),
+                title: const Text('Share'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.save_alt),
+                title: Text(widget.isSaved ? 'Unsave' : 'Save'),
+                onTap: () async {
+                  bool saved = await context
+                      .read<NetworkService>()
+                      .saveOrUnsaveComment(widget.commentId, !widget.isSaved);
+                  if (saved) {
+                    CustomSnackBar(
+                      context: context,
+                      content: widget.isSaved
+                          ? 'Comment Unsaved!'
+                          : 'Comment Saved!',
+                    ).show();
+                    widget.isSaved = !widget.isSaved;
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.notifications_outlined),
+                title: const Text('Get reply notification'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.copy_outlined),
+                title: const Text('Copy text'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.merge_type_outlined),
+                title: const Text('Collapse thread'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              if (widget.username == user.username)
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: const Text('Delete comment'),
+                  onTap: () async {
+                    bool deleted = await context
+                        .read<NetworkService>()
+                        .deleteComment(widget.commentId);
+                    if (deleted) {
+                      CustomSnackBar(
+                        context: context,
+                        content: 'Comment Deleted!',
+                      ).show();
+                      Navigator.pop(context);
+                    } else {
+                      CustomSnackBar(
+                        context: context,
+                        content: 'Failed to delete comment!',
+                      ).show();
+                    }
+                  },
+                ),
+              if (widget.username != user.username)
+                ListTile(
+                  leading: const Icon(Icons.block_outlined),
+                  title: const Text('Block account'),
+                  onTap: () async {
+                    // bool blocked = await context
+                    //     .read<NetworkService>()
+                    //     .blockUser(widget.username);
+                    // if (blocked) {
+                    //   CustomSnackBar(
+                    //       context: context, content: 'User blocked!');
+                    // } else {
+                    //   CustomSnackBar(
+                    //       context: context, content: 'User unblocked!');
+                    // }
+                    Navigator.pop(context);
+                  },
+                ),
+              ListTile(
+                leading: const Icon(Icons.flag_outlined),
+                title: const Text('Report'),
+                onTap: () async {
+                  bool reported = await context
+                      .read<NetworkService>()
+                      .reportPost(widget.commentId);
+                  if (reported) {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    ).then((_) {
+      // Remove the overlay entry after the modal bottom sheet is dismissed
+      overlayEntry.remove();
+    });
   }
 }
 
