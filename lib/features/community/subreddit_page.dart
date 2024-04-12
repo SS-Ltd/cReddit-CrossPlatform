@@ -37,7 +37,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   Future<void> fetchPosts() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final subredditName = widget.subredditName;
-    final posts = await networkService.fetchPostsForSubreddit(subredditName);
+    final posts = await networkService.fetchPostsForSubreddit2(subredditName);
 
     if (posts != null) {
       setState(() {

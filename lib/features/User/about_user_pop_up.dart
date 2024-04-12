@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
 import 'package:reddit_clone/models/user.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class AboutUserPopUp extends StatelessWidget {
   final String userName;

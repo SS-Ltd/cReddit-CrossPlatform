@@ -527,16 +527,16 @@ class NetworkService extends ChangeNotifier {
     } else {
       return null;
     }
-  }
+  }}
 
-  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName,
+  Future<List<PostModel>?> fetchPostsForSubreddit2(String? subredditName,
       {int page = 1, int limit = 10}) async {
     Uri url = Uri.parse(
         '$_baseUrl/subreddit/$subredditName/posts?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
       refreshToken();
-      return fetchPostsForSubreddit(subredditName, page: page, limit: limit);
+      return fetchPostsForSubreddit2(subredditName, page: page, limit: limit);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
