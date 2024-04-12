@@ -6,7 +6,6 @@ import 'package:reddit_clone/services/networkServices.dart';
 import '../../models/post_model.dart';
 
 class HomePage extends StatefulWidget {
-
   const HomePage({super.key});
 
   @override
@@ -16,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<String> menuItems = ['Hot', 'Top', 'New'];
   String selectedMenuItem = 'Hot'; // Store the selected menu item here
   String lastType = "Hot";
@@ -53,20 +52,20 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = true;
     });
-    // List<PostModel>? fetchedPosts = await context
-    //     .read<NetworkService>()
-    //     .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
-    // if (fetchedPosts != null && mounted) {
-    //   setState(() {
-    //     posts.addAll(fetchedPosts);
-    //     isLoading = false;
-    //     page++; // Increment page for the next fetch
-    //   });
-    // } else {
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    // }
+    List<PostModel>? fetchedPosts = await context
+        .read<NetworkService>()
+        .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
+    if (fetchedPosts != null && mounted) {
+      setState(() {
+        posts.addAll(fetchedPosts);
+        isLoading = false;
+        page++; // Increment page for the next fetch
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void _onScroll() {

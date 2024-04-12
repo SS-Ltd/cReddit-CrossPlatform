@@ -17,8 +17,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  String _baseUrl = 'http://192.168.1.7:3000';
-  //final String _baseUrl = 'https://creddit.tech/API';
+  // String _baseUrl = 'http://192.168.1.7:3000';
+  final String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -456,6 +456,8 @@ class NetworkService extends ChangeNotifier {
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
+    print("SUBREDDITDETAILS");
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getSubredditDetails(subredditName);
@@ -495,48 +497,46 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<PostModel>?> fetchPostsForSubreddit(String subredditName) async {
-    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/posts');
-    Future<List<PostModel>?> fetchHomeFeed({
-      String sort = 'hot',
-      String time = 'all',
-      int page = 1,
-      int limit = 5,
-    }) async {
-      String username = _user!.username;
-      final url = Uri.parse('$_baseUrl/post/home-feed?'
-          'sort=$sort'
-          '&time=$time'
-          '&page=$page'
-          '&limit=$limit');
+  Future<List<PostModel>?> fetchHomeFeed({
+    String sort = 'hot',
+    String time = 'all',
+    int page = 1,
+    int limit = 5,
+  }) async {
+    String username = _user!.username;
+    final url = Uri.parse('$_baseUrl/post/home-feed?'
+        'sort=$sort'
+        '&time=$time'
+        '&page=$page'
+        '&limit=$limit');
 
-      final response =
-          await http.get(url, headers: {'accept': 'application/json'});
+    final response =
+        await http.get(url, headers: {'accept': 'application/json'});
 
-      if (response.statusCode == 403) {
-        refreshToken();
-        return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
-      }
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = json.decode(response.body);
-        List<PostModel> posts = responseData
-            .map<PostModel>((postJson) => PostModel.fromJson(postJson))
-            .toList();
-        return posts;
-      } else {
-        return null;
-      }
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      List<PostModel> posts = responseData
+          .map<PostModel>((postJson) => PostModel.fromJson(postJson))
+          .toList();
+      return posts;
+    } else {
+      return null;
     }
   }
 
-  Future<List<PostModel>?> fetchPostsForSubreddit2(String? subredditName,
-      {int page = 1, int limit = 10}) async {
+  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName,
+      {int page = 1, int limit = 10, String sort = 'hot'}) async {
     Uri url = Uri.parse(
-        '$_baseUrl/subreddit/$subredditName/posts?page=$page&limit=$limit');
+        '$_baseUrl/subreddit/$subredditName/posts?page=$page&limit=$limit&sort=$sort');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
       refreshToken();
-      return fetchPostsForSubreddit2(subredditName, page: page, limit: limit);
+      return fetchPostsForSubreddit(subredditName,
+          page: page, limit: limit, sort: sort);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
