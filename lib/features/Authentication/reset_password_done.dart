@@ -6,6 +6,8 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/constants/assets_constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
 //import 'package:android_intent_plus/android_intent.dart';
@@ -56,18 +58,17 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: Palette.backgroundColor,
         appBar: AppBar(
+          backgroundColor: Palette.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: Image.asset(
-            'assets/reddit_icon.png',
-            fit: BoxFit.cover,
-            height: 50,
-          ),
+          title:
+            SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
           centerTitle: true,
           actions: <Widget>[
             Padding(
