@@ -203,7 +203,8 @@ class UserCommentState extends State<UserComment> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AboutUserPopUp(userName: widget.username)),
+                                  builder: (context) => AboutUserPopUp(
+                                      userName: widget.username)),
                               //replace with profile page or widget
                             );
                           },
@@ -220,7 +221,8 @@ class UserCommentState extends State<UserComment> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AboutUserPopUp(userName: widget.username)),
+                                  builder: (context) => AboutUserPopUp(
+                                      userName: widget.username)),
                               //replace with profile page or widget
                             );
                           },
@@ -587,58 +589,70 @@ class UserCommentState extends State<UserComment> {
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return IconButton(
-                              icon: Icon(Icons.arrow_upward,
-                                  color: value == 1
-                                      ? Palette.upvoteOrange
-                                      : Palette.greyColor),
-                              onPressed: () async {
-                                bool votedUp = await context
-                                    .read<NetworkService>()
-                                    .upVote(widget.commentId);
-                                if (votedUp && mounted) {
-                                  setState(() {
-                                    updateUpVote();
-                                  });
-                                }
-                              },
+                            return Semantics(
+                              identifier: 'comment upvote',
+                              label: 'comment upvote',
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_upward,
+                                    color: value == 1
+                                        ? Palette.upvoteOrange
+                                        : Palette.greyColor),
+                                onPressed: () async {
+                                  bool votedUp = await context
+                                      .read<NetworkService>()
+                                      .upVote(widget.commentId);
+                                  if (votedUp && mounted) {
+                                    setState(() {
+                                      updateUpVote();
+                                    });
+                                  }
+                                },
+                              ),
                             );
                           },
                         ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return Text(
-                              votes == 0 ? 'Vote' : '$votes',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: value == 1
-                                      ? Palette.upvoteOrange
-                                      : value == -1
-                                          ? Palette.downvoteBlue
-                                          : Palette.greyColor),
+                            return Semantics(
+                              identifier: 'comment votes',
+                              label: 'comment votes',
+                              child: Text(
+                                votes == 0 ? 'Vote' : '$votes',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: value == 1
+                                        ? Palette.upvoteOrange
+                                        : value == -1
+                                            ? Palette.downvoteBlue
+                                            : Palette.greyColor),
+                              ),
                             );
                           },
                         ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return IconButton(
-                              icon: Icon(Icons.arrow_downward,
-                                  color: value == -1
-                                      ? Palette.downvoteBlue
-                                      : Palette.greyColor),
-                              onPressed: () async {
-                                bool votedDown = await context
-                                    .read<NetworkService>()
-                                    .downVote(widget.commentId);
-                                if (votedDown && mounted) {
-                                  setState(() {
-                                    updateDownVote();
-                                  });
-                                }
-                              },
+                            return Semantics(
+                              identifier: 'comment downvote',
+                              label: 'comment downvote',
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_downward,
+                                    color: value == -1
+                                        ? Palette.downvoteBlue
+                                        : Palette.greyColor),
+                                onPressed: () async {
+                                  bool votedDown = await context
+                                      .read<NetworkService>()
+                                      .downVote(widget.commentId);
+                                  if (votedDown && mounted) {
+                                    setState(() {
+                                      updateDownVote();
+                                    });
+                                  }
+                                },
+                              ),
                             );
                           },
                         ),
