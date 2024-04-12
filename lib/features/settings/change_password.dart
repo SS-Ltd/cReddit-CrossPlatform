@@ -177,32 +177,37 @@ class _ChangePasswordState extends State<ChangePassword> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _currentPasswordController.clear();
-                                _newPasswordController.clear();
-                                _confirmPasswordController.clear();
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
-                              child: const Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  String changeresponse = await context
-                                      .read<NetworkService>()
-                                      .updatepassword(
-                                          _newPasswordController.text,
-                                          _confirmPasswordController.text,
-                                          _currentPasswordController.text);
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _currentPasswordController.clear();
+                                  _newPasswordController.clear();
+                                  _confirmPasswordController.clear();
                                   Navigator.pop(context);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
-                              child: const Text('Save'),
+                                },
+                                // style: ElevatedButton.styleFrom(
+                                //     minimumSize: const Size(150, 40)),
+                                child: const Text('Cancel'),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    String changeresponse = await context
+                                        .read<NetworkService>()
+                                        .updatepassword(
+                                            _newPasswordController.text,
+                                            _confirmPasswordController.text,
+                                            _currentPasswordController.text);
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(150, 40)),
+                                child: const Text('Save'),
+                              ),
                             ),
                           ],
                         ),

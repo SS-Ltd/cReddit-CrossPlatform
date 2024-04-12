@@ -58,9 +58,9 @@ class _NameSuggestionState extends State<NameSuggestion> {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: Palette.redditLogin,
+      backgroundColor: Palette.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Palette.redditLogin,
+        backgroundColor: Palette.backgroundColor,
         title: SvgPicture.asset(
           AssetsConstants.redditLogo,
           width: 50,
@@ -130,7 +130,7 @@ class _NameSuggestionState extends State<NameSuggestion> {
                                       onPressed: () {
                                         generateRandomNames();
                                       },
-                                      child: Text(
+                                      child: const Text(
                                         'Generate Again',
                                         style: TextStyle(color: Colors.white),
                                       ),

@@ -99,11 +99,43 @@ class SignUpScreen extends StatelessWidget {
                   valueListenable: isFormFilled,
                   builder: (context, isFilled, child) {
                     return ElevatedButton(
-                      onPressed: isFilled
-                          ? () async {
-                              // Your code...
-                            }
-                          : null,
+                      onPressed: () async {
+                    if (emailController.text.isEmpty ||
+                        passwordController.text.isEmpty) {
+                      // Show an error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please fill in all fields')),
+                      );
+                      return;
+                    }
+                    if (!isValidEmail(emailController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Invalid email address')),
+                      );
+                      return;
+                    }
+                    if (!isValidPassword(passwordController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
+                      );
+                      return;
+                    }
+                    Map<String, dynamic> userData = {
+                      'email': emailController.text,
+                      'password': passwordController.text,
+                    };
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              NameSuggestion(userData: userData)),
+                    );
+                  },
+                
+                         
                       child: const Text('Continue'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -132,6 +164,7 @@ class SignUpScreen extends StatelessWidget {
   bool isValidPassword(String password) {
     return password.length >= 8 &&
         password.contains(RegExp(r'[A-Z]')) &&
-        password.contains(RegExp(r'[a-z]'));
+        password.contains(RegExp(r'[a-z]')) && 
+        password.contains(RegExp(r'[0-9]'));
   }
 }

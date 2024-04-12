@@ -17,8 +17,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  // String _baseUrl = 'http://192.168.1.7:3000';
-  final String _baseUrl = 'https://creddit.tech/API';
+  final String _baseUrl = 'http://192.168.1.7:3000';
+  //final String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -195,7 +195,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> createUser(
       String username, String email, String password, String gender) async {
     final url = Uri.parse('$_baseUrl/user');
-
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -206,11 +205,19 @@ class NetworkService extends ChangeNotifier {
         'gender': gender,
       }),
     );
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       return createUser(username, email, password, gender);
     }
     if (response.statusCode == 201) {
+      _updateCookie(response);
+      var data = jsonDecode(response.body);
+      _user = UserModel.fromJson(data);
+      _user!.updateUserStatus(true);
+      print('Logged in. Cookie: $_cookie');
+      notifyListeners();
       return true;
     } else {
       return false;
@@ -542,7 +549,7 @@ class NetworkService extends ChangeNotifier {
   Future<UserModel> getMyDetails() async {
     Uri url = Uri.parse('$_baseUrl/user');
     final response = await http.get(url, headers: _headers);
-
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       getMyDetails();
@@ -569,7 +576,7 @@ class NetworkService extends ChangeNotifier {
 
     final response =
         await http.get(url, headers: {'accept': 'application/json'});
-
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);

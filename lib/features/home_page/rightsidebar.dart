@@ -198,19 +198,19 @@ class _RightsidebarState extends State<Rightsidebar> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.cake, color: Colors.blue, size: 30),
-                        SizedBox(width: 12),
+                        const Icon(Icons.cake, color: Colors.blue, size: 30),
+                        const SizedBox(width: 12),
                         Column(
                           children: [
                             Text(
                               formatTimestamp(user!.cakeDay),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
                             ),
-                            Text(
+                            const Text(
                               "Reddit Age",
                               style: TextStyle(
                                 color: Colors.grey,
@@ -245,9 +245,9 @@ class _RightsidebarState extends State<Rightsidebar> {
                               displayName: myUser.displayName,
                               profilePicture: myUser.profilePicture,
                               followerCount: myUser.followers,
-                              about: myUser.about!,
+                              about: myUser.about ?? '',
                               cakeDay: myUser.cakeDay.toString(),
-                              bannerPicture: myUser.banner!,
+                              bannerPicture: myUser.banner ?? '',
                               isOwnProfile: true,
                             ),
                           ),
