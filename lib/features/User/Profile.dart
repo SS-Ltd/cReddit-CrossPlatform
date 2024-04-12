@@ -1,11 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/post_model.dart';
 // import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 // import 'block_button.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
@@ -43,8 +50,98 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
+int mappingVotes(bool isUpvoted, bool isDownvoted) {
+  if (isUpvoted) {
+    return 1;
+  } else if (isDownvoted) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
 class _ProfileState extends State<Profile> {
   // final List<String> feedMenuItems = ['hot', 'top', 'new'];
+  bool isLoadingPosts = false;
+  bool hasMorePosts = true;
+  int postsPage = 1;
+
+  bool isLoadingComments = false;
+  bool hasMoreComments = true;
+  int commentsPage = 1;
+
+  List<PostModel> userPosts = [];
+  List<Comments> userComments = [];
+  Future<void> fetchUserPosts({bool refresh = false}) async {
+    if (isLoadingPosts) return;
+    if (refresh) {
+      userPosts = [];
+      postsPage = 1;
+      hasMorePosts = true;
+    }
+    if (!hasMorePosts) return;
+
+    setState(() {
+      isLoadingPosts = true;
+    });
+
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    print(widget.userName);
+    final posts = await networkService.fetchUserPosts(
+      widget.userName,
+      page: postsPage,
+      limit: 100, // or another appropriate limit
+    );
+
+    setState(() {
+      if (posts != null && posts.isNotEmpty) {
+        userPosts.addAll(posts);
+        postsPage++;
+      } else {
+        hasMorePosts = false;
+      }
+      isLoadingPosts = false;
+    });
+  }
+
+  Future<void> fetchUserComments({bool refresh = false}) async {
+    if (isLoadingComments) return;
+    if (refresh) {
+      userComments = [];
+      commentsPage = 1;
+      hasMoreComments = true;
+    }
+    if (!hasMoreComments) return;
+
+    setState(() {
+      isLoadingComments = true;
+    });
+
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final comments = await networkService.fetchUserComments(
+      widget.userName,
+      page: commentsPage,
+      limit: 20, // or another appropriate limit
+    );
+
+    setState(() {
+      if (comments != null && comments.isNotEmpty) {
+        userComments.addAll(comments);
+        commentsPage++;
+      } else {
+        hasMoreComments = false;
+      }
+      isLoadingComments = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserPosts();
+    fetchUserComments();
+  }
+
   String _formattedCakeDay(String cakeDay) {
     DateTime parsedDate = DateTime.parse(cakeDay);
     return DateFormat('dd MMM yyyy').format(parsedDate);
@@ -267,18 +364,53 @@ class _ProfileState extends State<Profile> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return mockPost();
+                final post = userPosts[index];
+                return Post(
+                  communityName: post.communityName ?? '',
+                  userName: post.username,
+                  title: post.title,
+                  postType: post.type,
+                  content: post.content,
+                  commentNumber: post.commentCount,
+                  shareNumber: 0,
+                  timeStamp: DateTime.now(),
+                  profilePicture: post.profilePicture,
+                  isHomePage: true,
+                  isSubRedditPage: false,
+                  postId: post.postId,
+                  votes: post.netVote,
+                  isDownvoted: post.isDownvoted,
+                  isUpvoted: post.isUpvoted,
+                );
               },
-              childCount: 5,
+              childCount: userPosts.length,
             ),
           ),
         ],
         if (widget.selectedTab == TabSelection.comments) ...[
-          SliverToBoxAdapter(
-            child: Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: const Text("Comments content here"),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                final comment = userComments[index];
+                return UserComment(
+                  avatar: comment.profilePicture,
+                  username: comment.username,
+                  content: comment.content,
+                  timestamp: DateTime.parse(comment.createdAt),
+                  photo: comment.isImage ? File(comment.content) : null,
+                  contentType: comment.isImage,
+                  imageSource: 0,
+                  commentId: comment.commentId,
+                  hasVoted:
+                      mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  isSaved: comment.isSaved,
+                  netVote: comment.netVote,
+                  communityName: comment.communityName!,
+                  postId: comment.postId!,
+                  title: comment.title!,
+                );
+              },
+              childCount: userComments.length,
             ),
           ),
         ],
@@ -295,7 +427,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget postsFeed(){
+  Widget postsFeed() {
     return Column(
       children: [
         // SelectItem(
@@ -303,12 +435,11 @@ class _ProfileState extends State<Profile> {
         //     onMenuItemSelected: (String selectedItem) {
         //       // Handle menu item selection here
         //       setState(() {
-                
+
         //       });
         //       print('Selected: $selectedItem');
         //     },
         // ),
-
       ],
     );
   }

@@ -311,114 +311,123 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   List<PopupMenuEntry<Menu>> menuitems() {
-  return <PopupMenuEntry<Menu>>[
-    if (widget.username != context.read<NetworkService>().user?.username)
-      const PopupMenuItem<Menu>(
-        value: Menu.share,
-        child: ListTile(
-          leading: Icon(Icons.share),
-          title: Text('Share'),
+    return <PopupMenuEntry<Menu>>[
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+          value: Menu.share,
+          child: ListTile(
+            leading: Icon(Icons.share),
+            title: Text('Share'),
+          ),
         ),
-      ),
-    const PopupMenuItem<Menu>(
-        value: Menu.subscribe,
-        child: ListTile(
-          leading: Icon(Icons.add_alert),
-          title: Text('Subscribe'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.save,
-        child: ListTile(
-          leading: Icon(Icons.bookmark_add_outlined),
-          title: Text('Save'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.copytext,
-        child: ListTile(
-          leading: Icon(Icons.copy),
-          title: Text('Copy text'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.edit,
-        child: ListTile(
-          leading: Icon(Icons.edit),
-          title: Text('Edit'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.addpostflair,
-        child: ListTile(
-          leading: Icon(Icons.add),
-          title: Text('Add post flair'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.markspoiler,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Mark spoiler'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.markNSFW,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Mark NSFW'),
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.markasbrandaffiliate,
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Mark as brand affiliate'),
-        )),
-    PopupMenuItem<Menu>(
-        value: Menu.delete,
-        child: ListTile(
-          leading: const Icon(Icons.delete),
-          title: const Text('Delete'),
-          onTap: () async {
-            bool isDeleted = await context
-                .read<NetworkService>()
-                .deletepost(widget.postId);
-            if (isDeleted) {
-              //show snackbar
-            }
-          },
-        )),
-    PopupMenuItem<Menu>(
-        value: Menu.report,
-        child: ListTile(
-          leading: const Icon(Icons.report),
-          title: const Text('Report'),
-          onTap: () async {
-            print(widget.postId);
-            bool isReported = await context
-                .read<NetworkService>()
-                .reportPost(widget.postId);
-            if (isReported) {
-              //show snackbar
-            }
-          },
-        )),
-    const PopupMenuItem<Menu>(
-        value: Menu.block,
-        child: ListTile(
-          leading: Icon(Icons.block),
-          title: Text('Block'),
-        )),
-    PopupMenuItem<Menu>(
-        value: Menu.hide,
-        child: ListTile(
-          leading: const Icon(Icons.hide_source),
-          title: const Text('hide'),
-          onTap: () async {
-            bool isHidden = await context
-                .read<NetworkService>()
-                .hidepost(widget.postId, true);
-            if (isHidden) {
-              //show snackbar
-            }
-          },
-        )),
-  ];
-}
+      const PopupMenuItem<Menu>(
+          value: Menu.subscribe,
+          child: ListTile(
+            leading: Icon(Icons.add_alert),
+            title: Text('Subscribe'),
+          )),
+      PopupMenuItem<Menu>(
+          value: Menu.save,
+          child: ListTile(
+            leading: const Icon(Icons.bookmark_add_outlined),
+            title: const Text('Save'),
+            onTap: () async {
+              //    bool isSaved = await context.read<NetworkService>().saveandunsavepost(widget.postId, isSaved)
+            },
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.copytext,
+          child: ListTile(
+            leading: Icon(Icons.copy),
+            title: Text('Copy text'),
+          )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.edit,
+            child: ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Edit'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.addpostflair,
+            child: ListTile(
+              leading: Icon(Icons.add),
+              title: Text('Add post flair'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.markspoiler,
+            child: ListTile(
+              leading: Icon(Icons.warning),
+              title: Text('Mark spoiler'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.markNSFW,
+            child: ListTile(
+              leading: Icon(Icons.warning),
+              title: Text('Mark NSFW'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.markasbrandaffiliate,
+            child: ListTile(
+              leading: Icon(Icons.warning),
+              title: Text('Mark as brand affiliate'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        PopupMenuItem<Menu>(
+            value: Menu.delete,
+            child: ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text('Delete'),
+              onTap: () async {
+                bool isDeleted = await context
+                    .read<NetworkService>()
+                    .deletepost(widget.postId);
+                if (isDeleted) {
+                  //show snackbar
+                }
+              },
+            )),
+      PopupMenuItem<Menu>(
+          value: Menu.report,
+          child: ListTile(
+            leading: const Icon(Icons.report),
+            title: const Text('Report'),
+            onTap: () async {
+              print(widget.postId);
+              bool isReported = await context
+                  .read<NetworkService>()
+                  .reportPost(widget.postId);
+              if (isReported) {
+                //show snackbar
+              }
+            },
+          )),
+      const PopupMenuItem<Menu>(
+          value: Menu.block,
+          child: ListTile(
+            leading: Icon(Icons.block),
+            title: Text('Block'),
+          )),
+      PopupMenuItem<Menu>(
+          value: Menu.hide,
+          child: ListTile(
+            leading: const Icon(Icons.hide_source),
+            title: const Text('hide'),
+            onTap: () async {
+              bool isHidden = await context
+                  .read<NetworkService>()
+                  .hidepost(widget.postId, true);
+              if (isHidden) {
+                //show snackbar
+              }
+            },
+          )),
+    ];
+  }
 }
 
 enum Menu {
@@ -432,7 +441,6 @@ enum Menu {
   markNSFW,
   markasbrandaffiliate,
   delete, //done
-
   report, //done
   block,
   hide, //done
