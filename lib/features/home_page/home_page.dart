@@ -56,16 +56,18 @@ class _HomePageState extends State<HomePage> {
     List<PostModel>? fetchedPosts = await context
         .read<NetworkService>()
         .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
-    if (fetchedPosts != null && mounted) {
-      setState(() {
-        posts.addAll(fetchedPosts);
-        isLoading = false;
-        page++;
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
+    if (mounted) {
+      if (fetchedPosts != null) {
+        setState(() {
+          posts.addAll(fetchedPosts);
+          isLoading = false;
+          page++;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
