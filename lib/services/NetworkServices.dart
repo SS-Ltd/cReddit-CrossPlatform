@@ -17,8 +17,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'http://192.168.1.7:3000';
-  //final String _baseUrl = 'https://creddit.tech/API';
+  //final String _baseUrl = 'http://192.168.1.7:3000';
+  final String _baseUrl = 'https://creddit.tech/API';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
