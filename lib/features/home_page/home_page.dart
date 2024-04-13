@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/home_page/menu_notifier.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/features/home_page/menu_notifier.dart';
+import 'package:cReddit/features/home_page/post.dart';
+import 'package:cReddit/services/networkServices.dart';
 
 import '../../models/post_model.dart';
 

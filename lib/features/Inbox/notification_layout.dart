@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/Inbox/notification_item.dart';
+import 'package:cReddit/features/Inbox/notification_item.dart';
 
 class NotificationLayout extends StatelessWidget {
   const NotificationLayout(

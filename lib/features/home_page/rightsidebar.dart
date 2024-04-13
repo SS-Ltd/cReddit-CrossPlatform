@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/Authentication/login.dart';
-import 'package:reddit_clone/features/comments/reply_comment.dart';
-import 'package:reddit_clone/features/community/create_community_page.dart';
+import 'package:cReddit/features/Authentication/login.dart';
+import 'package:cReddit/features/comments/reply_comment.dart';
+import 'package:cReddit/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/User/history.dart';
-import 'package:reddit_clone/features/User/saved.dart';
-import 'package:reddit_clone/features/settings/settings.dart';
-import 'package:reddit_clone/models/user.dart';
-import 'package:reddit_clone/new_page.dart';
-import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/features/User/profile.dart';
-import 'package:reddit_clone/features/User/profile.dart';
-import 'package:reddit_clone/theme/Palette.dart';
+import 'package:cReddit/features/User/history.dart';
+import 'package:cReddit/features/User/saved.dart';
+import 'package:cReddit/features/settings/settings.dart';
+import 'package:cReddit/models/user.dart';
+import 'package:cReddit/new_page.dart';
+import 'package:cReddit/services/networkServices.dart';
+import 'package:cReddit/features/User/profile.dart';
+import 'package:cReddit/features/User/profile.dart';
+import 'package:cReddit/theme/Palette.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});

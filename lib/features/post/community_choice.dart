@@ -1,7 +1,7 @@
-import 'package:reddit_clone/models/joined_communities.dart';
+import 'package:cReddit/models/joined_communities.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/services/networkServices.dart';
 
 class CommunityChoice extends StatefulWidget {
   CommunityChoice({

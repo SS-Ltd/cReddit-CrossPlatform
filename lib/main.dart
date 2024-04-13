@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/Authentication/login.dart';
-import 'package:reddit_clone/features/home_page/menu_notifier.dart';
-import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/theme/theme.dart';
-import 'package:reddit_clone/services/google_service.dart';
+import 'package:cReddit/features/Authentication/login.dart';
+import 'package:cReddit/features/home_page/menu_notifier.dart';
+import 'package:cReddit/services/networkServices.dart';
+import 'package:cReddit/theme/theme.dart';
+import 'package:cReddit/services/google_service.dart';
 
 void main() {
   runApp(MultiProvider(

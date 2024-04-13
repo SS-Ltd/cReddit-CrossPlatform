@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/models/subreddit.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/features/home_page/post.dart';
+import 'package:cReddit/models/post_model.dart';
+import 'package:cReddit/models/subreddit.dart';
+import 'package:cReddit/services/networkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
   final String? subredditName;

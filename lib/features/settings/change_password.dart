@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/settings/forgot_password.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/features/settings/forgot_password.dart';
+import 'package:cReddit/services/networkServices.dart';
 import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {

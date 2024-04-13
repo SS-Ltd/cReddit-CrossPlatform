@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
-import 'package:reddit_clone/features/home_page/home_page.dart';
-import 'package:reddit_clone/features/home_page/menu_notifier.dart';
-import 'package:reddit_clone/features/home_page/rightsidebar.dart';
-import 'package:reddit_clone/features/home_page/select_item.dart';
-import 'package:reddit_clone/models/subreddit.dart';
-import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/features/Community/community_page.dart';
-import 'package:reddit_clone/features/post/create_post.dart';
-import 'package:reddit_clone/theme/palette.dart';
+import 'package:cReddit/features/Inbox/inbox_notifications.dart';
+import 'package:cReddit/features/home_page/home_page.dart';
+import 'package:cReddit/features/home_page/menu_notifier.dart';
+import 'package:cReddit/features/home_page/rightsidebar.dart';
+import 'package:cReddit/features/home_page/select_item.dart';
+import 'package:cReddit/models/subreddit.dart';
+import 'package:cReddit/services/networkServices.dart';
+import 'package:cReddit/features/Community/community_page.dart';
+import 'package:cReddit/features/post/create_post.dart';
+import 'package:cReddit/theme/palette.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({super.key});

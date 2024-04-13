@@ -1,4 +1,4 @@
-# reddit_clone
+# cReddit
 
 A new Flutter project.
 

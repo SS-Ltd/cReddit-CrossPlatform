@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/theme/theme.dart';
+import 'package:cReddit/theme/theme.dart';
 
 class ArrowButton extends StatelessWidget {
   final VoidCallback onPressed;

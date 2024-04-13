@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/theme/palette.dart';
+import 'package:cReddit/theme/palette.dart';
 
 class AuthField extends StatefulWidget {
   final TextEditingController controller;

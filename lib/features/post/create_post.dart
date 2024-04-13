@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/features/post/community_choice.dart';
+import 'package:cReddit/services/networkServices.dart';
+import 'package:cReddit/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
-import 'package:reddit_clone/switch_button.dart';
+import 'package:cReddit/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:cReddit/switch_button.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity

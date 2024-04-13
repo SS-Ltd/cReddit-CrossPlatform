@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/comments/comment_post.dart';
-import 'package:reddit_clone/models/comments.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/features/comments/comment_post.dart';
+import 'package:cReddit/models/comments.dart';
+import 'package:cReddit/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/features/home_page/rightsidebar.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:cReddit/features/home_page/post.dart';
+import 'package:cReddit/features/home_page/rightsidebar.dart';
+import 'package:cReddit/features/home_page/post.dart';
 
 class CommentPage extends StatefulWidget {
   final String postId;

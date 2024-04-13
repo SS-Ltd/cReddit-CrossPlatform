@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:reddit_clone/theme/palette.dart';
+import 'package:cReddit/theme/palette.dart';
 
 class Heading extends StatelessWidget {
   final String text;

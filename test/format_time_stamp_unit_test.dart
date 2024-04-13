@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:cReddit/features/home_page/post.dart';
 
 void main() {
   test('Check Time Stamp Format', () {

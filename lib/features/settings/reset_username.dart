@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/services/networkServices.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:cReddit/services/networkServices.dart';
 
 class ResetUsername extends StatefulWidget {
   const ResetUsername({super.key});
