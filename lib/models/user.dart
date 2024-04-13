@@ -1,4 +1,4 @@
-import 'package:cReddit/models/subreddit.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 
 class UserModel {
   final String username;

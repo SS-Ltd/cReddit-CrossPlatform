@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/features/Inbox/message_item.dart';
+import 'package:reddit_clone/features/Inbox/message_item.dart';
 
 class MessageLayout extends StatelessWidget {
   final MessageItem message;

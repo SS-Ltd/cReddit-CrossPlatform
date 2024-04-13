@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/features/home_page/post.dart';
-import 'package:cReddit/features/comments/comment_page.dart';
-import 'package:cReddit/post_options_menu.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/features/comments/comment_page.dart';
+import 'package:reddit_clone/post_options_menu.dart';
 
 enum Menu {
   share,

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/common/FullWidthButton.dart';
-import 'package:cReddit/constants/assets_constants.dart';
-import 'package:cReddit/features/Authentication/login.dart';
-import 'package:cReddit/features/Authentication/widgets/auth_filed.dart';
-import 'package:cReddit/theme/palette.dart';
-import 'package:cReddit/features/Authentication/widgets/user_agreement.dart';
-import 'package:cReddit/features/Authentication/name_suggestion.dart';
+import 'package:reddit_clone/common/FullWidthButton.dart';
+import 'package:reddit_clone/constants/assets_constants.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
+import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
+import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:cReddit/features/Authentication/google_button.dart';
+import 'package:reddit_clone/features/Authentication/google_button.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key});

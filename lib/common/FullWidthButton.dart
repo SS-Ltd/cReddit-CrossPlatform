@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/theme/palette.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class FullWidthButton extends StatelessWidget {
   final String text;

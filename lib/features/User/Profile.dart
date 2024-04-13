@@ -4,19 +4,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:cReddit/features/comments/user_comment.dart';
-import 'package:cReddit/features/home_page/post.dart';
-import 'package:cReddit/features/home_page/select_item.dart';
-import 'package:cReddit/models/comments.dart';
-import 'package:cReddit/models/post_model.dart';
-// import 'package:cReddit/rightsidebar.dart';
-import 'package:cReddit/post_options_menu.dart';
+import 'package:reddit_clone/features/comments/user_comment.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/features/home_page/select_item.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/post_model.dart';
+// import 'package:reddit_clone/rightsidebar.dart';
+import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
-import 'package:cReddit/services/networkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 // import 'block_button.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
-import 'package:cReddit/features/User/edit_button.dart';
+import 'package:reddit_clone/features/User/edit_button.dart';
 
 enum TabSelection { posts, comments, about }
 

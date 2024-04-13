@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:cReddit/services/networkServices.dart';
-import 'package:cReddit/common/CustomSnackBar.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 class CommentPostPage extends StatefulWidget {
   final String commentContent;

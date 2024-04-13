@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/features/home_page/post.dart';
-import 'package:cReddit/models/post_model.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/post_model.dart';
 
 class PostComments extends StatelessWidget {
   final String communityName;

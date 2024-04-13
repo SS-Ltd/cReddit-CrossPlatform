@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/features/settings/blocked_user_model.dart';
+import 'package:reddit_clone/features/settings/blocked_user_model.dart';
 
 final dummyusers = [
   BlockedUserModel(onPressed: () {}, username: 'Osama', userphoto: 'qwdasdass'),

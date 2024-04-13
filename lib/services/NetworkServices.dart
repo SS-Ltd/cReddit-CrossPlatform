@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'package:cReddit/models/post_model.dart';
-import 'package:cReddit/models/savedcomments.dart';
-import 'package:cReddit/models/subreddit.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/savedcomments.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
-import 'package:cReddit/models/user.dart';
-import 'package:cReddit/models/user_settings.dart';
-import 'package:cReddit/models/joined_communities.dart';
-import 'package:cReddit/models/comments.dart';
-import 'package:cReddit/models/community.dart';
+import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/models/user_settings.dart';
+import 'package:reddit_clone/models/joined_communities.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/community.dart';
 import 'package:path/path.dart';
 
 class NetworkService extends ChangeNotifier {

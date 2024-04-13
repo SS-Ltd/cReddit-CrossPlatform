@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cReddit/common/arrow_button.dart';
-import 'package:cReddit/features/settings/change_password.dart';
-import 'package:cReddit/features/settings/chat_messages_permissions.dart';
-import 'package:cReddit/common/heading.dart';
-import 'package:cReddit/features/settings/muted_communities.dart';
-import 'package:cReddit/features/settings/update_email.dart';
-import 'package:cReddit/features/settings/manage_blocked_accounts.dart';
-import 'package:cReddit/services/networkServices.dart';
+import 'package:reddit_clone/common/arrow_button.dart';
+import 'package:reddit_clone/features/settings/change_password.dart';
+import 'package:reddit_clone/features/settings/chat_messages_permissions.dart';
+import 'package:reddit_clone/common/heading.dart';
+import 'package:reddit_clone/features/settings/muted_communities.dart';
+import 'package:reddit_clone/features/settings/update_email.dart';
+import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class AccountSettings extends StatelessWidget {
   const AccountSettings({super.key});

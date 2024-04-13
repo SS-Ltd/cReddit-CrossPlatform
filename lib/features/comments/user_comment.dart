@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:cReddit/common/CustomSnackBar.dart';
-import 'package:cReddit/models/user.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
-import 'package:cReddit/theme/palette.dart';
-import 'package:cReddit/features/User/about_user_pop_up.dart';
+import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:provider/provider.dart';
-import 'package:cReddit/services/networkServices.dart';
-import 'package:cReddit/features/comments/edit_comment.dart';
-import 'package:cReddit/models/comments.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/features/comments/edit_comment.dart';
+import 'package:reddit_clone/models/comments.dart';
 
 class UserComment extends StatefulWidget {
   final String avatar;

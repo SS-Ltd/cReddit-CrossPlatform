@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:cReddit/common/arrow_button.dart';
-import 'package:cReddit/features/User/Profile.dart';
-import 'package:cReddit/models/user.dart';
-import 'package:cReddit/services/networkServices.dart';
+import 'package:reddit_clone/common/arrow_button.dart';
+import 'package:reddit_clone/features/User/Profile.dart';
+import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class AboutUserPopUp extends StatelessWidget {
   final String userName;

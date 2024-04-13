@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:cReddit/services/networkServices.dart';
-import 'package:cReddit/models/community.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/models/community.dart';
 
 void main() {
   test('fetchCommunities returns a list of communities', () async {

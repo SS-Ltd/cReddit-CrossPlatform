@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cReddit/common/FullWidthButton.dart';
-import 'package:cReddit/constants/assets_constants.dart';
+import 'package:reddit_clone/common/FullWidthButton.dart';
+import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:cReddit/features/Authentication/widgets/auth_filed.dart';
-import 'package:cReddit/features/Authentication/forget_password.dart';
-import 'package:cReddit/features/home_page/widgets/custom_navigation_bar.dart';
-import 'package:cReddit/theme/palette.dart';
-import 'package:cReddit/services/networkServices.dart';
-import 'package:cReddit/features/Authentication/signup.dart';
-import 'package:cReddit/features/Authentication/widgets/user_agreement.dart';
-import 'package:cReddit/features/Authentication/google_button.dart';
+import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
+import 'package:reddit_clone/features/Authentication/forget_password.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/features/Authentication/signup.dart';
+import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
+import 'package:reddit_clone/features/Authentication/google_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -88,7 +88,7 @@ class LoginScreen extends StatelessWidget {
               child: Column(children: [
                 const SizedBox(height: 20),
                 const Text(
-                  'Log in to cReddit',
+                  'Log in to reddit_clone',
                   style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,

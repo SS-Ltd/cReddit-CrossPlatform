@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/features/home_page/post.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 
 enum TabSelection { posts, comments, about }
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cReddit/features/Inbox/message_item.dart';
-import 'package:cReddit/features/Inbox/message_layout.dart';
-import 'package:cReddit/features/Inbox/notification_item.dart';
-import 'package:cReddit/features/Inbox/notification_layout.dart';
+import 'package:reddit_clone/features/Inbox/message_item.dart';
+import 'package:reddit_clone/features/Inbox/message_layout.dart';
+import 'package:reddit_clone/features/Inbox/notification_item.dart';
+import 'package:reddit_clone/features/Inbox/notification_layout.dart';
 
 class InboxNotificationPage extends StatefulWidget {
   const InboxNotificationPage({super.key});
