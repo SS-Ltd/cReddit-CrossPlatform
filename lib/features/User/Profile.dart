@@ -177,15 +177,25 @@ class _ProfileState extends State<Profile> {
           actions: [
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.search, size: 30.0),
+              icon: Semantics(
+                  label: "profile search",
+                  identifier: "profile search",
+                  child: const Icon(Icons.search, size: 30.0)),
             ),
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.share, size: 30.0),
+              icon: Semantics(
+                  label: "profile share",
+                  identifier: "profile share",
+                  child: const Icon(Icons.share, size: 30.0)),
             ),
-            PopupMenuButton<Menu>(
-              onSelected: (Menu item) {},
-              itemBuilder: (BuildContext context) => menuitems(),
+            Semantics(
+              label: "profile menu",
+              identifier: "profile menu",
+              child: PopupMenuButton<Menu>(
+                onSelected: (Menu item) {},
+                itemBuilder: (BuildContext context) => menuitems(),
+              ),
             ),
           ],
         ),

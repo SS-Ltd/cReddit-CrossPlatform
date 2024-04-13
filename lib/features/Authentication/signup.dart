@@ -82,12 +82,21 @@ class SignUpScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            AuthField(controller: emailController, labelText: 'Email', showClearButton: true,),
+            Semantics(
+                identifier: 'signup_email_field',
+                child: AuthField(
+                  controller: emailController,
+                  labelText: 'Email',
+                  showClearButton: true,
+                )),
             const SizedBox(height: 20),
-            AuthField(
-                controller: passwordController,
-                labelText: 'Password',
-                obscureText: true),
+            Semantics(
+              identifier: 'signup_password_fields',
+              child: AuthField(
+                  controller: passwordController,
+                  labelText: 'Password',
+                  obscureText: true),
+            ),
             const Expanded(
               child: SizedBox(height: 1), // Replace 1 with the desired height
             ),
@@ -100,42 +109,41 @@ class SignUpScreen extends StatelessWidget {
                   builder: (context, isFilled, child) {
                     return ElevatedButton(
                       onPressed: () async {
-                    if (emailController.text.isEmpty ||
-                        passwordController.text.isEmpty) {
-                      // Show an error message
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Please fill in all fields')),
-                      );
-                      return;
-                    }
-                    if (!isValidEmail(emailController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Invalid email address')),
-                      );
-                      return;
-                    }
-                    if (!isValidPassword(passwordController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
-                      );
-                      return;
-                    }
-                    Map<String, dynamic> userData = {
-                      'email': emailController.text,
-                      'password': passwordController.text,
-                    };
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              NameSuggestion(userData: userData)),
-                    );
-                  },
-                
-                         
+                        if (emailController.text.isEmpty ||
+                            passwordController.text.isEmpty) {
+                          // Show an error message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Please fill in all fields')),
+                          );
+                          return;
+                        }
+                        if (!isValidEmail(emailController.text)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Invalid email address')),
+                          );
+                          return;
+                        }
+                        if (!isValidPassword(passwordController.text)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
+                          );
+                          return;
+                        }
+                        Map<String, dynamic> userData = {
+                          'email': emailController.text,
+                          'password': passwordController.text,
+                        };
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  NameSuggestion(userData: userData)),
+                        );
+                      },
                       child: const Text('Continue'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -164,7 +172,7 @@ class SignUpScreen extends StatelessWidget {
   bool isValidPassword(String password) {
     return password.length >= 8 &&
         password.contains(RegExp(r'[A-Z]')) &&
-        password.contains(RegExp(r'[a-z]')) && 
+        password.contains(RegExp(r'[a-z]')) &&
         password.contains(RegExp(r'[0-9]'));
   }
 }

@@ -220,12 +220,16 @@ class UserCommentState extends State<UserComment> {
                                       userName: widget.username);
                                 });
                           },
-                          child: Text(
-                            widget.username,
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold),
+                          child: Semantics(
+                            label: 'comment username',
+                            identifier: "comment username",
+                            child: Text(
+                              widget.username,
+                              style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -272,12 +276,16 @@ class UserCommentState extends State<UserComment> {
                                     child: ValueListenableBuilder<String>(
                                       valueListenable: content,
                                       builder: (context, value, child) {
-                                        return Text(
-                                          value.split('\n')[0],
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey,
+                                        return Semantics(
+                                          label: 'comment content',
+                                          identifier: 'comment content',
+                                          child: Text(
+                                            value.split('\n')[0],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                         );
                                       },
@@ -367,7 +375,10 @@ class UserCommentState extends State<UserComment> {
                       children: [
                         const Spacer(),
                         IconButton(
-                          icon: const Icon(Icons.more_vert),
+                          icon: Semantics(
+                              identifier: "comment options",
+                              label: "comment options",
+                              child: const Icon(Icons.more_vert)),
                           onPressed: () {
                             UserModel user =
                                 context.read<NetworkService>().getUser();
@@ -378,31 +389,34 @@ class UserCommentState extends State<UserComment> {
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.reply_sharp),
+                          icon: Semantics(
+                              identifier: "comment reply",
+                              label: "comment reply",
+                              child: const Icon(Icons.reply_sharp)),
                           onPressed: _addReply,
                         ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return Semantics(
-                              identifier: 'comment upvote',
-                              label: 'comment upvote',
-                              child: IconButton(
-                                icon: Icon(Icons.arrow_upward,
+                            return IconButton(
+                              icon: Semantics(
+                                identifier: 'comment upvote',
+                                label: 'comment upvote',
+                                child: Icon(Icons.arrow_upward,
                                     color: value == 1
                                         ? Palette.upvoteOrange
                                         : Palette.greyColor),
-                                onPressed: () async {
-                                  bool votedUp = await context
-                                      .read<NetworkService>()
-                                      .upVote(widget.commentId);
-                                  if (votedUp && mounted) {
-                                    setState(() {
-                                      updateUpVote();
-                                    });
-                                  }
-                                },
                               ),
+                              onPressed: () async {
+                                bool votedUp = await context
+                                    .read<NetworkService>()
+                                    .upVote(widget.commentId);
+                                if (votedUp && mounted) {
+                                  setState(() {
+                                    updateUpVote();
+                                  });
+                                }
+                              },
                             );
                           },
                         ),
@@ -429,25 +443,25 @@ class UserCommentState extends State<UserComment> {
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return Semantics(
-                              identifier: 'comment downvote',
-                              label: 'comment downvote',
-                              child: IconButton(
-                                icon: Icon(Icons.arrow_downward,
+                            return IconButton(
+                              icon: Semantics(
+                                identifier: 'comment downvote',
+                                label: 'comment downvote',
+                                child: Icon(Icons.arrow_downward,
                                     color: value == -1
                                         ? Palette.downvoteBlue
                                         : Palette.greyColor),
-                                onPressed: () async {
-                                  bool votedDown = await context
-                                      .read<NetworkService>()
-                                      .downVote(widget.commentId);
-                                  if (votedDown && mounted) {
-                                    setState(() {
-                                      updateDownVote();
-                                    });
-                                  }
-                                },
                               ),
+                              onPressed: () async {
+                                bool votedDown = await context
+                                    .read<NetworkService>()
+                                    .downVote(widget.commentId);
+                                if (votedDown && mounted) {
+                                  setState(() {
+                                    updateDownVote();
+                                  });
+                                }
+                              },
                             );
                           },
                         ),

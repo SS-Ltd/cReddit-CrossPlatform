@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
@@ -74,22 +76,26 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              TextField(
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-                controller: _communityNameController,
-                maxLength: _maxLength,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: const Color.fromRGBO(32, 32, 32, 1),
-                  hintText: 'r/Community_name',
-                  hintStyle: const TextStyle(
-                    color: Colors.grey,
+              Semantics(
+                label: 'Community Name',
+                identifier: "Community Name",
+                child: TextField(
+                  style: const TextStyle(
+                    color: Colors.white,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
+                  controller: _communityNameController,
+                  maxLength: _maxLength,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color.fromRGBO(32, 32, 32, 1),
+                    hintText: 'r/Community_name',
+                    hintStyle: const TextStyle(
+                      color: Colors.grey,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
@@ -104,23 +110,27 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                   fontSize: 14,
                 ),
               ),
-              InkWell(
-                onTap: () => _showCommunityTypeSelection(context),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        _communityType,
-                        style: const TextStyle(
+              Semantics(
+                label: 'Community Type',
+                identifier: "Community Type",
+                child: InkWell(
+                  onTap: () => _showCommunityTypeSelection(context),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          _communityType,
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.arrow_drop_down,
                           color: Colors.white,
                         ),
-                      ),
-                      const Icon(
-                        Icons.arrow_drop_down,
-                        color: Colors.white,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -144,16 +154,20 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
                       ),
                     ),
                   ),
-                  Switch(
-                    value: _is18Plus,
-                    onChanged: (value) {
-                      setState(() {
-                        _is18Plus = value;
-                      });
-                    },
-                    activeTrackColor: const Color.fromRGBO(0, 110, 199, 1),
-                    inactiveThumbColor: Colors.white,
-                    inactiveTrackColor: const Color.fromRGBO(30, 30, 30, 1),
+                  Semantics(
+                    label: '18+ Community',
+                    identifier: "18+ Community",
+                    child: Switch(
+                      value: _is18Plus,
+                      onChanged: (value) {
+                        setState(() {
+                          _is18Plus = value;
+                        });
+                      },
+                      activeTrackColor: const Color.fromRGBO(0, 110, 199, 1),
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: const Color.fromRGBO(30, 30, 30, 1),
+                    ),
                   ),
                 ],
               ),
@@ -271,14 +285,12 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     final isNSFW = _is18Plus;
     final success = await networkService.createCommunity(subredditName, isNSFW);
     if (success) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              SubRedditPage(subredditName: subredditName)),
-              
-    );
-    _communityNameController.clear();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SubRedditPage(subredditName: subredditName)),
+      );
+      _communityNameController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

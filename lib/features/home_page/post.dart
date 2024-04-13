@@ -274,10 +274,14 @@ class _PostState extends State<Post> {
                                                   userName: widget.userName);
                                             });
                                       },
-                                      child: Text(
-                                        'u/${widget.userName}',
-                                        style: const TextStyle(
-                                          color: Colors.grey,
+                                      child: Semantics(
+                                        identifier: 'post username',
+                                        label: 'post username',
+                                        child: Text(
+                                          'u/${widget.userName}',
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                     )
@@ -293,10 +297,14 @@ class _PostState extends State<Post> {
                                                   )),
                                         );
                                       },
-                                      child: Text(
-                                        'r/${widget.communityName}',
-                                        style: const TextStyle(
-                                          color: Colors.grey,
+                                      child: Semantics(
+                                        identifier: 'post subreddit',
+                                        label: 'post subreddit',
+                                        child: Text(
+                                          'r/${widget.communityName}',
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                     )))
@@ -320,10 +328,14 @@ class _PostState extends State<Post> {
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'r/${widget.communityName}',
-                                      style: const TextStyle(
-                                        color: Colors.grey,
+                                    Semantics(
+                                      identifier: 'post subreddit',
+                                      label: 'post subreddit',
+                                      child: Text(
+                                        'r/${widget.communityName}',
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                     GestureDetector(
@@ -336,10 +348,14 @@ class _PostState extends State<Post> {
                                             });
                                         //replace with profile page or widget
                                       },
-                                      child: Text(
-                                        'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
-                                        style: const TextStyle(
-                                          color: Colors.blue,
+                                      child: Semantics(
+                                        identifier: 'post username',
+                                        label: 'post username',
+                                        child: Text(
+                                          'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                          style: const TextStyle(
+                                            color: Colors.blue,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -385,43 +401,46 @@ class _PostState extends State<Post> {
                     );
                   }
                 : null,
-            child: Text(
-              widget.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            child: Semantics(
+              identifier: 'post title',
+              label: 'post title',
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
           ),
           _buildContent(),
           Row(
             children: [
-              Semantics(
-                identifier: 'post Upvote',
-                label: 'post Upvote',
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_upward),
-                  color: widget.isUpvoted ? Colors.red : Colors.grey,
-                  onPressed: () async {
-                    bool a = await context
-                        .read<NetworkService>()
-                        .upVote(widget.postId);
-                    setState(() {
-                      print("upvote");
-                      if (widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes--;
-                        widget.isUpvoted = false;
-                      } else if (!widget.isUpvoted && widget.isDownvoted) {
-                        widget.votes += 2;
-                        widget.isUpvoted = true;
-                        widget.isDownvoted = false;
-                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes++;
-                        widget.isUpvoted = true;
-                      }
-                    });
-                  },
-                ),
+              IconButton(
+                icon: Semantics(
+                    identifier: "post upvote",
+                    label: "post upvote",
+                    child: const Icon(Icons.arrow_upward)),
+                color: widget.isUpvoted ? Colors.red : Colors.grey,
+                onPressed: () async {
+                  bool a = await context
+                      .read<NetworkService>()
+                      .upVote(widget.postId);
+                  setState(() {
+                    print("upvote");
+                    if (widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes--;
+                      widget.isUpvoted = false;
+                    } else if (!widget.isUpvoted && widget.isDownvoted) {
+                      widget.votes += 2;
+                      widget.isUpvoted = true;
+                      widget.isDownvoted = false;
+                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes++;
+                      widget.isUpvoted = true;
+                    }
+                  });
+                },
               ),
               Semantics(
                 identifier: 'post votes',
@@ -433,71 +452,78 @@ class _PostState extends State<Post> {
                           : (widget.isDownvoted ? Colors.blue : Colors.grey),
                     )),
               ),
-              Semantics(
-                identifier: 'post Downvote',
-                label: 'post Downvote',
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_downward),
-                  color: widget.isDownvoted ? Colors.blue : Colors.grey,
-                  onPressed: () async {
-                    bool a = await context
-                        .read<NetworkService>()
-                        .downVote(widget.postId);
-                    setState(() {
-                      if (widget.isDownvoted && !widget.isUpvoted) {
-                        widget.votes++;
-                        widget.isDownvoted = false;
-                      } else if (widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes -= 2;
-                        widget.isUpvoted = false;
-                        widget.isDownvoted = true;
-                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes--;
-                        widget.isDownvoted = true;
-                      }
-                    });
-                  },
-                ),
+              IconButton(
+                icon: Semantics(
+                    identifier: "post downvote",
+                    label: "post downvote",
+                    child: const Icon(Icons.arrow_downward)),
+                color: widget.isDownvoted ? Colors.blue : Colors.grey,
+                onPressed: () async {
+                  bool a = await context
+                      .read<NetworkService>()
+                      .downVote(widget.postId);
+                  setState(() {
+                    if (widget.isDownvoted && !widget.isUpvoted) {
+                      widget.votes++;
+                      widget.isDownvoted = false;
+                    } else if (widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes -= 2;
+                      widget.isUpvoted = false;
+                      widget.isDownvoted = true;
+                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                      widget.votes--;
+                      widget.isDownvoted = true;
+                    }
+                  });
+                },
               ),
               IconButton(
-                icon: const Icon(Icons.chat_bubble_outline),
+                icon: Semantics(
+                    identifier: "post comment",
+                    label: "post comment",
+                    child: const Icon(Icons.chat_bubble_outline)),
                 //other icon: add_comment,comment
-                onPressed: widget.isHomePage ? () {
-                  Post postComment = Post(
-                    communityName: widget.communityName,
-                    profilePicture: widget.profilePicture,
-                    userName: widget.userName,
-                    title: widget.title,
-                    postType: widget.postType,
-                    content: widget.content,
-                    pollOptions: widget.pollOptions,
-                    commentNumber: widget.commentNumber,
-                    shareNumber: widget.shareNumber,
-                    timeStamp: widget.timeStamp,
-                    isHomePage: false,
-                    isSubRedditPage: false,
-                    postId: widget.postId,
-                    votes: widget.votes,
-                    isDownvoted: widget.isDownvoted,
-                    isUpvoted: widget.isUpvoted,
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CommentPage(
-                        postId: widget.postId,
-                        postComment: postComment,
-                        postTitle: widget.title,
-                        username: widget.userName,
-                      ),
-                    ),
-                  );
-                } : null,
+                onPressed: widget.isHomePage
+                    ? () {
+                        Post postComment = Post(
+                          communityName: widget.communityName,
+                          profilePicture: widget.profilePicture,
+                          userName: widget.userName,
+                          title: widget.title,
+                          postType: widget.postType,
+                          content: widget.content,
+                          pollOptions: widget.pollOptions,
+                          commentNumber: widget.commentNumber,
+                          shareNumber: widget.shareNumber,
+                          timeStamp: widget.timeStamp,
+                          isHomePage: false,
+                          isSubRedditPage: false,
+                          postId: widget.postId,
+                          votes: widget.votes,
+                          isDownvoted: widget.isDownvoted,
+                          isUpvoted: widget.isUpvoted,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentPage(
+                              postId: widget.postId,
+                              postComment: postComment,
+                              postTitle: widget.title,
+                              username: widget.userName,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
               ),
               Text(widget.commentNumber.toString()),
               const Spacer(),
               IconButton(
-                icon: const Icon(Icons.ios_share),
+                icon: Semantics(
+                    identifier: "post share",
+                    label: "post share",
+                    child: const Icon(Icons.ios_share)),
                 //other icon: ios_share, share
                 onPressed: () {
                   // share post

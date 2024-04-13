@@ -87,14 +87,17 @@ class _NameSuggestionState extends State<NameSuggestion> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    "Most redditors use an anonymous username." 
+                    "Most redditors use an anonymous username."
                     " You won't be able to change your username later.",
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-                  AuthField(
-                    controller: usernameController,
-                    labelText: 'Username',
+                  Semantics(
+                    identifier: "signup_username_field",
+                    child: AuthField(
+                      controller: usernameController,
+                      labelText: 'Username',
+                    ),
                   ),
                   const SizedBox(height: 20),
                   // List of suggestions or loading indicator
@@ -113,7 +116,10 @@ class _NameSuggestionState extends State<NameSuggestion> {
                                     final suggestion =
                                         usernameSuggestions[index];
                                     return ListTile(
-                                      title: Text(suggestion),
+                                      title: Semantics(
+                                          identifier:
+                                              "username_suggestion_$index",
+                                          child: Text(suggestion)),
                                       onTap: () {
                                         // Set the username from suggestion
                                         usernameController.text = suggestion;
