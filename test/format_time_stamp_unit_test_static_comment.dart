@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reddit_clone/features/comments/static_comment_card.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 void main() {
   test('Check Time Stamp Format', () {

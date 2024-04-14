@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
@@ -12,45 +11,21 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class UserComment extends StatefulWidget {
-  final String avatar;
-  final String username;
-  String content;
   final int level;
-  final DateTime timestamp;
   File? photo;
-  final bool contentType;
-  final int netVote;
   int imageSource; //0 from backend 1 from user 2 text
-  final String commentId;
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
-  bool isSaved;
-
   final Comments comment;
-  //for saved comments
-  final String communityName;
-  final String postId; //
-  final String title; //
 
   UserComment({
     super.key,
-    // may be the required keyword need to be removed
-    required this.avatar,
-    required this.username,
-    this.content = '',
     this.level = 0,
-    required this.timestamp,
     this.photo,
-    required this.contentType,
-    this.netVote = 1,
     required this.imageSource,
-    required this.commentId,
     required this.hasVoted,
-    required this.isSaved,
-    this.communityName = '',
-    this.postId = '',
-    this.title = '',
     required this.comment,
   });
 
@@ -88,7 +63,7 @@ class UserCommentState extends State<UserComment> {
         builder: (context) => ReplyPage(
           commentContent: widget.comment.content,
           username: widget.comment.username,
-          timestamp: widget.timestamp,
+          timestamp: DateTime.parse(widget.comment.createdAt),
         ),
       ),
     );
@@ -96,36 +71,51 @@ class UserCommentState extends State<UserComment> {
     if (result != null) {
       final bool contentType = result['contentType'];
 
-      // if (contentType == false) {
-      //   final String commentText = result['content'];
-      //   replies.add(UserComment(
-      //     avatar: 'assets/MonkeyDLuffy.png',
-      //     username: 'User123',
-      //     content: commentText,
-      //     timestamp: DateTime.now(),
-      //     photo: null,
-      //     contentType: contentType,
-      //     imageSource: 2,
-      //     commentId: widget.comment.commentId, //may need to be updated
-      //     hasVoted: 0,
-      //     isSaved: false,
-      //   ));
-      // } else if (contentType == true) {
-      //   final File commentImage = File(result['content']);
-      //   replies.add(UserComment(
-      //     avatar: 'assets/MonkeyDLuffy.png',
-      //     username: 'User123',
-      //     content: '',
-      //     timestamp: DateTime.now(),
-      //     photo: commentImage,
-      //     contentType: contentType,
-      //     imageSource: 1,
-      //     commentId: widget.comment.commentId, //may need to be updated
-      //     hasVoted: 0,
-      //     isSaved: false,
-          
-      //   ));
-      // }
+      if (contentType == false) {
+        final String commentText = result['content'];
+        replies.add(UserComment(
+          photo: null,
+          imageSource: 2,
+          hasVoted: 0,
+          comment: Comments(
+            profilePicture: 'assets/MonkeyDLuffy.png',
+            username: 'User123',
+            isImage: false,
+            netVote: 0,
+            content: commentText,
+            createdAt: DateTime.now().toString(),
+            commentId: widget.comment.commentId,
+            isUpvoted: false,
+            isDownvoted: false,
+            isSaved: false,
+            communityName: '',
+            postId: '',
+            title: '',
+          ),
+        ));
+      } else if (contentType == true) {
+        final File commentImage = File(result['content']);
+        replies.add(UserComment(
+          photo: commentImage,
+          imageSource: 1,
+          hasVoted: 0,
+          comment: Comments(
+            profilePicture: 'assets/MonkeyDLuffy.png',
+            username: 'User123',
+            isImage: true,
+            netVote: 0,
+            content: commentImage.path,
+            createdAt: DateTime.now().toString(),
+            commentId: widget.comment.commentId,
+            isUpvoted: false,
+            isDownvoted: false,
+            isSaved: false,
+            communityName: '',
+            postId: '',
+            title: '',
+          ),
+        ));
+      }
     }
   }
 
@@ -161,7 +151,7 @@ class UserCommentState extends State<UserComment> {
     isMinimized = ValueNotifier<bool>(false);
     votes = widget.comment.netVote;
     hasVoted = ValueNotifier<int>(widget.hasVoted);
-    content = ValueNotifier<String>(widget.content);
+    content = ValueNotifier<String>(widget.comment.content);
     photo = ValueNotifier<File?>(widget.photo);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
@@ -210,7 +200,8 @@ class UserCommentState extends State<UserComment> {
                                 });
                           },
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(widget.comment.profilePicture),
+                            backgroundImage:
+                                NetworkImage(widget.comment.profilePicture),
                             //radius: 18,
                           ),
                         ),
@@ -234,7 +225,8 @@ class UserCommentState extends State<UserComment> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          formatTimestamp(widget.timestamp),
+                          formatTimestamp(
+                              DateTime.parse(widget.comment.createdAt)),
                           style:
                               const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
@@ -377,7 +369,9 @@ class UserCommentState extends State<UserComment> {
                                 context.read<NetworkService>().getUser();
                             int numofTiles;
                             numofTiles =
-                                (widget.comment.username == user.username) ? 8 : 7;
+                                (widget.comment.username == user.username)
+                                    ? 8
+                                    : 7;
                             showCommentOptions(user, numofTiles);
                           },
                         ),
@@ -504,13 +498,11 @@ class UserCommentState extends State<UserComment> {
                   valueListenable: photo,
                   builder: (context, photoValue, child) {
                     return StaticCommentCard(
-                      avatar: widget.comment.profilePicture,
-                      username: widget.comment.username,
-                      timestamp: widget.timestamp,
                       content: contentValue,
                       contentType: widget.comment.isImage,
                       photo: photoValue,
                       imageSource: widget.imageSource,
+                      staticComment: widget.comment,
                     );
                   },
                 );
@@ -539,9 +531,11 @@ class UserCommentState extends State<UserComment> {
                       MaterialPageRoute(
                         builder: (context) => EditCommentPage(
                           commentId: widget.comment.commentId,
-                          commentContent: widget.content,
+                          commentContent: widget.comment.content,
                           contentType: widget.comment.isImage,
-                          photo: widget.comment.isImage ? File(widget.comment.content) : null,
+                          photo: widget.comment.isImage
+                              ? File(widget.comment.content)
+                              : null,
                           imageSource: widget.imageSource,
                         ),
                       ),
@@ -573,19 +567,20 @@ class UserCommentState extends State<UserComment> {
               ),
               ListTile(
                 leading: const Icon(Icons.save_alt),
-                title: Text(widget.isSaved ? 'Unsave' : 'Save'),
+                title: Text(widget.comment.isSaved ? 'Unsave' : 'Save'),
                 onTap: () async {
                   bool saved = await context
                       .read<NetworkService>()
-                      .saveOrUnsaveComment(widget.comment.commentId, !widget.isSaved);
+                      .saveOrUnsaveComment(
+                          widget.comment.commentId, !widget.comment.isSaved);
                   if (saved) {
                     CustomSnackBar(
                       context: context,
-                      content: widget.isSaved
+                      content: widget.comment.isSaved
                           ? 'Comment Unsaved!'
                           : 'Comment Saved!',
                     ).show();
-                    widget.isSaved = !widget.isSaved;
+                    widget.comment.isSaved = !widget.comment.isSaved;
                     Navigator.pop(context);
                   }
                 },
@@ -674,21 +669,21 @@ class UserCommentState extends State<UserComment> {
   }
 }
 
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
+// String formatTimestamp(DateTime timestamp) {
+//   final now = DateTime.now();
+//   final difference = now.difference(timestamp);
 
-  if (difference.inDays > 365) {
-    return '${difference.inDays ~/ 365}y';
-  } else if (difference.inDays > 30) {
-    return '${difference.inDays ~/ 30}m';
-  } else if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
-  }
-}
+//   if (difference.inDays > 365) {
+//     return '${difference.inDays ~/ 365}y';
+//   } else if (difference.inDays > 30) {
+//     return '${difference.inDays ~/ 30}m';
+//   } else if (difference.inDays > 0) {
+//     return '${difference.inDays}d';
+//   } else if (difference.inHours > 0) {
+//     return '${difference.inHours}h';
+//   } else if (difference.inMinutes > 0) {
+//     return '${difference.inMinutes}m';
+//   } else {
+//     return 'Now';
+//   }
+// }

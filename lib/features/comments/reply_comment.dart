@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class ReplyPage extends StatefulWidget {
   final String commentContent;
@@ -174,17 +175,17 @@ class _ReplyPageState extends State<ReplyPage> {
   }
 }
 
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
+// String formatTimestamp(DateTime timestamp) {
+//   final now = DateTime.now();
+//   final difference = now.difference(timestamp);
 
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
-  }
-}
+//   if (difference.inDays > 0) {
+//     return '${difference.inDays}d';
+//   } else if (difference.inHours > 0) {
+//     return '${difference.inHours}h';
+//   } else if (difference.inMinutes > 0) {
+//     return '${difference.inMinutes}m';
+//   } else {
+//     return '${difference.inSeconds}s';
+//   }
+// }

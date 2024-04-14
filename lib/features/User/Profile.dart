@@ -393,21 +393,10 @@ class _ProfileState extends State<Profile> {
               (BuildContext context, int index) {
                 final comment = userComments[index];
                 return UserComment(
-                  avatar: comment.profilePicture,
-                  username: comment.username,
-                  content: comment.content,
-                  timestamp: DateTime.parse(comment.createdAt),
                   photo: comment.isImage ? File(comment.content) : null,
-                  contentType: comment.isImage,
                   imageSource: 0,
-                  commentId: comment.commentId,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
-                  isSaved: comment.isSaved,
-                  netVote: comment.netVote,
-                  communityName: comment.communityName!,
-                  postId: comment.postId!,
-                  title: comment.title!,
                   comment: userComments[index],
                 );
               },

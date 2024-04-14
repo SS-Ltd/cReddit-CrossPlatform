@@ -2,25 +2,29 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class StaticCommentCard extends StatelessWidget {
-  final String avatar;
-  final String username;
+  //final String avatar;
+  //final String username;
   final String content;
-  final DateTime timestamp;
+  //final DateTime timestamp;
   final File? photo;
   final bool contentType;
   final int imageSource; //0 from backend 1 from user 2 text
+  final Comments staticComment;
 
   const StaticCommentCard({
     Key? key,
-    required this.avatar,
-    required this.username,
+    //required this.avatar,
+    //required this.username,
     this.content = '',
-    required this.timestamp,
+    ///required this.timestamp,
     this.photo,
     required this.contentType,
     required this.imageSource,
+    required this.staticComment,
   }) : super(key: key);
 
   @override
@@ -38,11 +42,11 @@ class StaticCommentCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(avatar),
+                  backgroundImage: NetworkImage(staticComment.profilePicture),
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  username,
+                  staticComment.username,
                   style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 14,
@@ -50,7 +54,7 @@ class StaticCommentCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  formatTimestamp(timestamp),
+                  formatTimestamp(DateTime.parse(staticComment.createdAt)),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
@@ -91,17 +95,17 @@ class StaticCommentCard extends StatelessWidget {
   }
 }
 
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
+// String formatTimestamp(DateTime timestamp) {
+//   final now = DateTime.now();
+//   final difference = now.difference(timestamp);
 
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
-  }
-}
+//   if (difference.inDays > 0) {
+//     return '${difference.inDays}d';
+//   } else if (difference.inHours > 0) {
+//     return '${difference.inHours}h';
+//   } else if (difference.inMinutes > 0) {
+//     return '${difference.inMinutes}m';
+//   } else {
+//     return '${difference.inSeconds}s';
+//   }
+// }

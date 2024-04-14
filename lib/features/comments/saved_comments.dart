@@ -85,23 +85,12 @@ class _SavedCommentsState extends State<SavedComments> {
             itemBuilder: (context, index) {
               if (index < savedComments!.length) {
                 return UserComment(
-                  avatar: savedComments![index].profilePicture,
-                  username: savedComments![index].username,
-                  content: savedComments![index].content,
-                  timestamp: DateTime.parse(savedComments![index].createdAt),
                   photo: savedComments![index].isImage
                       ? File(savedComments![index].content)
                       : null,
-                  contentType: savedComments![index].isImage,
                   imageSource: 0,
-                  commentId: savedComments![index].commentId,
                   hasVoted: mappingVotes(savedComments![index].isUpvoted,
                       savedComments![index].isDownvoted),
-                  isSaved: savedComments![index].isSaved,
-                  netVote: savedComments![index].netVote,
-                  communityName: savedComments![index].communityName!,
-                  postId: savedComments![index].postId!,
-                  title: savedComments![index].title!,
                   comment: savedComments![index],
                 );
               } else {

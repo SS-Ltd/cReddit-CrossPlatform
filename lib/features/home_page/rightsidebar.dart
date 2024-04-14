@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
-import 'package:reddit_clone/features/comments/reply_comment.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
 import 'package:reddit_clone/features/User/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/models/user.dart';
-import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/User/profile.dart';
-import 'package:reddit_clone/features/User/profile.dart';
 import 'package:reddit_clone/theme/Palette.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -198,19 +196,19 @@ class _RightsidebarState extends State<Rightsidebar> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.cake, color: Colors.blue, size: 30),
-                        SizedBox(width: 12),
+                        const Icon(Icons.cake, color: Colors.blue, size: 30),
+                        const SizedBox(width: 12),
                         Column(
                           children: [
                             Text(
                               formatTimestamp(user!.cakeDay),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
                             ),
-                            Text(
+                            const Text(
                               "Reddit Age",
                               style: TextStyle(
                                 color: Colors.grey,
@@ -245,9 +243,9 @@ class _RightsidebarState extends State<Rightsidebar> {
                               displayName: myUser.displayName,
                               profilePicture: myUser.profilePicture,
                               followerCount: myUser.followers,
-                              about: myUser.about!,
+                              about: myUser.about ?? '',
                               cakeDay: myUser.cakeDay.toString(),
-                              bannerPicture: myUser.banner!,
+                              bannerPicture: myUser.banner ?? '',
                               isOwnProfile: true,
                             ),
                           ),
@@ -330,17 +328,17 @@ class _RightsidebarState extends State<Rightsidebar> {
   }
 }
 
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
+// String formatTimestamp(DateTime timestamp) {
+//   final now = DateTime.now();
+//   final difference = now.difference(timestamp);
 
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
-  }
-}
+//   if (difference.inDays > 0) {
+//     return '${difference.inDays}d';
+//   } else if (difference.inHours > 0) {
+//     return '${difference.inHours}h';
+//   } else if (difference.inMinutes > 0) {
+//     return '${difference.inMinutes}m';
+//   } else {
+//     return '${difference.inSeconds}s';
+//   }
+// }

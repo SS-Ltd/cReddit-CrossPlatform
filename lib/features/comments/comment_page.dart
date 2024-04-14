@@ -34,8 +34,6 @@ class _CommentPageState extends State<CommentPage> {
   final List<GlobalKey> _keys = [];
   final List<double> _commentPositions = [];
 
-  //List<Comments> comments = [];
-
   @override
   void initState() {
     super.initState();
@@ -65,21 +63,13 @@ class _CommentPageState extends State<CommentPage> {
     if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
-        fetchedComments.map((e) =>  e.communityName = '').toList();
+        fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
-                  avatar: comment.profilePicture,
-                  username: comment.username,
-                  content: comment.content,
-                  timestamp: DateTime.parse(comment.createdAt),
                   photo: comment.isImage ? File(comment.content) : null,
-                  contentType: comment.isImage,
-                  netVote: comment.netVote,
                   imageSource: 0,
-                  commentId: comment.commentId,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
-                  isSaved: comment.isSaved,
                   comment: comment,
                 ))
             .toList();
@@ -159,18 +149,11 @@ class _CommentPageState extends State<CommentPage> {
               } else if (index - 1 < _keys.length) {
                 return UserComment(
                   key: _keys[index - 1],
-                  avatar: _comments[index - 1].avatar,
-                  username: _comments[index - 1].username,
-                  content: _comments[index - 1].content,
-                  timestamp: _comments[index - 1].timestamp,
                   photo: _comments[index - 1].photo,
-                  contentType: _comments[index - 1].contentType,
-                  netVote: _comments[index - 1].netVote,
+
                   imageSource:
                       _comments[index - 1].imageSource, //may need to be fixed
-                  commentId: _comments[index - 1].commentId,
                   hasVoted: _comments[index - 1].hasVoted,
-                  isSaved: _comments[index - 1].isSaved,
                   comment: _comments[index - 1].comment,
                 );
               } else {
@@ -200,70 +183,42 @@ class _CommentPageState extends State<CommentPage> {
                   );
                   if (result != null) {
                     final bool contentType = result['contentType'];
-                    
                     setState(() {
                       UserComment? newComment;
-                      
-
                       if (contentType == false) {
                         final String commentText = result['content'];
-                        Comments comment = Comments(
-                          profilePicture: result['user'].profilePicture,
-                          username: result['user'].username,
-                          isImage: contentType,
-                          netVote: 1,
-                          content: commentText,
-                          createdAt: DateTime.now().toString(),
-                          commentId: result['commentId'],
-                          isUpvoted: false,
-                          isDownvoted: false,
-                          isSaved: false,
-                          
-                          
-                        );
                         newComment = UserComment(
-                          avatar: result['user'].profilePicture,
-                          username: result['user'].username,
-                          content: commentText,
-                          timestamp: DateTime.now(),
                           photo: null,
-                          contentType: contentType,
                           imageSource: 2,
-                          commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: false,
-                          comment: comment,
+                          comment: Comments(
+                            profilePicture: result['user'].profilePicture,
+                            username: result['user'].username,
+                            isImage: contentType,
+                            netVote: 1,
+                            content: commentText,
+                            createdAt: DateTime.now().toString(),
+                            commentId: result['commentId'],
+                          ),
                         );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
-                        Comments comment = Comments(
-                          profilePicture: result['user'].profilePicture,
-                          username: result['user'].username,
-                          isImage: contentType,
-                          netVote: 1,
-                          content: '',
-                          createdAt: DateTime.now().toString(),
-                          commentId: result['commentId'],
-                          isUpvoted: false,
-                          isDownvoted: false,
-                          isSaved: false,
-                          
-                        );
                         newComment = UserComment(
-                          avatar: result['user'].profilePicture,
-                          username: result['user'].username,
-                          content: '',
-                          timestamp: DateTime.now(),
                           photo: commentImage,
-                          contentType: contentType,
                           imageSource: 1,
-                          commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: false,
-                          comment: comment,
+                          comment: Comments(
+                            profilePicture: result['user'].profilePicture,
+                            username: result['user'].username,
+                            isImage: contentType,
+                            netVote: 1,
+                            content: '',
+                            createdAt: DateTime.now().toString(),
+                            commentId: result['commentId'],
+                          ),
                         );
                       }
-                      
+
                       if (newComment != null) {
                         // Insert the new comment at the beginning of the list
                         _comments.insert(0, newComment);
