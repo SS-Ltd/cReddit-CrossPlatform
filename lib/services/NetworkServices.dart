@@ -528,6 +528,7 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/user/$username');
     final response = await http.get(url, headers: _headers);
     print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       getUserDetails(username);

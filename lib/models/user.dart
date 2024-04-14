@@ -11,6 +11,7 @@ class UserModel {
   final DateTime cakeDay;
   bool isLoggedIn = false;
   final Set<Subreddit> recentlyVisited = {};
+  final bool isBlocked;
 
   UserModel({
     required this.username,
@@ -21,6 +22,7 @@ class UserModel {
     this.banner,
     required this.followers,
     required this.cakeDay,
+    required this.isBlocked,
   });
 
   void updateUserStatus(bool status) {
@@ -46,6 +48,7 @@ class UserModel {
       banner: json['banner'],
       followers: json['followers'],
       cakeDay: DateTime.parse(json['cakeDay']),
+      isBlocked: json['isBlocked'] ?? false,
     );
   }
 }

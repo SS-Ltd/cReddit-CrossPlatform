@@ -150,7 +150,6 @@ class _CommentPageState extends State<CommentPage> {
                 return UserComment(
                   key: _keys[index - 1],
                   photo: _comments[index - 1].photo,
-
                   imageSource:
                       _comments[index - 1].imageSource, //may need to be fixed
                   hasVoted: _comments[index - 1].hasVoted,
@@ -229,19 +228,23 @@ class _CommentPageState extends State<CommentPage> {
                     });
                   }
                 },
-                child: TextFormField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: 'Add a comment...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide.none,
+                child: Semantics(
+                  identifier: 'Add a comment',
+                  label: 'Add a comment',
+                  child: TextFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'Add a comment...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 40, 39, 39),
+                      contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                     ),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 40, 39, 39),
-                    contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    enabled: false, // Disable the TextFormField
                   ),
-                  enabled: false, // Disable the TextFormField
                 ),
               ),
             ),

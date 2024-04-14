@@ -242,8 +242,19 @@ class _PostState extends State<Post> {
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(widget.profilePicture),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SubRedditPage(
+                                      subredditName: widget.communityName,
+                                    )),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(widget.profilePicture),
+                        ),
                       ),
                       const SizedBox(width: 10),
                       widget.isHomePage
@@ -320,10 +331,23 @@ class _PostState extends State<Post> {
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'r/${widget.communityName}',
-                                      style: const TextStyle(
-                                        color: Colors.grey,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SubRedditPage(
+                                                    subredditName:
+                                                        widget.communityName,
+                                                  )),
+                                        );
+                                      },
+                                      child: Text(
+                                        'r/${widget.communityName}',
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                     GestureDetector(

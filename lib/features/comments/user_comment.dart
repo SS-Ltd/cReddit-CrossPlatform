@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
@@ -633,16 +635,27 @@ class UserCommentState extends State<UserComment> {
                   leading: const Icon(Icons.block_outlined),
                   title: const Text('Block account'),
                   onTap: () async {
-                    // bool blocked = await context
-                    //     .read<NetworkService>()
-                    //     .blockUser(widget.comment.username);
-                    // if (blocked) {
-                    //   CustomSnackBar(
-                    //       context: context, content: 'User blocked!');
-                    // } else {
-                    //   CustomSnackBar(
-                    //       context: context, content: 'User unblocked!');
-                    // }
+                    UserModel user = await context
+                        .read<NetworkService>()
+                        .getUserDetails(widget.comment.username);
+                    if (user.isBlocked) {
+                      CustomSnackBar(
+                          context: context,
+                          content: 'User blocked succesfully!');
+                    } else {
+                      bool blocked = await context
+                          .read<NetworkService>()
+                          .blockUser(widget.comment.username);
+                      print(blocked);
+                      if (blocked) {
+                        CustomSnackBar(
+                            context: context, content: 'User blocked!');
+                      } else {
+                        CustomSnackBar(
+                            context: context, content: 'Failed to block User');
+                      }
+                    }
+
                     Navigator.pop(context);
                   },
                 ),
