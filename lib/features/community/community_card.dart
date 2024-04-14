@@ -100,7 +100,7 @@ class CommunityCardState extends State<CommunityCard> {
                       child: ButtonTheme(
                         minWidth: 0,
                         child: Semantics(
-                          label: "join or disjoin ubreddit",
+                          label: "join or disjoin subreddit",
                           identifier: "join or disjoin subreddit",
                           child: ElevatedButton(
                             onPressed: () {

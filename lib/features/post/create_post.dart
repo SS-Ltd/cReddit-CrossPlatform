@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
@@ -72,7 +74,10 @@ class _CreatePostState extends State<CreatePost> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: Semantics(
+              label: 'close',
+              identifier: 'close',
+              child: const Icon(Icons.close)),
           onPressed: () {
             Navigator.push(
               context,
@@ -90,7 +95,7 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
-                          print(isspoiler);
+                            print(isspoiler);
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
@@ -160,18 +165,22 @@ class _CreatePostState extends State<CreatePost> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: _istitleempty ? 'Title' : '',
-                  labelStyle: const TextStyle(fontSize: 30),
-                  border: InputBorder.none,
+              Semantics(
+                label: 'Create Post Title',
+                identifier: 'Create Post Title',
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: _istitleempty ? 'Title' : '',
+                    labelStyle: const TextStyle(fontSize: 30),
+                    border: InputBorder.none,
+                  ),
+                  controller: _titleController,
+                  onChanged: (value) {
+                    setState(() {
+                      _istitleempty = value.isEmpty;
+                    });
+                  },
                 ),
-                controller: _titleController,
-                onChanged: (value) {
-                  setState(() {
-                    _istitleempty = value.isEmpty;
-                  });
-                },
               ),
               widget.profile || chosenCommunity.isNotEmpty
                   ? Row(
@@ -207,10 +216,11 @@ class _CreatePostState extends State<CreatePost> {
                                         ],
                                       ),
                                       SwitchButton(
-                                          buttonText: 'Spoiler',
-                                          buttonicon: Icons.warning_amber,
-                                          onPressed: () {},
-                                          switchvalue: isspoiler,),
+                                        buttonText: 'Spoiler',
+                                        buttonicon: Icons.warning_amber,
+                                        onPressed: () {},
+                                        switchvalue: isspoiler,
+                                      ),
                                     ],
                                   ),
                                 );
@@ -223,42 +233,53 @@ class _CreatePostState extends State<CreatePost> {
                     )
                   : const SizedBox(),
               _insertlink
-                  ? TextField(
-                      decoration: InputDecoration(
-                        labelText: _islinkempty ? 'Enter link' : '',
-                        labelStyle: const TextStyle(fontSize: 30),
-                        border: InputBorder.none,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _linkController.clear();
-                              _insertlink = false;
-                            });
-                          },
-                          icon: const Icon(Icons.close),
+                  ? Semantics(
+                      label: 'Insert Link',
+                      identifier: 'Insert Link',
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: _islinkempty ? 'Enter link' : '',
+                          labelStyle: const TextStyle(fontSize: 30),
+                          border: InputBorder.none,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _linkController.clear();
+                                _insertlink = false;
+                              });
+                            },
+                            icon: Semantics(
+                                label: 'close link',
+                                identifier: 'close link',
+                                child: const Icon(Icons.close)),
+                          ),
                         ),
+                        controller: _linkController,
+                        onChanged: (value) {
+                          setState(() {
+                            _islinkempty = value.isEmpty;
+                          });
+                        },
                       ),
-                      controller: _linkController,
-                      onChanged: (value) {
-                        setState(() {
-                          _islinkempty = value.isEmpty;
-                        });
-                      },
                     )
                   : const SizedBox(),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: _isbodyempty ? 'body text (optional)' : '',
-                  border: InputBorder.none,
+              Semantics(
+                label: 'Create Post Body',
+                identifier: 'Create Post Body',
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: _isbodyempty ? 'body text (optional)' : '',
+                    border: InputBorder.none,
+                  ),
+                  controller: _bodyController,
+                  onChanged: (text) {
+                    setState(
+                      () {
+                        _isbodyempty = text.isEmpty;
+                      },
+                    );
+                  },
                 ),
-                controller: _bodyController,
-                onChanged: (text) {
-                  setState(
-                    () {
-                      _isbodyempty = text.isEmpty;
-                    },
-                  );
-                },
               ),
               Row(
                 children: [
@@ -268,11 +289,17 @@ class _CreatePostState extends State<CreatePost> {
                         _insertlink = !_insertlink;
                       });
                     },
-                    icon: const Icon(Icons.link),
+                    icon: Semantics(
+                        label: 'add link',
+                        identifier: 'add link',
+                        child: const Icon(Icons.link)),
                   ),
                   IconButton(
                     onPressed: getImage,
-                    icon: const Icon(Icons.image),
+                    icon: Semantics(
+                        label: 'add image',
+                        identifier: 'add image',
+                        child: const Icon(Icons.image)),
                   ),
                   IconButton(
                     onPressed: () {},
@@ -284,7 +311,10 @@ class _CreatePostState extends State<CreatePost> {
                         _insertpoll = !_insertpoll;
                       });
                     },
-                    icon: const Icon(Icons.poll_outlined),
+                    icon: Semantics(
+                        label: 'add poll',
+                        identifier: 'add poll',
+                        child: const Icon(Icons.poll_outlined)),
                   ),
                 ],
               ),
@@ -430,19 +460,27 @@ class _CreatePostState extends State<CreatePost> {
                 ),
               ],
             ),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Option 1',
-                border: InputBorder.none,
+            Semantics(
+              label: 'Option 1',
+              identifier: 'Option 1',
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Option 1',
+                  border: InputBorder.none,
+                ),
+                controller: _optionControllers[0],
               ),
-              controller: _optionControllers[0],
             ),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Option 2',
-                border: InputBorder.none,
+            Semantics(
+              label: 'Option 2',
+              identifier: 'Option 2',
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Option 2',
+                  border: InputBorder.none,
+                ),
+                controller: _optionControllers[1],
               ),
-              controller: _optionControllers[1],
             ),
             ListView.builder(
               shrinkWrap: true,
@@ -451,11 +489,15 @@ class _CreatePostState extends State<CreatePost> {
                 return Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                            labelText: 'Option ${index + 3}',
-                            border: InputBorder.none),
-                        controller: _optionControllers[index + 2],
+                      child: Semantics(
+                        label: 'Option ${index + 3}',
+                        identifier: 'Option ${index + 3}',
+                        child: TextField(
+                          decoration: InputDecoration(
+                              labelText: 'Option ${index + 3}',
+                              border: InputBorder.none),
+                          controller: _optionControllers[index + 2],
+                        ),
                       ),
                     ),
                     IconButton(
