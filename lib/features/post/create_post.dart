@@ -456,7 +456,10 @@ class _CreatePostState extends State<CreatePost> {
                       _insertpoll = !_insertpoll;
                     });
                   },
-                  icon: const Icon(Icons.close),
+                  icon: Semantics(
+                      label: 'close poll',
+                      identifier: 'close poll',
+                      child: const Icon(Icons.close)),
                 ),
               ],
             ),
@@ -507,7 +510,10 @@ class _CreatePostState extends State<CreatePost> {
                             _optionControllers[index + 2].clear();
                           });
                         },
-                        icon: const Icon(Icons.close))
+                        icon: Semantics(
+                            label: 'close option ${index + 3}',
+                            identifier: 'close option ${index + 3}',
+                            child: const Icon(Icons.close)))
                   ],
                 );
               },
