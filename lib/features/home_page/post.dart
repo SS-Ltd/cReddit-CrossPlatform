@@ -300,7 +300,7 @@ class _PostState extends State<Post> {
                                       child: Semantics(
                                         identifier: 'post subreddit',
                                         label: 'post subreddit',
-                                        child: Text(
+                                        child: SelectableText(
                                           'r/${widget.communityName}',
                                           style: const TextStyle(
                                             color: Colors.grey,
@@ -331,7 +331,7 @@ class _PostState extends State<Post> {
                                     Semantics(
                                       identifier: 'post subreddit',
                                       label: 'post subreddit',
-                                      child: Text(
+                                      child: SelectableText(
                                         'r/${widget.communityName}',
                                         style: const TextStyle(
                                           color: Colors.grey,
@@ -445,7 +445,7 @@ class _PostState extends State<Post> {
               Semantics(
                 identifier: 'post votes',
                 label: 'post votes',
-                child: Text(widget.votes.toString(),
+                child: SelectableText(widget.votes.toString(),
                     style: TextStyle(
                       color: widget.isUpvoted
                           ? Colors.red

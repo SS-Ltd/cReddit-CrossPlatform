@@ -146,7 +146,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 ),
                 IconButton(
                   onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-                  icon: const Icon(Icons.reddit, size: 30.0),
+                  icon: Semantics(
+                      label: 'Open right sidebar',
+                      identifier: 'Open right sidebar',
+                      child: const Icon(Icons.reddit, size: 30.0)),
                 ),
               ],
             )

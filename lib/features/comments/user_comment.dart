@@ -426,7 +426,7 @@ class UserCommentState extends State<UserComment> {
                             return Semantics(
                               identifier: 'comment votes',
                               label: 'comment votes',
-                              child: Text(
+                              child: SelectableText(
                                 votes == 0 ? 'Vote' : '$votes',
                                 style: TextStyle(
                                     fontSize: 15,
