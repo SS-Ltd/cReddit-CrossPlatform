@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/utils/utils_validate.dart';
 
 
 class CustomTextField extends StatelessWidget {
@@ -37,7 +38,7 @@ class CustomTextField extends StatelessWidget {
               child: TextFormField(
                 controller: controller,
                 onChanged: (value) {
-                  isValidNotifier.value = isValidEmail(value);
+                  isValidNotifier.value = isValidEmailOrUsername(value);
                 },
                 style: const TextStyle(color: Palette.whiteColor),
                 decoration: InputDecoration(
@@ -89,23 +90,5 @@ class CustomTextField extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-int isValidEmail(String input) {
-  final RegExp emailRegex = RegExp(
-    r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
-  );
-
-  final RegExp usernameRegex = RegExp(
-    r'^[a-zA-Z0-9_-]*$',
-  );
-
-  if (input.isEmpty) {
-    return -1;
-  } else if (emailRegex.hasMatch(input) || usernameRegex.hasMatch(input)) {
-    return 1;
-  } else {
-    return -1;
   }
 }
