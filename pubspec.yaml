@@ -50,6 +50,7 @@ dependencies:
   video_player: ^2.2.12
   chewie: ^1.0.0
   flutter_spinkit: ^5.2.1
+  flutter_keyboard_visibility: ^6.0.0
   
 
   # The following adds the Cupertino Icons font to your application.

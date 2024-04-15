@@ -5,7 +5,7 @@ import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 import 'package:reddit_clone/services/google_service.dart';
-
+import 'package:reddit_clone/features/Authentication/signup.dart';
 void main() {
   runApp(MultiProvider(
     providers: [
@@ -25,7 +25,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Create a community',
       theme: AppTheme.darkTheme,
-      home: LoginScreen(),
+      //home: LoginScreen(),
+      home: Scaffold(
+        body: PageView(
+          children: <Widget>[
+            LoginScreen(),
+            SignUpScreen(),
+          ],
+        ),
+      ),
     );
   }
 }
