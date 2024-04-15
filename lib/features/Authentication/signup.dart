@@ -9,6 +9,7 @@ import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/google_button.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:reddit_clone/utils/utils_validate.dart';
 import 'dart:async';
 
 class SignUpScreen extends StatefulWidget {
@@ -190,13 +191,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   bool isValidEmail(String email) {
-    return RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-        .hasMatch(email);
+    return isValidEmailOrUsername(email) > 0;
   }
 
-  bool isValidPassword(String password) {
-    return password.length >= 8 &&
-        password.contains(RegExp(r'[A-Z]')) &&
-        password.contains(RegExp(r'[a-z]'));
-  }
+  // bool isValidPassword(String password) {
+  //   return password.length >= 8 &&
+  //       password.contains(RegExp(r'[A-Z]')) &&
+  //       password.contains(RegExp(r'[a-z]'));
+  // }
 }
