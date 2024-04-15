@@ -50,17 +50,6 @@ class _CreatePostState extends State<CreatePost> {
 
   bool isspoiler = false;
 
-  // Future getImage() async {
-  //   final image = await picker.pickImage(source: ImageSource.camera);
-  //   setState(() {
-  //     if (image != null) {
-  //       _image = File(image.path);
-  //       _hasImage = true;
-  //     }
-  //   });
-  //   _isImagePickerOpen = false;
-  // }
-
   Future getImage() async {
     if (_isImagePickerOpen) {
       return;
@@ -151,9 +140,9 @@ class _CreatePostState extends State<CreatePost> {
                                         //image post
                                         .read<NetworkService>()
                                         .createNewImagePost(
-                                            "Images & Video",
                                             chosenCommunity,
                                             _titleController.text,
+                                            _image!,
                                             false,
                                             false)
                                     : await context
