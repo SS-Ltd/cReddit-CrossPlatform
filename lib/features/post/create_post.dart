@@ -36,8 +36,9 @@ class _CreatePostState extends State<CreatePost> {
   String chosenCommunity = "";
 
   File? _image;
-  final ImagePicker picker = ImagePicker();
+  final picker = ImagePicker();
   bool _isImagePickerOpen = false;
+  bool _hasImage = false;
 
   final _linkController = TextEditingController();
   bool _insertlink = false;
@@ -49,13 +50,49 @@ class _CreatePostState extends State<CreatePost> {
 
   bool isspoiler = false;
 
+  // Future getImage() async {
+  //   final image = await picker.pickImage(source: ImageSource.camera);
+  //   setState(() {
+  //     if (image != null) {
+  //       _image = File(image.path);
+  //       _hasImage = true;
+  //     }
+  //   });
+  //   _isImagePickerOpen = false;
+  // }
+
   Future getImage() async {
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (image != null) {
-        _image = File(image.path);
-      }
-    });
+    if (_isImagePickerOpen) {
+      return;
+    }
+    _isImagePickerOpen = true;
+
+    // Show a dialog to let the user choose between the gallery and the camera
+    final source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Choose image source'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Gallery'),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+          TextButton(
+            child: const Text('Camera'),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+        ],
+      ),
+    );
+    if (source != null) {
+      final pickedFile = await picker.pickImage(source: source);
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+          _hasImage = true;
+        }
+      });
+    }
     _isImagePickerOpen = false;
   }
 
@@ -90,7 +127,7 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
-                          print(isspoiler);
+                            print(isspoiler);
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
@@ -99,7 +136,7 @@ class _CreatePostState extends State<CreatePost> {
                                     .createNewPollPost(
                                         chosenCommunity,
                                         _titleController.text,
-                                        'ay habal',
+                                        _bodyController.text,
                                         _optionControllers
                                             .where((controller) =>
                                                 controller.text.isNotEmpty)
@@ -109,16 +146,26 @@ class _CreatePostState extends State<CreatePost> {
                                         '4-15-2024', //month-day-year
                                         false,
                                         false)
-                                : await context
-                                    //text or link post
-                                    .read<NetworkService>()
-                                    .createNewTextOrLinkPost(
-                                        type,
-                                        chosenCommunity,
-                                        _titleController.text,
-                                        _bodyController.text,
-                                        false,
-                                        false);
+                                : (_hasImage)
+                                    ? await context
+                                        //image post
+                                        .read<NetworkService>()
+                                        .createNewImagePost(
+                                            "Images & Video",
+                                            chosenCommunity,
+                                            _titleController.text,
+                                            false,
+                                            false)
+                                    : await context
+                                        //text or link post
+                                        .read<NetworkService>()
+                                        .createNewTextOrLinkPost(
+                                            type,
+                                            chosenCommunity,
+                                            _titleController.text,
+                                            _bodyController.text,
+                                            false,
+                                            false);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.push(
@@ -207,10 +254,11 @@ class _CreatePostState extends State<CreatePost> {
                                         ],
                                       ),
                                       SwitchButton(
-                                          buttonText: 'Spoiler',
-                                          buttonicon: Icons.warning_amber,
-                                          onPressed: () {},
-                                          spoilervalue: isspoiler,),
+                                        buttonText: 'Spoiler',
+                                        buttonicon: Icons.warning_amber,
+                                        onPressed: () {},
+                                        spoilervalue: isspoiler,
+                                      ),
                                     ],
                                   ),
                                 );
