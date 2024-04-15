@@ -49,6 +49,7 @@ class _RightsidebarState extends State<Rightsidebar> {
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
+                      shape: const Border(),
                       builder: (BuildContext context) {
                         return BottomSheet(
                           onClosing: () {},
@@ -56,56 +57,152 @@ class _RightsidebarState extends State<Rightsidebar> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
+                                padding: EdgeInsets.only(left: 15, top: 10),
                                 child: Row(
-                                  children: [Text('Accounts')],
+                                  children: [
+                                    Text(
+                                      'ACCOUNTS',
+                                      style: TextStyle(
+                                        color: Palette.greyColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Divider(color: Colors.grey[800]),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(Icons.person,
-                                          color: Colors.white),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        'u/${user?.username ?? 'Username'}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                child: Divider(
+                                  color: Colors.grey[800],
+                                  thickness: 0.25,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 14, bottom: 5, right: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          child: Image.network(
+                                            user?.profilePicture ??
+                                                'https://external-preview.redd.it/2ha9O240cGSUZZ0mCk6FYku61NmKUDgoOAJHMCpMjOM.png?auto=webp&s=3decd6c3ec58dc0a850933af089fb3ad12d3a505',
+                                            width: 30,
+                                            height: 30,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      const Icon(
-                                        Icons.check,
-                                        color: Palette.blueJoinColor,
-                                      ),
-                                      IconButton(
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          'u/${user?.username ?? 'Username'}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          Icons.check,
+                                          color: Palette.blueJoinColor,
+                                        ),
+                                        IconButton(
                                           onPressed: () async {
-                                            await context
-                                                .read<NetworkService>()
-                                                .logout();
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoginScreen(),
-                                              ),
+                                            showModalBottomSheet(
+                                              context: context,
+                                              shape: const Border(),
+                                              builder: (BuildContext context) {
+                                                return Wrap(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left: 15, top: 10),
+                                                      child: Text(
+                                                        'u/${user?.username ?? 'Username'}',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Palette.greyColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10),
+                                                      child: Divider(
+                                                        color: Colors.grey[800],
+                                                        thickness: 0.25,
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                        Icons.login_outlined,
+                                                        color: Color.fromARGB(
+                                                            255, 249, 25, 25),
+                                                      ),
+                                                      title: const Text(
+                                                        'Logout',
+                                                        style: TextStyle(
+                                                          color: Color.fromARGB(
+                                                              255, 249, 25, 25),
+                                                        ),
+                                                      ),
+                                                      onTap: () async {
+                                                        await context
+                                                            .read<
+                                                                NetworkService>()
+                                                            .logout();
+                                                        Navigator
+                                                            .pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  LoginScreen()),
+                                                          (Route<dynamic>
+                                                                  route) =>
+                                                              false,
+                                                        );
+                                                      },
+                                                    ),
+                                                    ListTile(
+                                                      title: const Center(
+                                                        child: Text('Cancel',
+                                                            style: TextStyle(
+                                                                color: Palette
+                                                                    .greyColor)),
+                                                      ),
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
                                           },
-                                          icon: const Icon(Icons.login))
-                                    ],
-                                  )
-                                ],
+                                          icon:
+                                              const Icon(Icons.login_outlined),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ],
                           ),
