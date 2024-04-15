@@ -427,10 +427,11 @@ class _PostState extends State<Post> {
                   icon: const Icon(Icons.arrow_upward),
                   color: widget.isUpvoted ? Colors.red : Colors.grey,
                   onPressed: () async {
-                    bool a = await context
-                        .read<NetworkService>()
-                        .upVote(widget.postId);
-                    setState(() {
+                    int oldVotes = widget.votes;
+                    bool oldIsUpVoted = widget.isUpvoted;
+                    bool oldIsDownVoted = widget.isDownvoted;
+                    if(mounted){
+                      setState(() {
                       print("upvote");
                       if (widget.isUpvoted && !widget.isDownvoted) {
                         widget.votes--;
@@ -444,6 +445,17 @@ class _PostState extends State<Post> {
                         widget.isUpvoted = true;
                       }
                     });
+                    }
+                    bool upVoted = await context
+                        .read<NetworkService>()
+                        .upVote(widget.postId);
+                    if(!upVoted && mounted){
+                      setState(() {
+                        widget.votes = oldVotes;
+                        widget.isUpvoted = oldIsUpVoted;
+                        widget.isDownvoted = oldIsDownVoted;
+                      });
+                    }
                   },
                 ),
               ),
@@ -464,10 +476,11 @@ class _PostState extends State<Post> {
                   icon: const Icon(Icons.arrow_downward),
                   color: widget.isDownvoted ? Colors.blue : Colors.grey,
                   onPressed: () async {
-                    bool a = await context
-                        .read<NetworkService>()
-                        .downVote(widget.postId);
-                    setState(() {
+                    int oldVotes = widget.votes;
+                    bool oldIsUpVoted = widget.isUpvoted;
+                    bool oldIsDownVoted = widget.isDownvoted;
+                    if(mounted){
+                      setState(() {
                       if (widget.isDownvoted && !widget.isUpvoted) {
                         widget.votes++;
                         widget.isDownvoted = false;
@@ -480,6 +493,18 @@ class _PostState extends State<Post> {
                         widget.isDownvoted = true;
                       }
                     });
+                    }
+                    bool downVoted = await context
+                        .read<NetworkService>()
+                        .downVote(widget.postId);
+                    if (!downVoted && mounted) {
+                      setState(() {
+                        widget.votes = oldVotes;
+                        widget.isUpvoted = oldIsUpVoted;
+                        widget.isDownvoted = oldIsDownVoted;
+                      });
+                    }
+                    
                   },
                 ),
               ),

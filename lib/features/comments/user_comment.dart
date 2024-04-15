@@ -121,7 +121,7 @@ class UserCommentState extends State<UserComment> {
     }
   }
 
-  void updateUpVote() {
+  void upVote() {
     if (hasVoted.value == 1) {
       votes--;
       hasVoted.value = 0;
@@ -134,7 +134,20 @@ class UserCommentState extends State<UserComment> {
     }
   }
 
-  void updateDownVote() {
+  void undoUpVote() {
+    if (hasVoted.value == 1) {
+      votes--;
+      hasVoted.value = 0;
+    } else if (hasVoted.value == 0) {
+      votes++;
+      hasVoted.value = -1;
+    } else if (hasVoted.value != -1) {
+      votes--;
+      hasVoted.value = -1;
+    }
+  }
+
+  void downVote() {
     if (hasVoted.value == -1) {
       votes++;
       hasVoted.value = 0;
@@ -144,6 +157,19 @@ class UserCommentState extends State<UserComment> {
     } else if (hasVoted.value != -1) {
       votes--;
       hasVoted.value = -1;
+    }
+  }
+
+  void undoDownVote() {
+    if (hasVoted.value == -1) {
+      votes++;
+      hasVoted.value = 0;
+    } else if (hasVoted.value == 1) {
+      votes += 2;
+      hasVoted.value = 1;
+    } else if (hasVoted.value != 1) {
+      votes++;
+      hasVoted.value = 1;
     }
   }
 
@@ -393,12 +419,22 @@ class UserCommentState extends State<UserComment> {
                                         ? Palette.upvoteOrange
                                         : Palette.greyColor),
                                 onPressed: () async {
+                                  int oldVotes = votes;
+                                  ValueNotifier<int> oldHasVoted = ValueNotifier<int>(
+                                      hasVoted.value);
+                                  if (mounted) {
+                                    setState(() {
+                                      upVote();
+                                    });
+                                  }
                                   bool votedUp = await context
                                       .read<NetworkService>()
                                       .upVote(widget.comment.commentId);
-                                  if (votedUp && mounted) {
+                                  
+                                  if (!votedUp && mounted) {
                                     setState(() {
-                                      updateUpVote();
+                                      votes = oldVotes;
+                                      hasVoted.value = oldHasVoted.value;
                                     });
                                   }
                                 },
@@ -438,12 +474,22 @@ class UserCommentState extends State<UserComment> {
                                         ? Palette.downvoteBlue
                                         : Palette.greyColor),
                                 onPressed: () async {
+                                  int oldVotes = votes;
+                                  ValueNotifier<int> oldHasVoted = ValueNotifier<int>(
+                                      hasVoted.value);
+                                  if (mounted) {
+                                    setState(() {
+                                      downVote();
+                                    });
+                                  }
                                   bool votedDown = await context
                                       .read<NetworkService>()
                                       .downVote(widget.comment.commentId);
-                                  if (votedDown && mounted) {
+                                  if (!votedDown && mounted) {
                                     setState(() {
-                                      updateDownVote();
+                                      votes = oldVotes;
+                                      hasVoted.value = oldHasVoted.value;
+                                      undoDownVote();
                                     });
                                   }
                                 },
