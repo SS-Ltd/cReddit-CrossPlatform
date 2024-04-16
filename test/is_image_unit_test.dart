@@ -14,5 +14,7 @@ void main() {
     expect(isImage('example.webm'), false);
     expect(isImage('example.ogg'), false);
     expect(isImage('example.txt'), false);
+    expect(isImage('example.'), false);
+    expect(isImage('example'), false);
   });
 }
