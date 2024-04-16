@@ -3,6 +3,7 @@ import 'package:reddit_clone/models/community.dart';
 import 'community_card.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class CommunityPage extends StatefulWidget {
 
@@ -38,26 +39,12 @@ class CommunityPageState extends State<CommunityPage> {
           return Text('Error: ${snapshot.error}');
         } else {
           return Scaffold(
-            // appBar: AppBar(
-            //   automaticallyImplyLeading: false,
-            //   title: const Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       Icon(Icons.public, color: Palette.blueColor),
-            //       SizedBox(width: 8),
-            //       Text('Top Globally'),
-            //     ],
-            //   ),
-            // ),
+            backgroundColor: Palette.communityPage,
             body: ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
                 return CommunityCard(
-                  name: snapshot.data![index].name,
-                  members: snapshot.data![index].members,
-                  description: snapshot.data![index].description ?? '',
-                  icon: snapshot.data![index].icon,
-                  isJoined: snapshot.data![index].isJoined,
+                  community: snapshot.data![index],
                 );
               },
             ),
