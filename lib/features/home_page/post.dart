@@ -13,6 +13,7 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -231,7 +232,8 @@ class _PostState extends State<Post> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
-            color: Palette.backgroundColor,
+            color: const Color.fromARGB(255, 12, 12, 12),
+            elevation: 0.77,
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
@@ -265,11 +267,22 @@ class _PostState extends State<Post> {
                                               userName: widget.userName);
                                         });
                                   },
-                                  child: Text(
-                                    'u/${widget.userName}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'u/${widget.userName}',
+                                        style: const TextStyle(
+                                          color: Palette.whiteColor,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        formatTimestamp(widget.timeStamp),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),),
+                                    ],
                                   ),
                                 )
                               : (widget.communityName.isEmpty
@@ -282,11 +295,22 @@ class _PostState extends State<Post> {
                                                   userName: widget.userName);
                                             });
                                       },
-                                      child: Text(
-                                        'u/${widget.userName}',
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'u/${widget.userName}',
+                                            style: const TextStyle(
+                                              color: Palette.whiteColor,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                        formatTimestamp(widget.timeStamp),
                                         style: const TextStyle(
+                                          fontSize: 12,
                                           color: Colors.grey,
-                                        ),
+                                        ),),
+                                        ],
                                       ),
                                     )
                                   : GestureDetector(
@@ -301,11 +325,22 @@ class _PostState extends State<Post> {
                                                   )),
                                         );
                                       },
-                                      child: Text(
-                                        'r/${widget.communityName}',
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'r/${widget.communityName}',
+                                            style: const TextStyle(
+                                              color: Palette.whiteColor,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                      Text(
+                                        formatTimestamp(widget.timeStamp),
                                         style: const TextStyle(
+                                          fontSize: 12,
                                           color: Colors.grey,
-                                        ),
+                                        ),),
+                                        ],
                                       ),
                                     )))
                           : (widget.communityName.isEmpty
@@ -318,11 +353,22 @@ class _PostState extends State<Post> {
                                               userName: widget.userName);
                                         });
                                   },
-                                  child: Text(
-                                    'u/${widget.userName}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'u/${widget.userName}',
+                                        style: const TextStyle(
+                                          color: Palette.whiteColor,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        formatTimestamp(widget.timeStamp),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),),
+                                    ],
                                   ),
                                 )
                               : Column(
@@ -357,11 +403,21 @@ class _PostState extends State<Post> {
                                             });
                                         //replace with profile page or widget
                                       },
-                                      child: Text(
-                                        'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'u/${widget.userName}',
+                                            style: const TextStyle(
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                          Text(
+                                        formatTimestamp(widget.timeStamp),
                                         style: const TextStyle(
-                                          color: Colors.blue,
-                                        ),
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -406,15 +462,21 @@ class _PostState extends State<Post> {
                     );
                   }
                 : null,
-            child: Text(
-              widget.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            child: Padding(
+              padding: const EdgeInsets.only(left:10, right:10),
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
           ),
-          _buildContent(),
+          Padding(
+            padding: const EdgeInsets.only(left:10, right:10),
+            child: _buildContent(),
+          ),
           Row(
             children: [
               Semantics(
@@ -558,20 +620,20 @@ class _PostState extends State<Post> {
   }
 }
 
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
+// String formatTimestamp(DateTime timestamp) {
+//   final now = DateTime.now();
+//   final difference = now.difference(timestamp);
 
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
-  }
-}
+//   if (difference.inDays > 0) {
+//     return '${difference.inDays}d';
+//   } else if (difference.inHours > 0) {
+//     return '${difference.inHours}h';
+//   } else if (difference.inMinutes > 0) {
+//     return '${difference.inMinutes}m';
+//   } else {
+//     return '${difference.inSeconds}s';
+//   }
+// }
 
 bool isImage(String url) {
   return url.toLowerCase().endsWith('.jpg') ||
