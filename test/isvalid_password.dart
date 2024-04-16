@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:reddit_clone/utils/utils_validate.dart';
 
 void main() {
+  
   test('Valid password should return true', () {
     expect(isValidPassword('Password1'), true);
   });
