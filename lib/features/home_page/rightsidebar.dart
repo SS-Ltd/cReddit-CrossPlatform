@@ -11,13 +11,36 @@ import 'package:reddit_clone/features/User/profile.dart';
 import 'package:reddit_clone/theme/Palette.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
-/// Widget representing the right sidebar in the home page.
+/// This file contains the implementation of the `Rightsidebar` widget.
 ///
-/// This widget displays user information, online status, karma, Reddit age,
-/// and various actions like profile, create community, settings, etc.
+/// The `Rightsidebar` widget is a stateful widget that represents the right sidebar of the home page.
+/// It displays a drawer with various account-related options and information.
+///
+/// The `Rightsidebar` widget extends the `StatefulWidget` class and overrides the `createState` method
+/// to create an instance of the `_RightsidebarState` class, which manages the state of the widget.
+///
+/// The `_RightsidebarState` class is a private class that extends the `State` class and manages the state
+/// of the `Rightsidebar` widget. It contains a boolean variable `isOnline` to track the online status
+/// and overrides the `build` method to build the UI of the widget.
+///
+/// The UI of the `Rightsidebar` widget consists of a `Drawer` widget with a dark grey background color.
+/// It contains a column with the following children:
+///   - An image widget displaying an image from the 'assets/hehe.png' file.
+///   - A text button that opens a bottom sheet when pressed.
+///   - The bottom sheet contains a column with account-related options and information.
+///     - The column starts with a text widget displaying the text 'ACCOUNTS'.
+///     - It is followed by a divider widget.
+///     - It contains a row with an image widget displaying the user's profile picture and a text widget
+///       displaying the user's username.
+///     - It also contains a row with an icon button and an icon widget, representing a check mark and a logout button.
+///     - The logout button opens another bottom sheet with logout confirmation options.
+///
+/// This widget requires the `BuildContext` to access the `NetworkService` and `user` information.
 
 class Rightsidebar extends StatefulWidget {
-  /// Constructs a [Rightsidebar] widget.
+  /// Creates a `Rightsidebar` widget.
+  ///
+  /// The `key` parameter is used to specify a unique identifier for the widget.
   const Rightsidebar({super.key});
 
   @override
@@ -26,6 +49,11 @@ class Rightsidebar extends StatefulWidget {
   }
 }
 
+/// The state class for the `Rightsidebar` widget.
+///
+/// This class manages the state of the `Rightsidebar` widget.
+/// It contains a boolean variable `isOnline` to track the online status.
+/// It overrides the `build` method to build the UI of the widget.
 class _RightsidebarState extends State<Rightsidebar> {
   bool isOnline = false;
   @override
@@ -50,7 +78,6 @@ class _RightsidebarState extends State<Rightsidebar> {
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                //update this with button
                 child: TextButton.icon(
                   onPressed: () {
                     showModalBottomSheet(
@@ -180,8 +207,9 @@ class _RightsidebarState extends State<Rightsidebar> {
                                                             .pushAndRemoveUntil(
                                                           context,
                                                           MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  LoginScreen()),
+                                                            builder: (context) =>
+                                                                const LoginScreen(),
+                                                          ),
                                                           (Route<dynamic>
                                                                   route) =>
                                                               false,
@@ -422,8 +450,7 @@ class _RightsidebarState extends State<Rightsidebar> {
       ),
     );
   }
-  
-  /// Builds a list tile with specified [icon], [text], and [onTap] callback.
+
   Widget _buildListTile(
       {required IconData icon, required String text, VoidCallback? onTap}) {
     return ListTile(

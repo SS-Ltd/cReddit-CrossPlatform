@@ -10,11 +10,8 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'postcomments.dart';
-// import '../../theme/palette.dart';
 import 'package:video_player/video_player.dart';
 
 class Post extends StatefulWidget {

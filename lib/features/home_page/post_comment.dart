@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/features/comments/comment_page.dart';
-import 'package:reddit_clone/post_options_menu.dart';
 
+/// FILEPATH: /D:/College/Senior-1/Software/cReddit-CrossPlatform/lib/features/home_page/post_comment.dart
+///
+/// This file contains the implementation of the [PostComment] widget, which is a stateful widget
+/// responsible for displaying a post comment section. It also defines the [Menu] enum, which represents
+/// the different options available in the popup menu.
+///
+/// The [PostComment] widget is used in the home page of the cReddit app to display the comment section
+/// for a post. It includes an app bar with various actions, such as search, sort, and a popup menu for
+/// additional options. The body of the widget contains a mock post for demonstration purposes.
+///
+/// The [mockPost] function returns a [Column] widget containing a single [Post] widget, which represents
+/// a post in the comment section. The [Post] widget displays information about the post, such as the
+/// community name, user name, title, content, and number of comments and shares.
+///
+/// The [menuitems] function returns a list of [PopupMenuEntry] widgets, which are used to populate the
+/// items in the popup menu. Each item represents a different option from the [Menu] enum, such as share,
+/// subscribe, save, copy text, edit, and more.
 enum Menu {
   share,
   subscribe,
@@ -19,6 +34,7 @@ enum Menu {
   delete
 }
 
+/// The [PostComment] widget is a stateful widget responsible for displaying a post comment section.
 class PostComment extends StatefulWidget {
   const PostComment({super.key});
 
@@ -36,7 +52,6 @@ class _PostCommentState extends State<PostComment> {
     return Scaffold(
       appBar: AppBar(
         key: _scaffoldKey,
-        // leading: const Icon(Icons.menu, size: 30.0),
         actions: [
           IconButton(
             onPressed: () {},
@@ -60,6 +75,10 @@ class _PostCommentState extends State<PostComment> {
   }
 }
 
+/// The [mockPost] function returns a [Column] widget containing a single [Post] widget.
+///
+/// The [Post] widget represents a post in the comment section. It displays information about the post,
+/// such as the community name, user name, title, content, and number of comments and shares.
 Widget mockPost() {
   return Column(
     children: [
@@ -89,9 +108,12 @@ Widget mockPost() {
   );
 }
 
+/// The [menuitems] function returns a list of [PopupMenuEntry] widgets.
+///
+/// Each [PopupMenuEntry] represents an item in the popup menu. The items are created using the [PopupMenuItem]
+/// widget and are populated with icons and titles based on the [Menu] enum values.
 List<PopupMenuEntry<Menu>> menuitems() {
   return <PopupMenuEntry<Menu>>[
-    //////////////////////////////////////////
     const PopupMenuItem<Menu>(
         value: Menu.share,
         child: ListTile(
