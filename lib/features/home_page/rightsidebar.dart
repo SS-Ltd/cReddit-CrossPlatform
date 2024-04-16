@@ -425,17 +425,3 @@ class _RightsidebarState extends State<Rightsidebar> {
   }
 }
 
-// String formatTimestamp(DateTime timestamp) {
-//   final now = DateTime.now();
-//   final difference = now.difference(timestamp);
-
-//   if (difference.inDays > 0) {
-//     return '${difference.inDays}d';
-//   } else if (difference.inHours > 0) {
-//     return '${difference.inHours}h';
-//   } else if (difference.inMinutes > 0) {
-//     return '${difference.inMinutes}m';
-//   } else {
-//     return '${difference.inSeconds}s';
-//   }
-// }

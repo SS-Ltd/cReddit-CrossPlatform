@@ -8,9 +8,9 @@ class CommunityCard extends StatefulWidget {
   final Community community;
 
   const CommunityCard({
-    Key? key,
+    super.key,
     required this.community,
-  }) : super(key: key);
+  });
 
   @override
   CommunityCardState createState() => CommunityCardState();

@@ -5,15 +5,18 @@ class SelectItem extends StatefulWidget implements PreferredSizeWidget {
   final ValueChanged<String>? onMenuItemSelected;
 
   const SelectItem({
+    super.key,
     required this.menuItems,
     this.onMenuItemSelected,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
-  _SelectItemState createState() => _SelectItemState();
+  State<SelectItem> createState() {
+    return _SelectItemState();
+  }
 }
 
 class _SelectItemState extends State<SelectItem> {

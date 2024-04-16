@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 class SubRedditPage extends StatefulWidget {
@@ -57,7 +56,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchPosts() async {
     if (isLoading || !hasMore)
+    {
       return; // Exit if already loading or no more posts to load
+    }  
 
     setState(() {
       isLoading = true; // Set loading state to true
@@ -88,17 +89,14 @@ class _SubRedditPageState extends State<SubRedditPage> {
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     for (var subreddit in networkService.user?.recentlyVisited ?? {}) {
-      print(subreddit.name);
     }
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
       networkService.user?.recentlyVisited.add(details);
       setState(() {
-        print(details.icon);
         _subredditIcon = details.icon;
         _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
-        //  _subredditDescription = details['description'];
         _subredditMembers = details.members;
         _subredditRules = details.rules;
         _subredditModerators = details.moderators;
@@ -139,8 +137,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
                 if (index < subredditPosts.length) {
                   return postWidget(subredditPosts[index]);
                 } else {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32.0),
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
@@ -148,7 +146,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
               childCount: hasMore
                   ? subredditPosts.length + 1
                   : subredditPosts
-                      .length, // Add extra space for a loading indicator if more items are coming
+                      .length, // Add extra space -> loading indicator if more items are coming
             ),
           ),
         ],
@@ -252,7 +250,6 @@ class _SubRedditPageState extends State<SubRedditPage> {
   }
 
   Widget _subredditInfo() {
-    print('Subreddit Icon URL: $_subredditIcon');
     return Container(
       padding: const EdgeInsets.all(10),
       color: const Color.fromRGBO(27, 27, 27, 1),
