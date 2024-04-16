@@ -15,6 +15,19 @@ import 'package:reddit_clone/features/comments/edit_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
+/// This file contains the implementation of the [UserComment] widget and its related classes.
+///
+/// The [UserComment] widget is a stateful widget that represents a user comment in a comment section.
+/// It displays the user's profile picture, username, comment content, and voting buttons.
+/// The widget also allows users to reply to the comment and view replies.
+///
+/// The [LinePainter] class is a custom painter that draws a vertical line on the left side of the comment.
+///
+/// The [UserCommentState] class is the state class for the [UserComment] widget.
+/// It manages the state of the comment, including the number of votes, voting status, replies, and content.
+/// The class also handles user interactions such as upvoting, downvoting, adding replies, and minimizing the comment.
+///
+/// This file is located at /C:/Users/Youssef Darwish/Documents/GitHub/cReddit-CrossPlatform/lib/features/comments/user_comment.dart.
 class UserComment extends StatefulWidget {
   final int level;
   File? photo;
@@ -420,8 +433,8 @@ class UserCommentState extends State<UserComment> {
                                         : Palette.greyColor),
                                 onPressed: () async {
                                   int oldVotes = votes;
-                                  ValueNotifier<int> oldHasVoted = ValueNotifier<int>(
-                                      hasVoted.value);
+                                  ValueNotifier<int> oldHasVoted =
+                                      ValueNotifier<int>(hasVoted.value);
                                   if (mounted) {
                                     setState(() {
                                       upVote();
@@ -430,7 +443,7 @@ class UserCommentState extends State<UserComment> {
                                   bool votedUp = await context
                                       .read<NetworkService>()
                                       .upVote(widget.comment.commentId);
-                                  
+
                                   if (!votedUp && mounted) {
                                     setState(() {
                                       votes = oldVotes;
@@ -475,8 +488,8 @@ class UserCommentState extends State<UserComment> {
                                         : Palette.greyColor),
                                 onPressed: () async {
                                   int oldVotes = votes;
-                                  ValueNotifier<int> oldHasVoted = ValueNotifier<int>(
-                                      hasVoted.value);
+                                  ValueNotifier<int> oldHasVoted =
+                                      ValueNotifier<int>(hasVoted.value);
                                   if (mounted) {
                                     setState(() {
                                       downVote();
@@ -727,4 +740,3 @@ class UserCommentState extends State<UserComment> {
     });
   }
 }
-

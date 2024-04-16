@@ -9,6 +9,38 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 
+/// This file contains the [CommentPage] widget, which is a stateful widget that
+/// displays a page for viewing and interacting with comments on a post.
+/// The widget takes in several required parameters including [postId], [postComment],
+/// [postTitle], and [username].
+///
+/// The [CommentPage] widget has a state, [_CommentPageState],
+/// which manages the state of the widget.
+/// It initializes a [TextEditingController] for handling user input,
+/// and maintains a list of comments,
+/// [_comments], a scroll controller, [_scrollController],
+/// and lists of global keys and
+/// comment positions for tracking comment positions on the page.
+///
+/// The [CommentPage] widget fetches comments for the specified post using the
+/// [fetchComments] method, which makes a network request to retrieve.
+/// The fetched comments are then mapped to [UserComment]
+///  objects and stored in the [_comments] list.
+///
+/// The widget also provides methods for mapping votes,
+/// calculating comment positions, and scrolling to the next comment.
+///
+/// The [CommentPage] widget builds a [Scaffold] with an [AppBar],
+/// a [ListView.builder] for displaying the comments,
+/// and a bottom navigation bar with a text input field for adding new comments.
+/// The comments are displayed using the [UserComment] widget,
+/// which takes in a [GlobalKey] to track its position on the page.
+///
+/// The widget also includes a [PopupMenuButton] in the app bar for displaying
+/// additional options, such as sharing and subscribing to the post.
+///
+/// Overall, the [CommentPage] widget provides a user interface for viewing
+/// and interacting with comments on a post.
 class CommentPage extends StatefulWidget {
   final String postId;
   final Post postComment;
