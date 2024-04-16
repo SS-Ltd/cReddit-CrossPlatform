@@ -9,6 +9,28 @@ import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A widget that represents the account settings screen.
+///
+/// This widget displays various settings related to the user's account,
+/// such as updating email address, phone number, changing password,
+/// managing connected accounts, contact settings, safety settings,
+/// privacy settings, etc.
+///
+/// The [AccountSettings] widget uses a [FutureBuilder] to asynchronously
+/// fetch the user settings from the network service. While the settings
+/// are being fetched, a loading indicator is displayed. If there is an
+/// error during the fetch, an error message is displayed. Once the settings
+/// are fetched successfully, the settings are displayed in a [Scaffold]
+/// with an [AppBar] and a [SingleChildScrollView] containing various
+/// settings options.
+///
+/// Example usage:
+///
+/// ```dart
+/// AccountSettings(
+///   key: Key('accountSettings'),
+/// )
+/// ```
 class AccountSettings extends StatelessWidget {
   const AccountSettings({super.key});
 

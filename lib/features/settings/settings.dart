@@ -7,6 +7,11 @@ import 'package:reddit_clone/selection_button.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// This is the `Settings` class, a StatefulWidget that represents the settings screen.
+/// It allows users to customize various settings related to their account and app preferences.
+/// The settings include general settings, premium features, language selection, view options,
+/// accessibility settings, dark mode, advanced settings, and support options.
+
 class Settings extends StatefulWidget {
   const Settings({super.key});
 
@@ -14,6 +19,8 @@ class Settings extends StatefulWidget {
   State<Settings> createState() => _SettingsState();
 }
 
+/// This is the private `_SettingsState` class, a State class that corresponds to the `Settings` class.
+/// It manages the state of the settings screen and contains the logic for handling user interactions.
 class _SettingsState extends State<Settings> {
   String currentlanguage = 'English';
 

@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A widget that allows the user to choose a community for posting.
 class CommunityChoice extends StatefulWidget {
+  /// The chosen community for posting.
+  String chosenCommunity;
+
+  /// Constructs a [CommunityChoice] widget.
+  ///
+  /// The [chosenCommunity] parameter is required.
   CommunityChoice({
     super.key,
     required this.chosenCommunity,
   });
-
-  String chosenCommunity;
 
   @override
   State<CommunityChoice> createState() {
@@ -26,6 +31,7 @@ class _CommunityChoiceState extends State<CommunityChoice> {
     fetcheddata();
   }
 
+  /// Fetches the data for the joined communities.
   Future<void> fetcheddata() async {
     joinedCommunities =
         await Provider.of<NetworkService>(context, listen: false)

@@ -14,9 +14,15 @@ import 'package:reddit_clone/switch_button.dart';
 //todo; check link validity, test multiple images, add place to show them,
 //add option to scroll them hotizontally
 
+/// This class represents the screen for creating a new post.
+/// It is a stateful widget that allows the user to enter a title, body, and other details for the post.
+/// The user can also choose an image, add tags and flair, and select a community for the post.
 class CreatePost extends StatefulWidget {
+  /// The constructor for the [CreatePost] widget.
+  /// [profile] indicates whether the post is being created from a user's profile or not.
   const CreatePost({super.key, required this.profile});
 
+  /// Indicates whether the post is being created from a user's profile or not.
   final bool profile;
 
   @override
@@ -25,6 +31,8 @@ class CreatePost extends StatefulWidget {
   }
 }
 
+/// The state class for the [CreatePost] widget.
+/// It manages the state of the text controllers, image picker, link insertion, poll insertion, and other UI elements.
 class _CreatePostState extends State<CreatePost> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
@@ -50,6 +58,7 @@ class _CreatePostState extends State<CreatePost> {
 
   bool isspoiler = false;
 
+  /// Retrieves an image from the gallery or camera and sets it as the selected image for the post.
   Future getImage() async {
     if (_isImagePickerOpen) {
       return;
