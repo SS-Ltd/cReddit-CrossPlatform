@@ -11,6 +11,6 @@ void main() {
     expect(result1, '1h');
     final postTime2 = DateTime.now().subtract(const Duration(minutes: 6));
     String result2 = formatTimestamp(postTime2); 
-    expect(result2, '5m');
+    expect(result2, '6m');
   });  
 }
