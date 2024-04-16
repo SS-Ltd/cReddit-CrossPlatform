@@ -3,8 +3,21 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// A widget that displays the user agreement and privacy policy text.
+///
+/// This widget is used to display the user agreement and privacy policy text
+/// in a [RichText] widget. It provides clickable links to the user agreement
+/// and privacy policy pages.
+///
+/// Example usage:
+/// ```dart
+/// AgreementText(
+///   key: Key('agreementText'),
+/// )
+/// ```
+
 class AgreementText extends StatelessWidget {
-  const AgreementText({Key? key}) : super(key: key);
+  const AgreementText({super.key});
 
   @override
   Widget build(BuildContext context) {

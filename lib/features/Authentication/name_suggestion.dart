@@ -8,8 +8,15 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/Authentication/gender.dart';
 import 'package:reddit_clone/services/networkServices.dart'; // Import NetworkServices
 
+/// This widget represents the screen for suggesting a username.
+/// It allows the user to create a username by choosing from a list of suggestions
+/// or generating new suggestions.
 class NameSuggestion extends StatefulWidget {
   final Map<String, dynamic> userData;
+
+  /// Constructs a [NameSuggestion] widget.
+  ///
+  /// The [userData] parameter is required and contains user data.
   NameSuggestion({Key? key, required this.userData}) : super(key: key);
 
   @override
@@ -29,7 +36,11 @@ class _NameSuggestionState extends State<NameSuggestion> {
     generateRandomNames();
   }
 
-  // Function to generate 5 random names and add them to usernameSuggestions
+  /// Generates 5 random names and adds them to [usernameSuggestions].
+  ///
+  /// This function fetches random names using the [NetworkService] and updates
+  /// the [usernameSuggestions] list. If an error occurs during the fetch,
+  /// the [isLoading] flag is set to false.
   void generateRandomNames() async {
     try {
       setState(() {

@@ -11,7 +11,13 @@ import 'package:reddit_clone/features/User/profile.dart';
 import 'package:reddit_clone/theme/Palette.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
+/// Widget representing the right sidebar in the home page.
+///
+/// This widget displays user information, online status, karma, Reddit age,
+/// and various actions like profile, create community, settings, etc.
+
 class Rightsidebar extends StatefulWidget {
+  /// Constructs a [Rightsidebar] widget.
   const Rightsidebar({super.key});
 
   @override
@@ -126,13 +132,15 @@ class _RightsidebarState extends State<Rightsidebar> {
                                                 return Wrap(
                                                   children: <Widget>[
                                                     Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: 15, top: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15,
+                                                              top: 10),
                                                       child: Text(
                                                         'u/${user?.username ?? 'Username'}',
                                                         textAlign:
                                                             TextAlign.center,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           color:
                                                               Palette.greyColor,
                                                           fontWeight:
@@ -414,7 +422,8 @@ class _RightsidebarState extends State<Rightsidebar> {
       ),
     );
   }
-
+  
+  /// Builds a list tile with specified [icon], [text], and [onTap] callback.
   Widget _buildListTile(
       {required IconData icon, required String text, VoidCallback? onTap}) {
     return ListTile(
@@ -424,4 +433,3 @@ class _RightsidebarState extends State<Rightsidebar> {
     );
   }
 }
-

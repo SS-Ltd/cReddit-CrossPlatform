@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,8 +13,12 @@ import 'package:reddit_clone/features/Authentication/google_button.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'dart:async';
 
+/// The login screen widget.
+///
+/// This widget displays the login screen of the cReddit app. It allows users to enter their email and password to log in.
+/// The screen also provides options for signing up, logging in with Google, and recovering a forgotten password.
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();

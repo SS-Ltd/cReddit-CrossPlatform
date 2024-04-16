@@ -1,19 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
+/// A widget that represents an authentication field.
+///
+/// This widget is used to display an input field for authentication purposes,
+/// such as username or password. It provides options for showing or hiding the
+/// entered text, as well as a clear button to remove the entered text.
+///
+/// The [AuthField] widget requires a [controller] to manage the text input,
+/// a [labelText] to display as the field's label, and optional parameters
+/// [obscureText] and [showClearButton] to customize the field's behavior.
+///
+/// Example usage:
+///
+/// ```dart
+/// AuthField(
+///   controller: _usernameController,
+///   labelText: 'Username',
+///   obscureText: false,
+///   showClearButton: true,
+/// )
+/// 
+
 class AuthField extends StatefulWidget {
+  /// The controller for managing the text input.
   final TextEditingController controller;
+  /// The label text to display for the field.
   final String labelText;
+  /// Whether the entered text should be obscured (e.g., for passwords).
   bool obscureText;
+  /// Whether to show a clear button to remove the entered text.
   final bool showClearButton;
 
+  /// Creates a new [AuthField] instance.
+  ///
+  /// The [controller] and [labelText] parameters are required.
+  /// The [obscureText] parameter defaults to `false`.
+  /// The [showClearButton] parameter defaults to `false`.
   AuthField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.labelText,
     this.obscureText = false,
     this.showClearButton = false,
-  }) : super(key: key);
+  });
 
   @override
   State<AuthField> createState() {
@@ -23,7 +53,7 @@ class AuthField extends StatefulWidget {
 
 class _AuthFieldState extends State<AuthField> {
   final ValueNotifier<String?> errorNotifier = ValueNotifier<String?>(null);
-
+  /// Toggles the visibility of the password text.
   void togglePasswordVisibility() {
     setState(() {
       widget.obscureText = !widget.obscureText;
@@ -65,8 +95,8 @@ class _AuthFieldState extends State<AuthField> {
                     color: Palette.inputFieldLabel,
                   ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.only(
-                      left: 15, top: 5, bottom: 10),
+                  contentPadding:
+                      const EdgeInsets.only(left: 15, top: 5, bottom: 10),
                   suffixIcon: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -83,7 +113,8 @@ class _AuthFieldState extends State<AuthField> {
                         IconButton(
                           onPressed: () {
                             widget.controller.clear();
-                            errorNotifier.value = 'Please enter ${widget.labelText}';
+                            errorNotifier.value =
+                                'Please enter ${widget.labelText}';
                           },
                           icon: const Icon(Icons.clear),
                         ),
@@ -91,7 +122,7 @@ class _AuthFieldState extends State<AuthField> {
                   ),
                 ),
                 onChanged: (value) {
-                  if (value == null || value.isEmpty || value.trim().isEmpty) {
+                  if (value.isEmpty || value.trim().isEmpty) {
                     errorNotifier.value = 'Please enter ${widget.labelText}';
                   } else {
                     errorNotifier.value = null;
@@ -112,7 +143,7 @@ class _AuthFieldState extends State<AuthField> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         error,
-                        style: TextStyle(color: Colors.red, fontSize: 12),
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
                       ),
                     ),
                   );

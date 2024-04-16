@@ -6,6 +6,23 @@ import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 
+/// A button widget that allows users to sign in with Google.
+///
+/// This button is typically used in the authentication process to provide
+/// users with the option to sign in using their Google account. When pressed,
+/// it triggers the Google sign-in process and validates the user's access token.
+/// If the sign-in is successful and the access token is validated, the user is
+/// redirected to the home screen of the application.
+///
+/// Example usage:
+///
+/// ```dart
+/// GoogleButton(
+///   onPressed: () {
+///     // Perform Google sign-in and validation logic
+///   },
+/// )
+/// ```
 class GoogleButton extends StatelessWidget {
   const GoogleButton({
     super.key,

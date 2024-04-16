@@ -12,13 +12,24 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:reddit_clone/utils/utils_validate.dart';
 import 'dart:async';
 
+/// The screen for user sign up.
+///
+/// This screen allows users to sign up by providing their email and password.
+/// It includes form validation and enables the sign-up button only when the
+/// email and password fields are filled.
 class SignUpScreen extends StatefulWidget {
-  SignUpScreen({Key? key}) : super(key: key);
+  SignUpScreen({super.key});
 
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
+/// The state of the [SignUpScreen].
+///
+/// This class manages the state of the sign-up screen, including the text
+/// editing controllers for the email and password fields, the form validation,
+/// and the visibility of the keyboard. It also handles the navigation to the
+/// login screen and the sign-up button's functionality.
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -189,14 +200,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
+  /// Checks if the given [email] is a valid email address.
+  ///
+  /// Returns `true` if the email is valid, otherwise `false`.
   bool isValidEmail(String email) {
     return isValidEmailOrUsername(email) > 0;
   }
-
-  // bool isValidPassword(String password) {
-  //   return password.length >= 8 &&
-  //       password.contains(RegExp(r'[A-Z]')) &&
-  //       password.contains(RegExp(r'[a-z]'));
-  // }
 }
