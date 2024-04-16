@@ -1,16 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 void main() {
   test('Check Time Stamp Format', () {
-    final postTime = DateTime(2024, 3, 17);
+    final postTime = DateTime.now().subtract(const Duration(days: 2));
     String result = formatTimestamp(postTime); 
     expect(result, '2d');
-    final postTime1 = DateTime(2024, 3, 19, 1);
+    final postTime1 = DateTime.now().subtract(const Duration(hours: 1));
     String result1 = formatTimestamp(postTime1); 
     expect(result1, '1h');
-    final postTime2 = DateTime(2024, 3, 19, 2, 48);
+    final postTime2 = DateTime.now().subtract(const Duration(minutes: 6));
     String result2 = formatTimestamp(postTime2); 
-    expect(result2, '6m');
+    expect(result2, '5m');
   });  
 }

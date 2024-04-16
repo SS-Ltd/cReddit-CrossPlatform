@@ -23,13 +23,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Create a community',
+      title: 'cReddit',
       theme: AppTheme.darkTheme,
       //home: LoginScreen(),
       home: Scaffold(
         body: PageView(
           children: <Widget>[
-            LoginScreen(),
+            const LoginScreen(),
             SignUpScreen(),
           ],
         ),

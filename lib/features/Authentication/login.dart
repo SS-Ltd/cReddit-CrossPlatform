@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const SizedBox(height: 20),
                     const Text(
-                      'Log in to reddit_clone',
+                      'Log in to cReddit',
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
