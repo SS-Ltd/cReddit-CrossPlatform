@@ -111,6 +111,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       ),
       appBar: (_currentIndex != 2)
           ? AppBar(
+            backgroundColor: Palette.appBar,
+            elevation: 2.6,
               title: (_currentIndex == 0)
                   ? SelectItem(
                       menuItems: menuItems,

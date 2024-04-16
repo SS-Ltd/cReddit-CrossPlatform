@@ -12,7 +12,7 @@ class Palette {
   static const Color searchBarColor = Color.fromRGBO(32, 35, 39, 1);
   
   static const Color backgroundColor = Color.fromARGB(255, 19, 19, 19);
-  static const Color appBar = Color.fromARGB(255, 18, 18, 18);
+  static const Color appBar = Color.fromARGB(255, 0, 0, 0);
   static const Color inputField = Color.fromARGB(255, 39, 39, 39);
   static const Color inputFieldLabel = Color.fromARGB(255, 143, 143, 143);
   static const Color settingsHeading = Color.fromARGB(255, 10, 10, 10);
@@ -30,5 +30,7 @@ class Palette {
   static const Color blueJoinColor = Color.fromARGB(255, 3, 69, 168);
   static const Color blueJoinedColor = Color.fromARGB(255, 122, 169, 238);
   static const Color textFormFieldgreyColor= Color.fromARGB(255, 40, 39, 39);
+  static const Color communityCard= Color.fromARGB(255, 3, 3, 3);
+  static const Color communityPage= Color.fromARGB(255, 12, 12, 12);
 }
 
