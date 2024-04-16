@@ -116,7 +116,9 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
-                            print(isspoiler);
+                            print('trst image');
+                            print(_hasImage);
+                            print(_insertlink);
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context

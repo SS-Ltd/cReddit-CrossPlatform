@@ -30,10 +30,7 @@ class _CommunityChoiceState extends State<CommunityChoice> {
     joinedCommunities =
         await Provider.of<NetworkService>(context, listen: false)
             .joinedcommunitites();
-    print(joinedCommunities!);
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
@@ -57,9 +54,12 @@ class _CommunityChoiceState extends State<CommunityChoice> {
                 itemCount: joinedCommunities!.length,
                 itemBuilder: (context, index) {
                   return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          joinedCommunities![index].profilePicture.toString()),
+                    ),
                     title: Text(joinedCommunities![index].name),
                     onTap: () {
-                      print(joinedCommunities![index].name);
                       Navigator.of(context).pop(joinedCommunities![index].name);
                     },
                   );

@@ -770,7 +770,7 @@ class NetworkService extends ChangeNotifier {
     request.headers.addAll(_headers);
 
     request.fields['type'] = 'Images & Video';
-    request.fields['communityname'] = communityname;
+    request.fields['communityName'] = communityname;
     request.fields['title'] = title;
     request.fields['isSpoiler'] = isSpoiler.toString();
     request.fields['isNSFW'] = isNSFW.toString();
@@ -791,6 +791,7 @@ class NetworkService extends ChangeNotifier {
     }
     print(responseBody);
     if (response.statusCode == 200 || response.statusCode == 201) {
+      print(responseBody);
       return true;
     } else {
       print('Failed to create post: ${responseBody}');
