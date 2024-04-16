@@ -59,6 +59,8 @@ class _CommunityChoiceState extends State<CommunityChoice> {
                           joinedCommunities![index].profilePicture.toString()),
                     ),
                     title: Text(joinedCommunities![index].name),
+                    subtitle: Text(
+                        '${joinedCommunities![index].members.toString()} members'),
                     onTap: () {
                       Navigator.of(context).pop(joinedCommunities![index].name);
                     },
