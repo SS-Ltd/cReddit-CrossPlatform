@@ -762,29 +762,39 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<bool> createNewImagePost(String communityname, String title,
-      String content, bool isNSFW, bool isSpoiler) async {
+      File imageFile, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
-    final response = await http.post(
-      url,
-      headers: _headers,
-      body: jsonEncode({
-        'type': 'Images & Video',
-        'communityname': communityname,
-        'title': title,
-        //'images' :
-        'isSpoiler': isSpoiler,
-        'isNSFW': isNSFW,
-      }),
-    );
+
+    http.MultipartRequest request = http.MultipartRequest('POST', url);
+
+    request.headers.addAll(_headers);
+
+    request.fields['type'] = 'Images & Video';
+    request.fields['communityName'] = communityname;
+    request.fields['title'] = title;
+    request.fields['isSpoiler'] = isSpoiler.toString();
+    request.fields['isNSFW'] = isNSFW.toString();
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'images',
+      imageFile.path,
+      filename: basename(imageFile.path),
+    ));
+
+    http.StreamedResponse response = await request.send();
+
+    String responseBody = await response.stream.bytesToString();
     if (response.statusCode == 403) {
       refreshToken();
       return createNewImagePost(
-          communityname, title, content, isNSFW, isSpoiler);
+          communityname, title, imageFile, isNSFW, isSpoiler);
     }
-    if (response.statusCode == 201) {
+    print(responseBody);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print(responseBody);
       return true;
     } else {
-      print('Failed to create post: ${response.body}');
+      print('Failed to create post: ${responseBody}');
       return false;
     }
   }
