@@ -11,8 +11,25 @@ import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/features/post/create_post.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
+/// A custom navigation bar widget that displays different pages based on the selected menu item.
+///
+/// This widget is used in the home page of the cReddit-CrossPlatform app.
+/// It provides a navigation bar at the bottom of the screen and a drawer on the side.
+/// The navigation bar allows the user to switch between different pages, such as the home page, communities page, create post page, inbox notification page, and chat page.
+/// The drawer displays a list of recently visited subreddits and provides options to show all recently visited subreddits or hide them.
+///
+/// Example usage:
+///
+/// ```dart
+/// CustomNavigationBar(
+///   key: GlobalKey(),
+/// )
+/// ```
 class CustomNavigationBar extends StatefulWidget {
-  const CustomNavigationBar({super.key});
+  /// Creates a custom navigation bar widget.
+  ///
+  /// The [key] parameter is used to provide a global key for the widget.
+  const CustomNavigationBar({Key? key});
 
   @override
   State<StatefulWidget> createState() {
@@ -45,7 +62,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     int listsize = listRecentlyVisited.length;
     String selectedMenuItem = "Hot"; // Store the selected menu item here
 
-    print(showrecently);
     print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
       key: _scaffoldKey,

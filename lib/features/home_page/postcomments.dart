@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 
+/// Represents a widget that displays the comments section for a post.
+///
+/// This widget is responsible for rendering the comments section for a post,
+/// including the post itself and any associated comments. It takes in various
+/// properties such as the community name, user name, post title, post type,
+/// content, comment number, share number, timestamp, profile picture, and
+/// voting information.
+///
+/// The [PostComments] widget is typically used within the context of a
+/// [Column] widget to display the comments section vertically.
 class PostComments extends StatelessWidget {
   final String communityName;
   final String userName;
