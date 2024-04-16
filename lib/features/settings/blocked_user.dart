@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+/// A widget that represents a blocked user in the settings.
 class BlockedUser extends StatelessWidget {
   const BlockedUser(
       {super.key,
@@ -7,8 +8,13 @@ class BlockedUser extends StatelessWidget {
       required this.username,
       required this.userphoto});
 
+  /// A callback function that is called when the unblock button is pressed.
   final VoidCallback onPressed;
+
+  /// The username of the blocked user.
   final String username;
+
+  /// The photo of the blocked user.
   final String userphoto;
 
   @override

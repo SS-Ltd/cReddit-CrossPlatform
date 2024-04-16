@@ -4,6 +4,7 @@ import 'package:reddit_clone/features/settings/forgot_password.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 
+/// A widget that allows the user to update their email address.
 class UpdateEmail extends StatefulWidget {
   const UpdateEmail({super.key});
 
@@ -157,13 +158,13 @@ class _UpdateEmailState extends State<UpdateEmail> {
                             ElevatedButton(
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                 String changeresponse =  await context
+                                  String changeresponse = await context
                                       .read<NetworkService>()
                                       .updateemail(
                                         _emailController.text,
                                         _passwordController.text,
                                       );
-                                      print(changeresponse);
+                                  print(changeresponse);
                                 }
                               },
                               style: ElevatedButton.styleFrom(

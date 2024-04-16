@@ -3,6 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'dart:convert';
 
+/// This class represents a report button widget.
+///
+/// The [ReportButton] widget is used to display a report button in the UI.
+/// When the button is tapped, a modal bottom sheet is shown where the user can select a reason for reporting a post.
+/// The selected reason is then sent to the server using an HTTP POST request.
 class ReportButton extends StatefulWidget {
   const ReportButton({super.key});
 
@@ -63,7 +68,7 @@ class _ReportButtonState extends State<ReportButton> {
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       "Help fellow redditors by reporting things that break the"
-                      " rules. Let us know what's happening, and we'll look" 
+                      " rules. Let us know what's happening, and we'll look"
                       " into it.",
                       style: TextStyle(color: Colors.white70),
                     ),

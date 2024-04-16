@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A widget that allows users to view and manage muted communities.
 class MutedCommunities extends StatefulWidget {
   const MutedCommunities({super.key});
 
@@ -9,6 +10,7 @@ class MutedCommunities extends StatefulWidget {
   }
 }
 
+/// The state of the [MutedCommunities] widget.
 class _MutedCommunitiesState extends State<MutedCommunities> {
   final _communityNameController = TextEditingController();
 

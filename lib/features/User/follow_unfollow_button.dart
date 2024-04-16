@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+/// A button that allows the user to follow or unfollow another user.
 class FollowButton extends StatefulWidget {
   final String userName;
   final String profileName;
@@ -9,9 +10,8 @@ class FollowButton extends StatefulWidget {
     Key? key,
     required this.userName,
     required this.profileName,
-
   }) : super(key: key);
-  
+
   @override
   _FollowButtonState createState() => _FollowButtonState();
 }
@@ -20,6 +20,7 @@ class _FollowButtonState extends State<FollowButton> {
   bool _isFollowing = false;
   bool _isLoading = false;
 
+  /// Toggles the follow status of the user.
   void _toggleFollow() {
     setState(() {
       _isLoading = true; // Start the loading animation
@@ -42,6 +43,7 @@ class _FollowButtonState extends State<FollowButton> {
     });
   }
 
+  /// Shows a snackbar indicating that the user has been followed.
   void _showFollowedSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -55,6 +57,7 @@ class _FollowButtonState extends State<FollowButton> {
     );
   }
 
+  /// Shows a snackbar indicating that the user has been unfollowed.
   void _showUnfollowedSnackbar() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -87,7 +90,8 @@ class _FollowButtonState extends State<FollowButton> {
         ),
       ),
       child: _isLoading
-          ? const SizedBox( // Hide the text when loading
+          ? const SizedBox(
+              // Hide the text when loading
               height: 24.0,
               width: 24.0,
               child: SpinKitCircle(
@@ -106,13 +110,15 @@ class _FollowButtonState extends State<FollowButton> {
   }
 }
 
+/// A custom snackbar widget that slides in from the bottom.
 class SlideInSnackBar extends StatefulWidget {
   final String content;
   final Duration duration;
   final Color backgroundColor;
   final Color textColor;
 
-  const SlideInSnackBar({super.key, 
+  const SlideInSnackBar({
+    Key? key,
     required this.content,
     required this.duration,
     required this.backgroundColor,

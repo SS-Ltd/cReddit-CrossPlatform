@@ -5,8 +5,10 @@ import 'package:reddit_clone/features/post/saved_posts.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A page that displays the saved posts and comments of a user.
 class SavedPage extends StatefulWidget {
   const SavedPage({super.key});
+
   @override
   State<SavedPage> createState() => _SavedPageState();
 }

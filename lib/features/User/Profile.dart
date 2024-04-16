@@ -20,6 +20,7 @@ import 'package:reddit_clone/features/User/edit_button.dart';
 
 enum TabSelection { posts, comments, about }
 
+/// A widget representing the user profile.
 class Profile extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userName;
@@ -50,6 +51,7 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
+/// Maps the boolean values [isUpvoted] and [isDownvoted] to an integer value.
 int mappingVotes(bool isUpvoted, bool isDownvoted) {
   if (isUpvoted) {
     return 1;
@@ -72,6 +74,8 @@ class _ProfileState extends State<Profile> {
 
   List<PostModel> userPosts = [];
   List<Comments> userComments = [];
+
+  /// Fetches the user posts from the network.
   Future<void> fetchUserPosts({bool refresh = false}) async {
     if (isLoadingPosts) return;
     if (refresh) {
@@ -104,6 +108,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  /// Fetches the user comments from the network.
   Future<void> fetchUserComments({bool refresh = false}) async {
     if (isLoadingComments) return;
     if (refresh) {
@@ -142,6 +147,7 @@ class _ProfileState extends State<Profile> {
     fetchUserComments();
   }
 
+  /// Formats the cake day string to a readable format.
   String _formattedCakeDay(String cakeDay) {
     DateTime parsedDate = DateTime.parse(cakeDay);
     return DateFormat('dd MMM yyyy').format(parsedDate);

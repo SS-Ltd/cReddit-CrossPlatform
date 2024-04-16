@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/settings/blocked_user_model.dart';
 
+/// A list of dummy users for testing purposes.
 final dummyusers = [
   BlockedUserModel(onPressed: () {}, username: 'Osama', userphoto: 'qwdasdass'),
   BlockedUserModel(
       onPressed: () {}, username: 'Mohamed', userphoto: 'qwdasdass'),
 ];
 
+/// A screen for managing blocked accounts.
 class ManageBlockedAccounts extends StatefulWidget {
   const ManageBlockedAccounts({super.key});
 
