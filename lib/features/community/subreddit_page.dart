@@ -4,6 +4,27 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// This file contains the implementation of the [SubRedditPage] widget.
+/// The [SubRedditPage] widget displays a subreddit page with posts, subreddit information, and sorting options.
+/// It fetches subreddit details and posts from a network service and renders them in a custom scroll view.
+/// The user can scroll through the posts, load more posts, and change the sorting options.
+/// The [SubRedditPage] widget is a stateful widget that manages the loading state, pagination, and sorting state.
+/// It also handles user interactions such as tapping on sorting options and post widgets.
+/// The widget uses various other widgets such as [AppBar], [CustomScrollView], [SliverToBoxAdapter], [SliverList], [ListTile], [Icon], [Text], [CircleAvatar], and [Container] to build the UI.
+/// The widget relies on a network service provided by the [Provider] package to fetch subreddit details and posts.
+/// The subreddit details include the subreddit icon, banner, description, number of members, rules, and moderators.
+/// The posts are fetched in batches using pagination and sorted based on the selected sorting option.
+/// Each post is rendered using the [Post] widget, which displays the post's community name, username, title, type, profile picture, content, comment count, share count, timestamp, votes, and voting state.
+/// The widget also includes sorting options, which allow the user to change the sorting order of the posts.
+/// The sorting options include 'Hot', 'New', and 'Top', and are displayed in a modal bottom sheet when tapped.
+/// The widget updates the UI dynamically when the sorting option is changed or when new posts are loaded.
+/// The widget also includes subreddit information, such as the subreddit name, number of members, and online members.
+/// The subreddit information is displayed in a container with a dark background color.
+/// The subreddit icon is displayed as a circle avatar, and the subreddit banner is displayed as a background image in the app bar.
+/// The widget also includes loading indicators to indicate when more posts are being loaded.
+/// The widget uses a scroll controller to listen for scroll events and load more posts when the user reaches the end of the scroll view.
+/// The widget manages the loading state, pagination, and sorting state using state variables and the [setState] method.
+/// The widget also disposes of the scroll controller when it is no longer needed to prevent memory leaks.
 class SubRedditPage extends StatefulWidget {
   final String? subredditName;
 
@@ -12,7 +33,9 @@ class SubRedditPage extends StatefulWidget {
   @override
   State<SubRedditPage> createState() => _SubRedditPageState();
 }
-
+/// The state class for the [SubRedditPage] widget.
+/// It manages the loading state, pagination, and sorting state of the subreddit page.
+/// It also handles user interactions and fetches subreddit details and posts from a network service.
 class _SubRedditPageState extends State<SubRedditPage> {
   bool isJoined = false;
   String currentSort = 'Hot';
@@ -21,7 +44,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
   List<PostModel> subredditPosts = [];
   int page = 1;
   bool hasMore =
-      true; // to track if more items are available to prevent unnecessary requests
+      true; // to track if more items are available to
+            // prevent unnecessary requests
   bool isLoading = false; // to track loading state
   final ScrollController _scrollController = ScrollController();
 
@@ -146,7 +170,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
               childCount: hasMore
                   ? subredditPosts.length + 1
                   : subredditPosts
-                      .length, // Add extra space -> loading indicator if more items are coming
+                      .length, // Add extra space -> 
+                      //loading indicator if more items are coming
             ),
           ),
         ],
