@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/switch_button.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
@@ -46,6 +47,8 @@ class _CreatePostState extends State<CreatePost> {
   int count = 0;
   String _pollendsin = "2 Day";
 
+  bool isspoiler = false;
+
   Future getImage() async {
     final image = await picker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -58,6 +61,9 @@ class _CreatePostState extends State<CreatePost> {
 
   @override
   void dispose() {
+    _titleController.dispose();
+    _bodyController.dispose();
+    _linkController.dispose();
     super.dispose();
   }
 
@@ -84,21 +90,27 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
-                            print(chosenCommunity);
-
+                          print(isspoiler);
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
+                                    //poll post
                                     .read<NetworkService>()
                                     .createNewPollPost(
                                         chosenCommunity,
                                         _titleController.text,
-                                        '',
-                                        _optionControllers.cast(),
-                                        '',
+                                        'ay habal',
+                                        _optionControllers
+                                            .where((controller) =>
+                                                controller.text.isNotEmpty)
+                                            .map(
+                                                (controller) => controller.text)
+                                            .toList(),
+                                        '4-15-2024', //month-day-year
                                         false,
                                         false)
                                 : await context
+                                    //text or link post
                                     .read<NetworkService>()
                                     .createNewTextOrLinkPost(
                                         type,
@@ -109,8 +121,6 @@ class _CreatePostState extends State<CreatePost> {
                                         false);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
-                              print(chosenCommunity);
-                              print(newpost);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -118,8 +128,6 @@ class _CreatePostState extends State<CreatePost> {
                                       const CustomNavigationBar(),
                                 ),
                               );
-                            } else {
-                              print(chosenCommunity);
                             }
                           },
                     child: const Text('Post'),
@@ -176,30 +184,38 @@ class _CreatePostState extends State<CreatePost> {
                           ),
                           onPressed: () {
                             showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return BottomSheet(
-                                      onClosing: () {},
-                                      builder: (context) => Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  const Text('Add tags'),
-                                                  ElevatedButton(
-                                                    onPressed: () {},
-                                                    child: const Text('Apply'),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ));
-                                });
+                              context: context,
+                              builder: (BuildContext context) {
+                                return BottomSheet(
+                                  onClosing: () {
+                                    print(isspoiler);
+                                  },
+                                  builder: (context) => Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text('Add tags'),
+                                          ElevatedButton(
+                                            onPressed: () {},
+                                            child: const Text('Apply'),
+                                          ),
+                                        ],
+                                      ),
+                                      SwitchButton(
+                                          buttonText: 'Spoiler',
+                                          buttonicon: Icons.warning_amber,
+                                          onPressed: () {},
+                                          switchvalue: isspoiler,),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
                           },
                           child: const Text('Add tags & flair'),
                         ),

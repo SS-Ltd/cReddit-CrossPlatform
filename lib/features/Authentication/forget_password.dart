@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'reset_password_done.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
 import 'package:reddit_clone/theme/palette.dart';
-//import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:reddit_clone/constants/assets_constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reddit_clone/common/CustomTextField.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
@@ -18,8 +21,8 @@ class ForgetPassword extends StatefulWidget {
 class _ForgetPasswordState extends State<ForgetPassword> {
   final TextEditingController emailController = TextEditingController();
   final ValueNotifier<int> isValidNotifier = ValueNotifier<int>(0);
-  bool isCleared = false;
-  bool isFieldTapped = false;
+  // bool isCleared = false;
+  // bool isFieldTapped = false;
 
   @override
   void dispose() {
@@ -35,18 +38,17 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: Palette.backgroundColor,
         appBar: AppBar(
+          backgroundColor: Palette.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: Image.asset(
-            'assets/reddit_icon.png',
-            fit: BoxFit.cover,
-            height: 50,
-          ),
+          title: SvgPicture.asset(AssetsConstants.redditLogo,
+              width: 50, height: 50),
           centerTitle: true,
           actions: <Widget>[
             Padding(
@@ -107,80 +109,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
               const SizedBox(height: 32),
 
               // Email or username input field
-              ValueListenableBuilder<int>(
-                valueListenable: isValidNotifier,
-                builder: (BuildContext context, int isValid, Widget? child) {
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Palette.inputField,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: emailController.text.isEmpty
-                                ? Colors.grey
-                                : (isValid == 1 ? Colors.green : Colors.red),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: TextFormField(
-                          controller: emailController,
-                          onChanged: (value) {
-                            isValidNotifier.value = isValidEmail(value);
-                          },
-                          style: const TextStyle(color: Palette.whiteColor),
-                          decoration: InputDecoration(
-                            labelText: 'Email or username',
-                            labelStyle: const TextStyle(
-                              color: Palette.inputFieldLabel,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.only(
-                                left: 15, top: 5, bottom: 10),
-                            suffixIcon: emailController.text.isNotEmpty
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      isValidNotifier.value == 1
-                                          // If the text is valid,
-                                          // show the green icon
-                                          ? const Icon(Icons.check_sharp,
-                                              color: Colors.green)
-                                          // If the text is not valid,
-                                          // show the red icon
-                                          : const Icon(Icons.error_outline,
-                                              color: Colors.red),
-                                      IconButton(
-                                        onPressed: () {
-                                          emailController.clear();
-                                          isValidNotifier.value = 0;
-                                        },
-                                        icon: const Icon(Icons.clear),
-                                      ),
-                                    ],
-                                  )
-                                : null,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      if (isValid == -1 && emailController.text.isNotEmpty)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 16),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Not a valid email address',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  );
-                },
+              CustomTextField(
+                controller: emailController,
+                isValidNotifier: isValidNotifier,
+                labelText: 'Email or Username',
+                invalidText: 'Not a valid email address',
               ),
 
               Expanded(
@@ -197,18 +130,28 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                   bool reset = await context
                                       .read<NetworkService>()
                                       .forgotPassword(emailController.text);
-                                  print(reset);
                                   // Hide the keyboard
                                   FocusScope.of(context).unfocus();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ResetPasswordDone(email: emailController.text)),
-                                  );
+                                  if (reset) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ResetPasswordDone(
+                                                  email: emailController.text)),
+                                    );
+                                    CustomSnackBar(
+                                            context: context,
+                                            content: 'Email sent successfuly')
+                                        .show();
+                                  } else {
+                                    CustomSnackBar(
+                                            context: context,
+                                            content: 'Email not found')
+                                        .show();
+                                  }
                                 }
                               : null,
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 isValid == 1 ? Colors.deepOrange : Colors.grey,

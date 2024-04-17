@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/features/comments/reply_comment.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
@@ -6,9 +8,10 @@ import 'package:reddit_clone/features/User/saved.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/new_page.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/User/profile.dart';
 import 'package:reddit_clone/features/User/profile.dart';
+import 'package:reddit_clone/theme/Palette.dart';
 
 class Rightsidebar extends StatefulWidget {
   const Rightsidebar({super.key});
@@ -42,13 +45,91 @@ class _RightsidebarState extends State<Rightsidebar> {
             Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  'u/${user?.username ?? 'Username'}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                //update this with button
+                child: TextButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BottomSheet(
+                          onClosing: () {},
+                          builder: (context) => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                child: Row(
+                                  children: [Text('Accounts')],
+                                ),
+                              ),
+                              Divider(color: Colors.grey[800]),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.person,
+                                          color: Colors.white),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'u/${user?.username ?? 'Username'}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      const Icon(
+                                        Icons.check,
+                                        color: Palette.blueJoinColor,
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            await context
+                                                .read<NetworkService>()
+                                                .logout();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoginScreen(),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.login))
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.keyboard_arrow_down_sharp),
+                  label: Text(
+                    'u/${user?.username ?? 'Username'}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
                   ),
                 ),
               ),
@@ -113,23 +194,23 @@ class _RightsidebarState extends State<Rightsidebar> {
                   ),
                   VerticalDivider(
                       color: Colors.grey[800], thickness: 1, width: 20),
-                  const Expanded(
+                  Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.cake, color: Colors.blue, size: 30),
-                        SizedBox(width: 12),
+                        const Icon(Icons.cake, color: Colors.blue, size: 30),
+                        const SizedBox(width: 12),
                         Column(
                           children: [
                             Text(
-                              "2y",
-                              style: TextStyle(
+                              formatTimestamp(user!.cakeDay),
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                               ),
                             ),
-                            Text(
+                            const Text(
                               "Reddit Age",
                               style: TextStyle(
                                 color: Colors.grey,
@@ -150,9 +231,11 @@ class _RightsidebarState extends State<Rightsidebar> {
                 padding: EdgeInsets.zero,
                 children: [
                   _buildListTile(
-                      icon: Icons.person, text: 'My Profile', 
-                      onTap: ()async {
-                        UserModel myUser = await context.read<NetworkService>().getMyDetails();
+                      icon: Icons.person,
+                      text: 'My Profile',
+                      onTap: () async {
+                        UserModel myUser =
+                            await context.read<NetworkService>().getMyDetails();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -162,9 +245,9 @@ class _RightsidebarState extends State<Rightsidebar> {
                               displayName: myUser.displayName,
                               profilePicture: myUser.profilePicture,
                               followerCount: myUser.followers,
-                              about: myUser.about!,
-                                cakeDay: myUser.cakeDay.toString(),
-                              bannerPicture: myUser.banner!,
+                              about: myUser.about ?? '',
+                              cakeDay: myUser.cakeDay.toString(),
+                              bannerPicture: myUser.banner ?? '',
                               isOwnProfile: true,
                             ),
                           ),
@@ -244,5 +327,20 @@ class _RightsidebarState extends State<Rightsidebar> {
       title: Text(text, style: const TextStyle(color: Colors.white)),
       onTap: onTap,
     );
+  }
+}
+
+String formatTimestamp(DateTime timestamp) {
+  final now = DateTime.now();
+  final difference = now.difference(timestamp);
+
+  if (difference.inDays > 0) {
+    return '${difference.inDays}d';
+  } else if (difference.inHours > 0) {
+    return '${difference.inHours}h';
+  } else if (difference.inMinutes > 0) {
+    return '${difference.inMinutes}m';
+  } else {
+    return '${difference.inSeconds}s';
   }
 }

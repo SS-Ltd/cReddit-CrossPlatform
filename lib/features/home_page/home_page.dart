@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 import '../../models/post_model.dart';
 
 class HomePage extends StatefulWidget {
-
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   State<StatefulWidget> createState() {
@@ -16,13 +16,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<String> menuItems = ['Hot', 'Top', 'New'];
-  String selectedMenuItem = 'Hot'; // Store the selected menu item here
-  String lastType = "Hot";
   List<PostModel> posts = [];
   bool isLoading = false;
   int page = 1;
+  String lastType = '';
+  late String selectedMenuItem;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -30,11 +28,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        getPosts(selectedMenuItem);
-      }
-    });
   }
 
   @override
@@ -44,28 +37,37 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Future<void> getPosts(String selectedItem) async {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    selectedMenuItem = Provider.of<MenuState>(context).selectedMenuItem;
     if (selectedMenuItem != lastType) {
-      posts.clear();
+      lastType = selectedMenuItem;
       page = 1;
-      lastType = selectedItem;
+      posts.clear();
+      getPosts(selectedMenuItem);
     }
+  }
+
+  Future<void> getPosts(String selectedItem) async {
     setState(() {
       isLoading = true;
     });
     List<PostModel>? fetchedPosts = await context
         .read<NetworkService>()
         .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
-    if (fetchedPosts != null && mounted) {
-      setState(() {
-        posts.addAll(fetchedPosts);
-        isLoading = false;
-        page++; // Increment page for the next fetch
-      });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
+    if (mounted) {
+      if (fetchedPosts != null) {
+        setState(() {
+          posts.addAll(fetchedPosts);
+          isLoading = false;
+          page++;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -74,7 +76,7 @@ class _HomePageState extends State<HomePage> {
         _scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
-      getPosts(selectedMenuItem); // Fetch more posts when user reaches end
+      getPosts(selectedMenuItem);
     }
   }
 
@@ -85,41 +87,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: _scaffoldKey,
-      // appBar: AppBar(
-      //   leading: Row(
-      //     mainAxisSize: MainAxisSize.max,
-      //     children: [
-      //       IconButton(
-      //         onPressed: () {},
-      //         icon: const Icon(Icons.menu, size: 30.0),
-      //       ),
-      //       SelectItem(
-      //         menuItems: menuItems,
-      //         onMenuItemSelected: (String selectedItem) {
-      //           setState(() {
-      //             selectedMenuItem = selectedItem;
-      //           });
-      //           getPosts(
-      //               selectedItem); // Fetch posts for the selected menu item
-      //           print('Selected: $selectedItem');
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      //   leadingWidth: 150,
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.search, size: 30.0),
-      //     ),
-      //     IconButton(
-      //       onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-      //       icon: const Icon(Icons.reddit, size: 30.0),
-      //     ),
-      //   ],
-      // ),
-      // endDrawer: const Rightsidebar(),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: ListView.builder(
@@ -148,7 +115,9 @@ class _HomePageState extends State<HomePage> {
                   isUpvoted: post.isUpvoted,
                 ),
                 const Divider(
-                    height: 20, thickness: 1), // Add a thin horizontal line
+                  height: 20,
+                  thickness: 1,
+                ), // Add a thin horizontal line
               ],
             );
           },

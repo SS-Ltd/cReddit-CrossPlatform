@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/settings/reset_username.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -59,7 +61,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'place holder';
+                      return 'Please enter a username';
                     }
                     return null;
                   },
@@ -130,6 +132,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               children: [
                 TextButton(
                   onPressed: () {
+                    _emailController.clear();
+                    _userNameController.clear();
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
@@ -142,8 +146,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: const Text('CANCEL'),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      String changeresponse =
+                          await context.read<NetworkService>().resetpassword(
+                                _emailController.text,
+                                _userNameController.text,
+                              );
+                      print(changeresponse);
+                    }
                   },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<OutlinedBorder>(

@@ -1,14 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 
 class CommentPage extends StatefulWidget {
   final String postId;
-  final Widget postComment;
+  final Post postComment;
   final String postTitle;
   final String username;
   const CommentPage(
@@ -111,9 +113,17 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        key: _scaffoldKey,
-        // leading: const Icon(Icons.menu, size: 30.0),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            size: 30,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -126,7 +136,6 @@ class _CommentPageState extends State<CommentPage> {
           PopupMenuButton(
               onSelected: (Menu item) {},
               itemBuilder: (BuildContext context) {
-                
                 return menuitems();
               }),
           IconButton(
@@ -135,6 +144,7 @@ class _CommentPageState extends State<CommentPage> {
           ),
         ],
       ),
+      endDrawer: const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
           return ListView.builder(
@@ -202,7 +212,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 2,
                           commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: true,
+                          isSaved: false,
                         );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
@@ -216,7 +226,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 1,
                           commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: true,
+                          isSaved: false,
                         );
                       }
                       if (newComment != null) {
@@ -267,28 +277,28 @@ class _CommentPageState extends State<CommentPage> {
 
   List<PopupMenuEntry<Menu>> menuitems() {
     return <PopupMenuEntry<Menu>>[
-      //////////////////////////////////////////
-      (widget.username != context.read<NetworkService>().user?.username)
-          ? const PopupMenuItem<Menu>(
-              value: Menu.share,
-              child: ListTile(
-                leading: Icon(Icons.share),
-                title: Text('Share'),
-              ))
-          : const PopupMenuItem(
-              child: SizedBox(),
-            ),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+          value: Menu.share,
+          child: ListTile(
+            leading: Icon(Icons.share),
+            title: Text('Share'),
+          ),
+        ),
       const PopupMenuItem<Menu>(
           value: Menu.subscribe,
           child: ListTile(
             leading: Icon(Icons.add_alert),
             title: Text('Subscribe'),
           )),
-      const PopupMenuItem<Menu>(
+      PopupMenuItem<Menu>(
           value: Menu.save,
           child: ListTile(
-            leading: Icon(Icons.bookmark_add_outlined),
-            title: Text('Save'),
+            leading: const Icon(Icons.bookmark_add_outlined),
+            title: const Text('Save'),
+            onTap: () async {
+              //    bool isSaved = await context.read<NetworkService>().saveandunsavepost(widget.postId, isSaved)
+            },
           )),
       const PopupMenuItem<Menu>(
           value: Menu.copytext,
@@ -296,50 +306,56 @@ class _CommentPageState extends State<CommentPage> {
             leading: Icon(Icons.copy),
             title: Text('Copy text'),
           )),
-      const PopupMenuItem<Menu>(
-          value: Menu.edit,
-          child: ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Edit'),
-          )),
-      const PopupMenuItem<Menu>(
-          value: Menu.addpostflair,
-          child: ListTile(
-            leading: Icon(Icons.add),
-            title: Text('Add post flair'),
-          )),
-      const PopupMenuItem<Menu>(
-          value: Menu.markspoiler,
-          child: ListTile(
-            leading: Icon(Icons.warning),
-            title: Text('Mark spoiler'),
-          )),
-      const PopupMenuItem<Menu>(
-          value: Menu.markNSFW,
-          child: ListTile(
-            leading: Icon(Icons.warning),
-            title: Text('Mark NSFW'),
-          )),
-      const PopupMenuItem<Menu>(
-          value: Menu.markasbrandaffiliate,
-          child: ListTile(
-            leading: Icon(Icons.warning),
-            title: Text('Mark as brand affiliate'),
-          )),
-      PopupMenuItem<Menu>(
-          value: Menu.delete,
-          child: ListTile(
-            leading: const Icon(Icons.delete),
-            title: const Text('Delete'),
-            onTap: () async {
-              bool isDeleted = await context
-                  .read<NetworkService>()
-                  .deletepost(widget.postId);
-              if (isDeleted) {
-                //show snackbar
-              }
-            },
-          )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.edit,
+            child: ListTile(
+              leading: Icon(Icons.edit),
+              title: Text('Edit'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.addpostflair,
+            child: ListTile(
+              leading: Icon(Icons.add),
+              title: Text('Add post flair'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.markspoiler,
+            child: ListTile(
+              leading: Icon(Icons.warning),
+              title: Text('Mark spoiler'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.markNSFW,
+            child: ListTile(
+              leading: Icon(Icons.warning),
+              title: Text('Mark NSFW'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        const PopupMenuItem<Menu>(
+            value: Menu.markasbrandaffiliate,
+            child: ListTile(
+              leading: Icon(Icons.warning),
+              title: Text('Mark as brand affiliate'),
+            )),
+      if (widget.username == context.read<NetworkService>().user?.username)
+        PopupMenuItem<Menu>(
+            value: Menu.delete,
+            child: ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text('Delete'),
+              onTap: () async {
+                bool isDeleted = await context
+                    .read<NetworkService>()
+                    .deletepost(widget.postId);
+                if (isDeleted) {
+                  //show snackbar
+                }
+              },
+            )),
       PopupMenuItem<Menu>(
           value: Menu.report,
           child: ListTile(
@@ -355,7 +371,6 @@ class _CommentPageState extends State<CommentPage> {
               }
             },
           )),
-
       const PopupMenuItem<Menu>(
           value: Menu.block,
           child: ListTile(
@@ -391,7 +406,6 @@ enum Menu {
   markNSFW,
   markasbrandaffiliate,
   delete, //done
-
   report, //done
   block,
   hide, //done

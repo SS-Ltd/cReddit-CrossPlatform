@@ -4,8 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/constants/assets_constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
 //import 'package:android_intent_plus/android_intent.dart';
@@ -56,18 +58,17 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: Palette.backgroundColor,
         appBar: AppBar(
+          backgroundColor: Palette.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: Image.asset(
-            'assets/reddit_icon.png',
-            fit: BoxFit.cover,
-            height: 50,
-          ),
+          title:
+            SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
           centerTitle: true,
           actions: <Widget>[
             Padding(
@@ -155,13 +156,15 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                       bool reset = await context
                                           .read<NetworkService>()
                                           .forgotPassword(widget.email);
-                                          //print(reset);
                                       if (mounted && reset) {
-                                        // Show a message to the user indicating that the email was resent successfully.
+// Show a message to the user indicating that the email was resent successfully.
                                         CustomSnackBar(
                                           context: context,
                                           content: 'Email resent successfully',
                                         ).show();
+                                        countdown.value = 5;
+                                        startCountdown();
+                                        canResend.value = false;
                                       }
                                     }
                                   : null,
@@ -198,17 +201,15 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        // final Logger logger = Logger('ResetPasswordDone');
-                        // if (Platform.isAndroid) {
-                        //   AndroidIntent intent = const AndroidIntent(
-                        //     action: 'android.intent.action.MAIN',
-                        //     package: 'com.google.android.gm',
-                        //     category: 'android.intent.category.LAUNCHER',
-                        //   );
-                        //   intent.launch().catchError((e) {
-                        //     logger.severe("Error opening Gmail app: $e");
-                        //   });
-                        // }
+                        final url = Uri.parse('mailto:');
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        } else {
+                          CustomSnackBar(
+                            context: context,
+                            content: 'Could not launch $url',
+                          ).show();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Palette.deepOrangeColor,

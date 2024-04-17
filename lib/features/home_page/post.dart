@@ -1,24 +1,27 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'postcomments.dart';
-import '../../theme/palette.dart';
+// import 'postcomments.dart';
+// import '../../theme/palette.dart';
+import 'package:video_player/video_player.dart';
 
 class Post extends StatefulWidget {
   final String postId;
   final String postType;
   final String userName;
-  final String? communityName;
+  final String communityName;
   final String profilePicture;
   int votes;
   int commentNumber;
@@ -33,6 +36,7 @@ class Post extends StatefulWidget {
   bool isDownvoted;
 
   Post({
+    Key? key,
     required this.communityName,
     required this.userName,
     required this.title,
@@ -49,8 +53,7 @@ class Post extends StatefulWidget {
     required this.votes,
     required this.isUpvoted,
     required this.isDownvoted,
-    super.key,
-  });
+  }) : super(key: key);
 
   @override
   State<Post> createState() => _PostState();
@@ -62,21 +65,10 @@ class _PostState extends State<Post> {
   bool _controllerInitialized =
       false; // Flag to track if controller is initialized
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (isVideo(widget.content)) {
-  //     _videoController =
-  //         VideoPlayerController.networkUrl(Uri.parse(widget.content));
-  //     _initializeVideoPlayerFuture = _videoController.initialize().then((_) {
-  //       setState(() {
-  //         _controllerInitialized =
-  //             true; // Set to true upon successful initialization
-  //         _videoController.setLooping(true);
-  //       });
-  //     });
-  //   }
-  // }
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -106,33 +98,15 @@ class _PostState extends State<Post> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ClipRRect(
-                    // borderRadius: BorderRadius.circular(10.0),
-                    // child: isImage(widget.content)
-                    //     ? Image.network(
-                    //         widget.content,
-                    //         width: double.infinity,
-                    //         fit: BoxFit.cover,
-                    //       )
-                    //     : (isVideo(widget.content) &&
-                    //             _videoController.value.isInitialized)
-                    //         ? //const CircularProgressIndicator() :
-                    //         FutureBuilder(
-                    //             future: _initializeVideoPlayerFuture,
-                    //             builder: (context, snapshot) {
-                    //               if (snapshot.connectionState ==
-                    //                   ConnectionState.done) {
-                    //                 return AspectRatio(
-                    //                   aspectRatio:
-                    //                       _videoController.value.aspectRatio,
-                    //                   child: VideoPlayer(_videoController),
-                    //                 );
-                    //               } else {
-                    //                 return const CircularProgressIndicator();
-                    //               }
-                    //             },
-                    //           )
-                    //         : const SizedBox.shrink(),
-                    ),
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: isImage(widget.content)
+                      ? Image.network(
+                          widget.content,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
             ],
           ),
@@ -141,7 +115,7 @@ class _PostState extends State<Post> {
         return GestureDetector(
           onTap: widget.isHomePage
               ? () {
-                  PostComments postComment = PostComments(
+                  Post postComment = Post(
                     communityName: widget.communityName,
                     profilePicture: widget.profilePicture,
                     userName: widget.userName,
@@ -173,11 +147,15 @@ class _PostState extends State<Post> {
                 }
               : null,
           child: widget.isHomePage
-              ? (Text(
-                  widget.content,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ))
+              ? Semantics(
+                  identifier: 'PostContent',
+                  label: "Post Content",
+                  child: (Text(
+                    widget.content,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  )),
+                )
               : (!widget.isHomePage
                   ? Text(widget.content)
                   : const SizedBox.shrink()),
@@ -275,61 +253,98 @@ class _PostState extends State<Post> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return const AboutUserPopUp();
+                                          return AboutUserPopUp(
+                                              userName: widget.userName);
                                         });
                                   },
                                   child: Text(
-                                    'r/${widget.userName}',
+                                    'u/${widget.userName}',
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
                                   ),
                                 )
-                              : GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SubRedditPage(
-                                                subredditName:
-                                                    widget.communityName,
-                                              )),
-                                    );
-                                  },
-                                  child: Text(
-                                    'r/${widget.communityName}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ))
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'r/${widget.communityName}',
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                GestureDetector(
+                              : (widget.communityName.isEmpty
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AboutUserPopUp(
+                                                  userName: widget.userName);
+                                            });
+                                      },
+                                      child: Text(
+                                        'u/${widget.userName}',
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SubRedditPage(
+                                                    subredditName:
+                                                        widget.communityName,
+                                                  )),
+                                        );
+                                      },
+                                      child: Text(
+                                        'r/${widget.communityName}',
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )))
+                          : (widget.communityName.isEmpty
+                              ? GestureDetector(
                                   onTap: () {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          return const AboutUserPopUp();
+                                          return AboutUserPopUp(
+                                              userName: widget.userName);
                                         });
-                                    //replace with profile page or widget
                                   },
                                   child: Text(
-                                    'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                    'u/${widget.userName}',
                                     style: const TextStyle(
-                                      color: Colors.blue,
+                                      color: Colors.grey,
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'r/${widget.communityName}',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AboutUserPopUp(
+                                                  userName: widget.userName);
+                                            });
+                                        //replace with profile page or widget
+                                      },
+                                      child: Text(
+                                        'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ))
                     ],
                   ),
                 ],
@@ -339,7 +354,7 @@ class _PostState extends State<Post> {
           GestureDetector(
             onTap: widget.isHomePage
                 ? () {
-                    PostComments postComment = PostComments(
+                    Post postComment = Post(
                       communityName: widget.communityName,
                       profilePicture: widget.profilePicture,
                       userName: widget.userName,
@@ -381,62 +396,74 @@ class _PostState extends State<Post> {
           _buildContent(),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_upward),
-                color: widget.isUpvoted ? Colors.red : Colors.grey,
-                onPressed: () async {
-                  bool a = await context
-                      .read<NetworkService>()
-                      .upVote(widget.postId);
-                  setState(() {
-                    print("upvote");
-                    if (widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes--;
-                      widget.isUpvoted = false;
-                    } else if (!widget.isUpvoted && widget.isDownvoted) {
-                      widget.votes += 2;
-                      widget.isUpvoted = true;
-                      widget.isDownvoted = false;
-                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes++;
-                      widget.isUpvoted = true;
-                    }
-                  });
-                },
+              Semantics(
+                identifier: 'post Upvote',
+                label: 'post Upvote',
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_upward),
+                  color: widget.isUpvoted ? Colors.red : Colors.grey,
+                  onPressed: () async {
+                    bool a = await context
+                        .read<NetworkService>()
+                        .upVote(widget.postId);
+                    setState(() {
+                      print("upvote");
+                      if (widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes--;
+                        widget.isUpvoted = false;
+                      } else if (!widget.isUpvoted && widget.isDownvoted) {
+                        widget.votes += 2;
+                        widget.isUpvoted = true;
+                        widget.isDownvoted = false;
+                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes++;
+                        widget.isUpvoted = true;
+                      }
+                    });
+                  },
+                ),
               ),
-              Text(widget.votes.toString(),
-                  style: TextStyle(
-                    color: widget.isUpvoted
-                        ? Colors.red
-                        : (widget.isDownvoted ? Colors.blue : Colors.grey),
-                  )),
-              IconButton(
-                icon: const Icon(Icons.arrow_downward),
-                color: widget.isDownvoted ? Colors.blue : Colors.grey,
-                onPressed: () async {
-                  bool a = await context
-                      .read<NetworkService>()
-                      .downVote(widget.postId);
-                  setState(() {
-                    if (widget.isDownvoted && !widget.isUpvoted) {
-                      widget.votes++;
-                      widget.isDownvoted = false;
-                    } else if (widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes -= 2;
-                      widget.isUpvoted = false;
-                      widget.isDownvoted = true;
-                    } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                      widget.votes--;
-                      widget.isDownvoted = true;
-                    }
-                  });
-                },
+              Semantics(
+                identifier: 'post votes',
+                label: 'post votes',
+                child: Text(widget.votes.toString(),
+                    style: TextStyle(
+                      color: widget.isUpvoted
+                          ? Colors.red
+                          : (widget.isDownvoted ? Colors.blue : Colors.grey),
+                    )),
+              ),
+              Semantics(
+                identifier: 'post Downvote',
+                label: 'post Downvote',
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_downward),
+                  color: widget.isDownvoted ? Colors.blue : Colors.grey,
+                  onPressed: () async {
+                    bool a = await context
+                        .read<NetworkService>()
+                        .downVote(widget.postId);
+                    setState(() {
+                      if (widget.isDownvoted && !widget.isUpvoted) {
+                        widget.votes++;
+                        widget.isDownvoted = false;
+                      } else if (widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes -= 2;
+                        widget.isUpvoted = false;
+                        widget.isDownvoted = true;
+                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                        widget.votes--;
+                        widget.isDownvoted = true;
+                      }
+                    });
+                  },
+                ),
               ),
               IconButton(
-                icon: const Icon(Icons.add_comment),
+                icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
-                onPressed: () {
-                  PostComments postComment = PostComments(
+                onPressed: widget.isHomePage ? () {
+                  Post postComment = Post(
                     communityName: widget.communityName,
                     profilePicture: widget.profilePicture,
                     userName: widget.userName,
@@ -465,7 +492,7 @@ class _PostState extends State<Post> {
                       ),
                     ),
                   );
-                },
+                } : null,
               ),
               Text(widget.commentNumber.toString()),
               const Spacer(),

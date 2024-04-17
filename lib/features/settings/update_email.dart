@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/settings/forgot_password.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:provider/provider.dart';
 
 class UpdateEmail extends StatefulWidget {
   const UpdateEmail({super.key});
@@ -30,12 +32,6 @@ class _UpdateEmailState extends State<UpdateEmail> {
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      print('Email: ${_emailController.text}');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
@@ -44,6 +40,8 @@ class _UpdateEmailState extends State<UpdateEmail> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
+              _emailController.clear();
+              _passwordController.clear();
               Navigator.pop(context);
             },
           ),
@@ -117,9 +115,10 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your password';
-                          } else if (value.length < 8) {
-                            return 'Password must be at least 8 characters long';
                           }
+                          // else if (value.length < 8) {
+                          //   return 'Password must be at least 8 characters long';
+                          // }
                           return null;
                         },
                       ),
@@ -145,21 +144,36 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _emailController.clear();
-                                _passwordController.clear();
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(170, 40)),
-                              child: const Text('Cancel'),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _emailController.clear();
+                                  _passwordController.clear();
+                                  Navigator.pop(context);
+                                },
+                                // style: ElevatedButton.styleFrom(
+                                //     minimumSize: const Size(150, 40)),
+                                child: const Text('Cancel'),
+                              ),
                             ),
-                            ElevatedButton(
-                              onPressed: _submit,
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(170, 40)),
-                              child: const Text('Save'),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                   String changeresponse =  await context
+                                        .read<NetworkService>()
+                                        .updateemail(
+                                          _emailController.text,
+                                          _passwordController.text,
+                                        );
+                                        print(changeresponse);
+                                  }
+                                },
+                                // style: ElevatedButton.styleFrom(
+                                //     minimumSize: const Size(150, 40)),
+                                child: const Text('Save'),
+                              ),
                             ),
                           ],
                         ),

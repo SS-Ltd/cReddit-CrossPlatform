@@ -4,7 +4,8 @@ import 'package:reddit_clone/features/settings/account_settings.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/selection_button.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/switch_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
@@ -16,7 +17,10 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   String currentlanguage = 'English';
-
+  bool reduceAnimations = false;
+  bool showNFSW = false;
+  bool blurNFSW = false;
+  bool darkMode = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -140,6 +144,21 @@ class _SettingsState extends State<Settings> {
                           buttonText: 'Thumbnails',
                           buttonIcon: Icons.image_outlined,
                           selectedtext: 'Community default'),
+                      SwitchButton(
+                          buttonText: 'Reduce animations',
+                          buttonicon: Icons.remove_red_eye_outlined,
+                          onPressed: () {},
+                          switchvalue: reduceAnimations),
+                      SwitchButton(
+                          buttonText: 'Show NSFW content (I' 'm over 18)',
+                          buttonicon: Icons.person,
+                          onPressed: () {},
+                          switchvalue: showNFSW),
+                      SwitchButton(
+                          buttonText: 'Blur NSFW images',
+                          buttonicon: Icons.warning,
+                          onPressed: () {},
+                          switchvalue: blurNFSW),
                       const Heading(text: 'Accessibility'),
                       ArrowButton(
                           onPressed: () {},
@@ -151,6 +170,7 @@ class _SettingsState extends State<Settings> {
                           buttonText: 'Auto Dark Mode',
                           buttonIcon: Icons.settings,
                           selectedtext: 'Follow OS settings'),
+                          SwitchButton(buttonText: 'Dark Mode', buttonicon: Icons.dark_mode_outlined, onPressed: () {}, switchvalue: darkMode),
                       SelectionButton(
                           onPressed: () {},
                           buttonText: 'Light theme',

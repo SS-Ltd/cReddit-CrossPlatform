@@ -1,21 +1,17 @@
-class Comments {
-  final String profilePicture;
+class SavedCommentsModel {
   final String username;
+  final String communityName; //
+  final bool isUpvoted;
+  final bool isDownvoted;
+  final String commentId;
   final bool isImage;
   final int netVote;
   final String content;
   final String createdAt;
-  final String commentId;
-  final bool isUpvoted;
-  final bool isDownvoted;
-  final bool isSaved;
+  final String postId; //
+  final String title; //
 
-  final String? communityName;
-  final String? postId; //
-  final String? title; //
-
-  Comments({
-    required this.profilePicture,
+  SavedCommentsModel({
     required this.username,
     required this.isImage,
     required this.netVote,
@@ -24,16 +20,13 @@ class Comments {
     required this.commentId,
     required this.isUpvoted,
     required this.isDownvoted,
-    required this.isSaved,
-    this.communityName = '',
-    this.postId = '',
+    required this.communityName,
+    required this.postId,
     this.title = '',
   });
 
-  factory Comments.fromJson(Map<String, dynamic> json) {
-    return Comments(
-      profilePicture:
-          json['profilePicture'] is String ? json['profilePicture'] : '',
+  factory SavedCommentsModel.fromJson(Map<String, dynamic> json) {
+    return SavedCommentsModel(
       username: json['username'],
       isImage: json['isImage'] == null ? false : json['isImage'],
       netVote: json['netVote'],
@@ -42,9 +35,10 @@ class Comments {
       commentId: json['_id'],
       isUpvoted: json['isUpvoted'],
       isDownvoted: json['isDownvoted'],
-      isSaved: json['isSaved'],
-      communityName: json['communityName'] ?? json['parentPostUsername'] ?? '',
-      postId: json['postID'] is String ? json['postID'] : '',
+      communityName: json['communityName'] == null
+          ? json['parentPostUsername']
+          : json['communityName'],
+      postId: json['postID'],
       title: json['title'] ?? '',
     );
   }

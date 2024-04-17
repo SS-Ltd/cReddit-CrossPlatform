@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 
 class CreateCommunityPage extends StatefulWidget {
@@ -269,20 +269,22 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final subredditName = _communityNameController.text.trim();
     final isNSFW = _is18Plus;
-    //final success = await networkService.createCommunity(subredditName, isNSFW);
-    //if (success) {
+    final success = await networkService.createCommunity(subredditName, isNSFW);
+    if (success) {
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
-              SubRedditPage(subredditName: 'Karelle_Brown73')),
+              SubRedditPage(subredditName: subredditName)),
+              
     );
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Failed to create community'),
-    //     ),
-    //   );
-    // }
+    _communityNameController.clear();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to create community'),
+        ),
+      );
+    }
   }
 }

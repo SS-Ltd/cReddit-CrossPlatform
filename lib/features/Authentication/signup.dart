@@ -12,12 +12,25 @@ class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key});
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final ValueNotifier<bool> isFormFilled = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
+    emailController.addListener(() {
+      isFormFilled.value =
+          emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+    });
+
+    passwordController.addListener(() {
+      isFormFilled.value =
+          emailController.text.isNotEmpty && passwordController.text.isNotEmpty;
+    });
+
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
+      backgroundColor: Palette.backgroundColor,
       appBar: AppBar(
+        backgroundColor: Palette.backgroundColor,
         title:
             SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
         centerTitle: true,
@@ -69,7 +82,7 @@ class SignUpScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            AuthField(controller: emailController, labelText: 'Email'),
+            AuthField(controller: emailController, labelText: 'Email', showClearButton: true,),
             const SizedBox(height: 20),
             AuthField(
                 controller: passwordController,
@@ -82,9 +95,11 @@ class SignUpScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Visibility(
                 visible: !isKeyboardOpen,
-                child: FullWidthButton(
-                  text: "Continue",
-                  onPressed: () async {
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: isFormFilled,
+                  builder: (context, isFilled, child) {
+                    return ElevatedButton(
+                      onPressed: () async {
                     if (emailController.text.isEmpty ||
                         passwordController.text.isEmpty) {
                       // Show an error message
@@ -119,6 +134,21 @@ class SignUpScreen extends StatelessWidget {
                               NameSuggestion(userData: userData)),
                     );
                   },
+                
+                         
+                      child: const Text('Continue'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isFilled == true ? Colors.deepOrange : Colors.grey,
+                        foregroundColor:
+                            isFilled == true ? Colors.white : Colors.black,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                    );
+                  },
                 )),
           ],
         ),
@@ -134,6 +164,7 @@ class SignUpScreen extends StatelessWidget {
   bool isValidPassword(String password) {
     return password.length >= 8 &&
         password.contains(RegExp(r'[A-Z]')) &&
-        password.contains(RegExp(r'[a-z]'));
+        password.contains(RegExp(r'[a-z]')) && 
+        password.contains(RegExp(r'[0-9]'));
   }
 }

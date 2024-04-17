@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/models/community.dart';
 import 'community_card.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class CommunityPage extends StatefulWidget {
 

@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/Authentication/gender.dart';
-import 'package:reddit_clone/services/NetworkServices.dart'; // Import NetworkServices
+import 'package:reddit_clone/services/networkServices.dart'; // Import NetworkServices
 
 class NameSuggestion extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -58,9 +58,9 @@ class _NameSuggestionState extends State<NameSuggestion> {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: Palette.redditLogin,
+      backgroundColor: Palette.backgroundColor,
       appBar: AppBar(
-        backgroundColor: Palette.redditLogin,
+        backgroundColor: Palette.backgroundColor,
         title: SvgPicture.asset(
           AssetsConstants.redditLogo,
           width: 50,
@@ -130,7 +130,7 @@ class _NameSuggestionState extends State<NameSuggestion> {
                                       onPressed: () {
                                         generateRandomNames();
                                       },
-                                      child: Text(
+                                      child: const Text(
                                         'Generate Again',
                                         style: TextStyle(color: Colors.white),
                                       ),

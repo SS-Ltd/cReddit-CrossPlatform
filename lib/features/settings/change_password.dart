@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/settings/forgot_password.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:provider/provider.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -16,7 +18,9 @@ class _ChangePasswordState extends State<ChangePassword> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _obscureText = true;
+  bool _obscureTextCurrent = true;
+  bool _obscureTextNew = true;
+  bool _obscureTextConfirm = true;
 
   @override
   void dispose() {
@@ -26,9 +30,21 @@ class _ChangePasswordState extends State<ChangePassword> {
     super.dispose();
   }
 
-  void _toggle() {
+  void _toggleCurrent() {
     setState(() {
-      _obscureText = !_obscureText;
+      _obscureTextCurrent = !_obscureTextCurrent;
+    });
+  }
+
+  void _toggleNew() {
+    setState(() {
+      _obscureTextNew = !_obscureTextNew;
+    });
+  }
+
+  void _toggleConfirm() {
+    setState(() {
+      _obscureTextConfirm = !_obscureTextConfirm;
     });
   }
 
@@ -77,21 +93,21 @@ class _ChangePasswordState extends State<ChangePassword> {
                     children: [
                       TextFormField(
                         controller: _currentPasswordController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureTextCurrent,
                         decoration: InputDecoration(
                           labelText: 'Current password',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              _obscureTextCurrent
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
-                            onPressed: _toggle,
+                            onPressed: _toggleCurrent,
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Please enter your password';
+                            return 'Please enter your current password';
                           }
                           return null;
                         },
@@ -114,16 +130,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       TextFormField(
                         controller: _newPasswordController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureTextNew,
                         decoration: InputDecoration(
                           labelText: 'New password',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              _obscureTextNew
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
-                            onPressed: _toggle,
+                            onPressed: _toggleNew,
                           ),
                         ),
                         validator: (value) {
@@ -135,21 +151,23 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       TextFormField(
                         controller: _confirmPasswordController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureTextConfirm,
                         decoration: InputDecoration(
                           labelText: 'Confirm new password',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              _obscureTextConfirm
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                             ),
-                            onPressed: _toggle,
+                            onPressed: _toggleConfirm,
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your password';
+                          } else if (value != _newPasswordController.text) {
+                            return 'Passwords do not match';
                           }
                           return null;
                         },
@@ -159,22 +177,37 @@ class _ChangePasswordState extends State<ChangePassword> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _currentPasswordController.clear();
-                                _newPasswordController.clear();
-                                _confirmPasswordController.clear();
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
-                              child: const Text('Cancel'),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _currentPasswordController.clear();
+                                  _newPasswordController.clear();
+                                  _confirmPasswordController.clear();
+                                  Navigator.pop(context);
+                                },
+                                // style: ElevatedButton.styleFrom(
+                                //     minimumSize: const Size(150, 40)),
+                                child: const Text('Cancel'),
+                              ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(150, 40)),
-                              child: const Text('Save'),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    String changeresponse = await context
+                                        .read<NetworkService>()
+                                        .updatepassword(
+                                            _newPasswordController.text,
+                                            _confirmPasswordController.text,
+                                            _currentPasswordController.text);
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(150, 40)),
+                                child: const Text('Save'),
+                              ),
                             ),
                           ],
                         ),

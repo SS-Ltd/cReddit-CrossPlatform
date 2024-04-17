@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
@@ -8,7 +9,7 @@ import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
 
 class UserComment extends StatefulWidget {
@@ -25,6 +26,11 @@ class UserComment extends StatefulWidget {
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
   bool isSaved;
 
+  //for saved comments
+  final String communityName;
+  final String postId; //
+  final String title; //
+
   UserComment({
     super.key,
     // may be the required keyword need to be removed
@@ -40,6 +46,9 @@ class UserComment extends StatefulWidget {
     required this.commentId,
     required this.hasVoted,
     required this.isSaved,
+    this.communityName = '',
+    this.postId = '',
+    this.title = '',
   });
 
   @override
@@ -186,52 +195,72 @@ class UserCommentState extends State<UserComment> {
                   Row(
                     children: [
                       const SizedBox(height: 55),
-                      GestureDetector(
-                        onTap: () {
-                          // will be replaced with redirecting to user
-                          //showOverlay(context, widget);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AboutUserPopUp(
-                                  userName: widget.username,
-                                )),
-                            //replace with profile page or widget
-                          );
-                        },
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(widget.avatar),
-                          //radius: 18,
+                      if (widget.communityName == '') ...[
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AboutUserPopUp(
+                                      userName: widget.username);
+                                });
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(widget.avatar),
+                            //radius: 18,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          // will be replaced with redirecting to user
-                          //showOverlay(context, widget);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AboutUserPopUp(
-                                  userName: widget.username,
-                                )),
-                            //replace with profile page or widget
-                          );
-                        },
-                        child: Text(
-                          widget.username,
-                          style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AboutUserPopUp(
+                                      userName: widget.username);
+                                });
+                          },
+                          child: Text(
+                            widget.username,
+                            style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        formatTimestamp(widget.timestamp),
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
+                        const SizedBox(width: 10),
+                        Text(
+                          formatTimestamp(widget.timestamp),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ] else ...[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Aligns the text to the start of the axis
+                            children: <Widget>[
+                              Text(
+                                widget.title,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow
+                                    .ellipsis, // This will fade the text at the end if it is longer than one line.
+                                maxLines:
+                                    1, // The max number of lines the text can occupy.
+                              ),
+                              const SizedBox(
+                                  height:
+                                      4), // Provides spacing of 4 logical pixels between title and username/community.
+                              Text(
+                                '${widget.username} . r/${widget.communityName}  .  ${formatTimestamp(widget.timestamp)}',
+                                style:
+                                    TextStyle(fontSize: 14, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                       if (isMinimized.value) ...[
                         const SizedBox(width: 10),
                         Expanded(
@@ -342,189 +371,10 @@ class UserCommentState extends State<UserComment> {
                           onPressed: () {
                             UserModel user =
                                 context.read<NetworkService>().getUser();
-                            double height = 8 * 56;
-                            OverlayEntry overlayEntry = OverlayEntry(
-                              builder: (context) => Positioned(
-                                left: 8,
-                                right: 8,
-                                bottom: height,
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: ValueListenableBuilder<String>(
-  valueListenable: content,
-  builder: (context, contentValue, child) {
-    return ValueListenableBuilder<File?>(
-      valueListenable: photo,
-      builder: (context, photoValue, child) {
-        return StaticCommentCard(
-          avatar: widget.avatar,
-          username: widget.username,
-          timestamp: widget.timestamp,
-          content: contentValue,
-          contentType: widget.contentType,
-          photo: photoValue,
-          imageSource: widget.imageSource,
-        );
-      },
-    );
-  },
-)
-                                ),
-                              ),
-                            );
-
-                            Overlay.of(context).insert(overlayEntry);
-
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor:
-                                  const Color.fromARGB(255, 19, 19, 19),
-                              builder: (context) {
-                                return SingleChildScrollView(
-                                  child: Column(
-                                    children: <Widget>[
-                                      if (widget.username == user.username)
-                                        ListTile(
-                                          leading: const Icon(Icons.edit),
-                                          title: const Text('Edit comment'),
-                                          onTap: () async {
-                                            // Handle edit comment
-                                            Navigator.pop(context);
-                                            final result = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditCommentPage(
-                                                  commentId: widget.commentId,
-                                                  commentContent:
-                                                      widget.content,
-                                                  contentType:
-                                                      widget.contentType,
-                                                  photo: widget.photo,
-                                                  imageSource:
-                                                      widget.imageSource,
-                                                ),
-                                              ),
-                                            );
-                                            if (result != null) {
-                                              final bool contentType =
-                                                  result['contentType'];
-                                              print(result);
-                                              setState(() {
-                                                if (contentType == false) {
-                                                  content.value =
-                                                      result['content'];
-                                                } else if (contentType ==
-                                                        true &&
-                                                    result['imageSource'] ==
-                                                        0) {
-                                                  content.value =
-                                                      result['content'];
-                                                } else if (contentType ==
-                                                        true &&
-                                                    result['imageSource'] ==
-                                                        1) {
-                                                  photo.value =
-                                                      result['content'];
-                                                  widget.imageSource = 1;
-                                                }
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.share_outlined),
-                                        title: const Text('Share'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.save_alt),
-                                        title: Text(
-                                            widget.isSaved ? 'Save' : 'Unsave'),
-                                        onTap: () async {
-                                          bool saved = await context
-                                              .read<NetworkService>()
-                                              .saveOrUnsaveComment(
-                                                  widget.commentId,
-                                                  widget.isSaved);
-                                          if (saved) {
-                                            CustomSnackBar(
-                                              context: context,
-                                              content: widget.isSaved
-                                                  ? 'Comment saved!'
-                                                  : 'Comment unsaved!',
-                                            ).show();
-                                            widget.isSaved = !widget.isSaved;
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(
-                                            Icons.notifications_outlined),
-                                        title: const Text(
-                                            'Get reply notification'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.copy_outlined),
-                                        title: const Text('Copy text'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(
-                                            Icons.merge_type_outlined),
-                                        title: const Text('Collapse thread'),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      if (widget.username == user.username)
-                                        ListTile(
-                                          leading: const Icon(Icons.delete),
-                                          title: const Text('Delete comment'),
-                                          onTap: () {
-                                            // Handle delete comment
-                                          },
-                                        ),
-                                      if (widget.username != user.username)
-                                        ListTile(
-                                          leading:
-                                              const Icon(Icons.block_outlined),
-                                          title: const Text('Block account'),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.flag_outlined),
-                                        title: const Text('Report'),
-                                        onTap: () async {
-                                          bool reported = await context
-                                              .read<NetworkService>()
-                                              .reportPost(widget.commentId);
-                                          if (reported) {
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ).then((_) {
-                              // Remove the overlay entry after the modal bottom sheet is dismissed
-                              overlayEntry.remove();
-                            });
+                            int numofTiles;
+                            numofTiles =
+                                (widget.username == user.username) ? 8 : 7;
+                            showCommentOptions(user, numofTiles);
                           },
                         ),
                         IconButton(
@@ -534,58 +384,70 @@ class UserCommentState extends State<UserComment> {
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return IconButton(
-                              icon: Icon(Icons.arrow_upward,
-                                  color: value == 1
-                                      ? Palette.upvoteOrange
-                                      : Palette.greyColor),
-                              onPressed: () async {
-                                bool votedUp = await context
-                                    .read<NetworkService>()
-                                    .upVote(widget.commentId);
-                                if (votedUp && mounted) {
-                                  setState(() {
-                                    updateUpVote();
-                                  });
-                                }
-                              },
+                            return Semantics(
+                              identifier: 'comment upvote',
+                              label: 'comment upvote',
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_upward,
+                                    color: value == 1
+                                        ? Palette.upvoteOrange
+                                        : Palette.greyColor),
+                                onPressed: () async {
+                                  bool votedUp = await context
+                                      .read<NetworkService>()
+                                      .upVote(widget.commentId);
+                                  if (votedUp && mounted) {
+                                    setState(() {
+                                      updateUpVote();
+                                    });
+                                  }
+                                },
+                              ),
                             );
                           },
                         ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return Text(
-                              votes == 0 ? 'Vote' : '$votes',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: value == 1
-                                      ? Palette.upvoteOrange
-                                      : value == -1
-                                          ? Palette.downvoteBlue
-                                          : Palette.greyColor),
+                            return Semantics(
+                              identifier: 'comment votes',
+                              label: 'comment votes',
+                              child: Text(
+                                votes == 0 ? 'Vote' : '$votes',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: value == 1
+                                        ? Palette.upvoteOrange
+                                        : value == -1
+                                            ? Palette.downvoteBlue
+                                            : Palette.greyColor),
+                              ),
                             );
                           },
                         ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
-                            return IconButton(
-                              icon: Icon(Icons.arrow_downward,
-                                  color: value == -1
-                                      ? Palette.downvoteBlue
-                                      : Palette.greyColor),
-                              onPressed: () async {
-                                bool votedDown = await context
-                                    .read<NetworkService>()
-                                    .downVote(widget.commentId);
-                                if (votedDown && mounted) {
-                                  setState(() {
-                                    updateDownVote();
-                                  });
-                                }
-                              },
+                            return Semantics(
+                              identifier: 'comment downvote',
+                              label: 'comment downvote',
+                              child: IconButton(
+                                icon: Icon(Icons.arrow_downward,
+                                    color: value == -1
+                                        ? Palette.downvoteBlue
+                                        : Palette.greyColor),
+                                onPressed: () async {
+                                  bool votedDown = await context
+                                      .read<NetworkService>()
+                                      .downVote(widget.commentId);
+                                  if (votedDown && mounted) {
+                                    setState(() {
+                                      updateDownVote();
+                                    });
+                                  }
+                                },
+                              ),
                             );
                           },
                         ),
@@ -619,6 +481,192 @@ class UserCommentState extends State<UserComment> {
         ),
       ],
     );
+  }
+
+  void showCommentOptions(UserModel user, int numofTiles) {
+    double height = numofTiles * 56;
+
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: 8,
+        right: 8,
+        bottom: height,
+        child: Material(
+            color: Colors.transparent,
+            child: ValueListenableBuilder<String>(
+              valueListenable: content,
+              builder: (context, contentValue, child) {
+                return ValueListenableBuilder<File?>(
+                  valueListenable: photo,
+                  builder: (context, photoValue, child) {
+                    return StaticCommentCard(
+                      avatar: widget.avatar,
+                      username: widget.username,
+                      timestamp: widget.timestamp,
+                      content: contentValue,
+                      contentType: widget.contentType,
+                      photo: photoValue,
+                      imageSource: widget.imageSource,
+                    );
+                  },
+                );
+              },
+            )),
+      ),
+    );
+
+    Overlay.of(context).insert(overlayEntry);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              if (widget.username == user.username)
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: const Text('Edit comment'),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditCommentPage(
+                          commentId: widget.commentId,
+                          commentContent: widget.content,
+                          contentType: widget.contentType,
+                          photo: widget.photo,
+                          imageSource: widget.imageSource,
+                        ),
+                      ),
+                    );
+                    if (result != null) {
+                      final bool contentType = result['contentType'];
+                      print(result);
+                      setState(() {
+                        if (contentType == false) {
+                          content.value = result['content'];
+                        } else if (contentType == true &&
+                            result['imageSource'] == 0) {
+                          content.value = result['content'];
+                        } else if (contentType == true &&
+                            result['imageSource'] == 1) {
+                          photo.value = result['content'];
+                          widget.imageSource = 1;
+                        }
+                      });
+                    }
+                  },
+                ),
+              ListTile(
+                leading: const Icon(Icons.share_outlined),
+                title: const Text('Share'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.save_alt),
+                title: Text(widget.isSaved ? 'Unsave' : 'Save'),
+                onTap: () async {
+                  bool saved = await context
+                      .read<NetworkService>()
+                      .saveOrUnsaveComment(widget.commentId, !widget.isSaved);
+                  if (saved) {
+                    CustomSnackBar(
+                      context: context,
+                      content: widget.isSaved
+                          ? 'Comment Unsaved!'
+                          : 'Comment Saved!',
+                    ).show();
+                    widget.isSaved = !widget.isSaved;
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.notifications_outlined),
+                title: const Text('Get reply notification'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.copy_outlined),
+                title: const Text('Copy text'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.merge_type_outlined),
+                title: const Text('Collapse thread'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              if (widget.username == user.username)
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: const Text('Delete comment'),
+                  onTap: () async {
+                    bool deleted = await context
+                        .read<NetworkService>()
+                        .deleteComment(widget.commentId);
+                    if (deleted) {
+                      CustomSnackBar(
+                        context: context,
+                        content: 'Comment Deleted!',
+                      ).show();
+                      Navigator.pop(context);
+                    } else {
+                      CustomSnackBar(
+                        context: context,
+                        content: 'Failed to delete comment!',
+                      ).show();
+                    }
+                  },
+                ),
+              if (widget.username != user.username)
+                ListTile(
+                  leading: const Icon(Icons.block_outlined),
+                  title: const Text('Block account'),
+                  onTap: () async {
+                    // bool blocked = await context
+                    //     .read<NetworkService>()
+                    //     .blockUser(widget.username);
+                    // if (blocked) {
+                    //   CustomSnackBar(
+                    //       context: context, content: 'User blocked!');
+                    // } else {
+                    //   CustomSnackBar(
+                    //       context: context, content: 'User unblocked!');
+                    // }
+                    Navigator.pop(context);
+                  },
+                ),
+              ListTile(
+                leading: const Icon(Icons.flag_outlined),
+                title: const Text('Report'),
+                onTap: () async {
+                  bool reported = await context
+                      .read<NetworkService>()
+                      .reportPost(widget.commentId);
+                  if (reported) {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    ).then((_) {
+      // Remove the overlay entry after the modal bottom sheet is dismissed
+      overlayEntry.remove();
+    });
   }
 }
 

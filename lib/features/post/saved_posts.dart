@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class SavedPosts extends StatefulWidget {
   const SavedPosts({Key? key}) : super(key: key);
@@ -37,14 +37,16 @@ class _SavedPostsState extends State<SavedPosts> {
       });
       List<PostModel>? newPosts =
           await context.read<NetworkService>().getSavedPosts(page: page);
-      if (newPosts != null && mounted) {
-        setState(() {
-          posts.addAll(newPosts);
-          page++;
-          isLoading = false;
-        });
-      } else {
-        setState(() => isLoading = false);
+      if (mounted) {
+        if (newPosts != null) {
+          setState(() {
+            posts.addAll(newPosts);
+            page++;
+            isLoading = false;
+          });
+        } else {
+          setState(() => isLoading = false);
+        }
       }
     }
   }

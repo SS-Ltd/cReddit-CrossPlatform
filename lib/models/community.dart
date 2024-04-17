@@ -21,7 +21,7 @@ class Community {
       isJoined: json['isJoined'],
     );
   }
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -47,5 +47,4 @@ class Community {
   String toString() {
     return 'Community{name: $name, members: $members, description: $description, icon: $icon, isJoined: $isJoined}';
   }
-
 }
