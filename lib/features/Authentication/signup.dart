@@ -179,8 +179,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   return ElevatedButton(
                     onPressed: isFilled
                         ? () async {
-                            // Your code...
-                          }
+                    if (emailController.text.isEmpty ||
+                        passwordController.text.isEmpty) {
+                      // Show an error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please fill in all fields')),
+                      );
+                      return;
+                    }
+                    if (!isValidEmail(emailController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Invalid email address')),
+                      );
+                      return;
+                    }
+                    if (!isValidPassword(passwordController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
+                      );
+                      return;
+                    }
+                    Map<String, dynamic> userData = {
+                      'email': emailController.text,
+                      'password': passwordController.text,
+                    };
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              NameSuggestion(userData: userData)),
+                    );
+                  }
+                
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:

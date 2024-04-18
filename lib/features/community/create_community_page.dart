@@ -275,14 +275,17 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     final isNSFW = _is18Plus;
     final success = await networkService.createCommunity(subredditName, isNSFW);
     if (success) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SubRedditPage(subredditName: subredditName)),
-      );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              SubRedditPage(subredditName: subredditName)),
+              
+    );
+    _communityNameController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(
+        const SnackBar(
           content: Text('Failed to create community'),
         ),
       );

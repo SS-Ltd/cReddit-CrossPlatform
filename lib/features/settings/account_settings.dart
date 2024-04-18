@@ -8,6 +8,7 @@ import 'package:reddit_clone/features/settings/muted_communities.dart';
 import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/selection_button.dart';
 
 /// A widget that represents the account settings screen.
 ///
@@ -31,9 +32,17 @@ import 'package:reddit_clone/services/networkServices.dart';
 ///   key: Key('accountSettings'),
 /// )
 /// ```
-class AccountSettings extends StatelessWidget {
+class AccountSettings extends StatefulWidget {
   const AccountSettings({super.key});
 
+  @override
+  State<AccountSettings> createState() {
+    return _AccountSettingsState();
+  }
+}
+
+class _AccountSettingsState extends State<AccountSettings> {
+  String gender = 'Male';
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -94,7 +103,33 @@ class AccountSettings extends StatelessWidget {
                             buttonText: 'Location customization',
                             buttonIcon: Icons.location_on_outlined,
                             optional: 'Use approximate location (based on IP)'),
+                        SelectionButton(
+                            onPressed: () {},
+                            buttonText: "Gender",
+                            buttonIcon: Icons.person,
+                            selectedtext: gender),
                         const Heading(text: 'CONNECTED ACCOUNTS'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text('Google'),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () {}, child: Text('Connect')),
+                              ],
+                            )
+                          ],
+                        ),
                         const Heading(text: 'CONTACT SETTINGS'),
                         ArrowButton(
                             onPressed: () {},

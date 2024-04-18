@@ -145,31 +145,36 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _emailController.clear();
-                                _passwordController.clear();
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(170, 40)),
-                              child: const Text('Cancel'),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _emailController.clear();
+                                  _passwordController.clear();
+                                  Navigator.pop(context);
+                                },
+                                // style: ElevatedButton.styleFrom(
+                                //     minimumSize: const Size(150, 40)),
+                                child: const Text('Cancel'),
+                              ),
                             ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  String changeresponse = await context
-                                      .read<NetworkService>()
-                                      .updateemail(
-                                        _emailController.text,
-                                        _passwordController.text,
-                                      );
-                                  print(changeresponse);
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(170, 40)),
-                              child: const Text('Save'),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                   String changeresponse =  await context
+                                        .read<NetworkService>()
+                                        .updateemail(
+                                          _emailController.text,
+                                          _passwordController.text,
+                                        );
+                                        print(changeresponse);
+                                  }
+                                },
+                                // style: ElevatedButton.styleFrom(
+                                //     minimumSize: const Size(150, 40)),
+                                child: const Text('Save'),
+                              ),
                             ),
                           ],
                         ),
