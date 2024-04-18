@@ -9,6 +9,8 @@ import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/selection_button.dart';
+import 'package:reddit_clone/switch_button.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 /// A widget that represents the account settings screen.
 ///
@@ -42,7 +44,9 @@ class AccountSettings extends StatefulWidget {
 }
 
 class _AccountSettingsState extends State<AccountSettings> {
-  String gender = 'Male';
+  String gender = '';
+  bool allowFollow = true;
+  bool showCount = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -55,7 +59,9 @@ class _AccountSettingsState extends State<AccountSettings> {
           } else {
             final settings = context.read<NetworkService>().userSettings;
             return Scaffold(
+                backgroundColor: Palette.appBar,
                 appBar: AppBar(
+                  backgroundColor: Palette.appBar,
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back),
                     onPressed: () {
@@ -82,12 +88,6 @@ class _AccountSettingsState extends State<AccountSettings> {
                           optional: settings!.account.email,
                         ),
                         ArrowButton(
-                          onPressed: () {},
-                          buttonText: 'Update phone number',
-                          buttonIcon: Icons.smartphone,
-                          optional: '+923000000000',
-                        ),
-                        ArrowButton(
                             onPressed: () {
                               Navigator.push(
                                   context,
@@ -104,10 +104,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                             buttonIcon: Icons.location_on_outlined,
                             optional: 'Use approximate location (based on IP)'),
                         SelectionButton(
-                            onPressed: () {},
-                            buttonText: "Gender",
-                            buttonIcon: Icons.person,
-                            selectedtext: gender),
+                          onPressed: () {},
+                          buttonText: "Gender",
+                          buttonIcon: Icons.person,
+                          selectedtext: settings.account.gender,
+                        ),
                         const Heading(text: 'CONNECTED ACCOUNTS'),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,7 +126,8 @@ class _AccountSettingsState extends State<AccountSettings> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 ElevatedButton(
-                                    onPressed: () {}, child: Text('Connect')),
+                                    onPressed: () {},
+                                    child: const Text('Connect')),
                               ],
                             )
                           ],
@@ -173,6 +175,16 @@ class _AccountSettingsState extends State<AccountSettings> {
                             },
                             buttonText: 'Chat and messaging permissions',
                             buttonIcon: Icons.message),
+                        SwitchButton(
+                            buttonText: "Allow people to follow you",
+                            buttonicon: Icons.person_add_alt_sharp,
+                            onPressed: (value) {},
+                            switchvalue: allowFollow),
+                        SwitchButton(
+                            buttonText: "show your follower count",
+                            buttonicon: Icons.numbers,
+                            onPressed: (value) {},
+                            switchvalue: showCount),
                         const Heading(text: 'PRIVACY'),
                       ],
                     ),
