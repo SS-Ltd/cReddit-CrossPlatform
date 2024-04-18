@@ -6,12 +6,12 @@ class SwitchButton extends StatefulWidget {
       required this.buttonText,
       required this.buttonicon,
       required this.onPressed,
-      required this.spoilervalue});
+      required this.switchvalue});
 
   final String buttonText;
   final IconData buttonicon;
   final VoidCallback onPressed;
-  bool spoilervalue;
+  bool switchvalue;
 
   @override
   State<SwitchButton> createState() {
@@ -25,7 +25,7 @@ class _SwitchButtonState extends State<SwitchButton> {
   void _onSwitchChanged(bool value) {
     setState(() {
       _switchValue = value;
-      widget.spoilervalue = _switchValue;
+      widget.switchvalue = _switchValue;
     });
   }
 
@@ -43,7 +43,7 @@ class _SwitchButtonState extends State<SwitchButton> {
                 onPressed: () {
                   setState(() {
                     _switchValue = !_switchValue;
-                    widget.spoilervalue = _switchValue;
+                    widget.switchvalue = _switchValue;
                   });
                 },
                 style: ButtonStyle(

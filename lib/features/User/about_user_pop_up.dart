@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
@@ -10,10 +9,31 @@ import 'package:reddit_clone/services/networkServices.dart';
 ///
 /// This dialog box is used to show details about a user, such as their username,
 /// karma points, and options to interact with the user's profile.
-class AboutUserPopUp extends StatelessWidget {
+class AboutUserPopUp extends StatefulWidget {
   final String userName;
 
   const AboutUserPopUp({required this.userName, super.key});
+
+  @override
+  State<AboutUserPopUp> createState() => _AboutUserPopUpState();
+}
+
+class _AboutUserPopUpState extends State<AboutUserPopUp> {
+
+  @override
+  void initState() {
+    super.initState();
+    fetchuserdata();
+  }
+
+  late UserModel userData;
+  Future<void> fetchuserdata() async {
+    userData = await Provider.of<NetworkService>(context)
+        .getUserDetails(widget.userName);
+      setState(() {
+        
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +47,7 @@ class AboutUserPopUp extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('u/$userName'),
+              Text('u/${widget.userName}'),
             ],
           ),
           const SizedBox(height: 10),
@@ -61,7 +81,7 @@ class AboutUserPopUp extends StatelessWidget {
                 onPressed: () async {
                   UserModel myUser = await context
                       .read<NetworkService>()
-                      .getUserDetails(userName);
+                      .getUserDetails(widget.userName);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

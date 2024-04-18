@@ -5,6 +5,7 @@ import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/selection_button.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/switch_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// This is the `Settings` class, a StatefulWidget that represents the settings screen.
@@ -23,6 +24,12 @@ class Settings extends StatefulWidget {
 /// It manages the state of the settings screen and contains the logic for handling user interactions.
 class _SettingsState extends State<Settings> {
   String currentlanguage = 'English';
+  bool reduceAnimations = false;
+  bool showNSFW = false;
+  bool blurNSFW = false;
+  bool darkMode = false;
+  bool savedImages = true;
+  bool commentJump = true;
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +154,21 @@ class _SettingsState extends State<Settings> {
                           buttonText: 'Thumbnails',
                           buttonIcon: Icons.image_outlined,
                           selectedtext: 'Community default'),
+                      SwitchButton(
+                          buttonText: "Reduce Animations",
+                          buttonicon: Icons.remove_red_eye_outlined,
+                          onPressed: () {},
+                          switchvalue: reduceAnimations),
+                      SwitchButton(
+                          buttonText: "Show NSFW content (I'm over 18)",
+                          buttonicon: Icons.person,
+                          onPressed: () {},
+                          switchvalue: showNSFW),
+                      SwitchButton(
+                          buttonText: "Blur NSFW images",
+                          buttonicon: Icons.blur_circular,
+                          onPressed: () {},
+                          switchvalue: blurNSFW),
                       const Heading(text: 'Accessibility'),
                       ArrowButton(
                           onPressed: () {},
@@ -158,6 +180,11 @@ class _SettingsState extends State<Settings> {
                           buttonText: 'Auto Dark Mode',
                           buttonIcon: Icons.settings,
                           selectedtext: 'Follow OS settings'),
+                      SwitchButton(
+                          buttonText: "Dark mode",
+                          buttonicon: Icons.dark_mode_outlined,
+                          onPressed: () {},
+                          switchvalue: darkMode),
                       SelectionButton(
                           onPressed: () {},
                           buttonText: 'Light theme',
@@ -169,6 +196,16 @@ class _SettingsState extends State<Settings> {
                           buttonIcon: Icons.dark_mode_outlined,
                           selectedtext: 'Night'),
                       const Heading(text: 'Advanced'),
+                      SwitchButton(
+                          buttonText: "Saved image attribution",
+                          buttonicon: Icons.image,
+                          onPressed: () {},
+                          switchvalue: savedImages),
+                      SwitchButton(
+                          buttonText: "Comment jump button",
+                          buttonicon: Icons.arrow_drop_down,
+                          onPressed: () {},
+                          switchvalue: commentJump),
                       SelectionButton(
                           onPressed: () {},
                           buttonText: 'Default comment sort',
