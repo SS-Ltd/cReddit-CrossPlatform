@@ -140,7 +140,7 @@ class _CreatePostState extends State<CreatePost> {
                                             .map(
                                                 (controller) => controller.text)
                                             .toList(),
-                                        '4-15-2024', //month-day-year
+                                        '4-30-2024', //month-day-year
                                         false,
                                         false)
                                 : (_hasImage)
@@ -189,15 +189,18 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                               ),
                             );
-                            setState(() {
-                              chosenCommunity = returneddata.toString();
-                            });
+                            setState(
+                              () {
+                                if (returneddata != null) {
+                                  chosenCommunity = returneddata.toString();
+                                }
+                              },
+                            );
                           },
                     //in this case we will go to choose the community
                     child: const Text('Next')),
           ),
         ],
-        title: const Text(''),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -231,9 +234,7 @@ class _CreatePostState extends State<CreatePost> {
                               context: context,
                               builder: (BuildContext context) {
                                 return BottomSheet(
-                                  onClosing: () {
-                                    print(isspoiler);
-                                  },
+                                  onClosing: () {},
                                   builder: (context) => Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
