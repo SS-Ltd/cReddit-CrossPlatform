@@ -4,36 +4,15 @@ import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-
+import 'package:reddit_clone/features/User/block_button.dart';
 /// A dialog box that displays information about a user.
 ///
 /// This dialog box is used to show details about a user, such as their username,
 /// karma points, and options to interact with the user's profile.
-class AboutUserPopUp extends StatefulWidget {
+class AboutUserPopUp extends StatelessWidget {
   final String userName;
 
   const AboutUserPopUp({required this.userName, super.key});
-
-  @override
-  State<AboutUserPopUp> createState() => _AboutUserPopUpState();
-}
-
-class _AboutUserPopUpState extends State<AboutUserPopUp> {
-
-  @override
-  void initState() {
-    super.initState();
-    fetchuserdata();
-  }
-
-  late UserModel userData;
-  Future<void> fetchuserdata() async {
-    userData = await Provider.of<NetworkService>(context)
-        .getUserDetails(widget.userName);
-      setState(() {
-        
-      });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,62 +26,44 @@ class _AboutUserPopUpState extends State<AboutUserPopUp> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('u/${widget.userName}'),
+              Text('u/$userName'),
             ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {},
-                label: const Text('Create Your Own Avatar'),
-                icon: const Icon(Icons.arrow_forward),
-              )
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text('10,111'), Text('Post Karma')],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text('10,111'), Text('Comment Karma')],
-                  )
-                ]),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 25),
-            child: ArrowButton(
-                onPressed: () async {
-                  UserModel myUser = await context
-                      .read<NetworkService>()
-                      .getUserDetails(widget.userName);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Profile(
-                        userName: myUser.username,
-                        profileName: myUser.username,
-                        displayName: myUser.displayName,
-                        profilePicture: myUser.profilePicture,
-                        followerCount: myUser.followers,
-                        about: myUser.about!,
-                        cakeDay: myUser.cakeDay.toString(),
-                        bannerPicture: myUser.banner!,
-                        isOwnProfile: true,
-                      ),
-                    ),
-                  );
-                },
-                buttonText: 'View Profile',
-                buttonIcon: Icons.person,
-                hasarrow: false),
+            padding: const EdgeInsets.symmetric(vertical: 25.0),
+            child: Container(
+              height: 200,
+              child: Image.asset(
+                'assets/hehe.png',
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
+          ArrowButton(
+              onPressed: () async {
+                UserModel myUser = await context
+                    .read<NetworkService>()
+                    .getUserDetails(userName);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Profile(
+                      userName: myUser.username,
+                      profileName: myUser.username,
+                      displayName: myUser.displayName,
+                      profilePicture: myUser.profilePicture,
+                      followerCount: myUser.followers,
+                      about: myUser.about!,
+                      cakeDay: myUser.cakeDay.toString(),
+                      bannerPicture: myUser.banner!,
+                      isOwnProfile: true,
+                    ),
+                  ),
+                );
+              },
+              buttonText: 'View Profile',
+              buttonIcon: Icons.person,
+              hasarrow: false),
           Padding(
             padding: const EdgeInsets.all(0),
             child: ArrowButton(
@@ -113,11 +74,7 @@ class _AboutUserPopUpState extends State<AboutUserPopUp> {
           ),
           Padding(
             padding: const EdgeInsets.all(0),
-            child: ArrowButton(
-                onPressed: () {},
-                buttonText: 'Block Account',
-                buttonIcon: Icons.person_off_outlined,
-                hasarrow: false),
+            child: BlockButton(isCircular: false, onPressed: () {}),
           ),
         ],
       ),
@@ -125,5 +82,4 @@ class _AboutUserPopUpState extends State<AboutUserPopUp> {
   }
 }
 
-//actions in dialog box
   
