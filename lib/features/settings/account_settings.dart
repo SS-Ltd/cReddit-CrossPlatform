@@ -11,7 +11,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/selection_button.dart';
 import 'package:reddit_clone/switch_button.dart';
 import 'package:reddit_clone/theme/palette.dart';
-
+import 'package:reddit_clone/features/settings/manage_notifications.dart';
 /// A widget that represents the account settings screen.
 ///
 /// This widget displays various settings related to the user's account,
@@ -134,7 +134,14 @@ class _AccountSettingsState extends State<AccountSettings> {
                         ),
                         const Heading(text: 'CONTACT SETTINGS'),
                         ArrowButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      fullscreenDialog: true,
+                                      builder: (context) =>
+                                          const ManageNotifications()));
+                            },
                             buttonText: 'Manage notifications',
                             buttonIcon: Icons.notifications_none),
                         ArrowButton(

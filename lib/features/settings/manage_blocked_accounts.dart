@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// A list of dummy users for testing purposes.
-final dummyusers = [];
-
 /// A screen for managing blocked accounts.
 class ManageBlockedAccounts extends StatefulWidget {
   const ManageBlockedAccounts({super.key});
