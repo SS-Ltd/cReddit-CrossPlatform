@@ -6,6 +6,7 @@ import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/selection_button.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/switch_button.dart';
+import 'package:reddit_clone/theme/palette.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// This is the `Settings` class, a StatefulWidget that represents the settings screen.
@@ -43,7 +44,9 @@ class _SettingsState extends State<Settings> {
           } else {
             final settings = context.read<NetworkService>().userSettings;
             return Scaffold(
+              backgroundColor: Palette.appBar,
               appBar: AppBar(
+                backgroundColor: Palette.appBar,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {

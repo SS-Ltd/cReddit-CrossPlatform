@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class SwitchButton extends StatefulWidget {
   SwitchButton(
@@ -26,7 +27,7 @@ class _SwitchButtonState extends State<SwitchButton> {
   void initState() {
     super.initState();
     _switchValue = widget.switchvalue;
-  }  
+  }
 
   void _onSwitchChanged(bool value) {
     setState(() {
@@ -47,28 +48,30 @@ class _SwitchButtonState extends State<SwitchButton> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextButton(
-                onPressed: () {
-                  setState(() {
-                    _switchValue = !_switchValue;
-                    widget.switchvalue = _switchValue;
-                  });
-                  widget.onPressed(widget.switchvalue);
-                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0.0),
+                  onPressed: () {
+                    setState(() {
+                      _switchValue = !_switchValue;
+                      widget.switchvalue = _switchValue;
+                    });
+                    widget.onPressed(widget.switchvalue);
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
                     ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(widget.buttonicon),
-                    const SizedBox(width: 10),
-                    Text(widget.buttonText),
-                  ],
-                )
-              ),
+                  child: Row(
+                    children: [
+                      Icon(widget.buttonicon, color: Palette.whiteColor),
+                      const SizedBox(width: 10),
+                      Text(
+                        widget.buttonText,
+                        style: const TextStyle(color: Palette.whiteColor),
+                      ),
+                    ],
+                  )),
             ],
           ),
           Row(
