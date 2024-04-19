@@ -145,17 +145,37 @@ class _SubRedditPageState extends State<SubRedditPage> {
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
-      networkService.user?.recentlyVisited.add(details);
-      setState(() {
-        isMember = details.isMember;
-        isJoined.value = isMember;
-        _subredditIcon = details.icon;
-        _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
-        _subredditMembers = details.members;
-        _subredditRules = details.rules;
-        _subredditModerators = details.moderators;
-        _subredditDescription = details.description!;
-      });
+      if (details.isNSFW) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('NSFW Content'),
+            content: Text(
+                'This subreddit contains NSFW content and cannot be viewed.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // Go back to the previous page
+                },
+              ),
+            ],
+          ),
+        );
+      } else {
+        networkService.user?.recentlyVisited.add(details);
+        setState(() {
+          isMember = details.isMember;
+          isJoined.value = isMember;
+          _subredditIcon = details.icon;
+          _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
+          _subredditMembers = details.members;
+          _subredditRules = details.rules;
+          _subredditModerators = details.moderators;
+          _subredditDescription = details.description!;
+        });
+      }
     }
   }
 

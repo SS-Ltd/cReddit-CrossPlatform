@@ -7,6 +7,7 @@ class Subreddit {
   final List<String> moderators;
   final String? description;
   final bool isMember;
+  final bool isNSFW;
 
   Subreddit({
     required this.name,
@@ -17,6 +18,7 @@ class Subreddit {
     required this.moderators,
     required this.description,
     this.isMember = false,
+    this.isNSFW = false,
   });
 
   factory Subreddit.fromJson(Map<String, dynamic> json) {

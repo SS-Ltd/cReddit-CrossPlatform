@@ -514,6 +514,17 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
+    }
+    if (response.statusCode == 401) {
+      return Subreddit(
+          name: '',
+          icon: '',
+          banner: '',
+          members: 0,
+          rules: [],
+          moderators: [],
+          description: '',
+          isNSFW: false);
     } else {
       return null;
     }
