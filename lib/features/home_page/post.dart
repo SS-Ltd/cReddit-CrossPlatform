@@ -587,7 +587,8 @@ class _PostState extends State<Post> {
               IconButton(
                 icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
-                onPressed: () {
+                onPressed: widget.isHomePage 
+                ?() {
                   Post postComment = Post(
                     communityName: widget.communityName,
                     profilePicture: widget.profilePicture,
@@ -617,7 +618,8 @@ class _PostState extends State<Post> {
                       ),
                     ),
                   );
-                },
+                }
+                : null,
               ),
               Text(widget.commentNumber.toString()),
               const Spacer(),
