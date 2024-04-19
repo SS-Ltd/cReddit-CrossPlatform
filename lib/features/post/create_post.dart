@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
@@ -42,6 +45,7 @@ class _CreatePostState extends State<CreatePost> {
   bool _istitleempty = true;
   bool _isbodyempty = true;
   String chosenCommunity = "";
+  bool hascommunity = false;
 
   File? _image;
   final picker = ImagePicker();
@@ -57,6 +61,14 @@ class _CreatePostState extends State<CreatePost> {
   String _pollendsin = "2 Day";
 
   bool isspoiler = false;
+
+  // late Subreddit details;
+
+  // Future getSubredditDetails(String subredditName) async {
+  //   details = (await context
+  //       .read<NetworkService>()
+  //       .getSubredditDetails(subredditName))!;
+  // }
 
   /// Retrieves an image from the gallery or camera and sets it as the selected image for the post.
   Future getImage() async {
@@ -193,6 +205,8 @@ class _CreatePostState extends State<CreatePost> {
                               () {
                                 if (returneddata != null) {
                                   chosenCommunity = returneddata.toString();
+                                  hascommunity = true;
+                                  //getSubredditDetails(chosenCommunity);
                                 }
                               },
                             );
@@ -204,9 +218,54 @@ class _CreatePostState extends State<CreatePost> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
+              hascommunity
+                  ? TextButton(
+                      onPressed: () async {
+                        final returneddata = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => CommunityChoice(
+                              chosenCommunity: chosenCommunity,
+                            ),
+                          ),
+                        );
+                        setState(
+                          () {
+                            if (returneddata != null) {
+                              chosenCommunity = returneddata.toString();
+                              hascommunity = true;
+                              //getSubredditDetails(chosenCommunity);
+                            }
+                          },
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const CircleAvatar(
+                                  //backgroundImage: NetworkImage(details.icon),
+                                  ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(chosenCommunity),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text("Rules"),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
               TextField(
                 decoration: InputDecoration(
                   labelText: _istitleempty ? 'Title' : '',
