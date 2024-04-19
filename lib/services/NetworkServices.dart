@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/savedcomments.dart';
+import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
 import 'package:reddit_clone/models/user.dart';
@@ -18,7 +19,6 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  //String _baseUrl = 'http://192.168.1.7:3000';
   final String _baseUrl = 'https://creddit.tech/API';
 
   String _cookie = '';
@@ -96,24 +96,10 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
-      notifyListeners(); // Notify listeners to update UI or other components listening to changes
+      notifyListeners(); 
+      // Notify listeners to update UI or other components listening to changes
     }
   }
-
-  /*
-    Uri url = Uri.parse('$_baseUrl/comment');
-
-    http.MultipartRequest request = http.MultipartRequest('POST', url);
-
-    request.headers.addAll(_headers);
-
-    request.fields['postId'] = postId;
-    request.fields['content'] = content;
-
-    http.StreamedResponse response = await request.send();
-
-    String responseBody = await response.stream.bytesToString();
-  */
 
   Future<void> updateUserSettings(String newName) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
@@ -204,8 +190,6 @@ class NetworkService extends ChangeNotifier {
         'gender': gender,
       }),
     );
-    print(response.body);
-    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       return createUser(username, email, password, gender);
@@ -215,7 +199,6 @@ class NetworkService extends ChangeNotifier {
       var data = jsonDecode(response.body);
       _user = UserModel.fromJson(data);
       _user!.updateUserStatus(true);
-      print('Logged in. Cookie: $_cookie');
       notifyListeners();
       return true;
     } else {
@@ -238,9 +221,6 @@ class NetworkService extends ChangeNotifier {
     final response = await http.get(url, headers: {'Cookie': refreshToken});
     if (response.statusCode == 200) {
       _updateCookie(response);
-      print('Token refreshed successfully. New Cookie: $_cookie');
-    } else {
-      print('Failed to refresh token: ${response.body}');
     }
   }
 
@@ -255,7 +235,8 @@ class NetworkService extends ChangeNotifier {
       final Map<String, dynamic> jsonData = jsonDecode(
           response.body); // change List<dynamic> to Map<String, dynamic>
       final List<dynamic> communities = jsonData[
-          'topCommunities']; // replace 'communities' with the actual key in the JSON response
+          'topCommunities']; 
+          // replace 'communities' with the actual key in the JSON response
       return communities.map((item) => Community.fromJson(item)).toList();
     } else {
       throw Exception('Failed to fetch top communities');
@@ -546,23 +527,22 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<void> getSearchComment(String comment) async {
+  Future<List<SearchModel>> getSearchComment(String comment) async {
     Uri url = Uri.parse('$_baseUrl/search/comments');
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 403) {
       refreshToken();
-      getSearchComment(comment);
+      return getSearchComment(comment);
     }
-    // if (response.statusCode == 200) {
-    //   final List<dynamic> responseData = jsonDecode(response.body);
-    //   List<Comments> comments = responseData
-    //       .map((item) => Comments.fromJson(item))
-    //       .toList();
-    //   return comments;
-    // } else {
-    //   return null;
-    // }
+    if (response.statusCode == 200){
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchModel> searchResult = responseData.map((item) => SearchModel.fromJson(item)).toList();
+      return searchResult;
+    }
+    else{
+      return [];
+    }
   }
 
   Future<UserModel> getMyDetails() async {
@@ -595,7 +575,6 @@ class NetworkService extends ChangeNotifier {
 
     final response =
         await http.get(url, headers: {'accept': 'application/json'});
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
