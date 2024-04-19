@@ -16,32 +16,35 @@ class _HomeSearchState extends State<HomeSearch> {
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.arrow_back),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
+          title: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search Reddit',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  _searchController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+              contentPadding: const EdgeInsets.all(10),
             ),
           ),
-          body: Row(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search Reddit',
-                    suffixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(40)),
-                    contentPadding: const EdgeInsets.all(10),
-                  ),
-                ),
-              ),
-            ],
-          )),
+        ),
+        body: const Column(
+          children: [
+          ],
+        ),
+      ),
     );
   }
 }
