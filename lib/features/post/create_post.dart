@@ -60,6 +60,7 @@ class _CreatePostState extends State<CreatePost> {
   String _pollendsin = "2 Day";
 
   bool isspoiler = false;
+  bool isBrand = false;
 
   // late Subreddit details;
 
@@ -332,8 +333,12 @@ class _CreatePostState extends State<CreatePost> {
                                       SwitchButton(
                                         buttonText: 'Brand affiliate',
                                         buttonicon: Icons.warning,
-                                        onPressed: (value) {},
-                                        switchvalue: false,
+                                        onPressed: (value) {
+                                          setState(() {
+                                            isBrand = value;
+                                          });
+                                        },
+                                        switchvalue: isBrand,
                                       ),
                                       const SizedBox(
                                         height: 10,
