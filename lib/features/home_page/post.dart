@@ -66,6 +66,20 @@ class _PostState extends State<Post> {
   @override
   void initState() {
     super.initState();
+    if (isVideo(widget.content) && widget.postType == 'Images & Video') {
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.content));
+      _initializeVideoPlayerFuture = _videoController.initialize();
+      _videoController.setLooping(true); // Optionally, loop the video.
+      _initializeVideoPlayerFuture.then((_) {
+        if (mounted) {
+          // Check if the widget is still in the tree
+          setState(() {
+            _controllerInitialized = true;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -79,35 +93,34 @@ class _PostState extends State<Post> {
   Widget _buildContent() {
     switch (widget.postType) {
       case ("Images & Video"):
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NewPage(),
-                //replace with image screen
-              ),
-            );
-          },
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: isImage(widget.content)
-                      ? Image.network(
-                          widget.content,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ),
-            ],
-          ),
+        return Column(
+          children: [
+            if (isImage(widget.content))
+              Image.network(
+                widget.content,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              )
+            else if (isVideo(widget.content))
+              _controllerInitialized
+                  ? AspectRatio(
+                      aspectRatio: _videoController.value.aspectRatio,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: <Widget>[
+                          VideoPlayer(_videoController),
+                          _ControlsOverlay(
+                              controller: _videoController), // Controls overlay
+                          VideoProgressIndicator(_videoController,
+                              allowScrubbing: true),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+          ],
         );
       case ('Post'):
         return GestureDetector(
@@ -281,7 +294,8 @@ class _PostState extends State<Post> {
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
-                                        ),),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 )
@@ -305,11 +319,12 @@ class _PostState extends State<Post> {
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                        formatTimestamp(widget.timeStamp),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),),
+                                            formatTimestamp(widget.timeStamp),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     )
@@ -334,12 +349,13 @@ class _PostState extends State<Post> {
                                             ),
                                           ),
                                           const SizedBox(width: 10),
-                                      Text(
-                                        formatTimestamp(widget.timeStamp),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),),
+                                          Text(
+                                            formatTimestamp(widget.timeStamp),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     )))
@@ -367,7 +383,8 @@ class _PostState extends State<Post> {
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
-                                        ),),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 )
@@ -412,11 +429,12 @@ class _PostState extends State<Post> {
                                             ),
                                           ),
                                           Text(
-                                        formatTimestamp(widget.timeStamp),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),),
+                                            formatTimestamp(widget.timeStamp),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -463,7 +481,7 @@ class _PostState extends State<Post> {
                   }
                 : null,
             child: Padding(
-              padding: const EdgeInsets.only(left:10, right:10),
+              padding: const EdgeInsets.only(left: 10, right: 10),
               child: Text(
                 widget.title,
                 style: const TextStyle(
@@ -474,7 +492,7 @@ class _PostState extends State<Post> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left:10, right:10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: _buildContent(),
           ),
           Row(
@@ -489,26 +507,26 @@ class _PostState extends State<Post> {
                     int oldVotes = widget.votes;
                     bool oldIsUpVoted = widget.isUpvoted;
                     bool oldIsDownVoted = widget.isDownvoted;
-                    if(mounted){
+                    if (mounted) {
                       setState(() {
-                      print("upvote");
-                      if (widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes--;
-                        widget.isUpvoted = false;
-                      } else if (!widget.isUpvoted && widget.isDownvoted) {
-                        widget.votes += 2;
-                        widget.isUpvoted = true;
-                        widget.isDownvoted = false;
-                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes++;
-                        widget.isUpvoted = true;
-                      }
-                    });
+                        print("upvote");
+                        if (widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes--;
+                          widget.isUpvoted = false;
+                        } else if (!widget.isUpvoted && widget.isDownvoted) {
+                          widget.votes += 2;
+                          widget.isUpvoted = true;
+                          widget.isDownvoted = false;
+                        } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes++;
+                          widget.isUpvoted = true;
+                        }
+                      });
                     }
                     bool upVoted = await context
                         .read<NetworkService>()
                         .upVote(widget.postId);
-                    if(!upVoted && mounted){
+                    if (!upVoted && mounted) {
                       setState(() {
                         widget.votes = oldVotes;
                         widget.isUpvoted = oldIsUpVoted;
@@ -538,20 +556,20 @@ class _PostState extends State<Post> {
                     int oldVotes = widget.votes;
                     bool oldIsUpVoted = widget.isUpvoted;
                     bool oldIsDownVoted = widget.isDownvoted;
-                    if(mounted){
+                    if (mounted) {
                       setState(() {
-                      if (widget.isDownvoted && !widget.isUpvoted) {
-                        widget.votes++;
-                        widget.isDownvoted = false;
-                      } else if (widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes -= 2;
-                        widget.isUpvoted = false;
-                        widget.isDownvoted = true;
-                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes--;
-                        widget.isDownvoted = true;
-                      }
-                    });
+                        if (widget.isDownvoted && !widget.isUpvoted) {
+                          widget.votes++;
+                          widget.isDownvoted = false;
+                        } else if (widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes -= 2;
+                          widget.isUpvoted = false;
+                          widget.isDownvoted = true;
+                        } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes--;
+                          widget.isDownvoted = true;
+                        }
+                      });
                     }
                     bool downVoted = await context
                         .read<NetworkService>()
@@ -563,7 +581,6 @@ class _PostState extends State<Post> {
                         widget.isDownvoted = oldIsDownVoted;
                       });
                     }
-                    
                   },
                 ),
               ),
@@ -631,4 +648,46 @@ bool isVideo(String url) {
   return url.toLowerCase().endsWith('.mp4') ||
       url.toLowerCase().endsWith('.webm') ||
       url.toLowerCase().endsWith('.ogg');
+}
+
+class _ControlsOverlay extends StatelessWidget {
+  const _ControlsOverlay({Key? key, required this.controller})
+      : super(key: key);
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<VideoPlayerValue>(
+      valueListenable: controller,
+      builder: (context, value, child) {
+        return Stack(
+          children: <Widget>[
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 50),
+              reverseDuration: Duration(milliseconds: 200),
+              child: value.isPlaying
+                  ? SizedBox.shrink()
+                  : Container(
+                      color: Colors.black26,
+                      child: Center(
+                        child: Icon(
+                          Icons.play_arrow,
+                          color: Colors.white,
+                          size: 50.0,
+                          semanticLabel: 'Play',
+                        ),
+                      ),
+                    ),
+            ),
+            GestureDetector(
+              onTap: () {
+                value.isPlaying ? controller.pause() : controller.play();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
