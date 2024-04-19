@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/models/savedcomments.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -19,8 +18,8 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
 
-  final String _baseUrl = 'https://creddit.tech/API';
-
+  //final String _baseUrl = 'https://creddit.tech/API';
+  final String _baseUrl = 'http://192.168.1.7:3000/';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -96,7 +95,7 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
-      notifyListeners(); 
+      notifyListeners();
       // Notify listeners to update UI or other components listening to changes
     }
   }
@@ -234,9 +233,8 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(
           response.body); // change List<dynamic> to Map<String, dynamic>
-      final List<dynamic> communities = jsonData[
-          'topCommunities']; 
-          // replace 'communities' with the actual key in the JSON response
+      final List<dynamic> communities = jsonData['topCommunities'];
+      // replace 'communities' with the actual key in the JSON response
       return communities.map((item) => Community.fromJson(item)).toList();
     } else {
       throw Exception('Failed to fetch top communities');
@@ -528,19 +526,27 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<SearchComments>> getSearchComment(String comment) async {
-    Uri url = Uri.parse('$_baseUrl/search/comments');
-    final response = await http.get(url, headers: _headers);
+    final parameters = {
+      'query' : comment
+    };
+    Uri url = Uri.parse('$_baseUrl/search/comments?'
+    'query=$comment');
 
+    print(parameters);
+    print(url);
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       return getSearchComment(comment);
     }
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
-      List<SearchComments> searchResult = responseData.map((item) => SearchComments.fromJson(item)).toList();
+      List<SearchComments> searchResult =
+          responseData.map((item) => SearchComments.fromJson(item)).toList();
       return searchResult;
-    }
-    else{
+    } else {
       return [];
     }
   }

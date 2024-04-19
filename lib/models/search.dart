@@ -56,8 +56,7 @@ class SearchComments {
   }
 }
 
-class SearchPosts{
-  
+class SearchPosts {
   final String id;
   final String type;
   final String username;
@@ -85,7 +84,7 @@ class SearchPosts{
       required this.isNSFW,
       required this.isSpoiler});
 
-    factory SearchPosts.fromJson(Map<String, dynamic> json) {
+  factory SearchPosts.fromJson(Map<String, dynamic> json) {
     return SearchPosts(
       id: json['id'],
       type: json['type'],
@@ -124,6 +123,34 @@ class SearchUsers {
       about: json['about'],
       profilePicture: json['profilePicture'],
       isMod: json['isMod'],
+    );
+  }
+}
+
+class SearchCommunities {
+  final String id;
+  final String name;
+  final String description;
+  final String icon;
+  final bool isNSFW;
+  final int members;
+
+  SearchCommunities(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.icon,
+      required this.isNSFW,
+      required this.members});
+
+  factory SearchCommunities.fromJson(Map<String, dynamic> json) {
+    return SearchCommunities(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      icon: json['icon'],
+      isNSFW: json['isNSFW'],
+      members: json['members'],
     );
   }
 }

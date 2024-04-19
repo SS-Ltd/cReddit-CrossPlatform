@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/models/search.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class HomeSearch extends StatefulWidget {
   const HomeSearch({super.key});
@@ -38,11 +41,16 @@ class _HomeSearchState extends State<HomeSearch> {
                   OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
               contentPadding: const EdgeInsets.all(10),
             ),
+            onChanged: (value) async {
+              List<SearchComments> searchResults =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .getSearchComment(value);
+              print(searchResults);
+            },
           ),
         ),
         body: const Column(
-          children: [
-          ],
+          children: [],
         ),
       ),
     );
