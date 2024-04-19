@@ -62,13 +62,15 @@ class _CreatePostState extends State<CreatePost> {
   bool isspoiler = false;
   bool isBrand = false;
 
-  // late Subreddit details;
+  Subreddit? details;
 
-  // Future getSubredditDetails(String subredditName) async {
-  //   details = (await context
-  //       .read<NetworkService>()
-  //       .getSubredditDetails(subredditName))!;
-  // }
+  Future getSubredditDetails(String subredditName) async {
+    final subredditDetails =
+        await context.read<NetworkService>().getSubredditDetails(subredditName);
+    setState(() {
+      details = subredditDetails;
+    });
+  }
 
   /// Retrieves an image from the gallery or camera and sets it as the selected image for the post.
   Future getImage() async {
@@ -182,8 +184,7 @@ class _CreatePostState extends State<CreatePost> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      CustomNavigationBar(
+                                  builder: (context) => CustomNavigationBar(
                                     isProfile: false,
                                   ),
                                 ),
@@ -210,7 +211,7 @@ class _CreatePostState extends State<CreatePost> {
                                 if (returneddata != null) {
                                   chosenCommunity = returneddata.toString();
                                   hascommunity = true;
-                                  //getSubredditDetails(chosenCommunity);
+                                  getSubredditDetails(chosenCommunity);
                                 }
                               },
                             );
@@ -242,7 +243,7 @@ class _CreatePostState extends State<CreatePost> {
                             if (returneddata != null) {
                               chosenCommunity = returneddata.toString();
                               hascommunity = true;
-                              //getSubredditDetails(chosenCommunity);
+                              getSubredditDetails(chosenCommunity);
                             }
                           },
                         );
@@ -253,9 +254,13 @@ class _CreatePostState extends State<CreatePost> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const CircleAvatar(
-                                  //backgroundImage: NetworkImage(details.icon),
-                                  ),
+                              CircleAvatar(
+                                backgroundImage:
+                                    details != null && details!.icon.isNotEmpty
+                                        ? NetworkImage(details!.icon)
+                                        : const NetworkImage(
+                                            'https://picsum.photos/200/300'),
+                              ),
                               const SizedBox(
                                 width: 10,
                               ),
