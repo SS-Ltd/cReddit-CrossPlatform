@@ -124,7 +124,9 @@ class _CreatePostState extends State<CreatePost> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CustomNavigationBar(),
+                builder: (context) => CustomNavigationBar(
+                  isProfile: false,
+                ),
               ),
             );
           },
@@ -181,7 +183,9 @@ class _CreatePostState extends State<CreatePost> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const CustomNavigationBar(),
+                                      CustomNavigationBar(
+                                    isProfile: false,
+                                  ),
                                 ),
                               );
                             }

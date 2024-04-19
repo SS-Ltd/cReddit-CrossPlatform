@@ -58,7 +58,10 @@ class GoogleButton extends StatelessWidget {
         Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const CustomNavigationBar()),
+          MaterialPageRoute(
+              builder: (context) => CustomNavigationBar(
+                    isProfile: false,
+                  )),
         );
       },
       iconPath: AssetsConstants.googleLogo,
