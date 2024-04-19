@@ -527,7 +527,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchModel>> getSearchComment(String comment) async {
+  Future<List<SearchComments>> getSearchComment(String comment) async {
     Uri url = Uri.parse('$_baseUrl/search/comments');
     final response = await http.get(url, headers: _headers);
 
@@ -537,7 +537,7 @@ class NetworkService extends ChangeNotifier {
     }
     if (response.statusCode == 200){
       final List<dynamic> responseData = jsonDecode(response.body);
-      List<SearchModel> searchResult = responseData.map((item) => SearchModel.fromJson(item)).toList();
+      List<SearchComments> searchResult = responseData.map((item) => SearchComments.fromJson(item)).toList();
       return searchResult;
     }
     else{
