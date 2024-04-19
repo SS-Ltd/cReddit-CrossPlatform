@@ -435,20 +435,20 @@ class _RightsidebarState extends State<Rightsidebar> {
                       );
                     },
                   ),
-                  _buildListTile(
-                    icon: Icons.settings,
-                    text: 'Settings',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Settings(),
-                        ),
-                      );
-                    },
-                  ),
                 ],
               ),
+            ),
+            _buildListTile(
+              icon: Icons.settings,
+              text: 'Settings',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Settings(),
+                  ),
+                );
+              },
             ),
           ],
         ),
