@@ -533,6 +533,25 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<void>getSearchComment(String comment) async {
+    Uri url = Uri.parse('$_baseUrl/search/comments');
+    final response = await http.get(url, headers: _headers);
+    
+    if (response.statusCode == 403) {
+      refreshToken();
+      getSearchComment(comment);
+    }
+    // if (response.statusCode == 200) {
+    //   final List<dynamic> responseData = jsonDecode(response.body);
+    //   List<Comments> comments = responseData
+    //       .map((item) => Comments.fromJson(item))
+    //       .toList();
+    //   return comments;
+    // } else {
+    //   return null;
+    // }
+  }
+
   Future<UserModel> getMyDetails() async {
     Uri url = Uri.parse('$_baseUrl/user');
     final response = await http.get(url, headers: _headers);

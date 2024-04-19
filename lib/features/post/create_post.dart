@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/models/subreddit.dart';
@@ -154,7 +153,7 @@ class _CreatePostState extends State<CreatePost> {
                                             .toList(),
                                         '4-30-2024', //month-day-year
                                         false,
-                                        false)
+                                        isspoiler)
                                 : (_hasImage)
                                     ? await context
                                         //image post
@@ -164,7 +163,7 @@ class _CreatePostState extends State<CreatePost> {
                                             _titleController.text,
                                             _image!,
                                             false,
-                                            false)
+                                            isspoiler)
                                     : await context
                                         //text or link post
                                         .read<NetworkService>()
@@ -174,7 +173,7 @@ class _CreatePostState extends State<CreatePost> {
                                             _titleController.text,
                                             _bodyController.text,
                                             false,
-                                            false);
+                                            isspoiler);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.push(
@@ -297,26 +296,47 @@ class _CreatePostState extends State<CreatePost> {
                                   builder: (context) => Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Row(
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          const Text('Add tags'),
+                                          Text('Add tags'),
                                           ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text('Apply'),
+                                            onPressed: null,
+                                            child: Text('Apply'),
                                           ),
                                         ],
+                                      ),
+                                      const Text(
+                                        "Universal tags",
+                                        style: TextStyle(fontSize: 20),
                                       ),
                                       SwitchButton(
                                         buttonText: 'Spoiler',
                                         buttonicon: Icons.warning_amber,
                                         onPressed: (value) {
-                                          isspoiler = value;
+                                          setState(() {
+                                            isspoiler = value;
+                                          });
                                         },
                                         switchvalue: isspoiler,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      SwitchButton(
+                                        buttonText: 'Brand affiliate',
+                                        buttonicon: Icons.warning,
+                                        onPressed: (value) {},
+                                        switchvalue: false,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
                                       ),
                                     ],
                                   ),
