@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/community/rules_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -33,6 +34,7 @@ class SubRedditPage extends StatefulWidget {
   @override
   State<SubRedditPage> createState() => _SubRedditPageState();
 }
+
 /// The state class for the [SubRedditPage] widget.
 /// It manages the loading state, pagination, and sorting state of the subreddit page.
 /// It also handles user interactions and fetches subreddit details and posts from a network service.
@@ -43,9 +45,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
   List<String> posts = List.generate(20, (index) => 'Post $index');
   List<PostModel> subredditPosts = [];
   int page = 1;
-  bool hasMore =
-      true; // to track if more items are available to
-            // prevent unnecessary requests
+  bool hasMore = true; // to track if more items are available to
+  // prevent unnecessary requests
   bool isLoading = false; // to track loading state
   final ScrollController _scrollController = ScrollController();
 
@@ -79,10 +80,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
   }
 
   Future<void> fetchPosts() async {
-    if (isLoading || !hasMore)
-    {
+    if (isLoading || !hasMore) {
       return; // Exit if already loading or no more posts to load
-    }  
+    }
 
     if (mounted) {
       setState(() {
@@ -120,8 +120,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
-    for (var subreddit in networkService.user?.recentlyVisited ?? {}) {
-    }
+    for (var subreddit in networkService.user?.recentlyVisited ?? {}) {}
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
@@ -132,6 +131,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         _subredditMembers = details.members;
         _subredditRules = details.rules;
         _subredditModerators = details.moderators;
+        _subredditDescription = details.description!;
       });
     }
   }
@@ -177,9 +177,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
               },
               childCount: hasMore
                   ? subredditPosts.length + 1
-                  : subredditPosts
-                      .length, // Add extra space -> 
-                      //loading indicator if more items are coming
+                  : subredditPosts.length, // Add extra space ->
+              //loading indicator if more items are coming
             ),
           ),
         ],
@@ -345,11 +344,28 @@ class _SubRedditPageState extends State<SubRedditPage> {
             ],
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Welcome to the official subreddit of the osama.'
-            ' This is a place for all things osama.',
-            //to be replaced with description when its done in backend
+          Text(
+            _subredditDescription,
             style: TextStyle(color: Colors.white),
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              child: Text('See more', style: TextStyle(color: Colors.blue)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RulesPage(
+                      rules: _subredditRules,
+                      description: _subredditDescription,
+                      subredditName: widget.subredditName ?? '',
+                      bannerURL: _subredditBanner,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

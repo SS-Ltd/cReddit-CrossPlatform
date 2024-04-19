@@ -5,6 +5,7 @@ class Subreddit {
   final int members;
   final List<String> rules;
   final List<String> moderators;
+  final String? description;
 
   Subreddit({
     required this.name,
@@ -13,6 +14,7 @@ class Subreddit {
     required this.members,
     required this.rules,
     required this.moderators,
+    required this.description,
   });
 
   factory Subreddit.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Subreddit {
       members: json['members'],
       rules: rulesTexts,
       moderators: List<String>.from(json['moderators']),
+      description: json['description'] ?? '',
     );
   }
 }
