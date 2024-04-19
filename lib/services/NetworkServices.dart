@@ -20,7 +20,7 @@ class NetworkService extends ChangeNotifier {
 
   //String _baseUrl = 'http://192.168.1.7:3000';
   final String _baseUrl = 'https://creddit.tech/API';
-  
+
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -97,7 +97,7 @@ class NetworkService extends ChangeNotifier {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
       notifyListeners(); // Notify listeners to update UI or other components listening to changes
-    } 
+    }
   }
 
   /*
@@ -505,6 +505,8 @@ class NetworkService extends ChangeNotifier {
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
+    print("heelpp");
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getSubredditDetails(subredditName);
@@ -512,6 +514,17 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
+    }
+    if (response.statusCode == 401) {
+      return Subreddit(
+          name: '',
+          icon: '',
+          banner: '',
+          members: 0,
+          rules: [],
+          moderators: [],
+          description: '',
+          isNSFW: false);
     } else {
       return null;
     }
@@ -531,6 +544,25 @@ class NetworkService extends ChangeNotifier {
     } else {
       throw Exception('Failed to fetch user details');
     }
+  }
+
+  Future<void> getSearchComment(String comment) async {
+    Uri url = Uri.parse('$_baseUrl/search/comments');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      getSearchComment(comment);
+    }
+    // if (response.statusCode == 200) {
+    //   final List<dynamic> responseData = jsonDecode(response.body);
+    //   List<Comments> comments = responseData
+    //       .map((item) => Comments.fromJson(item))
+    //       .toList();
+    //   return comments;
+    // } else {
+    //   return null;
+    // }
   }
 
   Future<UserModel> getMyDetails() async {

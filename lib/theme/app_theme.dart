@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'palette.dart';
 
 class AppTheme {
-  // static ThemeData theme = ThemeData.dark().copyWith(
-  //   floatingActionButtonTheme: const FloatingActionButtonThemeData(
-  //     backgroundColor: Palette.blueColor,
-  //   ),
-  // );
   static ThemeData darkTheme = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: Palette.backgroundColor,
     brightness: Brightness.dark,

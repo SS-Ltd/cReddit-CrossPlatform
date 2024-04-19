@@ -18,7 +18,7 @@ import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.da
 /// authentication feature of the cReddit-CrossPlatform app.
 class Gender extends StatelessWidget {
   final Map<String, dynamic> userData;
-  
+
   /// Constructs a [Gender] widget.
   ///
   /// The [userData] parameter is a map that contains the user's signup data,
@@ -47,8 +47,12 @@ class Gender extends StatelessWidget {
         userData["gender"]);
     if (signup) {
       Navigator.popUntil(context, (route) => route.isFirst);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const CustomNavigationBar()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CustomNavigationBar(
+                    isProfile: false,
+                  )));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to sign up')),

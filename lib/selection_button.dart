@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class SelectionButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -33,18 +34,32 @@ class SelectionButton extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(buttonIcon),
+                Icon(
+                  buttonIcon,
+                  color: Palette.whiteColor,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
-                  child: Text(buttonText),
+                  child: Text(
+                    buttonText,
+                    style: const TextStyle(
+                      color: Palette.whiteColor,
+                    ),
+                  ),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(selectedtext),
-                const Icon(Icons.arrow_drop_down)
+                Text(
+                  selectedtext,
+                  style: const TextStyle(color: Palette.whiteColor),
+                ),
+                const Icon(
+                  Icons.arrow_drop_down,
+                  color: Palette.whiteColor,
+                )
               ],
             )
           ],

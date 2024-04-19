@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
@@ -42,6 +44,7 @@ class _CreatePostState extends State<CreatePost> {
   bool _istitleempty = true;
   bool _isbodyempty = true;
   String chosenCommunity = "";
+  bool hascommunity = false;
 
   File? _image;
   final picker = ImagePicker();
@@ -57,6 +60,15 @@ class _CreatePostState extends State<CreatePost> {
   String _pollendsin = "2 Day";
 
   bool isspoiler = false;
+  bool isBrand = false;
+
+  // late Subreddit details;
+
+  // Future getSubredditDetails(String subredditName) async {
+  //   details = (await context
+  //       .read<NetworkService>()
+  //       .getSubredditDetails(subredditName))!;
+  // }
 
   /// Retrieves an image from the gallery or camera and sets it as the selected image for the post.
   Future getImage() async {
@@ -112,7 +124,9 @@ class _CreatePostState extends State<CreatePost> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CustomNavigationBar(),
+                builder: (context) => CustomNavigationBar(
+                  isProfile: false,
+                ),
               ),
             );
           },
@@ -140,9 +154,9 @@ class _CreatePostState extends State<CreatePost> {
                                             .map(
                                                 (controller) => controller.text)
                                             .toList(),
-                                        '4-15-2024', //month-day-year
+                                        '4-30-2024', //month-day-year
                                         false,
-                                        false)
+                                        isspoiler)
                                 : (_hasImage)
                                     ? await context
                                         //image post
@@ -152,7 +166,7 @@ class _CreatePostState extends State<CreatePost> {
                                             _titleController.text,
                                             _image!,
                                             false,
-                                            false)
+                                            isspoiler)
                                     : await context
                                         //text or link post
                                         .read<NetworkService>()
@@ -162,14 +176,16 @@ class _CreatePostState extends State<CreatePost> {
                                             _titleController.text,
                                             _bodyController.text,
                                             false,
-                                            false);
+                                            isspoiler);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const CustomNavigationBar(),
+                                      CustomNavigationBar(
+                                    isProfile: false,
+                                  ),
                                 ),
                               );
                             }
@@ -189,21 +205,71 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                               ),
                             );
-                            setState(() {
-                              chosenCommunity = returneddata.toString();
-                            });
+                            setState(
+                              () {
+                                if (returneddata != null) {
+                                  chosenCommunity = returneddata.toString();
+                                  hascommunity = true;
+                                  //getSubredditDetails(chosenCommunity);
+                                }
+                              },
+                            );
                           },
                     //in this case we will go to choose the community
                     child: const Text('Next')),
           ),
         ],
-        title: const Text(''),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
+              hascommunity
+                  ? TextButton(
+                      onPressed: () async {
+                        final returneddata = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => CommunityChoice(
+                              chosenCommunity: chosenCommunity,
+                            ),
+                          ),
+                        );
+                        setState(
+                          () {
+                            if (returneddata != null) {
+                              chosenCommunity = returneddata.toString();
+                              hascommunity = true;
+                              //getSubredditDetails(chosenCommunity);
+                            }
+                          },
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const CircleAvatar(
+                                  //backgroundImage: NetworkImage(details.icon),
+                                  ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(chosenCommunity),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text("Rules"),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
               TextField(
                 decoration: InputDecoration(
                   labelText: _istitleempty ? 'Title' : '',
@@ -231,30 +297,55 @@ class _CreatePostState extends State<CreatePost> {
                               context: context,
                               builder: (BuildContext context) {
                                 return BottomSheet(
-                                  onClosing: () {
-                                    print(isspoiler);
-                                  },
+                                  onClosing: () {},
                                   builder: (context) => Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Row(
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          const Text('Add tags'),
+                                          Text('Add tags'),
                                           ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text('Apply'),
+                                            onPressed: null,
+                                            child: Text('Apply'),
                                           ),
                                         ],
+                                      ),
+                                      const Text(
+                                        "Universal tags",
+                                        style: TextStyle(fontSize: 20),
                                       ),
                                       SwitchButton(
                                         buttonText: 'Spoiler',
                                         buttonicon: Icons.warning_amber,
-                                        onPressed: () {},
-                                        spoilervalue: isspoiler,
+                                        onPressed: (value) {
+                                          setState(() {
+                                            isspoiler = value;
+                                          });
+                                        },
+                                        switchvalue: isspoiler,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      SwitchButton(
+                                        buttonText: 'Brand affiliate',
+                                        buttonicon: Icons.warning,
+                                        onPressed: (value) {
+                                          setState(() {
+                                            isBrand = value;
+                                          });
+                                        },
+                                        switchvalue: isBrand,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
                                       ),
                                     ],
                                   ),

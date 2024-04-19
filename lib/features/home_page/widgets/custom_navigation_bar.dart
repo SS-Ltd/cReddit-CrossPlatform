@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
+import 'package:reddit_clone/features/User/Profile.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/subreddit.dart';
+import 'package:reddit_clone/features/search/home_search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/features/post/create_post.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/models/user.dart';
 
 /// A custom navigation bar widget that displays different pages based on the selected menu item.
 ///
@@ -29,7 +32,10 @@ class CustomNavigationBar extends StatefulWidget {
   /// Creates a custom navigation bar widget.
   ///
   /// The [key] parameter is used to provide a global key for the widget.
-  const CustomNavigationBar({Key? key});
+  CustomNavigationBar({super.key, required this.isProfile, this.myuser});
+
+  bool isProfile;
+  final UserModel? myuser;
 
   @override
   State<StatefulWidget> createState() {
@@ -65,112 +71,136 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.zero,
-        ),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const Divider(
-              height: 30,
-              thickness: 1,
-              color: Colors.white,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      showrecently = !showrecently;
-                    });
-                  },
-                  child: const Text('Recently Visited'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      showall = !showall;
-                    });
-                  },
-                  child: const Text('See all'),
-                ),
-              ],
-            ),
-            showrecently
-                ? SingleChildScrollView(
-                    padding: EdgeInsets.zero,
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemCount: (listRecentlyVisited != null &&
-                              listRecentlyVisited.length > 3 &&
-                              showall == false)
-                          ? 3
-                          : (listRecentlyVisited?.length ?? 0),
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(listRecentlyVisited != null
-                              ? listRecentlyVisited[
-                                      listRecentlyVisited.length - 1 - index]
-                                  .name
-                              : ''),
-                        );
-                      },
-                    ),
-                  )
-                : const SizedBox(),
-            const Divider(
-              height: 30,
-              thickness: 1,
-              color: Colors.white,
-            ),
-          ],
-        ),
-      ),
-      appBar: (_currentIndex != 2)
-          ? AppBar(
-            backgroundColor: Palette.appBar,
-            elevation: 2.6,
-              title: (_currentIndex == 0)
-                  ? SelectItem(
-                      menuItems: menuItems,
-                      onMenuItemSelected: (String selectedItem) {
-                        if (menuState.selectedMenuItem != selectedItem) {
-                          menuState.setSelectedMenuItem(selectedItem);
-                        }
-                        print('Selected: $selectedItem');
-                      },
-                    )
-                  : (_currentIndex == 1)
-                      ? Title(
-                          color: Palette.whiteColor,
-                          child: const Text('Communities'),
+      drawer: widget.isProfile
+          ? null
+          : Drawer(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const Divider(
+                    height: 30,
+                    thickness: 1,
+                    color: Colors.white,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            showrecently = !showrecently;
+                          });
+                        },
+                        child: const Text('Recently Visited'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            showall = !showall;
+                          });
+                        },
+                        child: const Text('See all'),
+                      ),
+                    ],
+                  ),
+                  showrecently
+                      ? SingleChildScrollView(
+                          padding: EdgeInsets.zero,
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemCount: (listRecentlyVisited != null &&
+                                    listRecentlyVisited.length > 3 &&
+                                    showall == false)
+                                ? 3
+                                : (listRecentlyVisited?.length ?? 0),
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(listRecentlyVisited != null
+                                    ? listRecentlyVisited[
+                                            listRecentlyVisited.length -
+                                                1 -
+                                                index]
+                                        .name
+                                    : ''),
+                              );
+                            },
+                          ),
                         )
-                      : (_currentIndex == 3)
+                      : const SizedBox(),
+                  const Divider(
+                    height: 30,
+                    thickness: 1,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+      appBar: widget.isProfile
+          ? null
+          : (_currentIndex != 2)
+              ? AppBar(
+                  backgroundColor: Palette.appBar,
+                  elevation: 2.6,
+                  title: (_currentIndex == 0)
+                      ? SelectItem(
+                          menuItems: menuItems,
+                          onMenuItemSelected: (String selectedItem) {
+                            if (menuState.selectedMenuItem != selectedItem) {
+                              menuState.setSelectedMenuItem(selectedItem);
+                            }
+                          },
+                        )
+                      : (_currentIndex == 1)
                           ? Title(
                               color: Palette.whiteColor,
-                              child: const Text('Chat'),
+                              child: const Text('Communities'),
                             )
-                          : Title(
-                              color: Palette.whiteColor,
-                              child: const Text('Inbox'),
-                            ),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search, size: 30.0),
-                ),
-                IconButton(
-                  onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-                  icon: const Icon(Icons.reddit, size: 30.0),
-                ),
-              ],
-            )
-          : null,
-      endDrawer: const Rightsidebar(),
-      body: _pages[_currentIndex],
+                          : (_currentIndex == 3)
+                              ? Title(
+                                  color: Palette.whiteColor,
+                                  child: const Text('Chat'),
+                                )
+                              : Title(
+                                  color: Palette.whiteColor,
+                                  child: const Text('Inbox'),
+                                ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => const HomeSearch(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.search, size: 30.0),
+                    ),
+                    IconButton(
+                      onPressed: () =>
+                          _scaffoldKey.currentState!.openEndDrawer(),
+                      icon: const Icon(Icons.reddit, size: 30.0),
+                    ),
+                  ],
+                )
+              : null,
+      endDrawer: widget.isProfile ? null : const Rightsidebar(),
+      body: widget.isProfile
+          ? Profile(
+              userName: widget.myuser!.username,
+              profileName: widget.myuser!.username,
+              displayName: widget.myuser!.displayName,
+              about: 'about',
+              profilePicture: widget.myuser!.profilePicture,
+              bannerPicture: 'bannerPicture',
+              followerCount: widget.myuser!.followers,
+              cakeDay: '2024-03-25T15:37:33.339+00:00')
+          : _pages[_currentIndex],
       bottomNavigationBar: (_currentIndex != 2)
           ? BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
@@ -178,6 +208,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               onTap: (int index) {
                 setState(() {
                   _currentIndex = index;
+                  widget.isProfile = false;
                 });
               },
               selectedFontSize: 12, // Adjust the selected font size

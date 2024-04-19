@@ -4,6 +4,7 @@ import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
 import 'package:reddit_clone/features/User/saved.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -370,18 +371,22 @@ class _RightsidebarState extends State<Rightsidebar> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Profile(
-                              userName: myUser.username,
-                              profileName: myUser.username,
-                              displayName: myUser.displayName,
-                              profilePicture: myUser.profilePicture,
-                              followerCount: myUser.followers,
-                              about: myUser.about ?? '',
-                              cakeDay: myUser.cakeDay.toString(),
-                              bannerPicture: myUser.banner ?? '',
-                              isOwnProfile: true,
-                            ),
-                          ),
+                              builder: (context) => CustomNavigationBar(
+                                    isProfile: true,
+                                    myuser: myUser,
+                                  )
+                              // Profile(
+                              //   userName: myUser.username,
+                              //   profileName: myUser.username,
+                              //   displayName: myUser.displayName,
+                              //   profilePicture: myUser.profilePicture,
+                              //   followerCount: myUser.followers,
+                              //   about: myUser.about ?? '',
+                              //   cakeDay: myUser.cakeDay.toString(),
+                              //   bannerPicture: myUser.banner ?? '',
+                              //   isOwnProfile: true,
+                              // ),
+                              ),
                         );
                       }),
                   _buildListTile(
@@ -430,20 +435,20 @@ class _RightsidebarState extends State<Rightsidebar> {
                       );
                     },
                   ),
-                  _buildListTile(
-                    icon: Icons.settings,
-                    text: 'Settings',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Settings(),
-                        ),
-                      );
-                    },
-                  ),
                 ],
               ),
+            ),
+            _buildListTile(
+              icon: Icons.settings,
+              text: 'Settings',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Settings(),
+                  ),
+                );
+              },
             ),
           ],
         ),

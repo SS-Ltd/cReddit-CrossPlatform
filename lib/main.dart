@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'cReddit',
       theme: AppTheme.darkTheme,
-      //home: LoginScreen(),
       home: Scaffold(
         body: PageView(
           children: <Widget>[
