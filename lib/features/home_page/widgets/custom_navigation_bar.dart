@@ -7,6 +7,7 @@ import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/subreddit.dart';
+import 'package:reddit_clone/features/search/home_search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/features/post/create_post.dart';
@@ -138,46 +139,56 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 ],
               ),
             ),
-      appBar: widget.isProfile ? null : (_currentIndex != 2)
-          ? AppBar(
-              backgroundColor: Palette.appBar,
-              elevation: 2.6,
-              title: (_currentIndex == 0)
-                  ? SelectItem(
-                      menuItems: menuItems,
-                      onMenuItemSelected: (String selectedItem) {
-                        if (menuState.selectedMenuItem != selectedItem) {
-                          menuState.setSelectedMenuItem(selectedItem);
-                        }
-                        print('Selected: $selectedItem');
-                      },
-                    )
-                  : (_currentIndex == 1)
-                      ? Title(
-                          color: Palette.whiteColor,
-                          child: const Text('Communities'),
+      appBar: widget.isProfile
+          ? null
+          : (_currentIndex != 2)
+              ? AppBar(
+                  backgroundColor: Palette.appBar,
+                  elevation: 2.6,
+                  title: (_currentIndex == 0)
+                      ? SelectItem(
+                          menuItems: menuItems,
+                          onMenuItemSelected: (String selectedItem) {
+                            if (menuState.selectedMenuItem != selectedItem) {
+                              menuState.setSelectedMenuItem(selectedItem);
+                            }
+                          },
                         )
-                      : (_currentIndex == 3)
+                      : (_currentIndex == 1)
                           ? Title(
                               color: Palette.whiteColor,
-                              child: const Text('Chat'),
+                              child: const Text('Communities'),
                             )
-                          : Title(
-                              color: Palette.whiteColor,
-                              child: const Text('Inbox'),
-                            ),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search, size: 30.0),
-                ),
-                IconButton(
-                  onPressed: () => _scaffoldKey.currentState!.openEndDrawer(),
-                  icon: const Icon(Icons.reddit, size: 30.0),
-                ),
-              ],
-            )
-          : null,
+                          : (_currentIndex == 3)
+                              ? Title(
+                                  color: Palette.whiteColor,
+                                  child: const Text('Chat'),
+                                )
+                              : Title(
+                                  color: Palette.whiteColor,
+                                  child: const Text('Inbox'),
+                                ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => const HomeSearch(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.search, size: 30.0),
+                    ),
+                    IconButton(
+                      onPressed: () =>
+                          _scaffoldKey.currentState!.openEndDrawer(),
+                      icon: const Icon(Icons.reddit, size: 30.0),
+                    ),
+                  ],
+                )
+              : null,
       endDrawer: widget.isProfile ? null : const Rightsidebar(),
       body: widget.isProfile
           ? Profile(
