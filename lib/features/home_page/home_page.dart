@@ -94,9 +94,11 @@ class _HomePageState extends State<HomePage> {
         page++;
       });
     } else {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 

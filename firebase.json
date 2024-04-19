@@ -1,0 +1,25 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "creddit-by-ss-ltd",
+                    "appId": "1:737898149215:android:b8d1b2c987e1a0f4d5f2ea",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "creddit-by-ss-ltd",
+                    "configurations": {
+                        "android": "1:737898149215:android:b8d1b2c987e1a0f4d5f2ea",
+                        "ios": "1:737898149215:ios:6eceb0e42d328884d5f2ea",
+                        "macos": "1:737898149215:ios:9f9749f897ad8070d5f2ea",
+                        "web": "1:737898149215:web:599824eea54d2806d5f2ea",
+                        "windows": "1:737898149215:web:dd80a0575ff0ad82d5f2ea"
+                    }
+                }
+            }
+        }
+    }
+}

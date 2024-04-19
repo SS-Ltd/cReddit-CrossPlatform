@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "737898149215",
+    "project_id": "creddit-by-ss-ltd",
+    "storage_bucket": "creddit-by-ss-ltd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737898149215:android:b8d1b2c987e1a0f4d5f2ea",
+        "android_client_info": {
+          "package_name": "com.example.reddit_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDie_BHxDi7iD3bjPph30mfEGFxz8om1us"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
