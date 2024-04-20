@@ -1,19 +1,15 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/post_model.dart';
-// import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-// import 'block_button.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
 import 'package:reddit_clone/features/User/edit_button.dart';
@@ -90,7 +86,6 @@ class _ProfileState extends State<Profile> {
     });
 
     final networkService = Provider.of<NetworkService>(context, listen: false);
-    print(widget.userName);
     final posts = await networkService.fetchUserPosts(
       widget.userName,
       page: postsPage,
@@ -308,7 +303,7 @@ class _ProfileState extends State<Profile> {
           child: Container(
             color: const Color.fromARGB(255, 21, 21, 27),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
                   Row(
@@ -414,7 +409,7 @@ class _ProfileState extends State<Profile> {
           SliverToBoxAdapter(
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(vertical: 20.0),
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: const Text("About content here"),
             ),
           ),
