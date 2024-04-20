@@ -11,6 +11,7 @@ class UserModel {
   final DateTime cakeDay;
   bool isLoggedIn = false;
   final Set<Subreddit> recentlyVisited = {};
+  final List<String> recentlySearch= [];
   final bool isBlocked;
 
   UserModel({
@@ -33,8 +34,16 @@ class UserModel {
     recentlyVisited.add(communityName);
   }
 
+  void setrecentlySearch(String searchData){
+    recentlySearch.add(searchData);
+  }
+
   Set<Subreddit> getrecentlyvisited() {
     return recentlyVisited;
+  }
+
+  List<String> getrecentlySearch(){
+    return recentlySearch;
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {

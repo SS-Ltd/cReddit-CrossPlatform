@@ -17,9 +17,10 @@ void main() async {
   );
 
   // Request notification permissions
-  final notificationSettings = await FirebaseMessaging.instance.requestPermission(provisional: true);
+  final notificationSettings =
+      await FirebaseMessaging.instance.requestPermission(provisional: true);
 
-  // For apple platforms 
+  // For apple platforms
   // ensure the APNS token is available before making any FCM plugin API calls
   final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
   if (apnsToken != null) {
@@ -27,7 +28,7 @@ void main() async {
     print('APNS Token: $apnsToken');
   }
 
-    // Get the token for this device
+  // Get the token for this device
   String? token = await FirebaseMessaging.instance.getToken();
   print('Firebase Messaging Token: $token');
 
