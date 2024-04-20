@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'reset_password_done.dart';
@@ -11,6 +10,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/common/CustomTextField.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 
+/// A screen widget for the forget password feature.
+///
+/// This widget allows the user to reset their password by providing their email
+/// address or username. It sends a link to the user's email address to reset
+/// their password.
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
 
@@ -21,8 +25,6 @@ class ForgetPassword extends StatefulWidget {
 class _ForgetPasswordState extends State<ForgetPassword> {
   final TextEditingController emailController = TextEditingController();
   final ValueNotifier<int> isValidNotifier = ValueNotifier<int>(0);
-  // bool isCleared = false;
-  // bool isFieldTapped = false;
 
   @override
   void dispose() {
@@ -108,7 +110,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
 
               const SizedBox(height: 32),
 
-              // Email or username input field
               CustomTextField(
                 controller: emailController,
                 isValidNotifier: isValidNotifier,
@@ -174,23 +175,5 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         ),
       ),
     );
-  }
-}
-
-int isValidEmail(String input) {
-  final RegExp emailRegex = RegExp(
-    r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
-  );
-
-  final RegExp usernameRegex = RegExp(
-    r'^[a-zA-Z0-9_-]*$',
-  );
-
-  if (input.isEmpty) {
-    return -1;
-  } else if (emailRegex.hasMatch(input) || usernameRegex.hasMatch(input)) {
-    return 1;
-  } else {
-    return -1;
   }
 }

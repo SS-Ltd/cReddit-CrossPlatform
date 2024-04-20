@@ -1,39 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A card widget that represents a community.
+///
+/// This widget displays information about a community, such as its name, icon, number of members, and description.
+/// It also provides a button to join or disjoin the community.
 class CommunityCard extends StatefulWidget {
-  final String name;
-  final int members;
-  final String description;
-  final String icon;
-  final bool isJoined;
+  final Community community;
 
+  /// Creates a [CommunityCard] widget.
+  ///
+  /// The [community] parameter is required and represents the community to display.
   const CommunityCard({
-    Key? key,
-    required this.name,
-    required this.members,
-    required this.description,
-    required this.icon,
-    required this.isJoined,
-  }) : super(key: key);
+    super.key,
+    required this.community,
+  });
 
   @override
   CommunityCardState createState() => CommunityCardState();
 }
 
+/// The state class for the [CommunityCard] widget.
+///
+/// This class manages the state of the [CommunityCard] widget, including whether the user has joined the community or not.
 class CommunityCardState extends State<CommunityCard> {
   late final ValueNotifier<bool> isJoined;
   Future<bool>? _future;
 
+  /// Joins or disjoins the subreddit based on the current state.
+  ///
+  /// This method is called when the join/disjoin button is pressed.
+  /// It uses the [NetworkService] to perform the join/disjoin operation and updates the [isJoined] value accordingly.
+  /// Returns `true` if the operation is successful, `false` otherwise.
   Future<bool> joinOrDisjoinSubreddit() async {
     bool result;
     if (!isJoined.value) {
-      result = await context.read<NetworkService>().joinSubReddit(widget.name);
+      result = await context
+          .read<NetworkService>()
+          .joinSubReddit(widget.community.name);
     } else {
-      result =
-          await context.read<NetworkService>().disJoinSubReddit(widget.name);
+      result = await context
+          .read<NetworkService>()
+          .disJoinSubReddit(widget.community.name);
     }
     if (mounted && result) {
       isJoined.value = !isJoined.value;
@@ -44,7 +55,7 @@ class CommunityCardState extends State<CommunityCard> {
   @override
   void initState() {
     super.initState();
-    isJoined = ValueNotifier<bool>(widget.isJoined);
+    isJoined = ValueNotifier<bool>(widget.community.isJoined);
   }
 
   @override
@@ -56,11 +67,10 @@ class CommunityCardState extends State<CommunityCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color.fromARGB(255, 12, 12, 12),
+      color: Palette.communityCard,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20), // Adjust as needed
-        side: BorderSide(
-            color: Colors.grey[800]!, width: 0.75), // Adjust as needed
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.grey[850]!, width: 0.5),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -71,7 +81,7 @@ class CommunityCardState extends State<CommunityCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CircleAvatar(
-                  backgroundImage: NetworkImage(widget.icon),
+                  backgroundImage: NetworkImage(widget.community.icon),
                   radius: 20,
                 ),
                 const SizedBox(width: 8),
@@ -80,12 +90,12 @@ class CommunityCardState extends State<CommunityCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.name,
+                        widget.community.name,
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '${widget.members} members',
+                        '${widget.community.members} members',
                         style: const TextStyle(
                             fontSize: 11, color: Palette.greyColor),
                       ),
@@ -148,7 +158,7 @@ class CommunityCardState extends State<CommunityCard> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.description,
+              widget.community.description ?? '',
               style: const TextStyle(fontSize: 11, color: Palette.greyColor),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

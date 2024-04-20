@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/settings/blocked_user_model.dart';
 
-final dummyusers = [
-  BlockedUserModel(onPressed: () {}, username: 'Osama', userphoto: 'qwdasdass'),
-  BlockedUserModel(
-      onPressed: () {}, username: 'Mohamed', userphoto: 'qwdasdass'),
-];
-
+/// A screen for managing blocked accounts.
 class ManageBlockedAccounts extends StatefulWidget {
   const ManageBlockedAccounts({super.key});
 
@@ -32,34 +26,38 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
             },
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                child: TextField(
-                  controller: _userNameController,
-                  decoration: InputDecoration(
-                    hintText: 'Block new account',
-                    suffixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(40)),
-                    contentPadding: const EdgeInsets.all(10),
-                  ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  hintText: 'Block new account',
+                  suffixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
                 ),
               ),
-              // ListView.builder(
-              //     itemCount: dummyusers.length,
-              //     itemBuilder: (ctx, index) {
-              //       return BlockedUser(
-              //         onPressed: () {},
-              //         username: dummyusers[index].username,
-              //         userphoto: dummyusers[index].userphoto,
-              //       );
-              //     }),
-            ],
-          ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                //itemCount: dummyusers.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    //tileColor: ,
+                    leading: const CircleAvatar(),
+                    //title: Text(dummyusers[index].username),
+                    trailing: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text("Unblock"),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

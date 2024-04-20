@@ -3,13 +3,17 @@ import 'package:reddit_clone/features/home_page/post.dart';
 
 enum TabSelection { posts, comments, about }
 
+/// A widget that represents the user feed.
 class UserFeed extends StatefulWidget {
-  final TabSelection tabSelection; 
-  
+  final TabSelection tabSelection;
+
+  /// Constructs a [UserFeed] widget.
+  ///
+  /// The [tabSelection] parameter is required and specifies the current tab selection.
   const UserFeed({
     required this.tabSelection,
-    super.key
-    });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<UserFeed> createState() => _UserState();
@@ -19,17 +23,16 @@ class _UserState extends State<UserFeed> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: 
-      const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return mockPost();
-        } 
-      ),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return mockPost();
+          }),
     );
   }
 
+  /// Builds a mock post widget.
   Widget mockPost() {
     return Column(
       children: [

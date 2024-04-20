@@ -1,25 +1,22 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/post_model.dart';
-// import 'package:reddit_clone/rightsidebar.dart';
 import 'package:reddit_clone/post_options_menu.dart';
 import 'package:intl/intl.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-// import 'block_button.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
 import 'package:reddit_clone/features/User/edit_button.dart';
 
 enum TabSelection { posts, comments, about }
 
+/// A widget representing the user profile.
 class Profile extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userName;
@@ -50,6 +47,7 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
+/// Maps the boolean values [isUpvoted] and [isDownvoted] to an integer value.
 int mappingVotes(bool isUpvoted, bool isDownvoted) {
   if (isUpvoted) {
     return 1;
@@ -72,6 +70,8 @@ class _ProfileState extends State<Profile> {
 
   List<PostModel> userPosts = [];
   List<Comments> userComments = [];
+
+  /// Fetches the user posts from the network.
   Future<void> fetchUserPosts({bool refresh = false}) async {
     if (isLoadingPosts) return;
     if (refresh) {
@@ -86,7 +86,6 @@ class _ProfileState extends State<Profile> {
     });
 
     final networkService = Provider.of<NetworkService>(context, listen: false);
-    print(widget.userName);
     final posts = await networkService.fetchUserPosts(
       widget.userName,
       page: postsPage,
@@ -104,6 +103,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  /// Fetches the user comments from the network.
   Future<void> fetchUserComments({bool refresh = false}) async {
     if (isLoadingComments) return;
     if (refresh) {
@@ -142,6 +142,7 @@ class _ProfileState extends State<Profile> {
     fetchUserComments();
   }
 
+  /// Formats the cake day string to a readable format.
   String _formattedCakeDay(String cakeDay) {
     DateTime parsedDate = DateTime.parse(cakeDay);
     return DateFormat('dd MMM yyyy').format(parsedDate);
@@ -302,7 +303,7 @@ class _ProfileState extends State<Profile> {
           child: Container(
             color: const Color.fromARGB(255, 21, 21, 27),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
                   Row(
@@ -393,21 +394,11 @@ class _ProfileState extends State<Profile> {
               (BuildContext context, int index) {
                 final comment = userComments[index];
                 return UserComment(
-                  avatar: comment.profilePicture,
-                  username: comment.username,
-                  content: comment.content,
-                  timestamp: DateTime.parse(comment.createdAt),
                   photo: comment.isImage ? File(comment.content) : null,
-                  contentType: comment.isImage,
                   imageSource: 0,
-                  commentId: comment.commentId,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
-                  isSaved: comment.isSaved,
-                  netVote: comment.netVote,
-                  communityName: comment.communityName!,
-                  postId: comment.postId!,
-                  title: comment.title!,
+                  comment: userComments[index],
                 );
               },
               childCount: userComments.length,
@@ -418,7 +409,7 @@ class _ProfileState extends State<Profile> {
           SliverToBoxAdapter(
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(vertical: 20.0),
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: const Text("About content here"),
             ),
           ),

@@ -2,26 +2,32 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
+/// A card widget that displays a static comment.
 class StaticCommentCard extends StatelessWidget {
-  final String avatar;
-  final String username;
   final String content;
-  final DateTime timestamp;
   final File? photo;
   final bool contentType;
   final int imageSource; //0 from backend 1 from user 2 text
+  final Comments staticComment;
 
+  /// Constructs a [StaticCommentCard] widget.
+  ///
+  /// The [content] parameter is the comment content.
+  /// The [photo] parameter is an optional photo associated with the comment.
+  /// The [contentType] parameter indicates the type of content (text or image).
+  /// The [imageSource] parameter indicates the source of the image (backend, user, or text).
+  /// The [staticComment] parameter is the comment object.
   const StaticCommentCard({
-    Key? key,
-    required this.avatar,
-    required this.username,
+    super.key,
     this.content = '',
-    required this.timestamp,
     this.photo,
     required this.contentType,
     required this.imageSource,
-  }) : super(key: key);
+    required this.staticComment,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +44,11 @@ class StaticCommentCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(avatar),
+                  backgroundImage: NetworkImage(staticComment.profilePicture),
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  username,
+                  staticComment.username,
                   style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 14,
@@ -50,7 +56,7 @@ class StaticCommentCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  formatTimestamp(timestamp),
+                  formatTimestamp(DateTime.parse(staticComment.createdAt)),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
@@ -88,20 +94,5 @@ class StaticCommentCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
-
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/models/savedcomments.dart';
+import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
 import 'package:reddit_clone/models/user.dart';
@@ -17,8 +17,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  //final String _baseUrl = 'http://192.168.1.7:3000';
   final String _baseUrl = 'https://creddit.tech/API';
+  //final String _baseUrl = 'http://192.168.1.7:3000/';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -87,7 +87,6 @@ class NetworkService extends ChangeNotifier {
   Future<void> getUserSettings() async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getUserSettings();
@@ -95,26 +94,10 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       _userSettings = UserSettings.fromJson(json);
-      notifyListeners(); // Notify listeners to update UI or other components listening to changes
-    } else {
-      print('Failed to fetch user settings: ${response.body}');
+      notifyListeners();
+      // Notify listeners to update UI or other components listening to changes
     }
   }
-
-  /*
-    Uri url = Uri.parse('$_baseUrl/comment');
-
-    http.MultipartRequest request = http.MultipartRequest('POST', url);
-
-    request.headers.addAll(_headers);
-
-    request.fields['postId'] = postId;
-    request.fields['content'] = content;
-
-    http.StreamedResponse response = await request.send();
-
-    String responseBody = await response.stream.bytesToString();
-  */
 
   Future<void> updateUserSettings(String newName) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
@@ -237,13 +220,8 @@ class NetworkService extends ChangeNotifier {
     }
 
     final response = await http.get(url, headers: {'Cookie': refreshToken});
-    print("alo?");
-    print(_headers['Cookie']);
     if (response.statusCode == 200) {
       _updateCookie(response);
-      print('Token refreshed successfully. New Cookie: $_cookie');
-    } else {
-      print('Failed to refresh token: ${response.body}');
     }
   }
 
@@ -254,12 +232,11 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchTopCommunities();
     }
-    print(response.body);
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(
           response.body); // change List<dynamic> to Map<String, dynamic>
-      final List<dynamic> communities = jsonData[
-          'topCommunities']; // replace 'communities' with the actual key in the JSON response
+      final List<dynamic> communities = jsonData['topCommunities'];
+      // replace 'communities' with the actual key in the JSON response
       return communities.map((item) => Community.fromJson(item)).toList();
     } else {
       throw Exception('Failed to fetch top communities');
@@ -269,7 +246,6 @@ class NetworkService extends ChangeNotifier {
   Future<List<Comments>?> fetchCommentsForPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return fetchCommentsForPost(postId);
@@ -362,8 +338,6 @@ class NetworkService extends ChangeNotifier {
 
     http.StreamedResponse response = await request.send();
 
-    String responseBody = await response.stream.bytesToString();
-    print('Response body: $responseBody');
     if (response.statusCode == 403) {
       refreshToken();
       return editTextComment(commentId, content);
@@ -390,8 +364,6 @@ class NetworkService extends ChangeNotifier {
 
     http.StreamedResponse response = await request.send();
 
-    String responseBody = await response.stream.bytesToString();
-    print('Response body: $responseBody');
     if (response.statusCode == 403) {
       refreshToken();
       return editImageComment(commentId, imageFile);
@@ -449,7 +421,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> deleteComment(String commentId) async {
     Uri url = Uri.parse('$_baseUrl/comment/$commentId');
     final response = await http.delete(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return deleteComment(commentId);
@@ -468,7 +439,6 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return blockUser(username);
     }
-    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -516,7 +486,7 @@ class NetworkService extends ChangeNotifier {
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
-    print("SUBREDDITDETAILS");
+    print("heelpp");
     print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
@@ -525,6 +495,17 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
+    }
+    if (response.statusCode == 401) {
+      return Subreddit(
+          name: '',
+          icon: '',
+          banner: '',
+          members: 0,
+          rules: [],
+          moderators: [],
+          description: '',
+          isNSFW: false);
     } else {
       return null;
     }
@@ -533,7 +514,7 @@ class NetworkService extends ChangeNotifier {
   Future<UserModel> getUserDetails(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/$username');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
+
     if (response.statusCode == 403) {
       refreshToken();
       getUserDetails(username);
@@ -543,6 +524,32 @@ class NetworkService extends ChangeNotifier {
       return UserModel.fromJson(json);
     } else {
       throw Exception('Failed to fetch user details');
+    }
+  }
+
+  Future<List<SearchComments>> getSearchComment(String comment) async {
+    final parameters = {
+      'query' : comment
+    };
+    Uri url = Uri.parse('$_baseUrl/search/comments?'
+    'query=$comment');
+
+    print(parameters);
+    print(url);
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchComment(comment);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchComments> searchResult =
+          responseData.map((item) => SearchComments.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
     }
   }
 
@@ -576,7 +583,6 @@ class NetworkService extends ChangeNotifier {
 
     final response =
         await http.get(url, headers: {'accept': 'application/json'});
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
@@ -687,7 +693,6 @@ class NetworkService extends ChangeNotifier {
       {int page = 1, int limit = 10}) async {
     final url = Uri.parse('$_baseUrl/user/upvoted?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getUpvotedPosts(page: page, limit: limit);
@@ -767,29 +772,35 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<bool> createNewImagePost(String communityname, String title,
-      String content, bool isNSFW, bool isSpoiler) async {
+      File imageFile, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
-    final response = await http.post(
-      url,
-      headers: _headers,
-      body: jsonEncode({
-        'type': 'Images & Video',
-        'communityname': communityname,
-        'title': title,
-        //'images' :
-        'isSpoiler': isSpoiler,
-        'isNSFW': isNSFW,
-      }),
-    );
+
+    http.MultipartRequest request = http.MultipartRequest('POST', url);
+
+    request.headers.addAll(_headers);
+
+    request.fields['type'] = 'Images & Video';
+    request.fields['communityName'] = communityname;
+    request.fields['title'] = title;
+    request.fields['isSpoiler'] = isSpoiler.toString();
+    request.fields['isNSFW'] = isNSFW.toString();
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'images',
+      imageFile.path,
+      filename: basename(imageFile.path),
+    ));
+
+    http.StreamedResponse response = await request.send();
+
     if (response.statusCode == 403) {
       refreshToken();
       return createNewImagePost(
-          communityname, title, content, isNSFW, isSpoiler);
+          communityname, title, imageFile, isNSFW, isSpoiler);
     }
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
-      print('Failed to create post: ${response.body}');
       return false;
     }
   }
@@ -825,7 +836,6 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 201) {
       return true;
     } else {
-      print('Failed to create post: ${response.body}');
       return false;
     }
   }
@@ -940,7 +950,6 @@ class NetworkService extends ChangeNotifier {
           .map((commentJson) => Comments.fromJson(commentJson))
           .toList();
     } else {
-      // Handle error or empty case appropriately
       return null;
     }
   }
@@ -950,7 +959,6 @@ class NetworkService extends ChangeNotifier {
     Uri url =
         Uri.parse('$_baseUrl/user/$username/comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return fetchUserComments(username, page: page, limit: limit);
@@ -970,7 +978,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> followpost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/follow');
     final response = await http.patch(url, headers: _headers);
-    print(response);
     if (response.statusCode == 403) {
       refreshToken();
       return followpost(postId);
@@ -985,7 +992,6 @@ class NetworkService extends ChangeNotifier {
   Future<bool> reportPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
     final response = await http.post(url, headers: _headers);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return reportPost(postId);

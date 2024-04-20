@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/models/community.dart';
 import 'community_card.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
+/// This class represents the community page in the application.
+/// It is a stateful widget that fetches a list of communities and displays them in a ListView.
 class CommunityPage extends StatefulWidget {
-
   const CommunityPage({super.key});
 
   @override
   CommunityPageState createState() => CommunityPageState();
 }
 
+/// The state class for the [CommunityPage] widget.
+/// It manages the state of the widget and fetches the list of communities.
 class CommunityPageState extends State<CommunityPage> {
   late Future<List<Community>> communities;
 
@@ -21,6 +26,8 @@ class CommunityPageState extends State<CommunityPage> {
     communities = fetchCommunities();
   }
 
+  /// Fetches the list of communities from the network service.
+  /// Returns a future that resolves to a list of [Community] objects.
   Future<List<Community>> fetchCommunities() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedCommunities = await networkService.fetchTopCommunities();
@@ -38,26 +45,24 @@ class CommunityPageState extends State<CommunityPage> {
           return Text('Error: ${snapshot.error}');
         } else {
           return Scaffold(
-            // appBar: AppBar(
-            //   automaticallyImplyLeading: false,
-            //   title: const Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       Icon(Icons.public, color: Palette.blueColor),
-            //       SizedBox(width: 8),
-            //       Text('Top Globally'),
-            //     ],
-            //   ),
-            // ),
+            backgroundColor: Palette.communityPage,
             body: ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                return CommunityCard(
-                  name: snapshot.data![index].name,
-                  members: snapshot.data![index].members,
-                  description: snapshot.data![index].description ?? '',
-                  icon: snapshot.data![index].icon,
-                  isJoined: snapshot.data![index].isJoined,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SubRedditPage(
+                          subredditName: snapshot.data![index].name,
+                        ),
+                      ),
+                    );
+                  },
+                  child: CommunityCard(
+                    community: snapshot.data![index],
+                  ),
                 );
               },
             ),

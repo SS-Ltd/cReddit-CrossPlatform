@@ -6,6 +6,37 @@ import 'package:reddit_clone/services/networkServices.dart';
 
 import '../../models/post_model.dart';
 
+/// The home page of the cReddit CrossPlatform app.
+///
+/// This page displays a list of posts fetched from the API based on the selected menu item.
+/// It uses a [ListView.builder] to render the posts in a scrollable list.
+/// The page supports pull-to-refresh functionality using a [RefreshIndicator].
+///
+/// The [HomePage] class is a [StatefulWidget] that manages the state of the page.
+/// It has a [ScrollController] to listen for scroll events and trigger the loading of more posts.
+/// The state of the page is managed by the [_HomePageState] class, which extends [State<HomePage>].
+///
+/// The [_HomePageState] class has the following state variables:
+/// - [posts]: A list of [PostModel] objects representing the fetched posts.
+/// - [isLoading]: A boolean flag indicating whether the page is currently loading more posts.
+/// - [page]: An integer representing the current page number of the fetched posts.
+/// - [lastType]: A string representing the last selected menu item.
+/// - [selectedMenuItem]: A string representing the currently selected menu item.
+///
+/// The [_HomePageState] class overrides the [initState], [dispose], and [didChangeDependencies] methods
+/// to initialize and clean up resources, as well as to handle changes in the selected menu item.
+///
+/// The [getPosts] method is an asynchronous function that fetches posts from the API based on the selected menu item.
+/// It updates the state variables accordingly and triggers a UI update using [setState].
+///
+/// The [_onScroll] method is called when the user scrolls to the bottom of the list.
+/// It checks if more posts can be loaded and calls [getPosts] if necessary.
+///
+/// The [_refreshData] method is an asynchronous function that refreshes the data by calling [getPosts].
+///
+/// The [build] method builds the UI of the page using a [Scaffold] widget.
+/// It wraps the list of posts in a [RefreshIndicator] to enable pull-to-refresh functionality.
+/// Each post is rendered using a [Column] widget, with a [Post] widget and a [Divider] widget.
 class HomePage extends StatefulWidget {
   const HomePage({Key? key});
 
@@ -56,14 +87,14 @@ class _HomePageState extends State<HomePage> {
     List<PostModel>? fetchedPosts = await context
         .read<NetworkService>()
         .fetchHomeFeed(page: page, sort: selectedItem.toLowerCase());
-    if (mounted) {
-      if (fetchedPosts != null) {
-        setState(() {
-          posts.addAll(fetchedPosts);
-          isLoading = false;
-          page++;
-        });
-      } else {
+    if (fetchedPosts != null && mounted) {
+      setState(() {
+        posts.addAll(fetchedPosts);
+        isLoading = false;
+        page++;
+      });
+    } else {
+      if (mounted) {
         setState(() {
           isLoading = false;
         });

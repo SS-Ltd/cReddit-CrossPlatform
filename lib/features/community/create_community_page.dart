@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 
+/// This class represents the Create Community page in the application.
+/// It allows users to create a new community by providing a community name,
+/// selecting a community type, and specifying whether it is an 18+ community.
 class CreateCommunityPage extends StatefulWidget {
   const CreateCommunityPage({super.key});
 
@@ -10,6 +13,7 @@ class CreateCommunityPage extends StatefulWidget {
   State<CreateCommunityPage> createState() => _CreateCommunityPageState();
 }
 
+/// The state class for the CreateCommunityPage widget.
 class _CreateCommunityPageState extends State<CreateCommunityPage> {
   final _communityNameController = TextEditingController();
   final int _maxLength = 21;
@@ -26,7 +30,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     super.initState();
     _communityNameController.addListener(checkSubredditExistence);
   }
-
+  /// Checks if the entered subreddit name already exists.
   void checkSubredditExistence() async {
     final subredditName = _communityNameController.text.trim();
     final networkService = Provider.of<NetworkService>(context, listen: false);
@@ -185,7 +189,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       ),
     );
   }
-
+  /// Shows the bottom sheet to select the community type.
   void _showCommunityTypeSelection(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -234,7 +238,7 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
       },
     );
   }
-
+  /// Selects the specified community type and updates the UI accordingly.
   void _selectCommunityType(String type, BuildContext context) {
     String description;
     switch (type) {
@@ -258,13 +262,13 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     });
     Navigator.pop(context);
   }
-
+  /// Checks if the create community button should be enabled.
   bool _isButtonEnabled() {
     return (_communityNameController.text.isNotEmpty &&
         _communityNameController.text != "" &&
         subredditExists == false);
   }
-
+  /// Creates a new community with the entered details.
   void _createCommunity() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final subredditName = _communityNameController.text.trim();

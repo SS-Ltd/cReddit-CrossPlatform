@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A widget that represents the chat and messages permissions screen.
 class ChatMessagesPermissions extends StatefulWidget {
   const ChatMessagesPermissions({super.key});
 
@@ -25,7 +26,9 @@ class _ChatMessagesPermissionsState extends State<ChatMessagesPermissions> {
           },
         ),
       ),
-      body: const Column(children: [],),
+      body: const Column(
+        children: [],
+      ),
     );
   }
 }

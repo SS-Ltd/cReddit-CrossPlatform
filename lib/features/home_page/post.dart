@@ -10,12 +10,10 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'dart:async';
 import '../../new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
-import 'package:reddit_clone/features/home_page/postcomments.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'postcomments.dart';
-// import '../../theme/palette.dart';
 import 'package:video_player/video_player.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -68,6 +66,20 @@ class _PostState extends State<Post> {
   @override
   void initState() {
     super.initState();
+    if (isVideo(widget.content) && widget.postType == 'Images & Video') {
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.content));
+      _initializeVideoPlayerFuture = _videoController.initialize();
+      _videoController.setLooping(true); // Optionally, loop the video.
+      _initializeVideoPlayerFuture.then((_) {
+        if (mounted) {
+          // Check if the widget is still in the tree
+          setState(() {
+            _controllerInitialized = true;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -81,35 +93,34 @@ class _PostState extends State<Post> {
   Widget _buildContent() {
     switch (widget.postType) {
       case ("Images & Video"):
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NewPage(),
-                //replace with image screen
-              ),
-            );
-          },
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: isImage(widget.content)
-                      ? Image.network(
-                          widget.content,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              ),
-            ],
-          ),
+        return Column(
+          children: [
+            if (isImage(widget.content))
+              Image.network(
+                widget.content,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              )
+            else if (isVideo(widget.content))
+              _controllerInitialized
+                  ? AspectRatio(
+                      aspectRatio: _videoController.value.aspectRatio,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: <Widget>[
+                          VideoPlayer(_videoController),
+                          _ControlsOverlay(
+                              controller: _videoController), // Controls overlay
+                          VideoProgressIndicator(_videoController,
+                              allowScrubbing: true),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      height: 200,
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+          ],
         );
       case ('Post'):
         return GestureDetector(
@@ -234,7 +245,8 @@ class _PostState extends State<Post> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Card(
-            color: Palette.backgroundColor,
+            color: const Color.fromARGB(255, 12, 12, 12),
+            elevation: 0.77,
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
@@ -242,8 +254,19 @@ class _PostState extends State<Post> {
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(widget.profilePicture),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SubRedditPage(
+                                      subredditName: widget.communityName,
+                                    )),
+                          );
+                        },
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(widget.profilePicture),
+                        ),
                       ),
                       const SizedBox(width: 10),
                       widget.isHomePage
@@ -257,11 +280,23 @@ class _PostState extends State<Post> {
                                               userName: widget.userName);
                                         });
                                   },
-                                  child: Text(
-                                    'u/${widget.userName}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'u/${widget.userName}',
+                                        style: const TextStyle(
+                                          color: Palette.whiteColor,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        formatTimestamp(widget.timeStamp),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 )
                               : (widget.communityName.isEmpty
@@ -274,14 +309,89 @@ class _PostState extends State<Post> {
                                                   userName: widget.userName);
                                             });
                                       },
-                                      child: Text(
-                                        'u/${widget.userName}',
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                        ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'u/${widget.userName}',
+                                            style: const TextStyle(
+                                              color: Palette.whiteColor,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            formatTimestamp(widget.timeStamp),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     )
                                   : GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SubRedditPage(
+                                                    subredditName:
+                                                        widget.communityName,
+                                                  )),
+                                        );
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'r/${widget.communityName}',
+                                            style: const TextStyle(
+                                              color: Palette.whiteColor,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            formatTimestamp(widget.timeStamp),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )))
+                          : (widget.communityName.isEmpty
+                              ? GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AboutUserPopUp(
+                                              userName: widget.userName);
+                                        });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'u/${widget.userName}',
+                                        style: const TextStyle(
+                                          color: Palette.whiteColor,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        formatTimestamp(widget.timeStamp),
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
@@ -299,32 +409,6 @@ class _PostState extends State<Post> {
                                           color: Colors.grey,
                                         ),
                                       ),
-                                    )))
-                          : (widget.communityName.isEmpty
-                              ? GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AboutUserPopUp(
-                                              userName: widget.userName);
-                                        });
-                                  },
-                                  child: Text(
-                                    'u/${widget.userName}',
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'r/${widget.communityName}',
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
                                     ),
                                     GestureDetector(
                                       onTap: () {
@@ -336,11 +420,22 @@ class _PostState extends State<Post> {
                                             });
                                         //replace with profile page or widget
                                       },
-                                      child: Text(
-                                        'u/${widget.userName} . ${formatTimestamp(widget.timeStamp)}',
-                                        style: const TextStyle(
-                                          color: Colors.blue,
-                                        ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'u/${widget.userName}',
+                                            style: const TextStyle(
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                          Text(
+                                            formatTimestamp(widget.timeStamp),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -385,15 +480,21 @@ class _PostState extends State<Post> {
                     );
                   }
                 : null,
-            child: Text(
-              widget.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
           ),
-          _buildContent(),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: _buildContent(),
+          ),
           Row(
             children: [
               Semantics(
@@ -403,23 +504,35 @@ class _PostState extends State<Post> {
                   icon: const Icon(Icons.arrow_upward),
                   color: widget.isUpvoted ? Colors.red : Colors.grey,
                   onPressed: () async {
-                    bool a = await context
+                    int oldVotes = widget.votes;
+                    bool oldIsUpVoted = widget.isUpvoted;
+                    bool oldIsDownVoted = widget.isDownvoted;
+                    if (mounted) {
+                      setState(() {
+                        print("upvote");
+                        if (widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes--;
+                          widget.isUpvoted = false;
+                        } else if (!widget.isUpvoted && widget.isDownvoted) {
+                          widget.votes += 2;
+                          widget.isUpvoted = true;
+                          widget.isDownvoted = false;
+                        } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes++;
+                          widget.isUpvoted = true;
+                        }
+                      });
+                    }
+                    bool upVoted = await context
                         .read<NetworkService>()
                         .upVote(widget.postId);
-                    setState(() {
-                      print("upvote");
-                      if (widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes--;
-                        widget.isUpvoted = false;
-                      } else if (!widget.isUpvoted && widget.isDownvoted) {
-                        widget.votes += 2;
-                        widget.isUpvoted = true;
-                        widget.isDownvoted = false;
-                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes++;
-                        widget.isUpvoted = true;
-                      }
-                    });
+                    if (!upVoted && mounted) {
+                      setState(() {
+                        widget.votes = oldVotes;
+                        widget.isUpvoted = oldIsUpVoted;
+                        widget.isDownvoted = oldIsDownVoted;
+                      });
+                    }
                   },
                 ),
               ),
@@ -440,29 +553,42 @@ class _PostState extends State<Post> {
                   icon: const Icon(Icons.arrow_downward),
                   color: widget.isDownvoted ? Colors.blue : Colors.grey,
                   onPressed: () async {
-                    bool a = await context
+                    int oldVotes = widget.votes;
+                    bool oldIsUpVoted = widget.isUpvoted;
+                    bool oldIsDownVoted = widget.isDownvoted;
+                    if (mounted) {
+                      setState(() {
+                        if (widget.isDownvoted && !widget.isUpvoted) {
+                          widget.votes++;
+                          widget.isDownvoted = false;
+                        } else if (widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes -= 2;
+                          widget.isUpvoted = false;
+                          widget.isDownvoted = true;
+                        } else if (!widget.isUpvoted && !widget.isDownvoted) {
+                          widget.votes--;
+                          widget.isDownvoted = true;
+                        }
+                      });
+                    }
+                    bool downVoted = await context
                         .read<NetworkService>()
                         .downVote(widget.postId);
-                    setState(() {
-                      if (widget.isDownvoted && !widget.isUpvoted) {
-                        widget.votes++;
-                        widget.isDownvoted = false;
-                      } else if (widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes -= 2;
-                        widget.isUpvoted = false;
-                        widget.isDownvoted = true;
-                      } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                        widget.votes--;
-                        widget.isDownvoted = true;
-                      }
-                    });
+                    if (!downVoted && mounted) {
+                      setState(() {
+                        widget.votes = oldVotes;
+                        widget.isUpvoted = oldIsUpVoted;
+                        widget.isDownvoted = oldIsDownVoted;
+                      });
+                    }
                   },
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
-                onPressed: widget.isHomePage ? () {
+                onPressed: widget.isHomePage 
+                ?() {
                   Post postComment = Post(
                     communityName: widget.communityName,
                     profilePicture: widget.profilePicture,
@@ -492,7 +618,8 @@ class _PostState extends State<Post> {
                       ),
                     ),
                   );
-                } : null,
+                }
+                : null,
               ),
               Text(widget.commentNumber.toString()),
               const Spacer(),
@@ -512,21 +639,6 @@ class _PostState extends State<Post> {
   }
 }
 
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
-
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
-  }
-}
-
 bool isImage(String url) {
   return url.toLowerCase().endsWith('.jpg') ||
       url.toLowerCase().endsWith('.jpeg') ||
@@ -538,4 +650,46 @@ bool isVideo(String url) {
   return url.toLowerCase().endsWith('.mp4') ||
       url.toLowerCase().endsWith('.webm') ||
       url.toLowerCase().endsWith('.ogg');
+}
+
+class _ControlsOverlay extends StatelessWidget {
+  const _ControlsOverlay({Key? key, required this.controller})
+      : super(key: key);
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<VideoPlayerValue>(
+      valueListenable: controller,
+      builder: (context, value, child) {
+        return Stack(
+          children: <Widget>[
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 50),
+              reverseDuration: Duration(milliseconds: 200),
+              child: value.isPlaying
+                  ? SizedBox.shrink()
+                  : Container(
+                      color: Colors.black26,
+                      child: Center(
+                        child: Icon(
+                          Icons.play_arrow,
+                          color: Colors.white,
+                          size: 50.0,
+                          semanticLabel: 'Play',
+                        ),
+                      ),
+                    ),
+            ),
+            GestureDetector(
+              onTap: () {
+                value.isPlaying ? controller.pause() : controller.play();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

@@ -7,8 +7,22 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 
+/// A widget that represents the gender selection screen for user signup.
+///
+/// This widget displays a list of gender options and allows the user to select
+/// their gender. The selected gender is stored in the [userData] map.
+/// The user can sign up by calling the [signup] method, which sends the user's
+/// signup data to the server and navigates to the home screen upon successful.
+///
+/// The [Gender] widget is typically used as part of the signup process in the
+/// authentication feature of the cReddit-CrossPlatform app.
 class Gender extends StatelessWidget {
   final Map<String, dynamic> userData;
+
+  /// Constructs a [Gender] widget.
+  ///
+  /// The [userData] parameter is a map that contains the user's signup data,
+  /// including their username, email, password, and gender.
   Gender({super.key, required this.userData});
 
   final List<String> userGender = [
@@ -18,6 +32,13 @@ class Gender extends StatelessWidget {
     "None"
   ];
 
+  /// Signs up the user with the provided signup data.
+  ///
+  /// The [context] parameter is the build context of the widget.
+  /// This method calls the [createUser] method of the [NetworkService] to send
+  /// the user's signup data to the server. If the signup is successful, it
+  /// navigates to the home screen using the [CustomNavigationBar] widget.
+  /// Otherwise, it displays a snackbar with an error message.
   void signup(BuildContext context) async {
     bool signup = await context.read<NetworkService>().createUser(
         userData["username"],
@@ -26,8 +47,12 @@ class Gender extends StatelessWidget {
         userData["gender"]);
     if (signup) {
       Navigator.popUntil(context, (route) => route.isFirst);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const CustomNavigationBar()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CustomNavigationBar(
+                    isProfile: false,
+                  )));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to sign up')),

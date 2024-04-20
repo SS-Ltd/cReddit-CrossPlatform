@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 
+/// A page for posting comments on a post.
 class CommentPostPage extends StatefulWidget {
   final String commentContent;
   final String postId;
@@ -27,41 +29,41 @@ class _CommentPostPageState extends State<CommentPostPage> {
   bool contentType = false; // false for text, true for image
 
   Future getImage() async {
-  if (_isImagePickerOpen || _isTextFieldFilled) {
-    return;
+    if (_isImagePickerOpen || _isTextFieldFilled) {
+      return;
+    }
+    _isImagePickerOpen = true;
+
+    // Show a dialog to let the user choose between the gallery and the camera
+    final source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Choose image source'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Gallery'),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+          TextButton(
+            child: const Text('Camera'),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+        ],
+      ),
+    );
+
+    if (source != null) {
+      final pickedFile = await picker.pickImage(source: source);
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+          _controller.clear();
+        }
+      });
+    }
+
+    _isImagePickerOpen = false;
   }
-  _isImagePickerOpen = true;
-
-  // Show a dialog to let the user choose between the gallery and the camera
-  final source = await showDialog<ImageSource>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Choose image source'),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Gallery'),
-          onPressed: () => Navigator.pop(context, ImageSource.gallery),
-        ),
-        TextButton(
-          child: const Text('Camera'),
-          onPressed: () => Navigator.pop(context, ImageSource.camera),
-        ),
-      ],
-    ),
-  );
-
-  if (source != null) {
-    final pickedFile = await picker.pickImage(source: source);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        _controller.clear();
-      }
-    });
-  }
-
-  _isImagePickerOpen = false;
-}
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +118,7 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     ).show();
                     return;
                   }
+                  print('aloooooo');
                   contentType = true; // Image is entered
                   Navigator.pop(context, {
                     'content': _image,
@@ -148,20 +151,24 @@ class _CommentPostPageState extends State<CommentPostPage> {
                     ),
                     const SizedBox(height: 10),
                     const Divider(color: Colors.grey, thickness: 0.15),
-                    TextFormField(
-                      controller: _controller,
-                      autofocus: true,
-                      maxLines: null,
-                      onChanged: (text) {
-                        setState(() {
-                          _isTextFieldFilled = text.isNotEmpty;
-                        });
-                      },
-                      enabled: _image == null,
-                      decoration: InputDecoration(
-                        hintText: _image == null ? 'Your comment' : null,
-                        hintStyle: const TextStyle(fontSize: 16),
-                        border: InputBorder.none,
+                    Semantics(
+                      identifier: 'Your Comment',
+                      label: 'Your Comment',
+                      child: TextFormField(
+                        controller: _controller,
+                        autofocus: true,
+                        maxLines: null,
+                        onChanged: (text) {
+                          setState(() {
+                            _isTextFieldFilled = text.isNotEmpty;
+                          });
+                        },
+                        enabled: _image == null,
+                        decoration: InputDecoration(
+                          hintText: _image == null ? 'Your comment' : null,
+                          hintStyle: const TextStyle(fontSize: 16),
+                          border: InputBorder.none,
+                        ),
                       ),
                     ),
                     if (_image != null) Image.file(_image!),

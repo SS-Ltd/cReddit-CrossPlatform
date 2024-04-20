@@ -4,6 +4,7 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A page that displays the user's history.
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
@@ -33,6 +34,7 @@ class _HistoryPageState extends State<HistoryPage> {
     super.dispose();
   }
 
+  /// Fetches the user's history based on the specified sort option.
   void fetchHistory(String sort) async {
     if (isLoading) return; // Prevent multiple simultaneous loads
     setState(() {
@@ -71,6 +73,7 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
+  /// Callback function for scroll events.
   void _onScroll() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
@@ -79,6 +82,7 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
+  /// Shows the sort options in a bottom sheet.
   void _showSortOptions() {
     showModalBottomSheet(
       context: context,
@@ -101,6 +105,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  /// Updates the sorting option and fetches the corresponding history.
   void _updateSorting(String sortOption, IconData icon) {
     if (currentSort != sortOption) {
       setState(() {
@@ -114,6 +119,7 @@ class _HistoryPageState extends State<HistoryPage> {
     Navigator.pop(context); // Close the bottom sheet
   }
 
+  /// Builds a ListTile for a sorting option.
   Widget _sortingOptionTile(String title, IconData icon, String sortKey) {
     return ListTile(
       leading: Icon(icon, color: Colors.black),
@@ -158,6 +164,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
+  /// Builds a widget for a post.
   Widget postWidget(PostModel postModel) {
     return Column(
       children: [

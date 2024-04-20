@@ -1,6 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
@@ -11,44 +12,36 @@ import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
+import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
+/// This file contains the implementation of the [UserComment] widget and its related classes.
+///
+/// The [UserComment] widget is a stateful widget that represents a user comment in a comment section.
+/// It displays the user's profile picture, username, comment content, and voting buttons.
+/// The widget also allows users to reply to the comment and view replies.
+///
+/// The [LinePainter] class is a custom painter that draws a vertical line on the left side of the comment.
+///
+/// The [UserCommentState] class is the state class for the [UserComment] widget.
+/// It manages the state of the comment, including the number of votes, voting status, replies, and content.
+/// The class also handles user interactions such as upvoting, downvoting, adding replies, and minimizing the comment.
+///
+/// This file is located at /C:/Users/Youssef Darwish/Documents/GitHub/cReddit-CrossPlatform/lib/features/comments/user_comment.dart.
 class UserComment extends StatefulWidget {
-  final String avatar;
-  final String username;
-  String content;
   final int level;
-  final DateTime timestamp;
   File? photo;
-  final bool contentType;
-  final int netVote;
   int imageSource; //0 from backend 1 from user 2 text
-  final String commentId;
   final int hasVoted; // 1 for upvote, -1 for downvote, 0 for no vote
-  bool isSaved;
-
-  //for saved comments
-  final String communityName;
-  final String postId; //
-  final String title; //
+  final Comments comment;
 
   UserComment({
     super.key,
-    // may be the required keyword need to be removed
-    required this.avatar,
-    required this.username,
-    this.content = '',
     this.level = 0,
-    required this.timestamp,
     this.photo,
-    required this.contentType,
-    this.netVote = 1,
     required this.imageSource,
-    required this.commentId,
     required this.hasVoted,
-    required this.isSaved,
-    this.communityName = '',
-    this.postId = '',
-    this.title = '',
+    required this.comment,
   });
 
   @override
@@ -83,9 +76,9 @@ class UserCommentState extends State<UserComment> {
       context,
       MaterialPageRoute(
         builder: (context) => ReplyPage(
-          commentContent: widget.content,
-          username: widget.username,
-          timestamp: widget.timestamp,
+          commentContent: widget.comment.content,
+          username: widget.comment.username,
+          timestamp: DateTime.parse(widget.comment.createdAt),
         ),
       ),
     );
@@ -96,36 +89,52 @@ class UserCommentState extends State<UserComment> {
       if (contentType == false) {
         final String commentText = result['content'];
         replies.add(UserComment(
-          avatar: 'assets/MonkeyDLuffy.png',
-          username: 'User123',
-          content: commentText,
-          timestamp: DateTime.now(),
           photo: null,
-          contentType: contentType,
           imageSource: 2,
-          commentId: widget.commentId, //may need to be updated
           hasVoted: 0,
-          isSaved: false,
+          comment: Comments(
+            profilePicture: 'assets/MonkeyDLuffy.png',
+            username: 'User123',
+            isImage: false,
+            netVote: 0,
+            content: commentText,
+            createdAt: DateTime.now().toString(),
+            commentId: widget.comment.commentId,
+            isUpvoted: false,
+            isDownvoted: false,
+            isSaved: false,
+            communityName: '',
+            postId: '',
+            title: '',
+          ),
         ));
       } else if (contentType == true) {
         final File commentImage = File(result['content']);
         replies.add(UserComment(
-          avatar: 'assets/MonkeyDLuffy.png',
-          username: 'User123',
-          content: '',
-          timestamp: DateTime.now(),
           photo: commentImage,
-          contentType: contentType,
           imageSource: 1,
-          commentId: widget.commentId, //may need to be updated
           hasVoted: 0,
-          isSaved: false,
+          comment: Comments(
+            profilePicture: 'assets/MonkeyDLuffy.png',
+            username: 'User123',
+            isImage: true,
+            netVote: 0,
+            content: commentImage.path,
+            createdAt: DateTime.now().toString(),
+            commentId: widget.comment.commentId,
+            isUpvoted: false,
+            isDownvoted: false,
+            isSaved: false,
+            communityName: '',
+            postId: '',
+            title: '',
+          ),
         ));
       }
     }
   }
 
-  void updateUpVote() {
+  void upVote() {
     if (hasVoted.value == 1) {
       votes--;
       hasVoted.value = 0;
@@ -138,7 +147,20 @@ class UserCommentState extends State<UserComment> {
     }
   }
 
-  void updateDownVote() {
+  void undoUpVote() {
+    if (hasVoted.value == 1) {
+      votes--;
+      hasVoted.value = 0;
+    } else if (hasVoted.value == 0) {
+      votes++;
+      hasVoted.value = -1;
+    } else if (hasVoted.value != -1) {
+      votes--;
+      hasVoted.value = -1;
+    }
+  }
+
+  void downVote() {
     if (hasVoted.value == -1) {
       votes++;
       hasVoted.value = 0;
@@ -151,13 +173,26 @@ class UserCommentState extends State<UserComment> {
     }
   }
 
+  void undoDownVote() {
+    if (hasVoted.value == -1) {
+      votes++;
+      hasVoted.value = 0;
+    } else if (hasVoted.value == 1) {
+      votes += 2;
+      hasVoted.value = 1;
+    } else if (hasVoted.value != 1) {
+      votes++;
+      hasVoted.value = 1;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     isMinimized = ValueNotifier<bool>(false);
-    votes = widget.netVote;
+    votes = widget.comment.netVote;
     hasVoted = ValueNotifier<int>(widget.hasVoted);
-    content = ValueNotifier<String>(widget.content);
+    content = ValueNotifier<String>(widget.comment.content);
     photo = ValueNotifier<File?>(widget.photo);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
@@ -195,18 +230,19 @@ class UserCommentState extends State<UserComment> {
                   Row(
                     children: [
                       const SizedBox(height: 55),
-                      if (widget.communityName == '') ...[
+                      if (widget.comment.communityName == '') ...[
                         GestureDetector(
                           onTap: () {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AboutUserPopUp(
-                                      userName: widget.username);
+                                      userName: widget.comment.username);
                                 });
                           },
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(widget.avatar),
+                            backgroundImage:
+                                NetworkImage(widget.comment.profilePicture),
                             //radius: 18,
                           ),
                         ),
@@ -217,11 +253,11 @@ class UserCommentState extends State<UserComment> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AboutUserPopUp(
-                                      userName: widget.username);
+                                      userName: widget.comment.username);
                                 });
                           },
                           child: Text(
-                            widget.username,
+                            widget.comment.username,
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 14,
@@ -230,7 +266,8 @@ class UserCommentState extends State<UserComment> {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          formatTimestamp(widget.timestamp),
+                          formatTimestamp(
+                              DateTime.parse(widget.comment.createdAt)),
                           style:
                               const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
@@ -241,7 +278,7 @@ class UserCommentState extends State<UserComment> {
                                 .start, // Aligns the text to the start of the axis
                             children: <Widget>[
                               Text(
-                                widget.title,
+                                widget.comment.title ?? '',
                                 style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                                 overflow: TextOverflow
@@ -253,7 +290,7 @@ class UserCommentState extends State<UserComment> {
                                   height:
                                       4), // Provides spacing of 4 logical pixels between title and username/community.
                               Text(
-                                '${widget.username} . r/${widget.communityName}  .  ${formatTimestamp(widget.timestamp)}',
+                                '${widget.comment.username} . r/${widget.comment.communityName}  .  ${formatTimestamp(DateTime.parse(widget.comment.createdAt))}',
                                 style:
                                     TextStyle(fontSize: 14, color: Colors.grey),
                               ),
@@ -266,7 +303,7 @@ class UserCommentState extends State<UserComment> {
                         Expanded(
                           child: SizedBox(
                             height: 50,
-                            child: widget.contentType == false
+                            child: widget.comment.isImage == false
                                 ? Align(
                                     alignment: Alignment.centerLeft,
                                     child: ValueListenableBuilder<String>(
@@ -283,7 +320,7 @@ class UserCommentState extends State<UserComment> {
                                       },
                                     ),
                                   )
-                                : widget.contentType == true &&
+                                : widget.comment.isImage == true &&
                                         widget.imageSource == 0
                                     ? Center(
                                         child: ValueListenableBuilder<String>(
@@ -296,7 +333,7 @@ class UserCommentState extends State<UserComment> {
                                           },
                                         ),
                                       )
-                                    : widget.contentType == true &&
+                                    : widget.comment.isImage == true &&
                                             widget.imageSource == 1
                                         ? Center(
                                             child:
@@ -322,7 +359,7 @@ class UserCommentState extends State<UserComment> {
                   ),
                   if (!isMinimized.value) ...[
                     //const SizedBox(height: 10),
-                    if (widget.contentType == false) ...[
+                    if (widget.comment.isImage == false) ...[
                       ValueListenableBuilder<String>(
                         valueListenable: content,
                         builder: (context, value, child) {
@@ -335,7 +372,7 @@ class UserCommentState extends State<UserComment> {
                           );
                         },
                       ),
-                    ] else if (widget.contentType == true &&
+                    ] else if (widget.comment.isImage == true &&
                         widget.imageSource == 0) ...[
                       ValueListenableBuilder<String>(
                         valueListenable: content,
@@ -346,7 +383,7 @@ class UserCommentState extends State<UserComment> {
                           );
                         },
                       ),
-                    ] else if (widget.contentType == true &&
+                    ] else if (widget.comment.isImage == true &&
                         widget.imageSource == 1) ...[
                       ValueListenableBuilder<File?>(
                         valueListenable: photo,
@@ -373,7 +410,9 @@ class UserCommentState extends State<UserComment> {
                                 context.read<NetworkService>().getUser();
                             int numofTiles;
                             numofTiles =
-                                (widget.username == user.username) ? 8 : 7;
+                                (widget.comment.username == user.username)
+                                    ? 8
+                                    : 7;
                             showCommentOptions(user, numofTiles);
                           },
                         ),
@@ -393,12 +432,22 @@ class UserCommentState extends State<UserComment> {
                                         ? Palette.upvoteOrange
                                         : Palette.greyColor),
                                 onPressed: () async {
+                                  int oldVotes = votes;
+                                  ValueNotifier<int> oldHasVoted =
+                                      ValueNotifier<int>(hasVoted.value);
+                                  if (mounted) {
+                                    setState(() {
+                                      upVote();
+                                    });
+                                  }
                                   bool votedUp = await context
                                       .read<NetworkService>()
-                                      .upVote(widget.commentId);
-                                  if (votedUp && mounted) {
+                                      .upVote(widget.comment.commentId);
+
+                                  if (!votedUp && mounted) {
                                     setState(() {
-                                      updateUpVote();
+                                      votes = oldVotes;
+                                      hasVoted.value = oldHasVoted.value;
                                     });
                                   }
                                 },
@@ -438,12 +487,22 @@ class UserCommentState extends State<UserComment> {
                                         ? Palette.downvoteBlue
                                         : Palette.greyColor),
                                 onPressed: () async {
+                                  int oldVotes = votes;
+                                  ValueNotifier<int> oldHasVoted =
+                                      ValueNotifier<int>(hasVoted.value);
+                                  if (mounted) {
+                                    setState(() {
+                                      downVote();
+                                    });
+                                  }
                                   bool votedDown = await context
                                       .read<NetworkService>()
-                                      .downVote(widget.commentId);
-                                  if (votedDown && mounted) {
+                                      .downVote(widget.comment.commentId);
+                                  if (!votedDown && mounted) {
                                     setState(() {
-                                      updateDownVote();
+                                      votes = oldVotes;
+                                      hasVoted.value = oldHasVoted.value;
+                                      undoDownVote();
                                     });
                                   }
                                 },
@@ -500,13 +559,11 @@ class UserCommentState extends State<UserComment> {
                   valueListenable: photo,
                   builder: (context, photoValue, child) {
                     return StaticCommentCard(
-                      avatar: widget.avatar,
-                      username: widget.username,
-                      timestamp: widget.timestamp,
                       content: contentValue,
-                      contentType: widget.contentType,
+                      contentType: widget.comment.isImage,
                       photo: photoValue,
                       imageSource: widget.imageSource,
+                      staticComment: widget.comment,
                     );
                   },
                 );
@@ -524,7 +581,7 @@ class UserCommentState extends State<UserComment> {
         return SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              if (widget.username == user.username)
+              if (widget.comment.username == user.username)
                 ListTile(
                   leading: const Icon(Icons.edit),
                   title: const Text('Edit comment'),
@@ -534,10 +591,12 @@ class UserCommentState extends State<UserComment> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditCommentPage(
-                          commentId: widget.commentId,
-                          commentContent: widget.content,
-                          contentType: widget.contentType,
-                          photo: widget.photo,
+                          commentId: widget.comment.commentId,
+                          commentContent: widget.comment.content,
+                          contentType: widget.comment.isImage,
+                          photo: widget.comment.isImage
+                              ? File(widget.comment.content)
+                              : null,
                           imageSource: widget.imageSource,
                         ),
                       ),
@@ -569,19 +628,20 @@ class UserCommentState extends State<UserComment> {
               ),
               ListTile(
                 leading: const Icon(Icons.save_alt),
-                title: Text(widget.isSaved ? 'Unsave' : 'Save'),
+                title: Text(widget.comment.isSaved ? 'Unsave' : 'Save'),
                 onTap: () async {
                   bool saved = await context
                       .read<NetworkService>()
-                      .saveOrUnsaveComment(widget.commentId, !widget.isSaved);
+                      .saveOrUnsaveComment(
+                          widget.comment.commentId, !widget.comment.isSaved);
                   if (saved) {
                     CustomSnackBar(
                       context: context,
-                      content: widget.isSaved
+                      content: widget.comment.isSaved
                           ? 'Comment Unsaved!'
                           : 'Comment Saved!',
                     ).show();
-                    widget.isSaved = !widget.isSaved;
+                    widget.comment.isSaved = !widget.comment.isSaved;
                     Navigator.pop(context);
                   }
                 },
@@ -607,14 +667,14 @@ class UserCommentState extends State<UserComment> {
                   Navigator.pop(context);
                 },
               ),
-              if (widget.username == user.username)
+              if (widget.comment.username == user.username)
                 ListTile(
                   leading: const Icon(Icons.delete),
                   title: const Text('Delete comment'),
                   onTap: () async {
                     bool deleted = await context
                         .read<NetworkService>()
-                        .deleteComment(widget.commentId);
+                        .deleteComment(widget.comment.commentId);
                     if (deleted) {
                       CustomSnackBar(
                         context: context,
@@ -629,21 +689,32 @@ class UserCommentState extends State<UserComment> {
                     }
                   },
                 ),
-              if (widget.username != user.username)
+              if (widget.comment.username != user.username)
                 ListTile(
                   leading: const Icon(Icons.block_outlined),
                   title: const Text('Block account'),
                   onTap: () async {
-                    // bool blocked = await context
-                    //     .read<NetworkService>()
-                    //     .blockUser(widget.username);
-                    // if (blocked) {
-                    //   CustomSnackBar(
-                    //       context: context, content: 'User blocked!');
-                    // } else {
-                    //   CustomSnackBar(
-                    //       context: context, content: 'User unblocked!');
-                    // }
+                    UserModel user = await context
+                        .read<NetworkService>()
+                        .getUserDetails(widget.comment.username);
+                    if (user.isBlocked) {
+                      CustomSnackBar(
+                          context: context,
+                          content: 'User blocked succesfully!');
+                    } else {
+                      bool blocked = await context
+                          .read<NetworkService>()
+                          .blockUser(widget.comment.username);
+                      print(blocked);
+                      if (blocked) {
+                        CustomSnackBar(
+                            context: context, content: 'User blocked!');
+                      } else {
+                        CustomSnackBar(
+                            context: context, content: 'Failed to block User');
+                      }
+                    }
+
                     Navigator.pop(context);
                   },
                 ),
@@ -653,7 +724,7 @@ class UserCommentState extends State<UserComment> {
                 onTap: () async {
                   bool reported = await context
                       .read<NetworkService>()
-                      .reportPost(widget.commentId);
+                      .reportPost(widget.comment.commentId);
                   if (reported) {
                     Navigator.pop(context);
                   }
@@ -667,24 +738,5 @@ class UserCommentState extends State<UserComment> {
       // Remove the overlay entry after the modal bottom sheet is dismissed
       overlayEntry.remove();
     });
-  }
-}
-
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
-
-  if (difference.inDays > 365) {
-    return '${difference.inDays ~/ 365}y';
-  } else if (difference.inDays > 30) {
-    return '${difference.inDays ~/ 30}m';
-  } else if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
   }
 }
