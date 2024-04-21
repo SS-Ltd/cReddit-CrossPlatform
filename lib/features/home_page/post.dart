@@ -8,7 +8,6 @@ import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'dart:async';
-import '../../new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -15,89 +15,127 @@ class HomeSearch extends StatefulWidget {
   }
 }
 
-class _HomeSearchState extends State<HomeSearch> {
+class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
   List<SearchComments> searchResults = [];
   String searchQuery = '';
   bool isSearching = true;
+  late final TabController _tabController;
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.arrow_back),
-            ),
-            title: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search Reddit',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    _searchController.clear();
-                  },
-                  icon: const Icon(Icons.clear),
-                ),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
-              ),
-              onChanged: (value) async {
-                setState(() {
-                  searchQuery = value;
-                });
-                searchResults =
-                    await Provider.of<NetworkService>(context, listen: false)
-                        .getSearchComment(value);
-                print(searchResults);
-              },
-              onTap: () {
-                setState(() {
-                  isSearching = true;
-                });
-              },
-            ),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back),
           ),
-          body: isSearching
-              ? Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: searchResults.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            //leading: ,
-                            title: Text(searchResults[index].postTitle),
-                            onTap: () {
-                              // Navigate to the post and add to recently search
-                            },
-                            trailing: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.clear),
-                            ),
-                          );
-                        },
-                      ),
+          title: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search Reddit',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  _searchController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+              contentPadding: const EdgeInsets.all(10),
+            ),
+            onChanged: (value) async {
+              setState(() {
+                searchQuery = value;
+              });
+              searchResults =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .getSearchComment(value);
+              print(searchResults);
+            },
+            onTap: () {
+              setState(() {
+                isSearching = true;
+              });
+            },
+          ),
+          bottom: isSearching
+              ? null
+              : TabBar(
+                isScrollable: true, 
+                controller: _tabController,
+                  tabs: const <Widget>[
+                    Tab(
+                      text: "Posts",
                     ),
-                    if (searchQuery.isNotEmpty)
-                      TextButton(
-                        onPressed: () {
-                          setState(
-                            () {
-                              isSearching = false;
-                            },
-                          );
-                        },
-                        child: Text('Search for $searchQuery'),
-                      ),
+                    Tab(
+                      text: "Communities",
+                    ),
+                    Tab(
+                      text: "Comments",
+                    ),
+                    Tab(
+                      text: "Media",
+                    ),
+                    Tab(
+                      text: "People",)
                   ],
-                )
-              : null),
+                ),
+        ),
+        body: isSearching
+            ? Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: searchResults.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          //leading: ,
+                          title: Text(searchResults[index].postTitle),
+                          onTap: () {
+                            // Navigate to the post and add to recently search
+                          },
+                          trailing: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.clear),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (searchQuery.isNotEmpty)
+                    TextButton(
+                      onPressed: () {
+                        setState(
+                          () {
+                            isSearching = false;
+                          },
+                        );
+                      },
+                      child: Text('Search for $searchQuery'),
+                    ),
+                ],
+              )
+            : Column(
+                children: [],
+              ),
+      ),
     );
   }
 }
