@@ -9,7 +9,7 @@ class SearchComments {
   final bool isPostNSFW;
   final bool isPostSpoiler;
   final String username;
-  final String communityName;
+  final String? communityName;
   final String commentPicture;
   final int netVote;
   final int commentCount;
@@ -27,7 +27,7 @@ class SearchComments {
       required this.isPostNSFW,
       required this.isPostSpoiler,
       required this.username,
-      required this.communityName,
+      this.communityName = '',
       required this.commentPicture,
       required this.netVote,
       required this.commentCount,
@@ -36,14 +36,14 @@ class SearchComments {
 
   factory SearchComments.fromJson(Map<String, dynamic> json) {
     return SearchComments(
-      id: json['id'],
+      id: json['_id'],
       postID: json['postID'],
       postTitle: json['postTitle'],
       postUsername: json['postUsername'],
       postVotes: json['postVotes'],
       postPicture: json['postPicture'],
       postCreatedAt: json['postCreatedAt'],
-      isPostNSFW: json['isPostNSFW'],
+      isPostNSFW: json['isPostNsfw'],
       isPostSpoiler: json['isPostSpoiler'],
       username: json['username'],
       communityName: json['communityName'],
@@ -86,7 +86,7 @@ class SearchPosts {
 
   factory SearchPosts.fromJson(Map<String, dynamic> json) {
     return SearchPosts(
-      id: json['id'],
+      id: json['_id'],
       type: json['type'],
       username: json['username'],
       communityName: json['communityName'],
@@ -96,7 +96,7 @@ class SearchPosts {
       title: json['title'],
       content: json['content'],
       createdAt: json['createdAt'],
-      isNSFW: json['isNSFW'],
+      isNSFW: json['isNsfw'],
       isSpoiler: json['isSpoiler'],
     );
   }
@@ -145,7 +145,7 @@ class SearchCommunities {
 
   factory SearchCommunities.fromJson(Map<String, dynamic> json) {
     return SearchCommunities(
-      id: json['id'],
+      id: json['_id'],
       name: json['name'],
       description: json['description'],
       icon: json['icon'],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/search/global_search.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -15,17 +15,24 @@ class HomeSearch extends StatefulWidget {
   }
 }
 
-class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateMixin {
+class _HomeSearchState extends State<HomeSearch>
+    with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
-  List<SearchComments> searchResults = [];
+
+  List<SearchComments> commentsResults = [];
+  List<SearchPosts> postsResults = [];
+  List<SearchCommunities> communitiesResults = [];
+  List<SearchUsers> peopleResults = [];
+
+  String sortOption = '';
+  String timeOption = '';
   String searchQuery = '';
   bool isSearching = true;
   late final TabController _tabController;
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -64,10 +71,10 @@ class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateM
               setState(() {
                 searchQuery = value;
               });
-              searchResults =
+              commentsResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchComment(value);
-              print(searchResults);
+              print(commentsResults);
             },
             onTap: () {
               setState(() {
@@ -78,8 +85,7 @@ class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateM
           bottom: isSearching
               ? null
               : TabBar(
-                isScrollable: true, 
-                controller: _tabController,
+                  controller: _tabController,
                   tabs: const <Widget>[
                     Tab(
                       text: "Posts",
@@ -91,10 +97,8 @@ class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateM
                       text: "Comments",
                     ),
                     Tab(
-                      text: "Media",
-                    ),
-                    Tab(
-                      text: "People",)
+                      text: "People",
+                    )
                   ],
                 ),
         ),
@@ -103,11 +107,14 @@ class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateM
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: searchResults.length,
+                      itemCount: commentsResults.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          //leading: ,
-                          title: Text(searchResults[index].postTitle),
+                          // leading: CircleAvatar(
+                          //   backgroundImage: NetworkImage(
+                          //       commentsResults[index].postPicture),
+                          // ),
+                          title: Text(commentsResults[index].postTitle),
                           onTap: () {
                             // Navigate to the post and add to recently search
                           },
@@ -133,7 +140,83 @@ class _HomeSearchState extends State<HomeSearch> with SingleTickerProviderStateM
                 ],
               )
             : Column(
-                children: [],
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, top: 10),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 90,
+                          height: 35,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BottomSheet(
+                                    onClosing: () {},
+                                    builder: (BuildContext context) {
+                                      return const Column(
+                                        children: [],
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                            child: const Text("Sort"),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        SizedBox(
+                          width: 90,
+                          height: 35,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: const Text("Time"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: <Widget>[
+                        //Posts
+                        ListView.builder(
+                          itemCount: postsResults.length,
+                          itemBuilder: (context, index) {
+                            return ListTile();
+                          },
+                        ),
+                        //Communities
+                        ListView.builder(
+                          itemCount: commentsResults.length,
+                          itemBuilder: (context, index) {
+                            return ListTile();
+                          },
+                        ),
+                        //Comments
+                        ListView.builder(
+                          itemCount: commentsResults.length,
+                          itemBuilder: (context, index) {
+                            return ListTile();
+                          },
+                        ),
+                        //People
+                        ListView.builder(
+                          itemCount: peopleResults.length,
+                          itemBuilder: (context, index) {
+                            return ListTile();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
       ),
     );

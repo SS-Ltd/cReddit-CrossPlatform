@@ -531,13 +531,10 @@ class NetworkService extends ChangeNotifier {
     final parameters = {
       'query' : comment
     };
-    Uri url = Uri.parse('$_baseUrl/search/comments?'
-    'query=$comment');
+    Uri url = Uri.parse('$_baseUrl/search/comments').replace(queryParameters: parameters);
 
     print(parameters);
-    print(url);
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
@@ -547,6 +544,52 @@ class NetworkService extends ChangeNotifier {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchComments> searchResult =
           responseData.map((item) => SearchComments.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+    Future<List<SearchPosts>> getSearchPosts(String post) async {
+    final parameters = {
+      'query' : post
+    };
+    Uri url = Uri.parse('$_baseUrl/search/posts').replace(queryParameters: parameters);
+
+    print(parameters);
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchPosts(post);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchPosts> searchResult =
+          responseData.map((item) => SearchPosts.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+      Future<List<SearchCommunities>> getSearchCommunities(String community) async {
+    final parameters = {
+      'query' : community
+    };
+    Uri url = Uri.parse('$_baseUrl/search/communities').replace(queryParameters: parameters);
+
+    print(parameters);
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchCommunities(community);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchCommunities> searchResult =
+          responseData.map((item) => SearchCommunities.fromJson(item)).toList();
       return searchResult;
     } else {
       return [];
