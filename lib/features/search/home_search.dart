@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
+import 'package:reddit_clone/features/community/community_card.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/models/search.dart';
@@ -222,17 +223,20 @@ class _HomeSearchState extends State<HomeSearch>
                         ),
                         //Communities
                         ListView.builder(
-                          itemCount: commentsResults.length,
+                          itemCount: communitiesResults.length,
                           itemBuilder: (context, index) {
                             Community community = Community(
                                 name: communitiesResults[index].name,
-                                description: communitiesResults[index].description,
+                                description:
+                                    communitiesResults[index].description,
                                 members: communitiesResults[index].members,
                                 icon: communitiesResults[index].icon,
                                 isJoined: false);
-                            return const Column(
+                            return Column(
                               children: [
-                                Divider(
+                                CommunityCard(
+                                    community: community, search: true),
+                                const Divider(
                                   thickness: 1,
                                 ),
                               ],
@@ -260,7 +264,10 @@ class _HomeSearchState extends State<HomeSearch>
                                   title: Text(
                                       'u/${peopleResults[index].username}'),
                                   subtitle: const Text('cake'),
-                                  trailing: const Text('follow button'),
+                                  trailing: FollowButton(
+                                      userName: 'userName',
+                                      profileName:
+                                          peopleResults[index].username),
                                 ),
                                 const Divider(
                                   thickness: 1,
