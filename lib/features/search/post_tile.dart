@@ -40,10 +40,13 @@ class PostTile extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text(
-                    post.title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20),
+                  SizedBox(
+                    width: 300,
+                    child: Text(
+                      post.title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20),
+                    softWrap: true,),
                   ),
                 ],
               ),

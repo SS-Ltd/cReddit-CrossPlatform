@@ -78,7 +78,12 @@ class _HomeSearchState extends State<HomeSearch>
               postsResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchPosts(value);
-                      
+              communitiesResults =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .getSearchCommunities(value);
+              peopleResults =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .getSearchUsers(value);
               print("Posts");
               print(postsResults);
               print('Comments');
@@ -197,11 +202,12 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: postsResults.length,
                           itemBuilder: (context, index) {
-                            return 
-                            Column(
+                            return Column(
                               children: [
                                 PostTile(post: postsResults[index]),
-                                const Divider(thickness: 1,),
+                                const Divider(
+                                  thickness: 1,
+                                ),
                               ],
                             );
                           },
@@ -224,7 +230,16 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: peopleResults.length,
                           itemBuilder: (context, index) {
-                            return ListTile();
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    peopleResults[index].profilePicture),
+                              ),
+                              title:
+                                  Text('u/ ${peopleResults[index].username}'),
+                              subtitle: Text('sd'),
+                              trailing: Text('sd'),
+                            );
                           },
                         ),
                       ],

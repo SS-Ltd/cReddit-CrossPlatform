@@ -554,7 +554,6 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
 
-    print(parameters);
     final response = await http.get(url, headers: _headers);
     print(response.statusCode);
     if (response.statusCode == 403) {
@@ -576,7 +575,6 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/search/communities')
         .replace(queryParameters: parameters);
 
-    print(parameters);
     final response = await http.get(url, headers: _headers);
     print(response.statusCode);
     if (response.statusCode == 403) {
@@ -587,6 +585,27 @@ class NetworkService extends ChangeNotifier {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchCommunities> searchResult =
           responseData.map((item) => SearchCommunities.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchUsers>> getSearchUsers(String user) async {
+    final parameters = {'query': user};
+    Uri url = Uri.parse('$_baseUrl/search/users')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchUsers(user);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchUsers> searchResult =
+          responseData.map((item) => SearchUsers.fromJson(item)).toList();
       return searchResult;
     } else {
       return [];

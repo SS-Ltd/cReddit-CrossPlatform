@@ -103,14 +103,14 @@ class SearchPosts {
 }
 
 class SearchUsers {
-  final String id;
+  final String? id;
   final String username;
   final String about;
   final String profilePicture;
   final bool isMod;
 
   SearchUsers(
-      {required this.id,
+      {this.id = '',
       required this.username,
       required this.about,
       required this.profilePicture,
@@ -118,7 +118,7 @@ class SearchUsers {
 
   factory SearchUsers.fromJson(Map<String, dynamic> json) {
     return SearchUsers(
-      id: json['id'],
+      id: json['_id'],
       username: json['username'],
       about: json['about'],
       profilePicture: json['profilePicture'],
@@ -128,17 +128,17 @@ class SearchUsers {
 }
 
 class SearchCommunities {
-  final String id;
+  final String? id;
   final String name;
-  final String description;
+  final String? description;
   final String icon;
   final bool isNSFW;
   final int members;
 
   SearchCommunities(
-      {required this.id,
+      {this.id = '',
       required this.name,
-      required this.description,
+      this.description = '',
       required this.icon,
       required this.isNSFW,
       required this.members});
