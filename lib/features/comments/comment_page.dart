@@ -186,6 +186,17 @@ class _CommentPageState extends State<CommentPage> {
                       _comments[index - 1].imageSource, //may need to be fixed
                   hasVoted: _comments[index - 1].hasVoted,
                   comment: _comments[index - 1].comment,
+                  onDeleted: () {
+                    setState(() {
+                      _comments.removeAt(index - 1);
+                      _keys.removeAt(index - 1);
+                    });
+                  },
+                  onBlock: (){
+                    setState(() {
+                      //_comments[index - 1].comment.username = "Blocked User";
+                    });
+                  },
                 );
               } else {
                 return const SizedBox.shrink();

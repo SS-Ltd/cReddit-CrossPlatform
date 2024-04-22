@@ -244,206 +244,231 @@ class _PostState extends State<Post> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Card(
-            color: const Color.fromARGB(255, 12, 12, 12),
-            elevation: 0.77,
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SubRedditPage(
-                                      subredditName: widget.communityName,
-                                    )),
-                          );
-                        },
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(widget.profilePicture),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      widget.isHomePage
-                          ? (widget.isSubRedditPage
-                              ? GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AboutUserPopUp(
-                                              userName: widget.userName);
-                                        });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'u/${widget.userName}',
-                                        style: const TextStyle(
-                                          color: Palette.whiteColor,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        formatTimestamp(widget.timeStamp),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : (widget.communityName.isEmpty
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AboutUserPopUp(
-                                                  userName: widget.userName);
-                                            });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'u/${widget.userName}',
-                                            style: const TextStyle(
-                                              color: Palette.whiteColor,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Text(
-                                            formatTimestamp(widget.timeStamp),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SubRedditPage(
-                                                    subredditName:
-                                                        widget.communityName,
-                                                  )),
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'r/${widget.communityName}',
-                                            style: const TextStyle(
-                                              color: Palette.whiteColor,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Text(
-                                            formatTimestamp(widget.timeStamp),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )))
-                          : (widget.communityName.isEmpty
-                              ? GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AboutUserPopUp(
-                                              userName: widget.userName);
-                                        });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'u/${widget.userName}',
-                                        style: const TextStyle(
-                                          color: Palette.whiteColor,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        formatTimestamp(widget.timeStamp),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => SubRedditPage(
+                    //                 subredditName: widget.communityName,
+                    //               )),
+                    //     );
+                    //   },
+                    //   child: CircleAvatar(
+                    //     backgroundImage: NetworkImage(widget.profilePicture),
+                    //   ),
+                    // ),
+                    //const SizedBox(width: 10),
+                    widget.isHomePage
+                        ? (widget.isSubRedditPage
+                            ? GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AboutUserPopUp(
+                                            userName: widget.userName);
+                                      });
+                                },
+                                child: Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SubRedditPage(
-                                                    subredditName:
-                                                        widget.communityName,
-                                                  )),
-                                        );
-                                      },
-                                      child: Text(
-                                        'r/${widget.communityName}',
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                        ),
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(widget.profilePicture),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'u/${widget.userName}',
+                                      style: const TextStyle(
+                                        color: Palette.whiteColor,
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AboutUserPopUp(
-                                                  userName: widget.userName);
-                                            });
-                                        //replace with profile page or widget
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'u/${widget.userName}',
-                                            style: const TextStyle(
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                          Text(
-                                            formatTimestamp(widget.timeStamp),
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      formatTimestamp(widget.timeStamp),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
                                       ),
                                     ),
                                   ],
-                                ))
-                    ],
-                  ),
-                ],
-              ),
+                                ),
+                              )
+                            : (widget.communityName.isEmpty
+                                ? GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AboutUserPopUp(
+                                                userName: widget.userName);
+                                          });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              widget.profilePicture),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'u/${widget.userName}',
+                                          style: const TextStyle(
+                                            color: Palette.whiteColor,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          formatTimestamp(widget.timeStamp),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SubRedditPage(
+                                                  subredditName:
+                                                      widget.communityName,
+                                                )),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              widget.profilePicture),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'r/${widget.communityName}',
+                                          style: const TextStyle(
+                                            color: Palette.whiteColor,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          formatTimestamp(widget.timeStamp),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )))
+                        : (widget.communityName.isEmpty
+                            ? GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AboutUserPopUp(
+                                            userName: widget.userName);
+                                      });
+                                },
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(widget.profilePicture),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      'u/${widget.userName}',
+                                      style: const TextStyle(
+                                        color: Palette.whiteColor,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      formatTimestamp(widget.timeStamp),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(widget.profilePicture),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SubRedditPage(
+                                                      subredditName:
+                                                          widget.communityName,
+                                                    )),
+                                          );
+                                        },
+                                        child: Text(
+                                          'r/${widget.communityName}',
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AboutUserPopUp(
+                                                    userName: widget.userName);
+                                              });
+                                          //replace with profile page or widget
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'u/${widget.userName}',
+                                              style: const TextStyle(
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                            Text(
+                                              formatTimestamp(widget.timeStamp),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ))
+                  ],
+                ),
+              ],
             ),
           ),
           GestureDetector(
@@ -587,39 +612,39 @@ class _PostState extends State<Post> {
               IconButton(
                 icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
-                onPressed: widget.isHomePage 
-                ?() {
-                  Post postComment = Post(
-                    communityName: widget.communityName,
-                    profilePicture: widget.profilePicture,
-                    userName: widget.userName,
-                    title: widget.title,
-                    postType: widget.postType,
-                    content: widget.content,
-                    pollOptions: widget.pollOptions,
-                    commentNumber: widget.commentNumber,
-                    shareNumber: widget.shareNumber,
-                    timeStamp: widget.timeStamp,
-                    isHomePage: false,
-                    isSubRedditPage: false,
-                    postId: widget.postId,
-                    votes: widget.votes,
-                    isDownvoted: widget.isDownvoted,
-                    isUpvoted: widget.isUpvoted,
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CommentPage(
-                        postId: widget.postId,
-                        postComment: postComment,
-                        postTitle: widget.title,
-                        username: widget.userName,
-                      ),
-                    ),
-                  );
-                }
-                : null,
+                onPressed: widget.isHomePage
+                    ? () {
+                        Post postComment = Post(
+                          communityName: widget.communityName,
+                          profilePicture: widget.profilePicture,
+                          userName: widget.userName,
+                          title: widget.title,
+                          postType: widget.postType,
+                          content: widget.content,
+                          pollOptions: widget.pollOptions,
+                          commentNumber: widget.commentNumber,
+                          shareNumber: widget.shareNumber,
+                          timeStamp: widget.timeStamp,
+                          isHomePage: false,
+                          isSubRedditPage: false,
+                          postId: widget.postId,
+                          votes: widget.votes,
+                          isDownvoted: widget.isDownvoted,
+                          isUpvoted: widget.isUpvoted,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentPage(
+                              postId: widget.postId,
+                              postComment: postComment,
+                              postTitle: widget.title,
+                              username: widget.userName,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
               ),
               Text(widget.commentNumber.toString()),
               const Spacer(),

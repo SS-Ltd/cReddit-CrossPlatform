@@ -5,7 +5,7 @@ import 'community_card.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
-
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 /// This class represents the community page in the application.
 /// It is a stateful widget that fetches a list of communities and displays them in a ListView.
 class CommunityPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class CommunityPageState extends State<CommunityPage> {
       future: communities,
       builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return CustomLoadingIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

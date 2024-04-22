@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/message_item.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
 import 'package:reddit_clone/features/Inbox/notification_item.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
+import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 
 class InboxNotificationPage extends StatefulWidget {
   const InboxNotificationPage({super.key});
@@ -14,6 +17,7 @@ class InboxNotificationPage extends StatefulWidget {
 class _InboxNotificationPageState extends State<InboxNotificationPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late Future<List<Messages>> inboxMessages;
 
   List<NotificationItem> notifications = [
     NotificationItem(
@@ -94,6 +98,13 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    fetchInboxMessages();
+  }
+
+  Future<void> fetchInboxMessages() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final fetchedMessages = await networkService.fetchInboxMessages();
+    
   }
 
   void _showMenuOptions() {

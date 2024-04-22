@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/messages.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/search.dart';
@@ -446,6 +447,29 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<Messages>?> fetchInboxMessages() async {
+  Uri url = Uri.parse('$_baseUrl/message/inbox');
+  final response = await http.get(url, headers: _headers);
+  if (response.statusCode == 403) {
+    refreshToken();
+    return fetchInboxMessages();
+  }
+  if (response.statusCode == 200) {
+    final List<dynamic> responseData = jsonDecode(response.body);
+    List<Messages> inboxMessages = responseData
+        .map((item) => Messages.fromJson(item))
+        .toList();
+    return inboxMessages;
+  } else {
+    return null;
+  }
+  /*if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      return responseData
+          .map((commentJson) => Comments.fromJson(commentJson))
+          .toList();*/
+}
+
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
@@ -512,20 +536,25 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<UserModel> getUserDetails(String username) async {
-    Uri url = Uri.parse('$_baseUrl/user/$username');
-    final response = await http.get(url, headers: _headers);
+  Uri url = Uri.parse('$_baseUrl/user/$username');
+  final response = await http.get(url, headers: _headers);
 
-    if (response.statusCode == 403) {
-      refreshToken();
-      getUserDetails(username);
-    }
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      return UserModel.fromJson(json);
-    } else {
-      throw Exception('Failed to fetch user details');
-    }
+  if (response.statusCode == 403) {
+    refreshToken();
+    getUserDetails(username);
   }
+  print(response.body);
+  print(response.statusCode);
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    return UserModel.fromJson(json);
+  } else {
+    print('Failed to fetch user details');
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    throw Exception('Failed to fetch user details');
+  }
+}
 
   Future<List<SearchComments>> getSearchComment(String comment) async {
     final parameters = {
