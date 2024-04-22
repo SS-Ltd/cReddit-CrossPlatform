@@ -10,10 +10,16 @@ import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:io' show Platform;
 import 'package:logging/logging.dart';
-//import 'package:android_intent_plus/android_intent.dart';
 
+
+/// This widget represents the screen for the "Reset Password Done" page.
+/// It displays a confirmation message and options for the user to resend the reset email or open the email app.
 class ResetPasswordDone extends StatefulWidget {
   String email;
+
+  /// Constructs a [ResetPasswordDone] widget.
+  ///
+  /// The [email] parameter is the email associated with the user's account.
   ResetPasswordDone({required this.email, super.key});
 
   @override
@@ -24,8 +30,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
   ValueNotifier<int> countdown = ValueNotifier<int>(5);
   Timer? timer;
   ValueNotifier<bool> canResend = ValueNotifier(false);
-  //bool canResend2 = false;
 
+  /// Starts the countdown timer.
   void startCountdown() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (countdown.value > 1) {
@@ -157,7 +163,7 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
                                           .read<NetworkService>()
                                           .forgotPassword(widget.email);
                                       if (mounted && reset) {
-// Show a message to the user indicating that the email was resent successfully.
+                                        // Show a message to the user indicating that the email was resent successfully.
                                         CustomSnackBar(
                                           context: context,
                                           content: 'Email resent successfully',

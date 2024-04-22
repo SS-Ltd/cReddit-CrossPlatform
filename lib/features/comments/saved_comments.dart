@@ -6,6 +6,7 @@ import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A StatefulWidget that displays a list of saved comments.
 class SavedComments extends StatefulWidget {
   const SavedComments({super.key});
 
@@ -33,6 +34,7 @@ class _SavedCommentsState extends State<SavedComments> {
     super.dispose();
   }
 
+  /// Fetches the saved comments from the network.
   void fetchSavedComments() async {
     if (isLoading) return; // Prevent multiple loads
     setState(() {
@@ -57,6 +59,7 @@ class _SavedCommentsState extends State<SavedComments> {
     }
   }
 
+  /// Callback function for scroll events.
   void _onScroll() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
@@ -65,6 +68,9 @@ class _SavedCommentsState extends State<SavedComments> {
     }
   }
 
+  /// Maps the voting status of a comment to an integer value.
+  ///
+  /// Returns 1 if the comment is upvoted, -1 if it is downvoted, and 0 if it is not voted.
   int mappingVotes(bool isUpvoted, bool isDownvoted) {
     if (isUpvoted) {
       return 1;
@@ -85,23 +91,13 @@ class _SavedCommentsState extends State<SavedComments> {
             itemBuilder: (context, index) {
               if (index < savedComments!.length) {
                 return UserComment(
-                  avatar: savedComments![index].profilePicture,
-                  username: savedComments![index].username,
-                  content: savedComments![index].content,
-                  timestamp: DateTime.parse(savedComments![index].createdAt),
                   photo: savedComments![index].isImage
                       ? File(savedComments![index].content)
                       : null,
-                  contentType: savedComments![index].isImage,
                   imageSource: 0,
-                  commentId: savedComments![index].commentId,
                   hasVoted: mappingVotes(savedComments![index].isUpvoted,
                       savedComments![index].isDownvoted),
-                  isSaved: savedComments![index].isSaved,
-                  netVote: savedComments![index].netVote,
-                  communityName: savedComments![index].communityName!,
-                  postId: savedComments![index].postId!,
-                  title: savedComments![index].title!,
+                  comment: savedComments![index],
                 );
               } else {
                 return const Center(child: CircularProgressIndicator());

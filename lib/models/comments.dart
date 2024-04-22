@@ -8,9 +8,9 @@ class Comments {
   final String commentId;
   final bool isUpvoted;
   final bool isDownvoted;
-  final bool isSaved;
+  bool isSaved;
 
-  final String? communityName;
+  String? communityName;
   final String? postId; //
   final String? title; //
 
@@ -22,9 +22,9 @@ class Comments {
     required this.content,
     required this.createdAt,
     required this.commentId,
-    required this.isUpvoted,
-    required this.isDownvoted,
-    required this.isSaved,
+    this.isUpvoted = false,
+    this.isDownvoted = false,
+    this.isSaved = false,
     this.communityName = '',
     this.postId = '',
     this.title = '',

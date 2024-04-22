@@ -16,7 +16,9 @@ void main() {
         icon: 'https://picsum.photos/seed/sBHDq9/640/480',
         members: 9,
         description:
-            'Absens amplitudo animus atrocitas sui. Modi audeo ocer solitudo verecundia cogo tenus modi vereor. Laborum aetas absum stella tergiversatio.',
+            'Absens amplitudo animus atrocitas sui. Modi audeo ocer solitudo' 
+            ' verecundia cogo tenus modi vereor. Laborum aetas absum stella'
+            ' tergiversatio.',
         isJoined: false,
       ),
       Community(
@@ -24,7 +26,9 @@ void main() {
         icon: 'https://picsum.photos/seed/h2XebzN/640/480',
         members: 8,
         description:
-            'Toties debitis auditor alienus decimus facilis. Dicta acsi aliquid velit adeo tantillus audeo stabilis ratione. Creta unde curatio cohibeo currus chirographum cui appono volubilis.',
+            'Toties debitis auditor alienus decimus facilis. Dicta acsi aliquid'
+            ' velit adeo tantillus audeo stabilis ratione. Creta unde curatio'
+            ' cohibeo currus chirographum cui appono volubilis.',
         isJoined: false,
       ),
       Community(
@@ -32,7 +36,9 @@ void main() {
         icon: 'https://picsum.photos/seed/fPl2qC/640/480',
         members: 7,
         description:
-            'Acsi appositus caute repellat creber vero certus capto. Architecto adeptio villa admitto utilis. Molestiae abeo soleo crapula volva decimus vulgivagus decens.',
+            'Acsi appositus caute repellat creber vero certus capto. Architecto'
+            ' adeptio villa admitto utilis. Molestiae abeo soleo crapula volva'
+            ' decimus vulgivagus decens.',
         isJoined: false,
       ),
     ];

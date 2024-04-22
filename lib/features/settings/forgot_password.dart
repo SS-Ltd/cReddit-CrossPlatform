@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A widget that displays a dialog for resetting a user's password.
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
 
@@ -104,7 +105,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           ),
           const Padding(
             padding: EdgeInsets.only(top: 20),
-            child: Text('Unfortunatly, if you have never given us your email,'
+            child: Text('Unfortunately, if you have never given us your email,'
                 ' we will not be able to reset your password.'),
           ),
           Row(

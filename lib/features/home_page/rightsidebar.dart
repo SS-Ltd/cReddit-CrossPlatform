@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
-import 'package:reddit_clone/features/comments/reply_comment.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
 import 'package:reddit_clone/features/User/saved.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/models/user.dart';
-import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/User/profile.dart';
-import 'package:reddit_clone/features/User/profile.dart';
 import 'package:reddit_clone/theme/Palette.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
+
+/// This file contains the implementation of the `Rightsidebar` widget.
+///
+/// The `Rightsidebar` widget is a stateful widget that represents the right sidebar of the home page.
+/// It displays a drawer with various account-related options and information.
+///
+/// The `Rightsidebar` widget extends the `StatefulWidget` class and overrides the `createState` method
+/// to create an instance of the `_RightsidebarState` class, which manages the state of the widget.
+///
+/// The `_RightsidebarState` class is a private class that extends the `State` class and manages the state
+/// of the `Rightsidebar` widget. It contains a boolean variable `isOnline` to track the online status
+/// and overrides the `build` method to build the UI of the widget.
+///
+/// The UI of the `Rightsidebar` widget consists of a `Drawer` widget with a dark grey background color.
+/// It contains a column with the following children:
+///   - An image widget displaying an image from the 'assets/hehe.png' file.
+///   - A text button that opens a bottom sheet when pressed.
+///   - The bottom sheet contains a column with account-related options and information.
+///     - The column starts with a text widget displaying the text 'ACCOUNTS'.
+///     - It is followed by a divider widget.
+///     - It contains a row with an image widget displaying the user's profile picture and a text widget
+///       displaying the user's username.
+///     - It also contains a row with an icon button and an icon widget, representing a check mark and a logout button.
+///     - The logout button opens another bottom sheet with logout confirmation options.
+///
+/// This widget requires the `BuildContext` to access the `NetworkService` and `user` information.
 
 class Rightsidebar extends StatefulWidget {
+  /// Creates a `Rightsidebar` widget.
+  ///
+  /// The `key` parameter is used to specify a unique identifier for the widget.
   const Rightsidebar({super.key});
 
   @override
@@ -22,6 +50,11 @@ class Rightsidebar extends StatefulWidget {
   }
 }
 
+/// The state class for the `Rightsidebar` widget.
+///
+/// This class manages the state of the `Rightsidebar` widget.
+/// It contains a boolean variable `isOnline` to track the online status.
+/// It overrides the `build` method to build the UI of the widget.
 class _RightsidebarState extends State<Rightsidebar> {
   bool isOnline = false;
   @override
@@ -46,11 +79,11 @@ class _RightsidebarState extends State<Rightsidebar> {
               alignment: Alignment.center,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                //update this with button
                 child: TextButton.icon(
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
+                      shape: const Border(),
                       builder: (BuildContext context) {
                         return BottomSheet(
                           onClosing: () {},
@@ -58,56 +91,155 @@ class _RightsidebarState extends State<Rightsidebar> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
+                                padding: EdgeInsets.only(left: 15, top: 10),
                                 child: Row(
-                                  children: [Text('Accounts')],
+                                  children: [
+                                    Text(
+                                      'ACCOUNTS',
+                                      style: TextStyle(
+                                        color: Palette.greyColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Divider(color: Colors.grey[800]),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Icon(Icons.person,
-                                          color: Colors.white),
-                                      const SizedBox(width: 12),
-                                      Text(
-                                        'u/${user?.username ?? 'Username'}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                child: Divider(
+                                  color: Colors.grey[800],
+                                  thickness: 0.25,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 14, bottom: 5, right: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          child: Image.network(
+                                            user?.profilePicture ??
+                                                'https://external-preview.redd.it/2ha9O240cGSUZZ0mCk6FYku61NmKUDgoOAJHMCpMjOM.png?auto=webp&s=3decd6c3ec58dc0a850933af089fb3ad12d3a505',
+                                            width: 30,
+                                            height: 30,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      const Icon(
-                                        Icons.check,
-                                        color: Palette.blueJoinColor,
-                                      ),
-                                      IconButton(
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          'u/${user?.username ?? 'Username'}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          Icons.check,
+                                          color: Palette.blueJoinColor,
+                                        ),
+                                        IconButton(
                                           onPressed: () async {
-                                            await context
-                                                .read<NetworkService>()
-                                                .logout();
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoginScreen(),
-                                              ),
+                                            showModalBottomSheet(
+                                              context: context,
+                                              shape: const Border(),
+                                              builder: (BuildContext context) {
+                                                return Wrap(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15,
+                                                              top: 10),
+                                                      child: Text(
+                                                        'u/${user?.username ?? 'Username'}',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Palette.greyColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10),
+                                                      child: Divider(
+                                                        color: Colors.grey[800],
+                                                        thickness: 0.25,
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                        Icons.login_outlined,
+                                                        color: Color.fromARGB(
+                                                            255, 249, 25, 25),
+                                                      ),
+                                                      title: const Text(
+                                                        'Logout',
+                                                        style: TextStyle(
+                                                          color: Color.fromARGB(
+                                                              255, 249, 25, 25),
+                                                        ),
+                                                      ),
+                                                      onTap: () async {
+                                                        await context
+                                                            .read<
+                                                                NetworkService>()
+                                                            .logout();
+                                                        Navigator
+                                                            .pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                const LoginScreen(),
+                                                          ),
+                                                          (Route<dynamic>
+                                                                  route) =>
+                                                              false,
+                                                        );
+                                                      },
+                                                    ),
+                                                    ListTile(
+                                                      title: const Center(
+                                                        child: Text('Cancel',
+                                                            style: TextStyle(
+                                                                color: Palette
+                                                                    .greyColor)),
+                                                      ),
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
                                           },
-                                          icon: const Icon(Icons.login))
-                                    ],
-                                  )
-                                ],
+                                          icon:
+                                              const Icon(Icons.login_outlined),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -239,18 +371,22 @@ class _RightsidebarState extends State<Rightsidebar> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Profile(
-                              userName: myUser.username,
-                              profileName: myUser.username,
-                              displayName: myUser.displayName,
-                              profilePicture: myUser.profilePicture,
-                              followerCount: myUser.followers,
-                              about: myUser.about ?? '',
-                              cakeDay: myUser.cakeDay.toString(),
-                              bannerPicture: myUser.banner ?? '',
-                              isOwnProfile: true,
-                            ),
-                          ),
+                              builder: (context) => CustomNavigationBar(
+                                    isProfile: true,
+                                    myuser: myUser,
+                                  )
+                              // Profile(
+                              //   userName: myUser.username,
+                              //   profileName: myUser.username,
+                              //   displayName: myUser.displayName,
+                              //   profilePicture: myUser.profilePicture,
+                              //   followerCount: myUser.followers,
+                              //   about: myUser.about ?? '',
+                              //   cakeDay: myUser.cakeDay.toString(),
+                              //   bannerPicture: myUser.banner ?? '',
+                              //   isOwnProfile: true,
+                              // ),
+                              ),
                         );
                       }),
                   _buildListTile(
@@ -299,20 +435,20 @@ class _RightsidebarState extends State<Rightsidebar> {
                       );
                     },
                   ),
-                  _buildListTile(
-                    icon: Icons.settings,
-                    text: 'Settings',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Settings(),
-                        ),
-                      );
-                    },
-                  ),
                 ],
               ),
+            ),
+            _buildListTile(
+              icon: Icons.settings,
+              text: 'Settings',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Settings(),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -327,20 +463,5 @@ class _RightsidebarState extends State<Rightsidebar> {
       title: Text(text, style: const TextStyle(color: Colors.white)),
       onTap: onTap,
     );
-  }
-}
-
-String formatTimestamp(DateTime timestamp) {
-  final now = DateTime.now();
-  final difference = now.difference(timestamp);
-
-  if (difference.inDays > 0) {
-    return '${difference.inDays}d';
-  } else if (difference.inHours > 0) {
-    return '${difference.inHours}h';
-  } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
-  } else {
-    return '${difference.inSeconds}s';
   }
 }

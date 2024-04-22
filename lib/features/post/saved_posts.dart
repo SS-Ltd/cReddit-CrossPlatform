@@ -4,6 +4,21 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// This widget displays a list of saved posts.
+///
+/// The [SavedPosts] widget is a stateful widget that fetches and displays a list of saved posts.
+/// It uses a [ScrollController] to detect when the user has scrolled to the end of the list and
+/// fetches more posts accordingly. The list of posts is displayed using a [ListView.builder],
+/// and a [RefreshIndicator] is added to allow the user to refresh the list by pulling down.
+///
+/// The [SavedPosts] widget requires a [BuildContext] to access the [NetworkService] and
+/// fetch the saved posts. It also requires a [Key] for widget identification.
+///
+/// Example usage:
+///
+/// ```dart
+/// SavedPosts(key: UniqueKey())
+/// ```
 class SavedPosts extends StatefulWidget {
   const SavedPosts({Key? key}) : super(key: key);
 
@@ -30,6 +45,13 @@ class _SavedPostsState extends State<SavedPosts> {
     super.dispose();
   }
 
+  /// Fetches the saved posts from the network.
+  ///
+  /// This method is called when the widget is initialized and when the user scrolls to the end
+  /// of the list. It sets the [isLoading] flag to true, fetches the saved posts using the
+  /// [NetworkService], and updates the state accordingly. If new posts are fetched, they are
+  /// added to the [posts] list and the [page] counter is incremented. If no new posts are
+  /// fetched, the [isLoading] flag is set to false.
   Future<void> _fetchSavedPosts() async {
     if (!isLoading) {
       setState(() {
@@ -51,6 +73,11 @@ class _SavedPostsState extends State<SavedPosts> {
     }
   }
 
+  /// Callback function for scroll events.
+  ///
+  /// This method is called when the user scrolls the list. It checks if the user has scrolled
+  /// to the end of the list and if the [isLoading] flag is false. If both conditions are met,
+  /// it calls the [_fetchSavedPosts] method to fetch more posts.
   void _onScroll() {
     if (_scrollController.position.atEdge &&
         _scrollController.position.pixels != 0 &&
@@ -83,6 +110,12 @@ class _SavedPostsState extends State<SavedPosts> {
     );
   }
 
+  /// Builds the widget for a single post.
+  ///
+  /// This method is called by the [ListView.builder] to build the widget for each post in the
+  /// [posts] list. It takes a [PostModel] as a parameter and returns a [Column] widget that
+  /// displays the post information. The [Post] widget is used to display the post details,
+  /// and a [Divider] widget is added below each post.
   Widget postWidget(PostModel postModel) {
     return Column(
       children: [

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
+import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
@@ -8,6 +9,38 @@ import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 
+/// This file contains the [CommentPage] widget, which is a stateful widget that
+/// displays a page for viewing and interacting with comments on a post.
+/// The widget takes in several required parameters including [postId], [postComment],
+/// [postTitle], and [username].
+///
+/// The [CommentPage] widget has a state, [_CommentPageState],
+/// which manages the state of the widget.
+/// It initializes a [TextEditingController] for handling user input,
+/// and maintains a list of comments,
+/// [_comments], a scroll controller, [_scrollController],
+/// and lists of global keys and
+/// comment positions for tracking comment positions on the page.
+///
+/// The [CommentPage] widget fetches comments for the specified post using the
+/// [fetchComments] method, which makes a network request to retrieve.
+/// The fetched comments are then mapped to [UserComment]
+///  objects and stored in the [_comments] list.
+///
+/// The widget also provides methods for mapping votes,
+/// calculating comment positions, and scrolling to the next comment.
+///
+/// The [CommentPage] widget builds a [Scaffold] with an [AppBar],
+/// a [ListView.builder] for displaying the comments,
+/// and a bottom navigation bar with a text input field for adding new comments.
+/// The comments are displayed using the [UserComment] widget,
+/// which takes in a [GlobalKey] to track its position on the page.
+///
+/// The widget also includes a [PopupMenuButton] in the app bar for displaying
+/// additional options, such as sharing and subscribing to the post.
+///
+/// Overall, the [CommentPage] widget provides a user interface for viewing
+/// and interacting with comments on a post.
 class CommentPage extends StatefulWidget {
   final String postId;
   final Post postComment;
@@ -32,8 +65,6 @@ class _CommentPageState extends State<CommentPage> {
   final ScrollController _scrollController = ScrollController();
   final List<GlobalKey> _keys = [];
   final List<double> _commentPositions = [];
-
-  //List<Comments> comments = [];
 
   @override
   void initState() {
@@ -64,20 +95,14 @@ class _CommentPageState extends State<CommentPage> {
     if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
+        fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
-                  avatar: comment.profilePicture,
-                  username: comment.username,
-                  content: comment.content,
-                  timestamp: DateTime.parse(comment.createdAt),
                   photo: comment.isImage ? File(comment.content) : null,
-                  contentType: comment.isImage,
-                  netVote: comment.netVote,
                   imageSource: 0,
-                  commentId: comment.commentId,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
-                  isSaved: comment.isSaved,
+                  comment: comment,
                 ))
             .toList();
       });
@@ -156,18 +181,11 @@ class _CommentPageState extends State<CommentPage> {
               } else if (index - 1 < _keys.length) {
                 return UserComment(
                   key: _keys[index - 1],
-                  avatar: _comments[index - 1].avatar,
-                  username: _comments[index - 1].username,
-                  content: _comments[index - 1].content,
-                  timestamp: _comments[index - 1].timestamp,
                   photo: _comments[index - 1].photo,
-                  contentType: _comments[index - 1].contentType,
-                  netVote: _comments[index - 1].netVote,
                   imageSource:
                       _comments[index - 1].imageSource, //may need to be fixed
-                  commentId: _comments[index - 1].commentId,
                   hasVoted: _comments[index - 1].hasVoted,
-                  isSaved: _comments[index - 1].isSaved,
+                  comment: _comments[index - 1].comment,
                 );
               } else {
                 return const SizedBox.shrink();
@@ -194,41 +212,44 @@ class _CommentPageState extends State<CommentPage> {
                             postId: widget.postId,
                             commentContent: widget.postTitle)),
                   );
-
                   if (result != null) {
                     final bool contentType = result['contentType'];
-
                     setState(() {
                       UserComment? newComment;
                       if (contentType == false) {
                         final String commentText = result['content'];
                         newComment = UserComment(
-                          avatar: result['user'].profilePicture,
-                          username: result['user'].username,
-                          content: commentText,
-                          timestamp: DateTime.now(),
                           photo: null,
-                          contentType: contentType,
                           imageSource: 2,
-                          commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: false,
+                          comment: Comments(
+                            profilePicture: result['user'].profilePicture,
+                            username: result['user'].username,
+                            isImage: contentType,
+                            netVote: 1,
+                            content: commentText,
+                            createdAt: DateTime.now().toString(),
+                            commentId: result['commentId'],
+                          ),
                         );
                       } else if (contentType == true) {
                         final File commentImage = result['content'];
                         newComment = UserComment(
-                          avatar: result['user'].profilePicture,
-                          username: result['user'].username,
-                          content: '',
-                          timestamp: DateTime.now(),
                           photo: commentImage,
-                          contentType: contentType,
                           imageSource: 1,
-                          commentId: result['commentId'],
                           hasVoted: 1,
-                          isSaved: false,
+                          comment: Comments(
+                            profilePicture: result['user'].profilePicture,
+                            username: result['user'].username,
+                            isImage: contentType,
+                            netVote: 1,
+                            content: '',
+                            createdAt: DateTime.now().toString(),
+                            commentId: result['commentId'],
+                          ),
                         );
                       }
+
                       if (newComment != null) {
                         // Insert the new comment at the beginning of the list
                         _comments.insert(0, newComment);
@@ -239,19 +260,23 @@ class _CommentPageState extends State<CommentPage> {
                     });
                   }
                 },
-                child: TextFormField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    hintText: 'Add a comment...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide.none,
+                child: Semantics(
+                  identifier: 'Add a comment',
+                  label: 'Add a comment',
+                  child: TextFormField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'Add a comment...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Color.fromARGB(255, 40, 39, 39),
+                      contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                     ),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 40, 39, 39),
-                    contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    enabled: false, // Disable the TextFormField
                   ),
-                  enabled: false, // Disable the TextFormField
                 ),
               ),
             ),

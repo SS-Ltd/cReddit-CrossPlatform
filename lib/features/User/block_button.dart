@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
+/// A button widget that can be used to block a user.
 class BlockButton extends StatelessWidget {
   final bool isCircular;
   final VoidCallback onPressed;
 
+  /// Creates a [BlockButton].
+  ///
+  /// The [isCircular] parameter determines whether the button should be circular or not.
+  /// The [onPressed] parameter is a callback function that will be called when the button is pressed.
   const BlockButton({
     super.key,
     required this.isCircular,
     required this.onPressed,
   });
 
+  /// Shows a snackbar with a block message.
   void _showBlockSnackbar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -30,6 +36,7 @@ class BlockButton extends StatelessWidget {
         : _buildBarButton(context);
   }
 
+  /// Builds a circular button.
   Widget _buildCircularButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
@@ -47,6 +54,7 @@ class BlockButton extends StatelessWidget {
     );
   }
 
+  /// Builds a bar button.
   Widget _buildBarButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
@@ -77,8 +85,9 @@ class BlockButton extends StatelessWidget {
   }
 }
 
+/// A dialog widget that confirms the blocking action.
 class BlockConfirmationDialog extends StatelessWidget {
-
+  /// Creates a [BlockConfirmationDialog].
   const BlockConfirmationDialog({super.key});
 
   @override
@@ -130,6 +139,7 @@ class BlockConfirmationDialog extends StatelessWidget {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
+
                   _showBlockSnackbar(context);
                   Navigator.of(context).pop();
                 },
@@ -151,12 +161,19 @@ class BlockConfirmationDialog extends StatelessWidget {
   }
 }
 
+/// A snackbar widget that slides in from the bottom.
 class SlideInSnackBar extends StatefulWidget {
   final String content;
   final Duration duration;
   final Color backgroundColor;
   final Color textColor;
 
+  /// Creates a [SlideInSnackBar].
+  ///
+  /// The [content] parameter is the text content of the snackbar.
+  /// The [duration] parameter is the duration for which the snackbar will be displayed.
+  /// The [backgroundColor] parameter is the background color of the snackbar.
+  /// The [textColor] parameter is the text color of the snackbar.
   const SlideInSnackBar({
     super.key,
     required this.content,

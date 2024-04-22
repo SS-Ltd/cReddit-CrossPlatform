@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class SwitchButton extends StatefulWidget {
   SwitchButton(
@@ -10,7 +11,7 @@ class SwitchButton extends StatefulWidget {
 
   final String buttonText;
   final IconData buttonicon;
-  final VoidCallback onPressed;
+  final ValueChanged<bool> onPressed;
   bool switchvalue;
 
   @override
@@ -22,11 +23,18 @@ class SwitchButton extends StatefulWidget {
 class _SwitchButtonState extends State<SwitchButton> {
   bool _switchValue = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _switchValue = widget.switchvalue;
+  }
+
   void _onSwitchChanged(bool value) {
     setState(() {
       _switchValue = value;
       widget.switchvalue = _switchValue;
     });
+    widget.onPressed(widget.switchvalue);
   }
 
   @override
@@ -40,27 +48,30 @@ class _SwitchButtonState extends State<SwitchButton> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextButton(
-                onPressed: () {
-                  setState(() {
-                    _switchValue = !_switchValue;
-                    widget.switchvalue = _switchValue;
-                  });
-                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0.0),
+                  onPressed: () {
+                    setState(() {
+                      _switchValue = !_switchValue;
+                      widget.switchvalue = _switchValue;
+                    });
+                    widget.onPressed(widget.switchvalue);
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
                     ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(widget.buttonicon),
-                    const SizedBox(width: 10),
-                    Text(widget.buttonText),
-                  ],
-                )
-              ),
+                  child: Row(
+                    children: [
+                      Icon(widget.buttonicon, color: Palette.whiteColor),
+                      const SizedBox(width: 10),
+                      Text(
+                        widget.buttonText,
+                        style: const TextStyle(color: Palette.whiteColor),
+                      ),
+                    ],
+                  )),
             ],
           ),
           Row(

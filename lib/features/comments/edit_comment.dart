@@ -5,6 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 
+/// A page for editing a comment.
+///
+/// This page allows the user to edit a comment. It provides a text field for
+/// editing the comment content and options for adding or removing an image
+/// associated with the comment. The edited comment can be saved and returned
+/// to the previous page.
 class EditCommentPage extends StatefulWidget {
   final String commentId;
   final String commentContent;
@@ -117,7 +123,6 @@ class _EditCommentPageState extends State<EditCommentPage> {
                       .read<NetworkService>()
                       .editTextComment(widget.commentId, _controller.text);
                   if (edited) {
-                    
                     Navigator.pop(context, {
                       'content': _controller.text,
                       'contentType': widget.contentType,
@@ -140,10 +145,10 @@ class _EditCommentPageState extends State<EditCommentPage> {
                       .editImageComment(widget.commentId, _image!);
                   if (edited) {
                     Navigator.pop(context, {
-                    'content': _image,
-                    'contentType': widget.contentType,
-                    'imageSource': widget.imageSource,
-                  });
+                      'content': _image,
+                      'contentType': widget.contentType,
+                      'imageSource': widget.imageSource,
+                    });
                     CustomSnackBar(
                       context: context,
                       content: 'Comment edited successfully',
@@ -154,7 +159,6 @@ class _EditCommentPageState extends State<EditCommentPage> {
                       content: 'Failed to edit comment',
                     ).show();
                   }
-                  
                 }
               }),
         ],

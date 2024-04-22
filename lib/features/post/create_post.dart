@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
@@ -14,9 +16,15 @@ import 'package:reddit_clone/switch_button.dart';
 //todo; check link validity, test multiple images, add place to show them,
 //add option to scroll them hotizontally
 
+/// This class represents the screen for creating a new post.
+/// It is a stateful widget that allows the user to enter a title, body, and other details for the post.
+/// The user can also choose an image, add tags and flair, and select a community for the post.
 class CreatePost extends StatefulWidget {
+  /// The constructor for the [CreatePost] widget.
+  /// [profile] indicates whether the post is being created from a user's profile or not.
   const CreatePost({super.key, required this.profile});
 
+  /// Indicates whether the post is being created from a user's profile or not.
   final bool profile;
 
   @override
@@ -25,6 +33,8 @@ class CreatePost extends StatefulWidget {
   }
 }
 
+/// The state class for the [CreatePost] widget.
+/// It manages the state of the text controllers, image picker, link insertion, poll insertion, and other UI elements.
 class _CreatePostState extends State<CreatePost> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
@@ -34,10 +44,12 @@ class _CreatePostState extends State<CreatePost> {
   bool _istitleempty = true;
   bool _isbodyempty = true;
   String chosenCommunity = "";
+  bool hascommunity = false;
 
   File? _image;
-  final ImagePicker picker = ImagePicker();
+  final picker = ImagePicker();
   bool _isImagePickerOpen = false;
+  bool _hasImage = false;
 
   final _linkController = TextEditingController();
   bool _insertlink = false;
@@ -48,14 +60,51 @@ class _CreatePostState extends State<CreatePost> {
   String _pollendsin = "2 Day";
 
   bool isspoiler = false;
+  bool isBrand = false;
 
-  Future getImage() async {
-    final image = await picker.pickImage(source: ImageSource.gallery);
+  Subreddit? details;
+
+  Future getSubredditDetails(String subredditName) async {
+    final subredditDetails =
+        await context.read<NetworkService>().getSubredditDetails(subredditName);
     setState(() {
-      if (image != null) {
-        _image = File(image.path);
-      }
+      details = subredditDetails;
     });
+  }
+
+  /// Retrieves an image from the gallery or camera and sets it as the selected image for the post.
+  Future getImage() async {
+    if (_isImagePickerOpen) {
+      return;
+    }
+    _isImagePickerOpen = true;
+
+    // Show a dialog to let the user choose between the gallery and the camera
+    final source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Choose image source'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Gallery'),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery),
+          ),
+          TextButton(
+            child: const Text('Camera'),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+        ],
+      ),
+    );
+    if (source != null) {
+      final pickedFile = await picker.pickImage(source: source);
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+          _hasImage = true;
+        }
+      });
+    }
     _isImagePickerOpen = false;
   }
 
@@ -77,7 +126,9 @@ class _CreatePostState extends State<CreatePost> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const CustomNavigationBar(),
+                builder: (context) => CustomNavigationBar(
+                  isProfile: false,
+                ),
               ),
             );
           },
@@ -90,7 +141,6 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty
                         ? null
                         : () async {
-                          print(isspoiler);
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
                                 ? await context
@@ -99,33 +149,44 @@ class _CreatePostState extends State<CreatePost> {
                                     .createNewPollPost(
                                         chosenCommunity,
                                         _titleController.text,
-                                        'ay habal',
+                                        _bodyController.text,
                                         _optionControllers
                                             .where((controller) =>
                                                 controller.text.isNotEmpty)
                                             .map(
                                                 (controller) => controller.text)
                                             .toList(),
-                                        '4-15-2024', //month-day-year
+                                        '4-30-2024', //month-day-year
                                         false,
-                                        false)
-                                : await context
-                                    //text or link post
-                                    .read<NetworkService>()
-                                    .createNewTextOrLinkPost(
-                                        type,
-                                        chosenCommunity,
-                                        _titleController.text,
-                                        _bodyController.text,
-                                        false,
-                                        false);
+                                        isspoiler)
+                                : (_hasImage)
+                                    ? await context
+                                        //image post
+                                        .read<NetworkService>()
+                                        .createNewImagePost(
+                                            chosenCommunity,
+                                            _titleController.text,
+                                            _image!,
+                                            false,
+                                            isspoiler)
+                                    : await context
+                                        //text or link post
+                                        .read<NetworkService>()
+                                        .createNewTextOrLinkPost(
+                                            type,
+                                            chosenCommunity,
+                                            _titleController.text,
+                                            _bodyController.text,
+                                            false,
+                                            isspoiler);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CustomNavigationBar(),
+                                  builder: (context) => CustomNavigationBar(
+                                    isProfile: false,
+                                  ),
                                 ),
                               );
                             }
@@ -145,21 +206,75 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                               ),
                             );
-                            setState(() {
-                              chosenCommunity = returneddata.toString();
-                            });
+                            setState(
+                              () {
+                                if (returneddata != null) {
+                                  chosenCommunity = returneddata.toString();
+                                  hascommunity = true;
+                                  getSubredditDetails(chosenCommunity);
+                                }
+                              },
+                            );
                           },
                     //in this case we will go to choose the community
                     child: const Text('Next')),
           ),
         ],
-        title: const Text(''),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             children: [
+              hascommunity
+                  ? TextButton(
+                      onPressed: () async {
+                        final returneddata = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => CommunityChoice(
+                              chosenCommunity: chosenCommunity,
+                            ),
+                          ),
+                        );
+                        setState(
+                          () {
+                            if (returneddata != null) {
+                              chosenCommunity = returneddata.toString();
+                              hascommunity = true;
+                              getSubredditDetails(chosenCommunity);
+                            }
+                          },
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                    details != null && details!.icon.isNotEmpty
+                                        ? NetworkImage(details!.icon)
+                                        : const NetworkImage(
+                                            'https://picsum.photos/200/300'),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(chosenCommunity),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text("Rules"),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
               TextField(
                 decoration: InputDecoration(
                   labelText: _istitleempty ? 'Title' : '',
@@ -187,30 +302,56 @@ class _CreatePostState extends State<CreatePost> {
                               context: context,
                               builder: (BuildContext context) {
                                 return BottomSheet(
-                                  onClosing: () {
-                                    print(isspoiler);
-                                  },
+                                  onClosing: () {},
                                   builder: (context) => Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Row(
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          const Text('Add tags'),
+                                          Text('Add tags'),
                                           ElevatedButton(
-                                            onPressed: () {},
-                                            child: const Text('Apply'),
+                                            onPressed: null,
+                                            child: Text('Apply'),
                                           ),
                                         ],
                                       ),
+                                      const Text(
+                                        "Universal tags",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
                                       SwitchButton(
-                                          buttonText: 'Spoiler',
-                                          buttonicon: Icons.warning_amber,
-                                          onPressed: () {},
-                                          switchvalue: isspoiler,),
+                                        buttonText: 'Spoiler',
+                                        buttonicon: Icons.warning_amber,
+                                        onPressed: (value) {
+                                          setState(() {
+                                            isspoiler = value;
+                                          });
+                                        },
+                                        switchvalue: isspoiler,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      SwitchButton(
+                                        buttonText: 'Brand affiliate',
+                                        buttonicon: Icons.warning,
+                                        onPressed: (value) {
+                                          setState(() {
+                                            isBrand = value;
+                                          });
+                                        },
+                                        switchvalue: isBrand,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
                                     ],
                                   ),
                                 );

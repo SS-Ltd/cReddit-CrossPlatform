@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/community/rules_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
+/// This file contains the implementation of the [SubRedditPage] widget.
+/// The [SubRedditPage] widget displays a subreddit page with posts, subreddit information, and sorting options.
+/// It fetches subreddit details and posts from a network service and renders them in a custom scroll view.
+/// The user can scroll through the posts, load more posts, and change the sorting options.
+/// The [SubRedditPage] widget is a stateful widget that manages the loading state, pagination, and sorting state.
+/// It also handles user interactions such as tapping on sorting options and post widgets.
+/// The widget uses various other widgets such as [AppBar], [CustomScrollView], [SliverToBoxAdapter], [SliverList], [ListTile], [Icon], [Text], [CircleAvatar], and [Container] to build the UI.
+/// The widget relies on a network service provided by the [Provider] package to fetch subreddit details and posts.
+/// The subreddit details include the subreddit icon, banner, description, number of members, rules, and moderators.
+/// The posts are fetched in batches using pagination and sorted based on the selected sorting option.
+/// Each post is rendered using the [Post] widget, which displays the post's community name, username, title, type, profile picture, content, comment count, share count, timestamp, votes, and voting state.
+/// The widget also includes sorting options, which allow the user to change the sorting order of the posts.
+/// The sorting options include 'Hot', 'New', and 'Top', and are displayed in a modal bottom sheet when tapped.
+/// The widget updates the UI dynamically when the sorting option is changed or when new posts are loaded.
+/// The widget also includes subreddit information, such as the subreddit name, number of members, and online members.
+/// The subreddit information is displayed in a container with a dark background color.
+/// The subreddit icon is displayed as a circle avatar, and the subreddit banner is displayed as a background image in the app bar.
+/// The widget also includes loading indicators to indicate when more posts are being loaded.
+/// The widget uses a scroll controller to listen for scroll events and load more posts when the user reaches the end of the scroll view.
+/// The widget manages the loading state, pagination, and sorting state using state variables and the [setState] method.
+/// The widget also disposes of the scroll controller when it is no longer needed to prevent memory leaks.
 class SubRedditPage extends StatefulWidget {
   final String? subredditName;
 
@@ -14,15 +36,20 @@ class SubRedditPage extends StatefulWidget {
   State<SubRedditPage> createState() => _SubRedditPageState();
 }
 
+/// The state class for the [SubRedditPage] widget.
+/// It manages the loading state, pagination, and sorting state of the subreddit page.
+/// It also handles user interactions and fetches subreddit details and posts from a network service.
 class _SubRedditPageState extends State<SubRedditPage> {
-  bool isJoined = false;
+  late final ValueNotifier<bool> isJoined;
+  Future<bool>? _future;
+  bool isMember = false;
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
   List<PostModel> subredditPosts = [];
   int page = 1;
-  bool hasMore =
-      true; // to track if more items are available to prevent unnecessary requests
+  bool hasMore = true; // to track if more items are available to
+  // prevent unnecessary requests
   bool isLoading = false; // to track loading state
   final ScrollController _scrollController = ScrollController();
 
@@ -35,6 +62,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   @override
   void initState() {
     super.initState();
+    isJoined = ValueNotifier<bool>(false);
     _scrollController.addListener(_onScroll);
     fetchSubredditDetails();
     fetchPosts();
@@ -44,6 +72,23 @@ class _SubRedditPageState extends State<SubRedditPage> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<bool> joinOrDisjoinSubreddit() async {
+    bool result;
+    if (!isJoined.value) {
+      result = await context
+          .read<NetworkService>()
+          .joinSubReddit(widget.subredditName!);
+    } else {
+      result = await context
+          .read<NetworkService>()
+          .disJoinSubReddit(widget.subredditName!);
+    }
+    if (mounted && result) {
+      isJoined.value = !isJoined.value;
+    }
+    return result;
   }
 
   void _onScroll() {
@@ -56,8 +101,9 @@ class _SubRedditPageState extends State<SubRedditPage> {
   }
 
   Future<void> fetchPosts() async {
-    if (isLoading || !hasMore)
+    if (isLoading || !hasMore) {
       return; // Exit if already loading or no more posts to load
+    }
 
     if (mounted) {
       setState(() {
@@ -95,22 +141,41 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   Future<void> fetchSubredditDetails() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
-    for (var subreddit in networkService.user?.recentlyVisited ?? {}) {
-      print(subreddit.name);
-    }
+    for (var subreddit in networkService.user?.recentlyVisited ?? {}) {}
     final details =
         await networkService.getSubredditDetails(widget.subredditName);
     if (details != null) {
-      networkService.user?.recentlyVisited.add(details);
-      setState(() {
-        print(details.icon);
-        _subredditIcon = details.icon;
-        _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
-        //  _subredditDescription = details['description'];
-        _subredditMembers = details.members;
-        _subredditRules = details.rules;
-        _subredditModerators = details.moderators;
-      });
+      if (details.isNSFW) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('NSFW Content'),
+            content: Text(
+                'This subreddit contains NSFW content and cannot be viewed.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(); // Go back to the previous page
+                },
+              ),
+            ],
+          ),
+        );
+      } else {
+        networkService.user?.recentlyVisited.add(details);
+        setState(() {
+          isMember = details.isMember;
+          isJoined.value = isMember;
+          _subredditIcon = details.icon;
+          _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
+          _subredditMembers = details.members;
+          _subredditRules = details.rules;
+          _subredditModerators = details.moderators;
+          _subredditDescription = details.description!;
+        });
+      }
     }
   }
 
@@ -147,16 +212,16 @@ class _SubRedditPageState extends State<SubRedditPage> {
                 if (index < subredditPosts.length) {
                   return postWidget(subredditPosts[index]);
                 } else {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32.0),
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }
               },
               childCount: hasMore
                   ? subredditPosts.length + 1
-                  : subredditPosts
-                      .length, // Add extra space for a loading indicator if more items are coming
+                  : subredditPosts.length, // Add extra space ->
+              //loading indicator if more items are coming
             ),
           ),
         ],
@@ -260,7 +325,6 @@ class _SubRedditPageState extends State<SubRedditPage> {
   }
 
   Widget _subredditInfo() {
-    print('Subreddit Icon URL: $_subredditIcon');
     return Container(
       padding: const EdgeInsets.all(10),
       color: const Color.fromRGBO(27, 27, 27, 1),
@@ -308,26 +372,83 @@ class _SubRedditPageState extends State<SubRedditPage> {
                   ],
                 ),
               ),
-              OutlinedButton(
-                onPressed: () {
-                  setState(() {
-                    isJoined = !isJoined;
-                  });
+              ValueListenableBuilder<bool>(
+                valueListenable: isJoined,
+                builder: (context, value, child) {
+                  return SizedBox(
+                    height: 33,
+                    child: ButtonTheme(
+                      minWidth: 0,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _future = joinOrDisjoinSubreddit();
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          backgroundColor: value
+                              ? Palette.transparent
+                              : Palette.blueJoinColor,
+                          foregroundColor: value
+                              ? Palette.blueJoinedColor
+                              : Palette.whiteColor,
+                          side: value
+                              ? const BorderSide(
+                                  color: Palette.blueJoinedColor, width: 2.0)
+                              : BorderSide.none,
+                          padding: EdgeInsets.zero, // Add this line
+                        ),
+                        child: FutureBuilder<bool>(
+                          future: _future,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Palette.blueJoinedColor),
+                                ),
+                              );
+                            } else {
+                              return Text(isJoined.value ? 'Joined' : 'Join');
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  );
                 },
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.blue),
-                ),
-                child: Text(isJoined ? 'Joined' : 'Join',
-                    style: const TextStyle(color: Colors.blue)),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Welcome to the official subreddit of the osama.'
-            ' This is a place for all things osama.',
-            //to be replaced with description when its done in backend
+          Text(
+            _subredditDescription,
             style: TextStyle(color: Colors.white),
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              child: Text('See more', style: TextStyle(color: Colors.blue)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RulesPage(
+                      rules: _subredditRules,
+                      description: _subredditDescription,
+                      subredditName: widget.subredditName ?? '',
+                      bannerURL: _subredditBanner,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),

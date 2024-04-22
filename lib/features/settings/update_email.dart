@@ -4,6 +4,7 @@ import 'package:reddit_clone/features/settings/forgot_password.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 
+/// A widget that allows the user to update their email address.
 class UpdateEmail extends StatefulWidget {
   const UpdateEmail({super.key});
 

@@ -3,6 +3,7 @@ import 'package:reddit_clone/features/settings/forgot_password.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 
+/// A widget that allows the user to change their password.
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
 

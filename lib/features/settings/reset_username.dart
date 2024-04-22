@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
+/// A widget that displays an alert dialog for resetting the username.
 class ResetUsername extends StatefulWidget {
   const ResetUsername({super.key});
 
@@ -60,7 +61,7 @@ class _ResetUsernameState extends State<ResetUsername> {
           ),
           const Padding(
             padding: EdgeInsets.only(top: 20),
-            child: Text('Unfortunatly, if you have never given us your email,'
+            child: Text('Unfortunately, if you have never given us your email,'
                 ' we will not be able to reset your password.'),
           ),
           Row(
@@ -106,7 +107,7 @@ class _ResetUsernameState extends State<ResetUsername> {
                           await context.read<NetworkService>().resetusername(
                                 _emailController.text,
                               );
-                              print(changeresponse);
+                      print(changeresponse);
                     }
                     Navigator.pop(context);
                   },
