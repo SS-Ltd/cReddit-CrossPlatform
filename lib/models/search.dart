@@ -60,7 +60,7 @@ class SearchPosts {
   final String id;
   final String type;
   final String username;
-  final String communityName;
+  final String? communityName;
   final String profilePicture;
   final int netVote;
   final int commentCount;
@@ -74,7 +74,7 @@ class SearchPosts {
       {required this.id,
       required this.type,
       required this.username,
-      required this.communityName,
+      this.communityName = '',
       required this.profilePicture,
       required this.netVote,
       required this.commentCount,

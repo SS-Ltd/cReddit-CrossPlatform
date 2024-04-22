@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -73,7 +74,14 @@ class _HomeSearchState extends State<HomeSearch>
               });
               commentsResults =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchComment(value);
+                      .getSearchComments(value);
+              postsResults =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .getSearchPosts(value);
+                      
+              print("Posts");
+              print(postsResults);
+              print('Comments');
               print(commentsResults);
             },
             onTap: () {
@@ -189,7 +197,13 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: postsResults.length,
                           itemBuilder: (context, index) {
-                            return ListTile();
+                            return 
+                            Column(
+                              children: [
+                                PostTile(post: postsResults[index]),
+                                const Divider(thickness: 1,),
+                              ],
+                            );
                           },
                         ),
                         //Communities

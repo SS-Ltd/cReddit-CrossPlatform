@@ -527,18 +527,17 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchComments>> getSearchComment(String comment) async {
-    final parameters = {
-      'query' : comment
-    };
-    Uri url = Uri.parse('$_baseUrl/search/comments').replace(queryParameters: parameters);
+  Future<List<SearchComments>> getSearchComments(String comment) async {
+    final parameters = {'query': comment};
+    Uri url = Uri.parse('$_baseUrl/search/comments')
+        .replace(queryParameters: parameters);
 
     print(parameters);
     final response = await http.get(url, headers: _headers);
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchComment(comment);
+      return getSearchComments(comment);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
@@ -550,11 +549,10 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-    Future<List<SearchPosts>> getSearchPosts(String post) async {
-    final parameters = {
-      'query' : post
-    };
-    Uri url = Uri.parse('$_baseUrl/search/posts').replace(queryParameters: parameters);
+  Future<List<SearchPosts>> getSearchPosts(String post) async {
+    final parameters = {'query': post};
+    Uri url = Uri.parse('$_baseUrl/search/posts')
+        .replace(queryParameters: parameters);
 
     print(parameters);
     final response = await http.get(url, headers: _headers);
@@ -573,11 +571,10 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-      Future<List<SearchCommunities>> getSearchCommunities(String community) async {
-    final parameters = {
-      'query' : community
-    };
-    Uri url = Uri.parse('$_baseUrl/search/communities').replace(queryParameters: parameters);
+  Future<List<SearchCommunities>> getSearchCommunities(String community) async {
+    final parameters = {'query': community};
+    Uri url = Uri.parse('$_baseUrl/search/communities')
+        .replace(queryParameters: parameters);
 
     print(parameters);
     final response = await http.get(url, headers: _headers);
