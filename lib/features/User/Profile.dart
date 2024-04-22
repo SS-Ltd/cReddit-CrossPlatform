@@ -182,7 +182,7 @@ class _ProfileState extends State<Profile> {
                   context,
                   MaterialPageRoute(
                     fullscreenDialog: true,
-                    builder: (context) => ProfileSearch(displayName: widget.displayName,),
+                    builder: (context) => ProfileSearch(displayName: widget.displayName, username: widget.userName,),
                   ),
                 );
               },
@@ -483,7 +483,7 @@ class _ProfileState extends State<Profile> {
               context,
               MaterialPageRoute(
                 fullscreenDialog: true,
-                builder: (context) => ProfileSearch(displayName: widget.displayName,),
+                builder: (context) => ProfileSearch(displayName: widget.displayName, username: widget.userName,),
               ),
             );
           },

@@ -81,10 +81,10 @@ class _HomeSearchState extends State<HomeSearch>
               });
               commentsResults =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchComments(value);
+                      .getSearchComments(value, '');
               postsResults =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchPosts(value);
+                      .getSearchPosts(value, '');
               communitiesResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchCommunities(value);

@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 class ProfileSearch extends StatefulWidget {
-  const ProfileSearch({super.key, required this.displayName});
+  const ProfileSearch({super.key, required this.displayName, required this.username});
 
   final String displayName;
-
+  final String username;
   @override
   State<ProfileSearch> createState() {
     return _ProfileSearchState();
@@ -68,10 +68,10 @@ class _ProfileSearchState extends State<ProfileSearch>
           onChanged: (value) async {
             commentsResults =
                 await Provider.of<NetworkService>(context, listen: false)
-                    .getSearchComments(value);
+                    .getSearchComments(value, widget.username);
             postsResults =
                 await Provider.of<NetworkService>(context, listen: false)
-                    .getSearchPosts(value);
+                    .getSearchPosts(value, widget.username);
           },
           onTap: () {},
         ),
@@ -89,7 +89,7 @@ class _ProfileSearchState extends State<ProfileSearch>
                 ],
               ),
       ),
-      body: Column(
+      body: isSearching ? Column() : Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 10, top: 10),
