@@ -87,17 +87,17 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       channelInfo: [
         {
           'name': 'Channel One',
-          'description': 'This is channel one',
+          'description': 'Wholesome & Heartwarming',
           'profilePic': 'https://picsum.photos/202'
         },
         {
           'name': 'Channel Two',
-          'description': 'This is channel two',
+          'description': 'Wholesome & Heartwarming',
           'profilePic': 'https://picsum.photos/203'
         },
         {
           'name': 'Channel Three',
-          'description': 'This is channel three',
+          'description': 'Wholesome & Heartwarming',
           'profilePic': 'https://picsum.photos/204'
         },
       ],

@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       lastType = selectedMenuItem;
       page = 1;
       posts.clear();
-      getPosts(selectedMenuItem);
+      getPosts(selectedMenuItem.toLowerCase());
     }
   }
 

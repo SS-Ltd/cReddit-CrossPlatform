@@ -526,11 +526,9 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<SearchComments>> getSearchComment(String comment) async {
-    final parameters = {
-      'query' : comment
-    };
+    final parameters = {'query': comment};
     Uri url = Uri.parse('$_baseUrl/search/comments?'
-    'query=$comment');
+        'query=$comment');
 
     print(parameters);
     print(url);
@@ -574,11 +572,9 @@ class NetworkService extends ChangeNotifier {
     int limit = 5,
   }) async {
     final url = Uri.parse('$_baseUrl/post/home-feed?'
-        'sort=$sort'
-        '&time=$time'
-        '&page=$page'
-        '&limit=$limit');
-
+        'page=$page'
+        '&limit=$limit'
+        '&sort=$sort');
     final response =
         await http.get(url, headers: {'accept': 'application/json'});
     if (response.statusCode == 403) {

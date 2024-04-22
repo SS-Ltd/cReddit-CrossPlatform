@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:reddit_clone/features/chat/chat_screen.dart';
 import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
@@ -9,15 +10,16 @@ class ChatListScreen extends StatelessWidget {
 
   const ChatListScreen(
       {super.key, required this.chatInfo, required this.channelInfo});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 8, 2, 2),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -27,43 +29,79 @@ class ChatListScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NewPage()),
-                      );
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const NewPage()));
                     },
-                    child: const Text(
-                      'View All',
-                      style: TextStyle(fontSize: 15),
-                    ),
+                    child:
+                        const Text('View All', style: TextStyle(fontSize: 15)),
                   ),
                 ],
               ),
             ),
             SizedBox(
-              height: 80,
+              height: 100, // Increased height for better layout
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: channelInfo.length,
                 itemBuilder: (context, index) {
                   final channel = channelInfo[index];
                   return Container(
-                    width: 360,
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
+                    width: 350, // Adjusted width
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: .4),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 97, 96, 96),
+                          width: 1),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(channel['profilePic']),
-                      ),
-                      title: Text(channel['name'],
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                      subtitle: Text(channel['description'],
-                          style: TextStyle(color: Colors.grey[400])),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 28,
+                          backgroundImage: NetworkImage(channel['profilePic']),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(channel['name'],
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)),
+                              Row(
+                                children: [
+                                  Text(channel['description'],
+                                      style: TextStyle(
+                                          color: Colors.grey[400],
+                                          fontSize: 12)),
+                                  const SizedBox(width: 10),
+                                  const CircleAvatar(
+                                      radius: 10,
+                                      backgroundImage: NetworkImage(
+                                          'https://picsum.photos/200')),
+                                  const CircleAvatar(
+                                      radius: 10,
+                                      backgroundImage: NetworkImage(
+                                          'https://picsum.photos/201')),
+                                  const CircleAvatar(
+                                      radius: 10,
+                                      backgroundImage: NetworkImage(
+                                          'https://picsum.photos/202')),
+                                  const SizedBox(width: 10),
+                                  const SpinKitThreeBounce(
+                                      color: Colors.white, size: 10.0),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -88,8 +126,7 @@ class ChatListScreen extends StatelessWidget {
                     color: Palette.settingsHeading,
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(chat['profilePic']),
-                      ),
+                          backgroundImage: NetworkImage(chat['profilePic'])),
                       title: Text(chat['name'],
                           style: TextStyle(
                               color: isUnread ? Colors.white : Colors.grey[400],
@@ -100,32 +137,29 @@ class ChatListScreen extends StatelessWidget {
                           style: TextStyle(
                               color:
                                   isUnread ? Colors.white : Colors.grey[400])),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
+                      trailing: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
+                          const SizedBox(height: 5),
+                          Text(chat['time'],
+                              style: TextStyle(
+                                  color: Colors.grey[400], fontSize: 12)),
+                          const SizedBox(height: 15),
                           if (isUnread)
                             Container(
                               width: 10,
                               height: 10,
                               decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
+                                  color: Colors.red, shape: BoxShape.circle),
                             ),
-                          const SizedBox(width: 5),
-                          Text(chat['time'],
-                              style: TextStyle(
-                                  color: Colors.grey[400], fontSize: 12)),
                         ],
                       ),
                       onTap: () {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChatScreen(recipientId: chat['id']),
-                          ),
-                        );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ChatScreen(recipientId: chat['id'])));
                       },
                     ),
                   );
