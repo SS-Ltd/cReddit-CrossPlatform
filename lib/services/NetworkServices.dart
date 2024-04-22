@@ -486,8 +486,6 @@ class NetworkService extends ChangeNotifier {
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
-    print("heelpp");
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getSubredditDetails(subredditName);
