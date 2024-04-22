@@ -30,10 +30,17 @@ class _HomeSearchState extends State<HomeSearch>
   String searchQuery = '';
   bool isSearching = true;
   late final TabController _tabController;
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        _selectedIndex = _tabController.index;
+      });
+    });
   }
 
   @override
@@ -84,10 +91,6 @@ class _HomeSearchState extends State<HomeSearch>
               peopleResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchUsers(value);
-              print("Posts");
-              print(postsResults);
-              print('Comments');
-              print(commentsResults);
             },
             onTap: () {
               setState(() {
@@ -156,7 +159,7 @@ class _HomeSearchState extends State<HomeSearch>
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 10, top: 10),
-                    child: Row(
+                    child: (_selectedIndex == 0 || _selectedIndex == 2) ? Row(
                       children: [
                         SizedBox(
                           width: 90,
@@ -186,13 +189,13 @@ class _HomeSearchState extends State<HomeSearch>
                         SizedBox(
                           width: 90,
                           height: 35,
-                          child: ElevatedButton(
+                          child: _selectedIndex == 0 ? ElevatedButton(
                             onPressed: () {},
                             child: const Text("Time"),
-                          ),
+                          ) : null,
                         ),
                       ],
-                    ),
+                    ) : null,
                   ),
                   Expanded(
                     child: TabBarView(
@@ -230,15 +233,22 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: peopleResults.length,
                           itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    peopleResults[index].profilePicture),
-                              ),
-                              title:
-                                  Text('u/ ${peopleResults[index].username}'),
-                              subtitle: Text('sd'),
-                              trailing: Text('sd'),
+                            return Column(
+                              children: [
+                                ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        peopleResults[index].profilePicture),
+                                  ),
+                                  title: Text(
+                                      'u/${peopleResults[index].username}'),
+                                  subtitle: const Text('cake'),
+                                  trailing: const Text('follow button'),
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                              ],
                             );
                           },
                         ),

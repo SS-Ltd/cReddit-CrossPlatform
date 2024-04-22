@@ -105,16 +105,16 @@ class SearchPosts {
 class SearchUsers {
   final String? id;
   final String username;
-  final String about;
+  final String? about;
   final String profilePicture;
-  final bool isNSFW;
+  final bool? isNSFW;
 
   SearchUsers(
       {this.id = '',
       required this.username,
-      required this.about,
+      this.about = '',
       required this.profilePicture,
-      required this.isNSFW});
+      this.isNSFW = false});
 
   factory SearchUsers.fromJson(Map<String, dynamic> json) {
     return SearchUsers(

@@ -11,7 +11,7 @@ class PostTile extends StatelessWidget {
     bool imageType = post.type == 'Images & Video';
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-      child: Column(
+      child: Column(//think to change this into card
         children: [
           Column(
             children: [

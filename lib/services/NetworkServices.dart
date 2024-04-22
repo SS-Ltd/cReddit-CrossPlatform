@@ -598,6 +598,7 @@ class NetworkService extends ChangeNotifier {
 
     final response = await http.get(url, headers: _headers);
     print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getSearchUsers(user);
