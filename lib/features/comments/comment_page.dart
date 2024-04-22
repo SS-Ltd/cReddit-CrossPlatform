@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
 
 /// This file contains the [CommentPage] widget, which is a stateful widget that
 /// displays a page for viewing and interacting with comments on a post.
@@ -387,7 +386,6 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.report),
             title: const Text('Report'),
             onTap: () async {
-              print(widget.postId);
               bool isReported = await context
                   .read<NetworkService>()
                   .reportPost(widget.postId);
