@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
+import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -159,43 +160,47 @@ class _HomeSearchState extends State<HomeSearch>
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 10, top: 10),
-                    child: (_selectedIndex == 0 || _selectedIndex == 2) ? Row(
-                      children: [
-                        SizedBox(
-                          width: 90,
-                          height: 35,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return BottomSheet(
-                                    onClosing: () {},
-                                    builder: (BuildContext context) {
-                                      return const Column(
-                                        children: [],
-                                      );
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                            child: const Text("Sort"),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          width: 90,
-                          height: 35,
-                          child: _selectedIndex == 0 ? ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Time"),
-                          ) : null,
-                        ),
-                      ],
-                    ) : null,
+                    child: (_selectedIndex == 0 || _selectedIndex == 2)
+                        ? Row(
+                            children: [
+                              SizedBox(
+                                width: 90,
+                                height: 35,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return BottomSheet(
+                                          onClosing: () {},
+                                          builder: (BuildContext context) {
+                                            return const Column(
+                                              children: [],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: const Text("Sort"),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              SizedBox(
+                                width: 90,
+                                height: 35,
+                                child: _selectedIndex == 0
+                                    ? ElevatedButton(
+                                        onPressed: () {},
+                                        child: const Text("Time"),
+                                      )
+                                    : null,
+                              ),
+                            ],
+                          )
+                        : null,
                   ),
                   Expanded(
                     child: TabBarView(
@@ -219,7 +224,19 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: commentsResults.length,
                           itemBuilder: (context, index) {
-                            return ListTile();
+                            Community community = Community(
+                                name: communitiesResults[index].name,
+                                description: communitiesResults[index].description,
+                                members: communitiesResults[index].members,
+                                icon: communitiesResults[index].icon,
+                                isJoined: false);
+                            return const Column(
+                              children: [
+                                Divider(
+                                  thickness: 1,
+                                ),
+                              ],
+                            );
                           },
                         ),
                         //Comments
