@@ -9,6 +9,7 @@ import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/features/search/home_search.dart';
+import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/features/post/create_post.dart';
@@ -56,8 +57,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const HomePage(),
     const CommunityPage(),
     const CreatePost(profile: false),
-    ChatListScreen(
-      chatInfo: const [
+    const ChatListScreen(
+      chatInfo: [
         {
           'id': 'user1',
           'name': 'User One',
@@ -83,7 +84,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           'profilePic': 'https://picsum.photos/201'
         },
       ],
-      channelInfo: const [
+      channelInfo: [
         {
           'name': 'Channel One',
           'description': 'This is channel one',
@@ -215,18 +216,36 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                                   child: const Text('Inbox'),
                                 ),
                   actions: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => const HomeSearch(),
+                    if (_currentIndex == 3)
+                      IconButton(
+                        icon: const Icon(Icons.message),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const NewPage()),
+                          );
+                        },
+                      ),
+                    _currentIndex == 3
+                        ? IconButton(
+                            icon: const Icon(Icons.sort),
+                            onPressed: () {
+                              _showFilterModal(context);
+                            },
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => const HomeSearch(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.search, size: 30.0),
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.search, size: 30.0),
-                    ),
                     IconButton(
                       onPressed: () =>
                           _scaffoldKey.currentState!.openEndDrawer(),
@@ -271,6 +290,51 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               ],
             )
           : null,
+    );
+  }
+
+  void _showFilterModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          child: Wrap(
+            children: <Widget>[
+              const ListTile(
+                title: Text('Filter Chats'),
+              ),
+              const Divider(),
+              CheckboxListTile(
+                title: const Text('Chat Channels'),
+                value: true,
+                onChanged: (bool? newValue) {},
+              ),
+              CheckboxListTile(
+                title: const Text('Group Chats'),
+                value: false,
+                onChanged: (bool? newValue) {},
+              ),
+              CheckboxListTile(
+                title: const Text('Direct Chats'),
+                value: false,
+                onChanged: (bool? newValue) {},
+              ),
+              Center(
+                child: Container(
+                  width: 400,
+                  child: ElevatedButton(
+                    child: const Text('Done'),
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
