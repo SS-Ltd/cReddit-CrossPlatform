@@ -107,14 +107,14 @@ class SearchUsers {
   final String username;
   final String about;
   final String profilePicture;
-  final bool isMod;
+  final bool isNSFW;
 
   SearchUsers(
       {this.id = '',
       required this.username,
       required this.about,
       required this.profilePicture,
-      required this.isMod});
+      required this.isNSFW});
 
   factory SearchUsers.fromJson(Map<String, dynamic> json) {
     return SearchUsers(
@@ -122,7 +122,7 @@ class SearchUsers {
       username: json['username'],
       about: json['about'],
       profilePicture: json['profilePicture'],
-      isMod: json['isMod'],
+      isNSFW: json['isNSFW'],
     );
   }
 }
