@@ -527,8 +527,9 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchComments>> getSearchComments(String comment) async {
-    final parameters = {'query': comment};
+  Future<List<SearchComments>> getSearchComments(
+      String comment, String username) async {
+    final parameters = {'query': comment, 'user': username};
     Uri url = Uri.parse('$_baseUrl/search/comments')
         .replace(queryParameters: parameters);
 
@@ -537,7 +538,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchComments(comment);
+      return getSearchComments(comment, username);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
@@ -549,8 +550,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchPosts>> getSearchPosts(String post) async {
-    final parameters = {'query': post};
+  Future<List<SearchPosts>> getSearchPosts(String post, String username) async {
+    final parameters = {'query': post, 'user': username};
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
 
@@ -558,7 +559,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchPosts(post);
+      return getSearchPosts(post, username);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
