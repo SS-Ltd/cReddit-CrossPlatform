@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
+import 'package:reddit_clone/features/chat/chat_list.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
@@ -55,6 +56,48 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const HomePage(),
     const CommunityPage(),
     const CreatePost(profile: false),
+    ChatListScreen(
+      chatInfo: const [
+        {
+          'id': 'user1',
+          'name': 'User One',
+          'lastMessage': 'Hey, how are you?',
+          'time': '10:45 PM',
+          'profilePic': 'https://picsum.photos/200'
+        },
+        {
+          'id': 'user2',
+          'name': 'User Two',
+          'lastMessage': 'Let\'s meet tomorrow',
+          'time': '9:15 PM',
+          'profilePic': 'https://picsum.photos/200'
+        },
+        {
+          'id': 'user3',
+          'name': 'User Three',
+          'lastMessage': 'Thank you!',
+          'time': '8:03 PM',
+          'profilePic': 'https://picsum.photos/200'
+        },
+      ],
+      channelInfo: const [
+        {
+          'name': 'Channel One',
+          'description': 'This is channel one',
+          'profilePic': 'https://picsum.photos/200'
+        },
+        {
+          'name': 'Channel Two',
+          'description': 'This is channel two',
+          'profilePic': 'https://picsum.photos/200'
+        },
+        {
+          'name': 'Channel Three',
+          'description': 'This is channel three',
+          'profilePic': 'https://picsum.photos/200'
+        },
+      ],
+    ),
     const InboxNotificationPage(),
   ];
 
