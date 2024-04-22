@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
+import 'package:reddit_clone/features/search/comment_tile.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/models/search.dart';
@@ -247,7 +248,14 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: commentsResults.length,
                           itemBuilder: (context, index) {
-                            return ListTile();
+                            return Column(
+                              children: [
+                                CommentTile(comment: commentsResults[index]),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                              ],
+                            );
                           },
                         ),
                         //People
