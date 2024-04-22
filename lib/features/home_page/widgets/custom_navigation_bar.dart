@@ -63,13 +63,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           'name': 'User One',
           'lastMessage': 'Hey, how are you?',
           'time': '10:45 PM',
-          'profilePic': 'https://picsum.photos/200'
+          'unread': true,
+          'profilePic': 'https://picsum.photos/240'
         },
         {
           'id': 'user2',
           'name': 'User Two',
           'lastMessage': 'Let\'s meet tomorrow',
           'time': '9:15 PM',
+          'unread': true,
           'profilePic': 'https://picsum.photos/200'
         },
         {
@@ -77,24 +79,25 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           'name': 'User Three',
           'lastMessage': 'Thank you!',
           'time': '8:03 PM',
-          'profilePic': 'https://picsum.photos/200'
+          'unread': false,
+          'profilePic': 'https://picsum.photos/201'
         },
       ],
       channelInfo: const [
         {
           'name': 'Channel One',
           'description': 'This is channel one',
-          'profilePic': 'https://picsum.photos/200'
+          'profilePic': 'https://picsum.photos/202'
         },
         {
           'name': 'Channel Two',
           'description': 'This is channel two',
-          'profilePic': 'https://picsum.photos/200'
+          'profilePic': 'https://picsum.photos/203'
         },
         {
           'name': 'Channel Three',
           'description': 'This is channel three',
-          'profilePic': 'https://picsum.photos/200'
+          'profilePic': 'https://picsum.photos/204'
         },
       ],
     ),

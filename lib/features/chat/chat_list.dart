@@ -7,7 +7,8 @@ class ChatListScreen extends StatelessWidget {
   final List<Map<String, dynamic>> chatInfo; // List of chat information
   final List<Map<String, dynamic>> channelInfo; // List of channels information
 
-  ChatListScreen({required this.chatInfo, required this.channelInfo});
+  const ChatListScreen(
+      {super.key, required this.chatInfo, required this.channelInfo});
 
   void _showFilterModal(BuildContext context) {
     showModalBottomSheet(
@@ -16,28 +17,36 @@ class ChatListScreen extends StatelessWidget {
         return Container(
           child: Wrap(
             children: <Widget>[
-              ListTile(
-                title: const Text('Filter Chats'),
+              const ListTile(
+                title: Text('Filter Chats'),
               ),
               const Divider(),
-              ListTile(
+              CheckboxListTile(
                 title: const Text('Chat Channels'),
-                trailing: Icon(Icons.check_box_outline_blank),
-                onTap: () => {},
+                value: true,
+                onChanged: (bool? newValue) {},
               ),
-              ListTile(
+              CheckboxListTile(
                 title: const Text('Group Chats'),
-                trailing: Icon(Icons.check_box_outline_blank),
-                onTap: () => {},
+                value: false,
+                onChanged: (bool? newValue) {},
               ),
-              ListTile(
+              CheckboxListTile(
                 title: const Text('Direct Chats'),
-                trailing: Icon(Icons.check_box_outline_blank),
-                onTap: () => {},
+                value: false,
+                onChanged: (bool? newValue) {},
               ),
-              ListTile(
-                title: const Text('Done'),
-                onTap: () => Navigator.pop(context),
+              Center(
+                child: Container(
+                  width: 400,
+                  child: ElevatedButton(
+                    child: const Text('Done'),
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -53,27 +62,23 @@ class ChatListScreen extends StatelessWidget {
         title: const Text('Chats'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.message),
+            icon: const Icon(Icons.message),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        NewPage()), // Assume you have a NewMessageScreen
+                MaterialPageRoute(builder: (context) => const NewPage()),
               );
             },
           ),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               _showFilterModal(context);
             },
           ),
           IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () {
-              // Logic to open user profiles or settings
-            },
+            icon: const Icon(Icons.account_circle),
+            onPressed: () {},
           ),
         ],
       ),
@@ -84,36 +89,47 @@ class ChatListScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Text('Discover Channels'),
-                ElevatedButton(
-                  onPressed: () {
-                    // Logic to view all channels
+                const Text('Discover Channels',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const NewPage()),
+                    );
                   },
-                  child: const Text('View All'),
+                  child: const Text(
+                    'View All',
+                    style: TextStyle(fontSize: 15),
+                  ),
                 ),
               ],
             ),
           ),
-          Container(
-            height: 100,
+          SizedBox(
+            height: 80,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: channelInfo.length,
               itemBuilder: (context, index) {
                 final channel = channelInfo[index];
                 return Container(
-                  width: 250,
-                  child: Card(
-                    color: Palette.settingsHeading,
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(channel['profilePic']),
-                      ),
-                      title: Text(channel['name'],
-                          style: TextStyle(color: Colors.white)),
-                      subtitle: Text(channel['description'],
-                          style: TextStyle(color: Colors.grey[400])),
+                  width: 360,
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: .4),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(channel['profilePic']),
                     ),
+                    title: Text(channel['name'],
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
+                    subtitle: Text(channel['description'],
+                        style: TextStyle(color: Colors.grey[400])),
                   ),
                 );
               },
@@ -121,17 +137,18 @@ class ChatListScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            title: const Text('Threads'),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {
-              // Logic to navigate to Threads page
-            },
+            leading: const Icon(Icons.repeat,
+                color: Colors.white), // curved arrow icon
+            title: const Text('Threads', style: TextStyle(color: Colors.white)),
+            trailing: const Icon(Icons.arrow_forward, color: Colors.white),
+            onTap: () {},
           ),
           Expanded(
             child: ListView.builder(
               itemCount: chatInfo.length,
               itemBuilder: (context, index) {
                 final chat = chatInfo[index];
+                bool isUnread = chat['unread'];
                 return Card(
                   color: Palette.settingsHeading,
                   child: ListTile(
@@ -139,11 +156,32 @@ class ChatListScreen extends StatelessWidget {
                       backgroundImage: NetworkImage(chat['profilePic']),
                     ),
                     title: Text(chat['name'],
-                        style: TextStyle(color: Colors.white)),
+                        style: TextStyle(
+                            color: isUnread ? Colors.white : Colors.grey[400],
+                            fontWeight: isUnread
+                                ? FontWeight.bold
+                                : FontWeight.normal)),
                     subtitle: Text(chat['lastMessage'],
-                        style: TextStyle(color: Colors.grey[400])),
-                    trailing: Text(chat['time'],
-                        style: TextStyle(color: Colors.grey[400])),
+                        style: TextStyle(
+                            color: isUnread ? Colors.white : Colors.grey[400])),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        if (isUnread)
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        const SizedBox(width: 5),
+                        Text(chat['time'],
+                            style: TextStyle(
+                                color: Colors.grey[400], fontSize: 12)),
+                      ],
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
