@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/post_options_menu.dart';
@@ -13,6 +12,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
 import 'package:reddit_clone/features/User/edit_button.dart';
+import 'package:reddit_clone/features/search/profile_search.dart';
 
 enum TabSelection { posts, comments, about }
 
@@ -177,7 +177,15 @@ class _ProfileState extends State<Profile> {
           pinned: true,
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => ProfileSearch(displayName: widget.displayName,),
+                  ),
+                );
+              },
               icon: const Icon(Icons.search, size: 30.0),
             ),
             IconButton(
@@ -470,7 +478,15 @@ class _ProfileState extends State<Profile> {
       elevation: 0,
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => ProfileSearch(displayName: widget.displayName,),
+              ),
+            );
+          },
           icon: const Icon(Icons.search, size: 30.0),
         ),
         IconButton(
