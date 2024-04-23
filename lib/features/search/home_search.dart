@@ -214,7 +214,7 @@ class _HomeSearchState extends State<HomeSearch>
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                PostTile(post: postsResults[index]),
+                                PostTile(post: postsResults[index], isProfile: false),
                                 const Divider(
                                   thickness: 1,
                                 ),

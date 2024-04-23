@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 class ProfileSearch extends StatefulWidget {
-  const ProfileSearch({super.key, required this.displayName, required this.username});
+  const ProfileSearch(
+      {super.key, required this.displayName, required this.username});
 
   final String displayName;
   final String username;
@@ -17,12 +18,15 @@ class ProfileSearch extends StatefulWidget {
 
 class _ProfileSearchState extends State<ProfileSearch>
     with SingleTickerProviderStateMixin {
+      
   final _searchController = TextEditingController();
   List<SearchComments> commentsResults = [];
   List<SearchPosts> postsResults = [];
   bool isSearching = true;
   late final TabController _tabController;
   int _selectedIndex = 0;
+  String searchQuery = '';
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -38,6 +42,8 @@ class _ProfileSearchState extends State<ProfileSearch>
   @override
   void dispose() {
     _searchController.dispose();
+    _tabController.dispose();
+    _focusNode.dispose();    
     super.dispose();
   }
 
@@ -52,6 +58,21 @@ class _ProfileSearchState extends State<ProfileSearch>
           icon: const Icon(Icons.arrow_back),
         ),
         title: TextField(
+          focusNode: _focusNode,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
+          onSubmitted: (value) async {
+            commentsResults =
+                await Provider.of<NetworkService>(context, listen: false)
+                    .getSearchComments(value, widget.username);
+            postsResults =
+                await Provider.of<NetworkService>(context, listen: false)
+                    .getSearchPosts(value, widget.username);
+            setState(() {
+              isSearching = false;
+              searchQuery = value;
+            });
+          },
           controller: _searchController,
           decoration: InputDecoration(
             hintText: 'Search ${widget.displayName}',
@@ -65,15 +86,6 @@ class _ProfileSearchState extends State<ProfileSearch>
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
             contentPadding: const EdgeInsets.all(10),
           ),
-          onChanged: (value) async {
-            commentsResults =
-                await Provider.of<NetworkService>(context, listen: false)
-                    .getSearchComments(value, widget.username);
-            postsResults =
-                await Provider.of<NetworkService>(context, listen: false)
-                    .getSearchPosts(value, widget.username);
-          },
-          onTap: () {},
         ),
         bottom: isSearching
             ? null
@@ -89,79 +101,113 @@ class _ProfileSearchState extends State<ProfileSearch>
                 ],
               ),
       ),
-      body: isSearching ? Column() : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, top: 10),
-                    child: (_selectedIndex == 0 || _selectedIndex == 2) ? Row(
-                      children: [
-                        SizedBox(
-                          width: 90,
-                          height: 35,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return BottomSheet(
-                                    onClosing: () {},
-                                    builder: (BuildContext context) {
-                                      return const Column(
-                                        children: [],
-                                      );
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                            child: const Text("Sort"),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          width: 90,
-                          height: 35,
-                          child: _selectedIndex == 0 ? ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Time"),
-                          ) : null,
-                        ),
-                      ],
-                    ) : null,
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: <Widget>[
-                        //Posts
-                        ListView.builder(
-                          itemCount: postsResults.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                PostTile(post: postsResults[index]),
-                                const Divider(
-                                  thickness: 1,
-                                ),
-                              ],
+      body: isSearching
+          ? Column()
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 10),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 35,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return BottomSheet(
+                                  onClosing: () {},
+                                  builder: (BuildContext context) {
+                                    return const Column(
+                                      children: [],
+                                    );
+                                  },
+                                );
+                              },
                             );
                           },
+                          child: const Text("Sort"),
                         ),
-                        //Comments
-                        ListView.builder(
-                          itemCount: commentsResults.length,
-                          itemBuilder: (context, index) {
-                            return ListTile();
-                          },
-                        ),
-                        //People
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      SizedBox(
+                        width: 90,
+                        height: 35,
+                        child: _selectedIndex == 0
+                            ? ElevatedButton(
+                                onPressed: () {},
+                                child: const Text("Time"),
+                              )
+                            : null,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      postsResults.isEmpty
+                          ? noResults()
+                          : ListView.builder(
+                              itemCount: postsResults.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    PostTile(
+                                        post: postsResults[index],
+                                        isProfile: true),
+                                    const Divider(
+                                      thickness: 1,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                      //Comments
+                      commentsResults.isEmpty
+                          ? noResults()
+                          : ListView.builder(
+                              itemCount: commentsResults.length,
+                              itemBuilder: (context, index) {
+                                return ListTile();
+                              },
+                            ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  Widget noResults() {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        const Text('image'),
+        const Text(
+          "Hm...we couldn't find any",
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'results for "$searchQuery"',
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        const Text('Double-check your spelling or try a different keywords'),
+        ElevatedButton(
+          onPressed: () {
+            FocusScope.of(context).requestFocus(_focusNode);
+          },
+          child: const Text('Adjust Search'),
+        ),
+      ],
     );
   }
 }
