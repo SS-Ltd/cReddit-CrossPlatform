@@ -18,7 +18,6 @@ class ProfileSearch extends StatefulWidget {
 
 class _ProfileSearchState extends State<ProfileSearch>
     with SingleTickerProviderStateMixin {
-      
   final _searchController = TextEditingController();
   List<SearchComments> commentsResults = [];
   List<SearchPosts> postsResults = [];
@@ -43,7 +42,7 @@ class _ProfileSearchState extends State<ProfileSearch>
   void dispose() {
     _searchController.dispose();
     _tabController.dispose();
-    _focusNode.dispose();    
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -191,7 +190,13 @@ class _ProfileSearchState extends State<ProfileSearch>
         const SizedBox(
           height: 20,
         ),
-        const Text('image'),
+        SizedBox(
+          height: 300,
+          child: Image.asset(
+            'assets/search.png',
+            fit: BoxFit.contain,
+          ),
+        ),
         const Text(
           "Hm...we couldn't find any",
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
