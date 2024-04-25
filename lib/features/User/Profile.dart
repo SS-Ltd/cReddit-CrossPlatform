@@ -365,23 +365,12 @@ class _ProfileState extends State<Profile> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                final post = userPosts[index];
+                final PostModel postModel = userPosts[index];
                 return Post(
-                  communityName: post.communityName ?? '',
-                  userName: post.username,
-                  title: post.title,
-                  postType: post.type,
-                  content: post.content,
-                  commentNumber: post.commentCount,
+                  postModel: postModel,
                   shareNumber: 0,
-                  timeStamp: DateTime.now(),
-                  profilePicture: post.profilePicture,
                   isHomePage: true,
                   isSubRedditPage: false,
-                  postId: post.postId,
-                  votes: post.netVote,
-                  isDownvoted: post.isDownvoted,
-                  isUpvoted: post.isUpvoted,
                 );
               },
               childCount: userPosts.length,
@@ -414,52 +403,6 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ],
-      ],
-    );
-  }
-
-  Widget postsFeed() {
-    return Column(
-      children: [
-        // SelectItem(
-        //   menuItems: feedMenuItems,
-        //     onMenuItemSelected: (String selectedItem) {
-        //       // Handle menu item selection here
-        //       setState(() {
-
-        //       });
-        //       print('Selected: $selectedItem');
-        //     },
-        // ),
-      ],
-    );
-  }
-
-  Widget mockPost() {
-    return Column(
-      children: [
-        Post(
-          communityName: 'Entrepreneur',
-          userName: 'throwaway123',
-          title: 'Escaping corporate Hell and finding freedom',
-          postType: "Normal",
-          content:
-              'Man, let me have a  vent for a minute. Just got out of the shittiest '
-              'gig ever – being a "marketing specialist" for the supposed big boys'
-              ' over at Microsoft. Let me tell you, it was not bad.',
-          commentNumber: 0,
-          shareNumber: 0,
-          timeStamp: DateTime.now(),
-          profilePicture:
-              'https://qph.cf2.quoracdn.net/main-qimg-e0b7b0c38b6cecad120db23705ccc4f3-pjlq',
-          isHomePage: true,
-          isSubRedditPage: false,
-          postId: '123',
-          votes: 0,
-          isDownvoted: false,
-          isUpvoted: false,
-        ),
-        const Divider(height: 1, thickness: 1), // Add a thin horizontal line
       ],
     );
   }
@@ -560,42 +503,3 @@ List<PopupMenuEntry<Menu>> menuitems() {
     ),
   ];
 }
-
-
-// class DropdownButton extends StatefulWidget {
-//   const DropdownButton({super.key, required String value, required Icon icon});
-
-//   @override
-//   State<DropdownButton> createState() => _DropdownButtonState();
-// }
-
-// const List<String> list = <String>['top', 'hot', 'new'];
-// class _DropdownButtonState extends State<DropdownButton> {
-//   String dropdownValue = list.first;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return DropdownButton(
-//       value: dropdownValue,
-//       icon: const Icon(Icons.arrow_downward),
-//       elevation: 16,
-//       style: const TextStyle(color: Colors.deepPurple),
-//       underline: Container(
-//         height: 2,
-//         color: Colors.deepPurpleAccent,
-//       ),
-//       onChanged: (String? value) {
-//         // This is called when the user selects an item.
-//         setState(() {
-//           dropdownValue = value!;
-//         });
-//       },
-//       items: list.map<DropdownMenuItem<String>>((String value) {
-//         return DropdownMenuItem<String>(
-//           value: value,
-//           child: Text(value),
-//         );
-//       }).toList(),
-//     );
-//   }
-// }

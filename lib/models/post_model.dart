@@ -2,22 +2,31 @@ class PostModel {
   final String postId;
   final String type;
   final String username;
-  final String? communityName;
+  final String communityName;
   final String title;
   final String content;
-  final String profilePicture;
-  final int netVote;
-  final int commentCount;
-  final bool? isNSFW;
-  final bool? isSpoiler;
-  final bool? isApproved;
-  final bool isUpvoted;
-  final bool isDownvoted;
-  final bool? isHidden;
-  final bool? isSaved;
-  final DateTime? uploadDate;
   final List<PollsOption>? pollOptions;
   final DateTime? expirationDate;
+  int netVote;
+  final bool isSpoiler;
+  final bool isLocked;
+  final bool isApproved;
+  final bool isEdited;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  // final List<String> reports; // need type to be checked
+  final String profilePicture;
+  final int commentCount;
+  final bool isDeletedUser;
+  bool isUpvoted;
+  bool isDownvoted;
+  final bool isSaved;
+  final bool isHidden;
+  final bool isJoined;
+  final bool isModerator;
+  final bool isBlocked;
+  // final DateTime? uploadDate;
+  final bool isNSFW;  
 
   PostModel({
     required this.postId,
@@ -26,19 +35,27 @@ class PostModel {
     required this.communityName,
     required this.title,
     required this.content,
-    required this.profilePicture,
+    required this.pollOptions,
+    required this.expirationDate,
     required this.netVote,
-    required this.commentCount,
-    required this.isNSFW,
     required this.isSpoiler,
+    required this.isLocked,
     required this.isApproved,
+    required this.isEdited,
+    required this.createdAt,
+    required this.updatedAt,
+    // required this.reports,
+    required this.profilePicture,
+    required this.commentCount,
+    required this.isDeletedUser,
     required this.isUpvoted,
     required this.isDownvoted,
-    required this.isHidden,
     required this.isSaved,
-    required this.uploadDate,
-    this.pollOptions,
-    this.expirationDate,
+    required this.isHidden,
+    required this.isJoined,
+    required this.isModerator,
+    required this.isBlocked,
+    required this.isNSFW,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -50,19 +67,6 @@ class PostModel {
       communityName: json['communityName'],
       title: json['title'],
       content: json['content'],
-      profilePicture:
-          json['profilePicture'] is String ? json['profilePicture'] : '',
-      netVote: json['netVote'],
-      commentCount: json['commentCount'],
-      isNSFW: json['isNSFW'],
-      isSpoiler: json['isSpoiler'],
-      isApproved: json['isApproved'],
-      isUpvoted: json['isUpvoted'],
-      isDownvoted: json['isDownvoted'],
-      isHidden: json['isHidden'],
-      isSaved: json['isSaved'],
-      uploadDate:
-          DateTime.parse(json['createdAt'] ?? DateTime.now().toString()),
       pollOptions: json['pollOptions'] != null
           ? (json['pollOptions'] as List)
               .map((e) => PollsOption.fromJson(e))
@@ -71,6 +75,25 @@ class PostModel {
       expirationDate: json['expirationDate'] != null
           ? DateTime.parse(json['expirationDate'])
           : null,
+      netVote: json['netVote'],
+      isSpoiler: json['isSpoiler'],
+      isLocked: json['isLocked'],
+      isApproved: json['isApproved'],
+      isEdited: json['isEdited'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      // reports: json['reports'],
+      profilePicture: json['profilePicture'],
+      commentCount: json['commentCount'],
+      isDeletedUser: json['isDeletedUser'],
+      isUpvoted: json['isUpvoted'],
+      isDownvoted: json['isDownvoted'],
+      isSaved: json['isSaved'],
+      isHidden: json['isHidden'],
+      isJoined: json['isJoined'],
+      isModerator: json['isModerator'],
+      isBlocked: json['isBlocked'],
+      isNSFW: json['isNSFW'],
     );
   }
 }
