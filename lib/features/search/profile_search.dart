@@ -191,7 +191,7 @@ class _ProfileSearchState extends State<ProfileSearch>
           height: 20,
         ),
         SizedBox(
-          height: 300,
+          height: 200,
           child: Image.asset(
             'assets/search.png',
             fit: BoxFit.contain,
