@@ -16,41 +16,45 @@ import 'package:video_player/video_player.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class Post extends StatefulWidget {
-  final String postId;
-  final String postType;
-  final String userName;
-  final String communityName;
-  final String profilePicture;
-  int votes;
-  int commentNumber;
-  final String title;
-  final String content;
-  List<PollsOption>? pollOptions;
+  // final String postId;
+  // final String postType;
+  // final String userName;
+  // final String communityName;
+  // final String profilePicture;
+  // int votes;
+  // int commentNumber;
+  // final String title;
+  // final String content;
+  // List<PollsOption>? pollOptions;
+  // // final DateTime expirationDate;
+  // final DateTime timeStamp;
+
+  final PostModel postModel;
+  // bool isUpvoted;
+  // bool isDownvoted;
   final int shareNumber;
-  final DateTime timeStamp;
   final bool isHomePage;
   final bool isSubRedditPage;
-  bool isUpvoted;
-  bool isDownvoted;
 
   Post({
     Key? key,
-    required this.communityName,
-    required this.userName,
-    required this.title,
-    required this.profilePicture,
-    this.pollOptions,
-    required this.postType,
-    required this.content,
-    this.commentNumber = 0,
-    this.shareNumber = 0,
-    required this.timeStamp,
+    // required this.communityName,
+    // required this.userName,
+    // required this.title,
+    // required this.profilePicture,
+    // this.pollOptions,
+    // required this.postType,
+    // required this.content,
+    // this.commentNumber = 0,
+    // required this.timeStamp,
+    // required this.postId,
+    // required this.votes,
+    required this.postModel,
     this.isHomePage = true,
     required this.isSubRedditPage,
-    required this.postId,
-    required this.votes,
-    required this.isUpvoted,
-    required this.isDownvoted,
+    this.shareNumber = 0,
+    // required this.isUpvoted,
+    // required this.isDownvoted,
   }) : super(key: key);
 
   @override
@@ -66,9 +70,10 @@ class _PostState extends State<Post> {
   @override
   void initState() {
     super.initState();
-    if (isVideo(widget.content) && widget.postType == 'Images & Video') {
+    if (isVideo(widget.postModel.content) &&
+        widget.postModel.type == 'Images & Video') {
       _videoController =
-          VideoPlayerController.networkUrl(Uri.parse(widget.content));
+          VideoPlayerController.networkUrl(Uri.parse(widget.postModel.content));
       _initializeVideoPlayerFuture = _videoController.initialize();
       _videoController.setLooping(true); // Optionally, loop the video.
       _initializeVideoPlayerFuture.then((_) {
@@ -91,17 +96,17 @@ class _PostState extends State<Post> {
   }
 
   Widget _buildContent() {
-    switch (widget.postType) {
+    switch (widget.postModel.type) {
       case ("Images & Video"):
         return Column(
           children: [
-            if (isImage(widget.content))
+            if (isImage(widget.postModel.content))
               Image.network(
-                widget.content,
+                widget.postModel.content,
                 width: double.infinity,
                 fit: BoxFit.cover,
               )
-            else if (isVideo(widget.content))
+            else if (isVideo(widget.postModel.content))
               _controllerInitialized
                   ? AspectRatio(
                       aspectRatio: _videoController.value.aspectRatio,
@@ -127,31 +132,32 @@ class _PostState extends State<Post> {
           onTap: widget.isHomePage
               ? () {
                   Post postComment = Post(
-                    communityName: widget.communityName,
-                    profilePicture: widget.profilePicture,
-                    userName: widget.userName,
-                    title: widget.title,
-                    postType: widget.postType,
-                    content: widget.content,
-                    commentNumber: widget.commentNumber,
-                    pollOptions: widget.pollOptions,
-                    shareNumber: widget.shareNumber,
-                    timeStamp: widget.timeStamp,
+                    // communityName: widget.communityName,
+                    // profilePicture: widget.profilePicture,
+                    // userName: widget.userName,
+                    // title: widget.title,
+                    // postType: widget.postType,
+                    // content: widget.content,
+                    // commentNumber: widget.commentNumber,
+                    // pollOptions: widget.pollOptions,
+                    // timeStamp: widget.timeStamp,
+                    // postId: widget.postId,
+                    // votes: widget.votes,
+                    postModel: widget.postModel,
                     isHomePage: false,
                     isSubRedditPage: false,
-                    postId: widget.postId,
-                    votes: widget.votes,
-                    isDownvoted: widget.isDownvoted,
-                    isUpvoted: widget.isUpvoted,
+                    shareNumber: widget.shareNumber,
+                    // isDownvoted: widget.isDownvoted,
+                    // isUpvoted: widget.isUpvoted,
                   );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => CommentPage(
-                        postId: widget.postId,
+                        postId: widget.postModel.postId,
                         postComment: postComment,
-                        postTitle: widget.title,
-                        username: widget.userName,
+                        postTitle: widget.postModel.title,
+                        username: widget.postModel.username,
                       ),
                     ),
                   );
@@ -162,34 +168,34 @@ class _PostState extends State<Post> {
                   identifier: 'PostContent',
                   label: "Post Content",
                   child: (Text(
-                    widget.content,
+                    widget.postModel.content,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   )),
                 )
               : (!widget.isHomePage
-                  ? Text(widget.content)
+                  ? Text(widget.postModel.content)
                   : const SizedBox.shrink()),
         );
       case ('Poll'):
-        if (widget.pollOptions == null) {
+        if (widget.postModel.pollOptions == null) {
           return const SizedBox.shrink();
         } else {
           bool voted = false;
-          for (PollsOption option in widget.pollOptions!) {
+          for (PollsOption option in widget.postModel.pollOptions!) {
             if (option.isVoted == true) {
               voted = true;
             }
           }
           return FlutterPolls(
             hasVoted: false,
-            pollId: widget.postId,
+            pollId: widget.postModel.postId,
             onVoted: (PollOption pollOption, int newTotalVotes) async {
               print(
                   'Voted on option: ${pollOption.id} with new total votes: $newTotalVotes');
               bool success =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .voteOnPoll(widget.postId, pollOption.id ?? '');
+                      .voteOnPoll(widget.postModel.postId, pollOption.id ?? '');
               return success;
             },
             pollOptionsSplashColor: Colors.white,
@@ -204,7 +210,7 @@ class _PostState extends State<Post> {
                 ),
               ),
             ),
-            pollOptions: widget.pollOptions!
+            pollOptions: widget.postModel.pollOptions!
                 .map(
                   (e) => PollOption(
                     id: e.option,
@@ -219,14 +225,14 @@ class _PostState extends State<Post> {
       case ('Link'):
         return GestureDetector(
           onTap: () async {
-            if (await canLaunch(widget.content)) {
-              await launch(widget.content);
+            if (await canLaunch(widget.postModel.content)) {
+              await launch(widget.postModel.content);
             } else {
               throw 'Could not launch $widget.content';
             }
           },
           child: Text(
-            widget.content,
+            widget.postModel.content,
             style: const TextStyle(
               color: Colors.blue,
             ),
@@ -260,12 +266,14 @@ class _PostState extends State<Post> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SubRedditPage(
-                                      subredditName: widget.communityName,
+                                      subredditName:
+                                          widget.postModel.communityName,
                                     )),
                           );
                         },
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(widget.profilePicture),
+                          backgroundImage:
+                              NetworkImage(widget.postModel.profilePicture),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -277,20 +285,22 @@ class _PostState extends State<Post> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AboutUserPopUp(
-                                              userName: widget.userName);
+                                              userName:
+                                                  widget.postModel.username);
                                         });
                                   },
                                   child: Row(
                                     children: [
                                       Text(
-                                        'u/${widget.userName}',
+                                        'u/${widget.postModel.username}',
                                         style: const TextStyle(
                                           color: Palette.whiteColor,
                                         ),
                                       ),
                                       const SizedBox(width: 10),
                                       Text(
-                                        formatTimestamp(widget.timeStamp),
+                                        formatTimestamp(
+                                            widget.postModel.createdAt),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
@@ -299,27 +309,29 @@ class _PostState extends State<Post> {
                                     ],
                                   ),
                                 )
-                              : (widget.communityName.isEmpty
+                              : (widget.postModel.communityName.isEmpty
                                   ? GestureDetector(
                                       onTap: () {
                                         showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AboutUserPopUp(
-                                                  userName: widget.userName);
+                                                  userName: widget
+                                                      .postModel.username);
                                             });
                                       },
                                       child: Row(
                                         children: [
                                           Text(
-                                            'u/${widget.userName}',
+                                            'u/${widget.postModel.username}',
                                             style: const TextStyle(
                                               color: Palette.whiteColor,
                                             ),
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                            formatTimestamp(widget.timeStamp),
+                                            formatTimestamp(
+                                                widget.postModel.createdAt),
                                             style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey,
@@ -335,22 +347,24 @@ class _PostState extends State<Post> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubRedditPage(
-                                                    subredditName:
-                                                        widget.communityName,
+                                                    subredditName: widget
+                                                        .postModel
+                                                        .communityName,
                                                   )),
                                         );
                                       },
                                       child: Row(
                                         children: [
                                           Text(
-                                            'r/${widget.communityName}',
+                                            'r/${widget.postModel.communityName}',
                                             style: const TextStyle(
                                               color: Palette.whiteColor,
                                             ),
                                           ),
                                           const SizedBox(width: 10),
                                           Text(
-                                            formatTimestamp(widget.timeStamp),
+                                            formatTimestamp(
+                                                widget.postModel.createdAt),
                                             style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey,
@@ -359,27 +373,29 @@ class _PostState extends State<Post> {
                                         ],
                                       ),
                                     )))
-                          : (widget.communityName.isEmpty
+                          : (widget.postModel.communityName.isEmpty
                               ? GestureDetector(
                                   onTap: () {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AboutUserPopUp(
-                                              userName: widget.userName);
+                                              userName:
+                                                  widget.postModel.username);
                                         });
                                   },
                                   child: Row(
                                     children: [
                                       Text(
-                                        'u/${widget.userName}',
+                                        'u/${widget.postModel.username}',
                                         style: const TextStyle(
                                           color: Palette.whiteColor,
                                         ),
                                       ),
                                       const SizedBox(width: 10),
                                       Text(
-                                        formatTimestamp(widget.timeStamp),
+                                        formatTimestamp(
+                                            widget.postModel.createdAt),
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,
@@ -398,13 +414,14 @@ class _PostState extends State<Post> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubRedditPage(
-                                                    subredditName:
-                                                        widget.communityName,
+                                                    subredditName: widget
+                                                        .postModel
+                                                        .communityName,
                                                   )),
                                         );
                                       },
                                       child: Text(
-                                        'r/${widget.communityName}',
+                                        'r/${widget.postModel.communityName}',
                                         style: const TextStyle(
                                           color: Colors.grey,
                                         ),
@@ -416,20 +433,22 @@ class _PostState extends State<Post> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AboutUserPopUp(
-                                                  userName: widget.userName);
+                                                  userName: widget
+                                                      .postModel.username);
                                             });
                                         //replace with profile page or widget
                                       },
                                       child: Row(
                                         children: [
                                           Text(
-                                            'u/${widget.userName}',
+                                            'u/${widget.postModel.username}',
                                             style: const TextStyle(
                                               color: Colors.blue,
                                             ),
                                           ),
                                           Text(
-                                            formatTimestamp(widget.timeStamp),
+                                            formatTimestamp(
+                                                widget.postModel.createdAt),
                                             style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey,
@@ -450,31 +469,32 @@ class _PostState extends State<Post> {
             onTap: widget.isHomePage
                 ? () {
                     Post postComment = Post(
-                      communityName: widget.communityName,
-                      profilePicture: widget.profilePicture,
-                      userName: widget.userName,
-                      title: widget.title,
-                      postType: widget.postType,
-                      pollOptions: widget.pollOptions,
-                      content: widget.content,
-                      commentNumber: widget.commentNumber,
-                      shareNumber: widget.shareNumber,
-                      timeStamp: widget.timeStamp,
+                      // communityName: widget.communityName,
+                      // profilePicture: widget.profilePicture,
+                      // userName: widget.userName,
+                      // title: widget.title,
+                      // postType: widget.postType,
+                      // pollOptions: widget.pollOptions,
+                      // content: widget.content,
+                      // commentNumber: widget.commentNumber,
+                      // timeStamp: widget.timeStamp,
+                      // postId: widget.postId,
+                      // votes: widget.votes,
+                      postModel: widget.postModel,
                       isHomePage: false,
                       isSubRedditPage: false,
-                      postId: widget.postId,
-                      votes: widget.votes,
-                      isDownvoted: widget.isDownvoted,
-                      isUpvoted: widget.isUpvoted,
+                      shareNumber: widget.shareNumber,
+                      // isDownvoted: widget.isDownvoted,
+                      // isUpvoted: widget.isUpvoted,
                     );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => CommentPage(
-                          postId: widget.postId,
+                          postId: widget.postModel.postId,
                           postComment: postComment,
-                          postTitle: widget.title,
-                          username: widget.userName,
+                          postTitle: widget.postModel.title,
+                          username: widget.postModel.username,
                         ),
                       ),
                     );
@@ -483,7 +503,7 @@ class _PostState extends State<Post> {
             child: Padding(
               padding: const EdgeInsets.only(left: 10, right: 10),
               child: Text(
-                widget.title,
+                widget.postModel.title,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -502,35 +522,38 @@ class _PostState extends State<Post> {
                 label: 'post Upvote',
                 child: IconButton(
                   icon: const Icon(Icons.arrow_upward),
-                  color: widget.isUpvoted ? Colors.red : Colors.grey,
+                  color: widget.postModel.isUpvoted ? Colors.red : Colors.grey,
                   onPressed: () async {
-                    int oldVotes = widget.votes;
-                    bool oldIsUpVoted = widget.isUpvoted;
-                    bool oldIsDownVoted = widget.isDownvoted;
+                    int oldVotes = widget.postModel.netVote;
+                    bool oldIsUpVoted = widget.postModel.isUpvoted;
+                    bool oldIsDownVoted = widget.postModel.isDownvoted;
                     if (mounted) {
                       setState(() {
                         print("upvote");
-                        if (widget.isUpvoted && !widget.isDownvoted) {
-                          widget.votes--;
-                          widget.isUpvoted = false;
-                        } else if (!widget.isUpvoted && widget.isDownvoted) {
-                          widget.votes += 2;
-                          widget.isUpvoted = true;
-                          widget.isDownvoted = false;
-                        } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                          widget.votes++;
-                          widget.isUpvoted = true;
+                        if (widget.postModel.isUpvoted &&
+                            !widget.postModel.isDownvoted) {
+                          widget.postModel.netVote--;
+                          widget.postModel.isUpvoted = false;
+                        } else if (!widget.postModel.isUpvoted &&
+                            widget.postModel.isDownvoted) {
+                          widget.postModel.netVote += 2;
+                          widget.postModel.isUpvoted = true;
+                          widget.postModel.isDownvoted = false;
+                        } else if (!widget.postModel.isUpvoted &&
+                            !widget.postModel.isDownvoted) {
+                          widget.postModel.netVote++;
+                          widget.postModel.isUpvoted = true;
                         }
                       });
                     }
                     bool upVoted = await context
                         .read<NetworkService>()
-                        .upVote(widget.postId);
+                        .upVote(widget.postModel.postId);
                     if (!upVoted && mounted) {
                       setState(() {
-                        widget.votes = oldVotes;
-                        widget.isUpvoted = oldIsUpVoted;
-                        widget.isDownvoted = oldIsDownVoted;
+                        widget.postModel.netVote = oldVotes;
+                        widget.postModel.isUpvoted = oldIsUpVoted;
+                        widget.postModel.isDownvoted = oldIsDownVoted;
                       });
                     }
                   },
@@ -539,11 +562,13 @@ class _PostState extends State<Post> {
               Semantics(
                 identifier: 'post votes',
                 label: 'post votes',
-                child: Text(widget.votes.toString(),
+                child: Text(widget.postModel.netVote.toString(),
                     style: TextStyle(
-                      color: widget.isUpvoted
+                      color: widget.postModel.isUpvoted
                           ? Colors.red
-                          : (widget.isDownvoted ? Colors.blue : Colors.grey),
+                          : (widget.postModel.isDownvoted
+                              ? Colors.blue
+                              : Colors.grey),
                     )),
               ),
               Semantics(
@@ -551,34 +576,38 @@ class _PostState extends State<Post> {
                 label: 'post Downvote',
                 child: IconButton(
                   icon: const Icon(Icons.arrow_downward),
-                  color: widget.isDownvoted ? Colors.blue : Colors.grey,
+                  color:
+                      widget.postModel.isDownvoted ? Colors.blue : Colors.grey,
                   onPressed: () async {
-                    int oldVotes = widget.votes;
-                    bool oldIsUpVoted = widget.isUpvoted;
-                    bool oldIsDownVoted = widget.isDownvoted;
+                    int oldVotes = widget.postModel.netVote;
+                    bool oldIsUpVoted = widget.postModel.isUpvoted;
+                    bool oldIsDownVoted = widget.postModel.isDownvoted;
                     if (mounted) {
                       setState(() {
-                        if (widget.isDownvoted && !widget.isUpvoted) {
-                          widget.votes++;
-                          widget.isDownvoted = false;
-                        } else if (widget.isUpvoted && !widget.isDownvoted) {
-                          widget.votes -= 2;
-                          widget.isUpvoted = false;
-                          widget.isDownvoted = true;
-                        } else if (!widget.isUpvoted && !widget.isDownvoted) {
-                          widget.votes--;
-                          widget.isDownvoted = true;
+                        if (widget.postModel.isDownvoted &&
+                            !widget.postModel.isUpvoted) {
+                          widget.postModel.netVote++;
+                          widget.postModel.isDownvoted = false;
+                        } else if (widget.postModel.isUpvoted &&
+                            !widget.postModel.isDownvoted) {
+                          widget.postModel.netVote -= 2;
+                          widget.postModel.isUpvoted = false;
+                          widget.postModel.isDownvoted = true;
+                        } else if (!widget.postModel.isUpvoted &&
+                            !widget.postModel.isDownvoted) {
+                          widget.postModel.netVote--;
+                          widget.postModel.isDownvoted = true;
                         }
                       });
                     }
                     bool downVoted = await context
                         .read<NetworkService>()
-                        .downVote(widget.postId);
+                        .downVote(widget.postModel.postId);
                     if (!downVoted && mounted) {
                       setState(() {
-                        widget.votes = oldVotes;
-                        widget.isUpvoted = oldIsUpVoted;
-                        widget.isDownvoted = oldIsDownVoted;
+                        widget.postModel.netVote = oldVotes;
+                        widget.postModel.isUpvoted = oldIsUpVoted;
+                        widget.postModel.isDownvoted = oldIsDownVoted;
                       });
                     }
                   },
@@ -587,41 +616,42 @@ class _PostState extends State<Post> {
               IconButton(
                 icon: const Icon(Icons.chat_bubble_outline),
                 //other icon: add_comment,comment
-                onPressed: widget.isHomePage 
-                ?() {
-                  Post postComment = Post(
-                    communityName: widget.communityName,
-                    profilePicture: widget.profilePicture,
-                    userName: widget.userName,
-                    title: widget.title,
-                    postType: widget.postType,
-                    content: widget.content,
-                    pollOptions: widget.pollOptions,
-                    commentNumber: widget.commentNumber,
-                    shareNumber: widget.shareNumber,
-                    timeStamp: widget.timeStamp,
-                    isHomePage: false,
-                    isSubRedditPage: false,
-                    postId: widget.postId,
-                    votes: widget.votes,
-                    isDownvoted: widget.isDownvoted,
-                    isUpvoted: widget.isUpvoted,
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CommentPage(
-                        postId: widget.postId,
-                        postComment: postComment,
-                        postTitle: widget.title,
-                        username: widget.userName,
-                      ),
-                    ),
-                  );
-                }
-                : null,
+                onPressed: widget.isHomePage
+                    ? () {
+                        Post postComment = Post(
+                          // communityName: widget.communityName,
+                          // profilePicture: widget.profilePicture,
+                          // userName: widget.userName,
+                          // title: widget.title,
+                          // postType: widget.postType,
+                          // content: widget.content,
+                          // pollOptions: widget.pollOptions,
+                          // commentNumber: widget.commentNumber,
+                          // timeStamp: widget.timeStamp,
+                          // postId: widget.postId,
+                          // votes: widget.votes,
+                          postModel: widget.postModel,
+                          isHomePage: false,
+                          isSubRedditPage: false,
+                          shareNumber: widget.shareNumber,
+                          // isDownvoted: widget.isDownvoted,
+                          // isUpvoted: widget.isUpvoted,
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentPage(
+                              postId: widget.postModel.postId,
+                              postComment: postComment,
+                              postTitle: widget.postModel.title,
+                              username: widget.postModel.username,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
               ),
-              Text(widget.commentNumber.toString()),
+              Text(widget.postModel.commentCount.toString()),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.ios_share),
@@ -653,8 +683,9 @@ bool isVideo(String url) {
 }
 
 class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({Key? key, required this.controller})
-      : super(key: key);
+  const _ControlsOverlay({
+    super.key,
+    required this.controller});
 
   final VideoPlayerController controller;
 
@@ -666,13 +697,13 @@ class _ControlsOverlay extends StatelessWidget {
         return Stack(
           children: <Widget>[
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 50),
-              reverseDuration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 50),
+              reverseDuration: const Duration(milliseconds: 200),
               child: value.isPlaying
-                  ? SizedBox.shrink()
+                  ? const SizedBox.shrink()
                   : Container(
                       color: Colors.black26,
-                      child: Center(
+                      child: const Center(
                         child: Icon(
                           Icons.play_arrow,
                           color: Colors.white,
