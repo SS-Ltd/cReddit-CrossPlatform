@@ -605,7 +605,7 @@ class UserCommentState extends State<UserComment> {
                           commentContent: widget.comment.content,
                           contentType: widget.comment.isImage,
                           photo: widget.comment.isImage
-                              ? File(widget.comment.content)
+                              ? widget.photo
                               : null,
                           imageSource: widget.imageSource,
                         ),

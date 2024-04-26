@@ -44,11 +44,17 @@ class _CommentPostPageState extends State<CommentPostPage> {
         title: const Text('Choose image source'),
         actions: <Widget>[
           TextButton(
-            child: const Text('Gallery'),
+            child: const Text(
+              'Gallery',
+              style: TextStyle(color: Palette.blueColor),
+            ),
             onPressed: () => Navigator.pop(context, ImageSource.gallery),
           ),
           TextButton(
-            child: const Text('Camera'),
+            child: const Text(
+              'Camera',
+              style: TextStyle(color: Palette.blueColor),
+            ),
             onPressed: () => Navigator.pop(context, ImageSource.camera),
           ),
         ],
@@ -121,6 +127,10 @@ class _CommentPostPageState extends State<CommentPostPage> {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             Navigator.of(context).pop();
                             Navigator.of(context).pop(snapshot.data);
+                            CustomSnackBar(
+                              context: context,
+                              content: 'Comment posted succesfully',
+                            ).show();
                           });
                         } else if (snapshot.data != null &&
                             snapshot.data!['success'] == false) {
