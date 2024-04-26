@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomPopupMenuItem.dart';
 import 'package:reddit_clone/features/Inbox/message_item.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class MessageLayout extends StatelessWidget {
   final MessageItem message;
@@ -11,6 +12,7 @@ class MessageLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      tileColor: Palette.backgroundColor,
       leading: SizedBox(
         width: 20,
         child: Align(

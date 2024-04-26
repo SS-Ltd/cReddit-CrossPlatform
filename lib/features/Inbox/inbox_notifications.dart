@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/message_item.dart';
@@ -132,7 +134,17 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                 ListTile(
                   leading: const Icon(Icons.mark_email_read),
                   title: const Text('Mark all inbox tabs as read'),
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    setState(() {
+                      for (var message in messages) {
+                        message.isRead = true;
+                      }
+                      for (var notification in notifications) {
+                        notification.isRead = true;
+                      }
+                    });
+                    Navigator.pop(context);
+                  },
                 ),
                 ListTile(
                   leading: const Icon(Icons.settings_outlined),
@@ -148,6 +160,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Palette.settingsHeading,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Stack(
@@ -161,7 +174,11 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                   Tab(text: 'Messages'),
                 ],
                 labelStyle: const TextStyle(fontSize: 16),
-                indicatorSize: TabBarIndicatorSize.tab,
+                labelColor: Palette.whiteColor,
+                indicator: const UnderlineTabIndicator(
+                    borderSide:
+                        BorderSide(width: 2.0, color: Palette.blueColor),
+                    insets: EdgeInsets.symmetric(horizontal: -20)),
               ),
             ),
             Positioned(
