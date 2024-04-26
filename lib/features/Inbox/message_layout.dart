@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomPopupMenuItem.dart';
 import 'package:reddit_clone/features/Inbox/message_item.dart';
 
 class MessageLayout extends StatelessWidget {
@@ -10,13 +11,19 @@ class MessageLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(
-        message.isRead ? Icons.mail_outline : Icons.mail,
-        color: message.isRead ? Colors.grey : Colors.blue,
+      leading: SizedBox(
+        width: 20,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Icon(
+            message.isRead ? Icons.mail_outline : Icons.mail,
+            color: message.isRead ? Colors.grey : Colors.blue,
+          ),
+        ),
       ),
       title: Text(
         message.title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,6 +31,8 @@ class MessageLayout extends StatelessWidget {
           Text(
             message.content,
             style: const TextStyle(color: Colors.grey),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
           Text(
@@ -32,26 +41,42 @@ class MessageLayout extends StatelessWidget {
           ),
         ],
       ),
-      trailing: IconButton(
-        icon: const Icon(Icons.more_vert),
-        onPressed: () {
+      trailing: GestureDetector(
+        onTap: () {
+          final RenderBox button = context.findRenderObject() as RenderBox;
+          final RenderBox overlay =
+              Overlay.of(context).context.findRenderObject() as RenderBox;
+          final RelativeRect position = RelativeRect.fromRect(
+            Rect.fromPoints(
+              button.localToGlobal(button.size.bottomRight(Offset.zero),
+                  ancestor: overlay),
+              button.localToGlobal(button.size.bottomRight(Offset.zero),
+                  ancestor: overlay),
+            ),
+            const Offset(20, 28) & overlay.size,
+          );
+
           showMenu(
             context: context,
-            position: const RelativeRect.fromLTRB(100.0, 200.0, 100.0, 100.0),
+            position: position,
             items: [
-              PopupMenuItem<String>(
+              const CustomPopupMenuItem<String>(
                 value: 'block',
-                child: ListTile(
-                  leading: const Icon(Icons.block),
-                  title: const Text('Block account'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                child: IntrinsicWidth(
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Icon(Icons.block),
+                      SizedBox(width: 10),
+                      Text('Block account'),
+                    ],
+                  ),
                 ),
               ),
             ],
           );
         },
+        child: const Icon(Icons.more_vert),
       ),
       onTap: onTap,
     );

@@ -9,7 +9,7 @@ import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'package:reddit_clone/features/Inbox/new_message.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -70,6 +70,7 @@ class MyApp extends StatelessWidget {
           ],
         ),
       ),
+      //home: const NewMessage(),
     );
   }
 }

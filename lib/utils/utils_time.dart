@@ -12,7 +12,7 @@ String formatTimestamp(DateTime timestamp) {
   } else if (difference.inHours > 0) {
     return '${difference.inHours}h';
   } else if (difference.inMinutes > 0) {
-    return '${difference.inMinutes}m';
+    return '${difference.inMinutes}min';
   } else {
     return 'Now';
   }

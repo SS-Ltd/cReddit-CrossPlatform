@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/message_item.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
+import 'package:reddit_clone/features/Inbox/new_message.dart';
 import 'package:reddit_clone/features/Inbox/notification_item.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class InboxNotificationPage extends StatefulWidget {
   const InboxNotificationPage({super.key});
@@ -98,65 +100,79 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    fetchInboxMessages();
+    //fetchInboxMessages();
   }
 
   Future<void> fetchInboxMessages() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final fetchedMessages = await networkService.fetchInboxMessages();
-    
   }
 
   void _showMenuOptions() {
     showModalBottomSheet(
-      context: context,
-      shape: Border.all(style: BorderStyle.none),
-      builder: (BuildContext context) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.message, color: Colors.black),
-              title: const Text('New Message',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.pop(context),
+        context: context,
+        shape: Border.all(style: BorderStyle.none),
+        builder: (BuildContext context) {
+          return Container(
+            color: Palette.backgroundColor,
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.edit_outlined),
+                  title: const Text('New Message'),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NewMessage()),
+                    );
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.mark_email_read),
+                  title: const Text('Mark all inbox tabs as read'),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings_outlined),
+                  title: const Text('Edit notification settings'),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.mark_email_read, color: Colors.black),
-              title: const Text('Mark all inbox tabs as read',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.black),
-              title: const Text('Edit notification settings',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inbox'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: _showMenuOptions,
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Notifications'),
-            Tab(text: 'Messages'),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Stack(
+          children: [
+            AppBar(
+              automaticallyImplyLeading: false,
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: 'Notifications'),
+                  Tab(text: 'Messages'),
+                ],
+                labelStyle: const TextStyle(fontSize: 16),
+                indicatorSize: TabBarIndicatorSize.tab,
+              ),
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: _showMenuOptions,
+              ),
+            ),
           ],
-          labelStyle: const TextStyle(fontSize: 16),
-          indicatorSize: TabBarIndicatorSize.tab,
         ),
       ),
       body: TabBarView(
