@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -5,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 /// A page for posting comments on a post.
 class CommentPostPage extends StatefulWidget {
@@ -82,56 +85,62 @@ class _CommentPostPageState extends State<CommentPostPage> {
         ),
         actions: <Widget>[
           TextButton(
-              child: const Text('Post',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  )),
-              onPressed: () async {
-                if (_controller.text.isNotEmpty) {
-                  Map<String, dynamic> result = await context
-                      .read<NetworkService>()
-                      .createNewTextComment(widget.postId, _controller.text);
-                  if (mounted && result['success'] == false) {
-                    CustomSnackBar(
-                      context: context,
-                      content: 'Failed to post comment',
-                    ).show();
-                    return;
-                  }
-                  contentType = false; // Text is entered
-                  Navigator.pop(context, {
-                    'content': _controller.text,
-                    'contentType': contentType,
-                    'commentId': result['commentId'],
-                    'user': result['user']
-                  });
-                } else if (_image != null) {
-                  Map<String, dynamic> result = await context
-                      .read<NetworkService>()
-                      .createNewImageComment(widget.postId, _image!);
-                  if (mounted && result['success'] == false) {
-                    CustomSnackBar(
-                      context: context,
-                      content: 'Failed to post comment',
-                    ).show();
-                    return;
-                  }
-                  contentType = true; // Image is entered
-                  Navigator.pop(context, {
-                    'content': _image,
-                    'contentType': contentType,
-                    'commentId': result['commentId'],
-                    'user': result['user']
-                  });
-                } else {
-                  CustomSnackBar(
-                    context: context,
-                    content: 'Please enter a comment',
-                  ).show();
-                }
-              }),
+            child: const Text('Post',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                )),
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return FutureBuilder<Map<String, dynamic>>(
+                    future: postComment(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const AlertDialog(
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Palette.blueColor),
+                              ),
+                              SizedBox(width: 30),
+                              Text("Posting comment..."),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.done) {
+                        if (snapshot.data != null &&
+                            snapshot.data!['success'] == true) {
+                          // comment was posted successfully
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(snapshot.data);
+                          });
+                        } else if (snapshot.data != null &&
+                            snapshot.data!['success'] == false) {
+                          // comment posting failed
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            CustomSnackBar(
+                              context: context,
+                              content: 'Failed to post comment',
+                            ).show();
+                          });
+                        }
+                        return const SizedBox.shrink();
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
       body: Padding(
@@ -198,5 +207,41 @@ class _CommentPostPageState extends State<CommentPostPage> {
         ),
       ),
     );
+  }
+
+  Future<Map<String, dynamic>> postComment() async {
+    if (_controller.text.isNotEmpty) {
+      Map<String, dynamic> result = await context
+          .read<NetworkService>()
+          .createNewTextComment(widget.postId, _controller.text);
+      if (result['success'] == false) {
+        return {'success': false};
+      }
+      contentType = false; // Text is entered
+      return {
+        'success': true,
+        'content': _controller.text,
+        'contentType': contentType,
+        'commentId': result['commentId'],
+        'user': result['user']
+      };
+    } else if (_image != null) {
+      Map<String, dynamic> result = await context
+          .read<NetworkService>()
+          .createNewImageComment(widget.postId, _image!);
+      if (result['success'] == false) {
+        return {'success': false};
+      }
+      contentType = true; // Image is entered
+      return {
+        'success': true,
+        'content': _image,
+        'contentType': contentType,
+        'commentId': result['commentId'],
+        'user': result['user']
+      };
+    } else {
+      return {'success': false};
+    }
   }
 }

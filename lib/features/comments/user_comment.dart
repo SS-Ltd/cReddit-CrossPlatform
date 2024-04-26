@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
@@ -48,8 +49,8 @@ class UserComment extends StatefulWidget {
     this.onBlock = defaultOnBlock,
   });
 
-    static void defaultOnDeleted() {}
-    static void defaultOnBlock() {}
+  static void defaultOnDeleted() {}
+  static void defaultOnBlock() {}
 
   @override
   UserCommentState createState() => UserCommentState();
@@ -292,25 +293,22 @@ class UserCommentState extends State<UserComment> {
                       ] else ...[
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
                                 widget.comment.title ?? '',
                                 style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
-                                overflow: TextOverflow
-                                    .ellipsis,
-                                maxLines:
-                                    1,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
                               const SizedBox(
                                   height:
                                       4), // Provides spacing of 4 logical pixels between title and username/community.
                               Text(
                                 '${widget.comment.username} . r/${widget.comment.communityName}  .  ${formatTimestamp(DateTime.parse(widget.comment.createdAt))}',
-                                style:
-                                    const TextStyle(fontSize: 14, color: Colors.grey),
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.grey),
                               ),
                             ],
                           ),
@@ -376,7 +374,6 @@ class UserCommentState extends State<UserComment> {
                     ],
                   ),
                   if (!isMinimized.value) ...[
-                    //const SizedBox(height: 10),
                     if (widget.comment.isImage == false) ...[
                       ValueListenableBuilder<String>(
                         valueListenable: content,
@@ -412,12 +409,11 @@ class UserCommentState extends State<UserComment> {
                               fit: BoxFit.cover,
                             );
                           } else {
-                            return Container(); // return an empty container when the file is null
+                            return Container();
                           }
                         },
                       )
                     ],
-                    //const SizedBox(height: 5),
                     Row(
                       children: [
                         const Spacer(),
@@ -671,6 +667,14 @@ class UserCommentState extends State<UserComment> {
                 leading: const Icon(Icons.copy_outlined),
                 title: const Text('Copy text'),
                 onTap: () {
+                  if (widget.imageSource != 1) {
+                    Clipboard.setData(
+                        ClipboardData(text: widget.comment.content));
+                  CustomSnackBar( context: context,
+                    content: "Copied to Clipboard",
+                  
+                  ).show();
+                  }
                   Navigator.pop(context);
                 },
               ),
