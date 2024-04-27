@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
+import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/search/comment_tile.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/community.dart';
+import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/models/user.dart';
@@ -215,7 +217,23 @@ class _HomeSearchState extends State<HomeSearch>
                           itemCount: postsResults.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
-                              onTap: () {},
+                              // onTap: () async {
+                              //   PostModel postComment =
+                              //       await Provider.of<NetworkService>(context,
+                              //               listen: false)
+                              //           .fetchPost(postsResults[index].id);
+                              //   Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => CommentPage(
+                              //         postId: postsResults[index].id,
+                              //         postComment: postComment,
+                              //         postTitle: postsResults[index].title,
+                              //         username: postsResults[index].username,
+                              //       ),
+                              //     ),
+                              //   );
+                              // },
                               child: Column(
                                 children: [
                                   PostTile(

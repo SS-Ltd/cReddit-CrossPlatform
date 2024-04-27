@@ -657,6 +657,19 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<PostModel> fetchPost(String id) async {
+    final url = Uri.parse('$_baseUrl/post/$id');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, then parse the JSON.
+      return PostModel.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response, then throw an exception.
+      throw Exception('Failed to load post');
+    }
+  }
+
   Future<List<PostModel>?> fetchUserPosts(
     String username, {
     String sort = 'hot',
