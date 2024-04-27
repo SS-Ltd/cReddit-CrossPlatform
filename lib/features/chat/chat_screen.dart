@@ -17,6 +17,31 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isFirstMessage = true; // Assuming this is to check if it's a new chat
 
   @override
+  void initState() {
+    // TODO: implement initState
+    messages.add(ChatMessage(
+        senderId: 'user1',
+        recipientId: 'user2',
+        message: 'Hello!',
+        timestamp: DateTime.now()));
+    messages.add(ChatMessage(
+        senderId: 'user1',
+        recipientId: 'user2',
+        message: 'Hello!!!',
+        timestamp: DateTime.now()));
+    messages.add(ChatMessage(
+        senderId: 'user2',
+        recipientId: 'user1',
+        message: 'Hi there!',
+        timestamp: DateTime.now()));
+    messages.add(ChatMessage(
+        senderId: 'user1',
+        recipientId: 'user2',
+        message: 'Hello!!!!!!!',
+        timestamp: DateTime.now()));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,10 +71,43 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                return ListTile(
-                  title: Text(message.message),
-                  subtitle: Text(
-                      'Sent by ${message.senderId} at ${message.timestamp}'),
+                bool showUserInfo = true; // Default to showing user info
+                // Check if the current message is from the same sender as the previous one
+                if (index > 0 &&
+                    messages[index - 1].senderId == message.senderId) {
+                  showUserInfo =
+                      false; // Do not show user info if the sender is the same
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (showUserInfo)
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                "https://i.imgur.com/BoN9kdC.png"), // Replace with the sender's profile picture URL
+                          ),
+                          SizedBox(width: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(message.senderId),
+                              Text(
+                                  '${message.timestamp}'), // Replace with the message's timestamp
+                            ],
+                          ),
+                        ],
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 2.0,
+                          bottom: 8.0,
+                          left: 50.0), // Add left padding to the message
+                      child: Text(message.message),
+                    ),
+                  ],
                 );
               },
             ),
