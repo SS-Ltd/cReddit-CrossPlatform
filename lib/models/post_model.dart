@@ -24,7 +24,7 @@ class PostModel {
   final bool isHidden;
   final bool isJoined;
   final bool isModerator;
-  final bool isBlocked;
+  bool? isBlocked;
   // final DateTime? uploadDate;
   final bool isNSFW;  
 
@@ -54,7 +54,7 @@ class PostModel {
     required this.isHidden,
     required this.isJoined,
     required this.isModerator,
-    required this.isBlocked,
+    this.isBlocked,
     required this.isNSFW,
   });
 

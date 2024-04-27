@@ -13,7 +13,7 @@ class UserModel {
   final Set<Subreddit> recentlyVisited = {};
   final List<String> recentlySearch= [];
   final bool isBlocked;
-  final bool isNFSW;
+  //bool? isNFSW;
 
   UserModel({
     required this.username,
@@ -25,7 +25,7 @@ class UserModel {
     required this.followers,
     required this.cakeDay,
     required this.isBlocked,
-    required this.isNFSW,
+    //this.isNFSW,
   });
 
   void updateUserStatus(bool status) {
@@ -60,7 +60,7 @@ class UserModel {
       followers: json['followers'],
       cakeDay: DateTime.parse(json['cakeDay']),
       isBlocked: json['isBlocked'] ?? false,
-      isNFSW : json['isNSFW'],
+      //isNFSW : json['isNSFW'],
     );
   }
 }
