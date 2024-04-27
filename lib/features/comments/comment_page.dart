@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
 
 /// This file contains the [CommentPage] widget, which is a stateful widget that
 /// displays a page for viewing and interacting with comments on a post.
@@ -65,6 +64,8 @@ class _CommentPageState extends State<CommentPage> {
   final ScrollController _scrollController = ScrollController();
   final List<GlobalKey> _keys = [];
   final List<double> _commentPositions = [];
+  bool isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -146,30 +147,70 @@ class _CommentPageState extends State<CommentPage> {
             size: 30,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            if (isSearching) {
+              setState(() {
+                isSearching = false;
+              });
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, size: 30.0),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.sort, size: 30.0),
-          ),
-          PopupMenuButton(
-              onSelected: (Menu item) {},
-              itemBuilder: (BuildContext context) {
-                return menuitems();
-              }),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
-            icon: const Icon(Icons.reddit, size: 30.0),
-          ),
-        ],
+        title: isSearching ? TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search Comments',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  _searchController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+              contentPadding: const EdgeInsets.all(10),
+            ),
+            // onChanged: (value) async {
+            //   setState(() {
+            //     searchQuery = value;
+            //   });
+            //   commentsResults =
+            //       await Provider.of<NetworkService>(context, listen: false)
+            //           .getSearchComments(value, '');
+            //   postsResults =
+            //       await Provider.of<NetworkService>(context, listen: false)
+            //           .getSearchPosts(value, '');
+            //},
+          ) : null,
+        actions: isSearching
+            ? null
+            : [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                    });
+                  },
+                  icon: const Icon(Icons.search, size: 30.0),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.sort, size: 30.0),
+                ),
+                PopupMenuButton(
+                  onSelected: (Menu item) {},
+                  itemBuilder: (BuildContext context) {
+                    return menuitems();
+                  },
+                ),
+                IconButton(
+                  onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+                  icon: const Icon(Icons.reddit, size: 30.0),
+                ),
+              ],
       ),
-      endDrawer: const Rightsidebar(),
+      endDrawer: isSearching ? null : const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
           return ListView.builder(
@@ -387,7 +428,6 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.report),
             title: const Text('Report'),
             onTap: () async {
-              print(widget.postId);
               bool isReported = await context
                   .read<NetworkService>()
                   .reportPost(widget.postId);

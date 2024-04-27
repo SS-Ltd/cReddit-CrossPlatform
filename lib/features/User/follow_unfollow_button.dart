@@ -7,13 +7,15 @@ class FollowButton extends StatefulWidget {
   final String profileName;
 
   const FollowButton({
-    Key? key,
+    super.key,
     required this.userName,
     required this.profileName,
-  }) : super(key: key);
+  });
 
   @override
-  _FollowButtonState createState() => _FollowButtonState();
+  State<FollowButton> createState() {
+    return _FollowButtonState();
+  }
 }
 
 class _FollowButtonState extends State<FollowButton> {
@@ -118,7 +120,7 @@ class SlideInSnackBar extends StatefulWidget {
   final Color textColor;
 
   const SlideInSnackBar({
-    Key? key,
+    super.key,
     required this.content,
     required this.duration,
     required this.backgroundColor,
@@ -126,7 +128,9 @@ class SlideInSnackBar extends StatefulWidget {
   });
 
   @override
-  _SlideInSnackBarState createState() => _SlideInSnackBarState();
+  State<SlideInSnackBar> createState() {
+    return _SlideInSnackBarState();
+  }
 }
 
 class _SlideInSnackBarState extends State<SlideInSnackBar>

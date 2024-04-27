@@ -23,7 +23,18 @@ linter:
   rules:
     - camel_case_types
     - file_names
-    - lines_longer_than_80_chars
+    - lines_longer_than_100_chars :
+        severity: warning
+        enabled: true
+        options:
+          line_length: 100
+          lines-regexp: '///.*'
+    - lines_longer_than_80_chars :
+        severity: warning
+        enabled: true
+        options:
+          line_length: 80
+          lines-regexp: '^(?!\s*///).*'
     - package_names
     - library_prefixes
     - non_constant_identifier_names
