@@ -233,21 +233,10 @@ class _SubRedditPageState extends State<SubRedditPage> {
     return Column(
       children: [
         Post(
-          communityName: postModel.communityName ?? '',
-          userName: postModel.username,
-          title: postModel.title,
-          postType: postModel.type,
-          profilePicture: postModel.profilePicture,
-          content: postModel.content,
-          commentNumber: postModel.commentCount,
           shareNumber: 0, // Adjust accordingly if your model includes this info
-          timeStamp: postModel.uploadDate ?? DateTime.now(),
+          postModel: postModel,
           isHomePage: true,
           isSubRedditPage: true,
-          postId: postModel.postId,
-          votes: postModel.netVote,
-          isDownvoted: postModel.isDownvoted,
-          isUpvoted: postModel.isUpvoted,
         ),
         const Divider(height: 1, thickness: 1),
       ],

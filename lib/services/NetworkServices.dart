@@ -640,8 +640,7 @@ class NetworkService extends ChangeNotifier {
         '&page=$page'
         '&limit=$limit');
 
-    final response =
-        await http.get(url, headers: {'accept': 'application/json'});
+    final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
       refreshToken();
       return fetchHomeFeed(sort: sort, time: time, page: page, limit: limit);
