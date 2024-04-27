@@ -8,7 +8,6 @@ import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.da
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/features/User/profile.dart';
 import 'package:reddit_clone/theme/Palette.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
@@ -67,7 +66,7 @@ class _RightsidebarState extends State<Rightsidebar> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 25.0),
-              child: Container(
+              child: SizedBox(
                 height: 200,
                 child: Image.asset(
                   'assets/hehe.png',

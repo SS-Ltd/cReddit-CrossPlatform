@@ -157,7 +157,10 @@ class _CreatePostState extends State<CreatePost> {
                                                 (controller) => controller.text)
                                             .toList(),
                                         '4-30-2024', //month-day-year
-                                        false,
+                                        context
+                                            .read<NetworkService>()
+                                            .user!
+                                            .isNFSW,
                                         isspoiler)
                                 : (_hasImage)
                                     ? await context
@@ -167,7 +170,10 @@ class _CreatePostState extends State<CreatePost> {
                                             chosenCommunity,
                                             _titleController.text,
                                             _image!,
-                                            false,
+                                            context
+                                                .read<NetworkService>()
+                                                .user!
+                                                .isNFSW,
                                             isspoiler)
                                     : await context
                                         //text or link post
@@ -177,7 +183,10 @@ class _CreatePostState extends State<CreatePost> {
                                             chosenCommunity,
                                             _titleController.text,
                                             _bodyController.text,
-                                            false,
+                                            context
+                                                .read<NetworkService>()
+                                                .user!
+                                                .isNFSW,
                                             isspoiler);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
