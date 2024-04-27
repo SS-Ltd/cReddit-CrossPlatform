@@ -26,7 +26,7 @@ class PostModel {
   final bool isModerator;
   bool? isBlocked;
   // final DateTime? uploadDate;
-  final bool isNSFW;  
+  final bool isNSFW;
 
   PostModel({
     required this.postId,
@@ -64,7 +64,7 @@ class PostModel {
       postId: json['_id'],
       type: json['type'],
       username: json['username'],
-      communityName: json['communityName'],
+      communityName: json['communityName'] ?? "",
       title: json['title'],
       content: json['content'],
       pollOptions: json['pollOptions'] != null
