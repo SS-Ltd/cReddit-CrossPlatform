@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:reddit_clone/features/chat/chat_screen.dart';
 import 'package:reddit_clone/features/chat/view_all_channels.dart';
-import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
 class ChatListScreen extends StatelessWidget {
@@ -51,7 +50,7 @@ class ChatListScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final channel = channelInfo[index];
                   return Container(
-                    width: 350, // Adjusted width
+                    width: 375, // Adjusted width
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     margin: const EdgeInsets.symmetric(horizontal: 8),

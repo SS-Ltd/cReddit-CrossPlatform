@@ -95,7 +95,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         {
           'name': 'Channel Two',
           'subredditName': 'r/Heartwarming',
-          'description': 'Heartwarming stories from around the world',
+          'description': 'Heartwarming stories',
           'profilePic': 'https://picsum.photos/203'
         },
         {
@@ -297,46 +297,66 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     );
   }
 
+  bool isChatChannelsApplied = false;
+  bool isGroupChatsApplied = false;
+  bool isDirectChatsApplied = false;
+
   void _showFilterModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
-        return Container(
-          child: Wrap(
-            children: <Widget>[
-              const ListTile(
-                title: Text('Filter Chats'),
-              ),
-              const Divider(),
-              CheckboxListTile(
-                title: const Text('Chat Channels'),
-                value: true,
-                onChanged: (bool? newValue) {},
-              ),
-              CheckboxListTile(
-                title: const Text('Group Chats'),
-                value: false,
-                onChanged: (bool? newValue) {},
-              ),
-              CheckboxListTile(
-                title: const Text('Direct Chats'),
-                value: false,
-                onChanged: (bool? newValue) {},
-              ),
-              Center(
-                child: Container(
-                  width: 400,
-                  child: ElevatedButton(
-                    child: const Text('Done'),
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              child: Wrap(
+                children: <Widget>[
+                  const ListTile(
+                    title: Text('Filter Chats'),
+                  ),
+                  const Divider(),
+                  CheckboxListTile(
+                    title: const Text('Chat Channels'),
+                    value: isChatChannelsApplied,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isChatChannelsApplied = newValue ?? false;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Group Chats'),
+                    value: isGroupChatsApplied,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isGroupChatsApplied = newValue ?? false;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Direct Chats'),
+                    value: isDirectChatsApplied,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isDirectChatsApplied = newValue ?? false;
+                      });
+                    },
+                  ),
+                  Center(
+                    child: Container(
+                      width: 400,
+                      child: ElevatedButton(
+                        child: const Text('Done'),
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
