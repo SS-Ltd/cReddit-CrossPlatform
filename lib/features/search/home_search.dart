@@ -214,15 +214,18 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: postsResults.length,
                           itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                PostTile(
-                                    post: postsResults[index],
-                                    isProfile: false),
-                                const Divider(
-                                  thickness: 1,
-                                ),
-                              ],
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Column(
+                                children: [
+                                  PostTile(
+                                      post: postsResults[index],
+                                      isProfile: false),
+                                  const Divider(
+                                    thickness: 1,
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ),
