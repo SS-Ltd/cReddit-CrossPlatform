@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
+import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/search/comment_tile.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 //this page will be used to search inside home and communities page
@@ -214,7 +216,9 @@ class _HomeSearchState extends State<HomeSearch>
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                PostTile(post: postsResults[index], isProfile: false),
+                                PostTile(
+                                    post: postsResults[index],
+                                    isProfile: false),
                                 const Divider(
                                   thickness: 1,
                                 ),
@@ -265,6 +269,20 @@ class _HomeSearchState extends State<HomeSearch>
                             return Column(
                               children: [
                                 ListTile(
+                                  onTap: () async {
+                                    UserModel myUser = await context
+                                        .read<NetworkService>()
+                                        .getMyDetails();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CustomNavigationBar(
+                                                isProfile: true,
+                                                myuser: myUser,
+                                              )),
+                                    );
+                                  },
                                   leading: CircleAvatar(
                                     backgroundImage: NetworkImage(
                                         peopleResults[index].profilePicture),
