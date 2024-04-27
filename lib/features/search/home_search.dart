@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
+import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/search/comment_tile.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
@@ -258,14 +259,27 @@ class _HomeSearchState extends State<HomeSearch>
                                 members: communitiesResults[index].members,
                                 icon: communitiesResults[index].icon,
                                 isJoined: false);
-                            return Column(
-                              children: [
-                                CommunityCard(
-                                    community: community, search: true),
-                                const Divider(
-                                  thickness: 1,
-                                ),
-                              ],
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SubRedditPage(
+                                      subredditName:
+                                          communitiesResults[index].name,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  CommunityCard(
+                                      community: community, search: true),
+                                  const Divider(
+                                    thickness: 1,
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ),
