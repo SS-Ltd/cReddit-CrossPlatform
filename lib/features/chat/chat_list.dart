@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:reddit_clone/features/chat/chat_screen.dart';
+import 'package:reddit_clone/features/chat/view_all_channels.dart';
 import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
@@ -29,9 +30,12 @@ class ChatListScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const NewPage()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ViewAllChannels(channels: channelInfo),
+                        ),
+                      );
                     },
                     child:
                         const Text('View All', style: TextStyle(fontSize: 15)),

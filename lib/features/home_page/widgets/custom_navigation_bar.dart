@@ -88,17 +88,20 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       channelInfo: [
         {
           'name': 'Channel One',
+          'subredditName': 'r/Wholesome',
           'description': 'Wholesome & Heartwarming',
           'profilePic': 'https://picsum.photos/202'
         },
         {
           'name': 'Channel Two',
-          'description': 'Wholesome & Heartwarming',
+          'subredditName': 'r/Heartwarming',
+          'description': 'Heartwarming stories from around the world',
           'profilePic': 'https://picsum.photos/203'
         },
         {
           'name': 'Channel Three',
-          'description': 'Wholesome & Heartwarming',
+          'subredditName': 'r/FeelGood',
+          'description': 'Feel good, positive news',
           'profilePic': 'https://picsum.photos/204'
         },
       ],
