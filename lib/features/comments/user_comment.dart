@@ -3,8 +3,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/user.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
 import 'dart:async';
@@ -325,13 +327,29 @@ class UserCommentState extends State<UserComment> {
                                     child: ValueListenableBuilder<String>(
                                       valueListenable: content,
                                       builder: (context, value, child) {
-                                        return Text(
-                                          value.split('\n')[0],
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey,
+                                        return MarkdownBody(
+                                          data: value,
+                                          styleSheet:
+                                              MarkdownStyleSheet.fromTheme(
+                                                      Theme.of(context))
+                                                  .copyWith(
+                                            p: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey,
+                                            ),
                                           ),
+                                          onTapLink: (text, href, title) async {
+                                            if (await canLaunchUrl(
+                                                Uri.parse(href!))) {
+                                              await launchUrl(Uri.parse(href));
+                                            } else {
+                                              CustomSnackBar(
+                                                context: context,
+                                                content:
+                                                    "Could not launch $href",
+                                              ).show();
+                                            }
+                                          },
                                         );
                                       },
                                     ),
@@ -378,15 +396,28 @@ class UserCommentState extends State<UserComment> {
                       ValueListenableBuilder<String>(
                         valueListenable: content,
                         builder: (context, value, child) {
-                          return Text(
-                            value,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
+                          return MarkdownBody(
+                            data: value,
+                            styleSheet:
+                                MarkdownStyleSheet.fromTheme(Theme.of(context))
+                                    .copyWith(
+                              p: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
                             ),
+                            onTapLink: (text, href, title) async {
+                              if (await canLaunchUrl(Uri.parse(href!))) {
+                                await launchUrl(Uri.parse(href));
+                              } else {
+                                CustomSnackBar(
+                                    context: context,
+                                    content: "could not launch $href");
+                              }
+                            },
                           );
                         },
-                      ),
+                      )
                     ] else if (widget.comment.isImage == true &&
                         widget.imageSource == 0) ...[
                       ValueListenableBuilder<String>(
@@ -604,9 +635,7 @@ class UserCommentState extends State<UserComment> {
                           commentId: widget.comment.commentId,
                           commentContent: widget.comment.content,
                           contentType: widget.comment.isImage,
-                          photo: widget.comment.isImage
-                              ? widget.photo
-                              : null,
+                          photo: widget.comment.isImage ? widget.photo : null,
                           imageSource: widget.imageSource,
                         ),
                       ),
@@ -670,10 +699,10 @@ class UserCommentState extends State<UserComment> {
                   if (widget.imageSource != 1) {
                     Clipboard.setData(
                         ClipboardData(text: widget.comment.content));
-                  CustomSnackBar( context: context,
-                    content: "Copied to Clipboard",
-                  
-                  ).show();
+                    CustomSnackBar(
+                      context: context,
+                      content: "Copied to Clipboard",
+                    ).show();
                   }
                   Navigator.pop(context);
                 },
