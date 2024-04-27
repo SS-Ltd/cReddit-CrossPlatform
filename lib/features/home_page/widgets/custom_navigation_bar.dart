@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
 import 'package:reddit_clone/features/chat/chat_list.dart';
+import 'package:reddit_clone/features/chat/newchat.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
@@ -223,7 +224,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const NewPage()),
+                                builder: (context) => NewChatPage()),
                           );
                         },
                       ),
