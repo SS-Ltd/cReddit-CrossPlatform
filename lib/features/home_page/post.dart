@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-import 'dart:async';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,46 +12,19 @@ import 'package:video_player/video_player.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class Post extends StatefulWidget {
-  // final String postId;
-  // final String postType;
-  // final String userName;
-  // final String communityName;
-  // final String profilePicture;
-  // int votes;
-  // int commentNumber;
-  // final String title;
-  // final String content;
-  // List<PollsOption>? pollOptions;
-  // // final DateTime expirationDate;
-  // final DateTime timeStamp;
 
   final PostModel postModel;
-  // bool isUpvoted;
-  // bool isDownvoted;
   final int shareNumber;
   final bool isHomePage;
   final bool isSubRedditPage;
 
-  Post({
-    Key? key,
-    // required this.communityName,
-    // required this.userName,
-    // required this.title,
-    // required this.profilePicture,
-    // this.pollOptions,
-    // required this.postType,
-    // required this.content,
-    // this.commentNumber = 0,
-    // required this.timeStamp,
-    // required this.postId,
-    // required this.votes,
+  const Post({
+    super.key,
     required this.postModel,
     this.isHomePage = true,
     required this.isSubRedditPage,
     this.shareNumber = 0,
-    // required this.isUpvoted,
-    // required this.isDownvoted,
-  }) : super(key: key);
+  });
 
   @override
   State<Post> createState() => _PostState();
@@ -120,7 +90,7 @@ class _PostState extends State<Post> {
                         ],
                       ),
                     )
-                  : Container(
+                  : const SizedBox(
                       height: 200,
                       child: Center(child: CircularProgressIndicator()),
                     ),
@@ -131,23 +101,10 @@ class _PostState extends State<Post> {
           onTap: widget.isHomePage
               ? () {
                   Post postComment = Post(
-                    // communityName: widget.communityName,
-                    // profilePicture: widget.profilePicture,
-                    // userName: widget.userName,
-                    // title: widget.title,
-                    // postType: widget.postType,
-                    // content: widget.content,
-                    // commentNumber: widget.commentNumber,
-                    // pollOptions: widget.pollOptions,
-                    // timeStamp: widget.timeStamp,
-                    // postId: widget.postId,
-                    // votes: widget.votes,
                     postModel: widget.postModel,
                     isHomePage: false,
                     isSubRedditPage: false,
                     shareNumber: widget.shareNumber,
-                    // isDownvoted: widget.isDownvoted,
-                    // isUpvoted: widget.isUpvoted,
                   );
                   Navigator.push(
                     context,
@@ -190,8 +147,6 @@ class _PostState extends State<Post> {
             hasVoted: false,
             pollId: widget.postModel.postId,
             onVoted: (PollOption pollOption, int newTotalVotes) async {
-              print(
-                  'Voted on option: ${pollOption.id} with new total votes: $newTotalVotes');
               bool success =
                   await Provider.of<NetworkService>(context, listen: false)
                       .voteOnPoll(widget.postModel.postId, pollOption.id ?? '');
@@ -238,7 +193,7 @@ class _PostState extends State<Post> {
           ),
         );
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
@@ -468,23 +423,10 @@ class _PostState extends State<Post> {
             onTap: widget.isHomePage
                 ? () {
                     Post postComment = Post(
-                      // communityName: widget.communityName,
-                      // profilePicture: widget.profilePicture,
-                      // userName: widget.userName,
-                      // title: widget.title,
-                      // postType: widget.postType,
-                      // pollOptions: widget.pollOptions,
-                      // content: widget.content,
-                      // commentNumber: widget.commentNumber,
-                      // timeStamp: widget.timeStamp,
-                      // postId: widget.postId,
-                      // votes: widget.votes,
                       postModel: widget.postModel,
                       isHomePage: false,
                       isSubRedditPage: false,
                       shareNumber: widget.shareNumber,
-                      // isDownvoted: widget.isDownvoted,
-                      // isUpvoted: widget.isUpvoted,
                     );
                     Navigator.push(
                       context,
@@ -528,7 +470,6 @@ class _PostState extends State<Post> {
                     bool oldIsDownVoted = widget.postModel.isDownvoted;
                     if (mounted) {
                       setState(() {
-                        print("upvote");
                         if (widget.postModel.isUpvoted &&
                             !widget.postModel.isDownvoted) {
                           widget.postModel.netVote--;
@@ -618,23 +559,10 @@ class _PostState extends State<Post> {
                 onPressed: widget.isHomePage
                     ? () {
                         Post postComment = Post(
-                          // communityName: widget.communityName,
-                          // profilePicture: widget.profilePicture,
-                          // userName: widget.userName,
-                          // title: widget.title,
-                          // postType: widget.postType,
-                          // content: widget.content,
-                          // pollOptions: widget.pollOptions,
-                          // commentNumber: widget.commentNumber,
-                          // timeStamp: widget.timeStamp,
-                          // postId: widget.postId,
-                          // votes: widget.votes,
                           postModel: widget.postModel,
                           isHomePage: false,
                           isSubRedditPage: false,
                           shareNumber: widget.shareNumber,
-                          // isDownvoted: widget.isDownvoted,
-                          // isUpvoted: widget.isUpvoted,
                         );
                         Navigator.push(
                           context,
