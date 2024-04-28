@@ -9,6 +9,7 @@ import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'services/firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ void main() async {
   // Get the token for this device
   String? token = await FirebaseMessaging.instance.getToken();
   print('Firebase Messaging Token: $token');
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   // Listen for token refresh
   FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {

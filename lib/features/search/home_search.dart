@@ -136,13 +136,24 @@ class _HomeSearchState extends State<HomeSearch>
                         itemCount: communitiesResults.length,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            // leading: CircleAvatar(
-                            //   backgroundImage: NetworkImage(
-                            //       commentsResults[index].postPicture),
-                            // ),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  communitiesResults[index].icon),
+                            ),
+                            subtitle: Text(
+                              "${communitiesResults[index].members} members" 
+                            ),
                             title: Text(communitiesResults[index].name),
                             onTap: () {
-                              // Navigate to the post and add to recently search
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SubRedditPage(
+                                    subredditName:
+                                        communitiesResults[index].name,
+                                  ),
+                                ),
+                              );
                             },
                             trailing: IconButton(
                               onPressed: () {},
@@ -152,7 +163,7 @@ class _HomeSearchState extends State<HomeSearch>
                         },
                       ),
                     ),
-                  if (peopleResults.isNotEmpty) const Text('Communities'),
+                  if (peopleResults.isNotEmpty) const Text('People'),
                   if (peopleResults.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
@@ -164,8 +175,19 @@ class _HomeSearchState extends State<HomeSearch>
                                   peopleResults[index].profilePicture),
                             ),
                             title: Text(peopleResults[index].username),
-                            onTap: () {
-                              // Navigate to the post and add to recently search
+                            onTap: () async {
+                              UserModel myUser = await context
+                                  .read<NetworkService>()
+                                  .getMyDetails();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CustomNavigationBar(
+                                    isProfile: true,
+                                    myuser: myUser,
+                                  ),
+                                ),
+                              );
                             },
                             trailing: IconButton(
                               onPressed: () {},
@@ -321,7 +343,7 @@ class _HomeSearchState extends State<HomeSearch>
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                CommentTile(comment: commentsResults[index]),
+                                CommentTile(comment: commentsResults[index], isProfile: false),
                                 const Divider(
                                   thickness: 1,
                                 ),
@@ -343,11 +365,12 @@ class _HomeSearchState extends State<HomeSearch>
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              CustomNavigationBar(
-                                                isProfile: true,
-                                                myuser: myUser,
-                                              )),
+                                        builder: (context) =>
+                                            CustomNavigationBar(
+                                          isProfile: true,
+                                          myuser: myUser,
+                                        ),
+                                      ),
                                     );
                                   },
                                   leading: CircleAvatar(

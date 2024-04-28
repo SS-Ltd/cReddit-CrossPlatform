@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
+import 'package:reddit_clone/features/chat/chat_list.dart';
+import 'package:reddit_clone/features/chat/newchat.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
@@ -55,6 +57,54 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const HomePage(),
     const CommunityPage(),
     const CreatePost(profile: false),
+    const ChatListScreen(
+      chatInfo: [
+        {
+          'id': 'user1',
+          'name': 'User One',
+          'lastMessage': 'Hey, how are you?',
+          'time': '10:45 PM',
+          'unread': true,
+          'profilePic': 'https://picsum.photos/240'
+        },
+        {
+          'id': 'user2',
+          'name': 'User Two',
+          'lastMessage': 'Let\'s meet tomorrow',
+          'time': '9:15 PM',
+          'unread': true,
+          'profilePic': 'https://picsum.photos/200'
+        },
+        {
+          'id': 'user3',
+          'name': 'User Three',
+          'lastMessage': 'Thank you!',
+          'time': '8:03 PM',
+          'unread': false,
+          'profilePic': 'https://picsum.photos/201'
+        },
+      ],
+      channelInfo: [
+        {
+          'name': 'Channel One',
+          'subredditName': 'r/Wholesome',
+          'description': 'Wholesome & Heartwarming',
+          'profilePic': 'https://picsum.photos/202'
+        },
+        {
+          'name': 'Channel Two',
+          'subredditName': 'r/Heartwarming',
+          'description': 'Heartwarming stories',
+          'profilePic': 'https://picsum.photos/203'
+        },
+        {
+          'name': 'Channel Three',
+          'subredditName': 'r/FeelGood',
+          'description': 'Feel good, positive news',
+          'profilePic': 'https://picsum.photos/204'
+        },
+      ],
+    ),
     const InboxNotificationPage(),
   ];
 
@@ -169,18 +219,36 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                                   child: const Text('Inbox'),
                                 ),
                   actions: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => const HomeSearch(),
+                    if (_currentIndex == 3)
+                      IconButton(
+                        icon: const Icon(Icons.message),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NewChatPage()),
+                          );
+                        },
+                      ),
+                    _currentIndex == 3
+                        ? IconButton(
+                            icon: const Icon(Icons.sort),
+                            onPressed: () {
+                              _showFilterModal(context);
+                            },
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => const HomeSearch(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.search, size: 30.0),
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.search, size: 30.0),
-                    ),
                     IconButton(
                       onPressed: () =>
                           _scaffoldKey.currentState!.openEndDrawer(),
@@ -226,6 +294,71 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               ],
             )
           : null,
+    );
+  }
+
+  bool isChatChannelsApplied = false;
+  bool isGroupChatsApplied = false;
+  bool isDirectChatsApplied = false;
+
+  void _showFilterModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              child: Wrap(
+                children: <Widget>[
+                  const ListTile(
+                    title: Text('Filter Chats'),
+                  ),
+                  const Divider(),
+                  CheckboxListTile(
+                    title: const Text('Chat Channels'),
+                    value: isChatChannelsApplied,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isChatChannelsApplied = newValue ?? false;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Group Chats'),
+                    value: isGroupChatsApplied,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isGroupChatsApplied = newValue ?? false;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text('Direct Chats'),
+                    value: isDirectChatsApplied,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        isDirectChatsApplied = newValue ?? false;
+                      });
+                    },
+                  ),
+                  Center(
+                    child: Container(
+                      width: 400,
+                      child: ElevatedButton(
+                        child: const Text('Done'),
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
