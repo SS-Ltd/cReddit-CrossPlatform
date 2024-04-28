@@ -343,7 +343,7 @@ class _HomeSearchState extends State<HomeSearch>
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                CommentTile(comment: commentsResults[index]),
+                                CommentTile(comment: commentsResults[index], isProfile: false),
                                 const Divider(
                                   thickness: 1,
                                 ),

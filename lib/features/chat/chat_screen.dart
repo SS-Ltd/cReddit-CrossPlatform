@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/models/chatmessages.dart';
-import 'package:reddit_clone/new_page.dart';
 
 class ChatScreen extends StatefulWidget {
   final String recipientId;
@@ -53,13 +52,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const NewPage()));
-              },
-            ),
+            // IconButton(
+            //   icon: Icon(Icons.more_vert),
+            //   onPressed: () {
+            //     Navigator.push(context,
+            //         MaterialPageRoute(builder: (context) => const NewPage()));
+            //   },
+            // ),
           ],
         ),
       ),

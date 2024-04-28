@@ -10,7 +10,6 @@ import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/features/search/home_search.dart';
-import 'package:reddit_clone/new_page.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/features/post/create_post.dart';

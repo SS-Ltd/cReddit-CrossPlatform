@@ -17,7 +17,7 @@ class PostModel {
   // final List<String> reports; // need type to be checked
   final String profilePicture;
   final int commentCount;
-  final bool isDeletedUser;
+  bool? isDeletedUser;
   bool isUpvoted;
   bool isDownvoted;
   final bool isSaved;
