@@ -129,27 +129,52 @@ class _HomeSearchState extends State<HomeSearch>
         body: isSearching
             ? Column(
                 children: [
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: commentsResults.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          // leading: CircleAvatar(
-                          //   backgroundImage: NetworkImage(
-                          //       commentsResults[index].postPicture),
-                          // ),
-                          title: Text(commentsResults[index].postTitle),
-                          onTap: () {
-                            // Navigate to the post and add to recently search
-                          },
-                          trailing: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.clear),
-                          ),
-                        );
-                      },
+                  if (communitiesResults.isNotEmpty) const Text('Communities'),
+                  if (communitiesResults.isNotEmpty)
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: communitiesResults.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            // leading: CircleAvatar(
+                            //   backgroundImage: NetworkImage(
+                            //       commentsResults[index].postPicture),
+                            // ),
+                            title: Text(communitiesResults[index].name),
+                            onTap: () {
+                              // Navigate to the post and add to recently search
+                            },
+                            trailing: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.clear),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                  if (peopleResults.isNotEmpty) const Text('Communities'),
+                  if (peopleResults.isNotEmpty)
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: peopleResults.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  peopleResults[index].profilePicture),
+                            ),
+                            title: Text(peopleResults[index].username),
+                            onTap: () {
+                              // Navigate to the post and add to recently search
+                            },
+                            trailing: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.clear),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   if (searchQuery.isNotEmpty)
                     TextButton(
                       onPressed: () {
@@ -159,7 +184,10 @@ class _HomeSearchState extends State<HomeSearch>
                           },
                         );
                       },
-                      child: Text('Search for $searchQuery', style: const TextStyle(fontSize: 20),),
+                      child: Text(
+                        'Search for $searchQuery',
+                        style: const TextStyle(fontSize: 20),
+                      ),
                     ),
                 ],
               )
