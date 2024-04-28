@@ -80,6 +80,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void cleanItems() {
+    posts.clear();
+  }
+
   Future<void> getPosts(String selectedItem) async {
     setState(() {
       isLoading = true;
@@ -112,6 +116,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refreshData() async {
+    cleanItems();
     await getPosts(selectedMenuItem);
   }
 
