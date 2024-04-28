@@ -994,9 +994,11 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<bool> hidepost(String postId, bool value) async {
+    print('asdasd');
     Uri url = Uri.parse('$_baseUrl/post/$postId/hide');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isHidden': value}));
+    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       return hidepost(postId, value);

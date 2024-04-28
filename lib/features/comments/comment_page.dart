@@ -347,6 +347,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   List<PopupMenuEntry<Menu>> menuitems() {
+    bool save = widget.postComment.postModel.isSaved;
     return <PopupMenuEntry<Menu>>[
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
@@ -365,17 +366,22 @@ class _CommentPageState extends State<CommentPage> {
       PopupMenuItem<Menu>(
         value: Menu.save,
         child: ListTile(
-          leading: widget.postComment.postModel.isSaved
+          leading: save
               ? const Icon(Icons.bookmark_add)
               : const Icon(Icons.bookmark_add_outlined),
           title: const Text('Save'),
           onTap: () async {
+            print('save button clicked');
+            print(save);
             bool isSaved = await context
                 .read<NetworkService>()
                 .saveandunsavepost(widget.postComment.postModel.postId,
-                    widget.postComment.postModel.isSaved);
+                    !(widget.postComment.postModel.isSaved));
             if (isSaved == true &&
                 widget.postComment.postModel.isSaved == false) {
+              setState(() {
+                save = !save;
+              });
               CustomSnackBar(
                       content: "Post saved!",
                       context: context,
@@ -383,6 +389,9 @@ class _CommentPageState extends State<CommentPage> {
                   .show();
             } else if (isSaved == true &&
                 widget.postComment.postModel.isSaved == true) {
+              setState(() {
+                save = !save;
+              });
               CustomSnackBar(
                       content: "Post unsaved!",
                       context: context,
@@ -460,7 +469,7 @@ class _CommentPageState extends State<CommentPage> {
           value: Menu.block,
           child: ListTile(
             leading: Icon(Icons.block),
-            title: Text('Block'),
+            title: Text('Block Account'),
           )),
       PopupMenuItem<Menu>(
           value: Menu.hide,
@@ -468,11 +477,16 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.hide_source),
             title: const Text('hide'),
             onTap: () async {
+              print('button clicked');
               bool isHidden = await context
                   .read<NetworkService>()
                   .hidepost(widget.postId, true);
               if (isHidden) {
-                CustomSnackBar(content: "Post hidden!", context: context, backgroundColor: Colors.white, textColor: Colors.black)
+                CustomSnackBar(
+                        content: "Post hidden!",
+                        context: context,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black)
                     .show();
                 Navigator.push(
                   context,
@@ -490,15 +504,15 @@ class _CommentPageState extends State<CommentPage> {
 enum Menu {
   share,
   subscribe,
-  save, 
+  save,
   copytext,
   edit,
   addpostflair,
   markspoiler,
   markNSFW,
   markasbrandaffiliate,
-  delete, 
-  report, 
+  delete,
+  report,
   block,
-  hide, 
+  hide,
 }
