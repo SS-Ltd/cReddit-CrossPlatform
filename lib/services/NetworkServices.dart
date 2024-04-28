@@ -525,12 +525,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+
   Future<List<SearchComments>> getSearchComments(
       String comment, String username) async {
     final parameters = {'query': comment, 'user': username};
     Uri url = Uri.parse('$_baseUrl/search/comments')
         .replace(queryParameters: parameters);
-
     print(parameters);
     final response = await http.get(url, headers: _headers);
     print(response.statusCode);
