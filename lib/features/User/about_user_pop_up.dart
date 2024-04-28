@@ -56,7 +56,7 @@ class AboutUserPopUp extends StatelessWidget {
                       about: myUser.about!,
                       cakeDay: myUser.cakeDay.toString(),
                       bannerPicture: myUser.banner!,
-                      isOwnProfile: true,
+                      isOwnProfile: false,
                     ),
                   ),
                 );

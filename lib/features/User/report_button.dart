@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:provider/provider.dart';
 import 'dart:convert';
+
+import 'package:reddit_clone/services/networkServices.dart';
 
 /// This class represents a report button widget.
 ///
@@ -9,7 +12,16 @@ import 'dart:convert';
 /// When the button is tapped, a modal bottom sheet is shown where the user can select a reason for reporting a post.
 /// The selected reason is then sent to the server using an HTTP POST request.
 class ReportButton extends StatefulWidget {
-  const ReportButton({super.key});
+  final String? subredditName;
+  final String? postId;
+  final String? commentId;
+  final bool isPost;
+  const ReportButton(
+      {super.key,
+      this.subredditName,
+      required this.isPost,
+      this.postId,
+      this.commentId});
 
   @override
   State<ReportButton> createState() {
@@ -18,27 +30,47 @@ class ReportButton extends StatefulWidget {
 }
 
 class _ReportButtonState extends State<ReportButton> {
-  Future<http.Client> createMockHttpClient() async {
-    return MockClient((request) async {
-      if (request.url.path.contains('/report') && request.method == 'POST') {
-        return http.Response(
-            jsonEncode({"message": "Post reported successfully"}), 200);
-      }
-      return http.Response('Not Found', 404);
+  String? selectedReason;
+  List<String> reasons = [
+    "Harassment",
+    "Threatening violence",
+    "Hate",
+    "Abuse",
+    "Personal information",
+    "Non-consensual"
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchReasons().then((value) {
+      setState(() {
+        reasons = value;
+      });
     });
   }
 
-  String? selectedReason;
+  Future<List<String>> fetchReasons() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    if (widget.subredditName == null) {
+      return [];
+    } else {
+      final details =
+          await networkService.getSubredditDetails(widget.subredditName);
+      return details?.rules ?? [];
+    }
+  }
 
-  void reportPost(String postId, String reason) async {
-    final http.Client client = await createMockHttpClient();
-    final response = await client.post(
-      Uri.parse('/post/$postId/report'),
-      body: jsonEncode({'reason': reason}),
-    );
-
-    final responseData = jsonDecode(response.body);
-    print(responseData['message']);
+  void report(String Id, String reason) async {
+    if (widget.subredditName == null) {
+      return;
+    }
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    if (widget.isPost) {
+      await networkService.reportPost(Id, reason);
+    } else {
+      await networkService.reportComments(Id, reason);
+    }
   }
 
   void showReportSheet(BuildContext context) {
@@ -73,14 +105,7 @@ class _ReportButtonState extends State<ReportButton> {
                       style: TextStyle(color: Colors.white70),
                     ),
                   ),
-                  ...[
-                    "Harassment",
-                    "Threatening violence",
-                    "Hate",
-                    "Abuse",
-                    "Personal information",
-                    "Non-consensual"
-                  ].map((reason) => ListTile(
+                  ...reasons.map((reason) => ListTile(
                         title: Text(reason,
                             style: TextStyle(
                                 color: selectedReason == reason
@@ -102,7 +127,11 @@ class _ReportButtonState extends State<ReportButton> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (selectedReason != null) {
-                                reportPost('123', selectedReason!);
+                                report(
+                                    widget.isPost
+                                        ? widget.postId!
+                                        : widget.commentId!,
+                                    selectedReason!);
                               }
                               Navigator.pop(context);
                             },
@@ -128,22 +157,14 @@ class _ReportButtonState extends State<ReportButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Report Button Page'),
-        backgroundColor: const Color.fromRGBO(16, 16, 16, 1),
+    return ListTile(
+      tileColor: const Color.fromRGBO(34, 34, 34, 1),
+      leading: const Icon(Icons.flag, color: Colors.white),
+      title: const Text(
+        'Report',
+        style: TextStyle(color: Colors.white),
       ),
-      body: Center(
-        child: ListTile(
-          tileColor: const Color.fromRGBO(34, 34, 34, 1),
-          leading: const Icon(Icons.flag, color: Colors.white),
-          title: const Text(
-            'Report',
-            style: TextStyle(color: Colors.white),
-          ),
-          onTap: () => showReportSheet(context),
-        ),
-      ),
+      onTap: () => showReportSheet(context),
     );
   }
 }

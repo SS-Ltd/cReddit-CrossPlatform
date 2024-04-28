@@ -250,6 +250,8 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchCommentsForPost(postId);
     }
+    print("COMMENT EL POST HNA");
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -486,8 +488,6 @@ class NetworkService extends ChangeNotifier {
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName');
     final response = await http.get(url, headers: _headers);
-    print("heelpp");
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return getSubredditDetails(subredditName);
@@ -527,24 +527,87 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchComments>> getSearchComment(String comment) async {
-    final parameters = {'query': comment};
-    Uri url = Uri.parse('$_baseUrl/search/comments?'
-        'query=$comment');
 
+  Future<List<SearchComments>> getSearchComments(
+      String comment, String username) async {
+    final parameters = {'query': comment, 'user': username};
+    Uri url = Uri.parse('$_baseUrl/search/comments')
+        .replace(queryParameters: parameters);
     print(parameters);
-    print(url);
     final response = await http.get(url, headers: _headers);
-    print(response.body);
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchComment(comment);
+      return getSearchComments(comment, username);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchComments> searchResult =
           responseData.map((item) => SearchComments.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchPosts>> getSearchPosts(String post, String username) async {
+    final parameters = {'query': post, 'user': username};
+    Uri url = Uri.parse('$_baseUrl/search/posts')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchPosts(post, username);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchPosts> searchResult =
+          responseData.map((item) => SearchPosts.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchCommunities>> getSearchCommunities(String community) async {
+    final parameters = {'query': community};
+    Uri url = Uri.parse('$_baseUrl/search/communities')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchCommunities(community);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchCommunities> searchResult =
+          responseData.map((item) => SearchCommunities.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchUsers>> getSearchUsers(String user) async {
+    final parameters = {'query': user};
+    Uri url = Uri.parse('$_baseUrl/search/users')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchUsers(user);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchUsers> searchResult =
+          responseData.map((item) => SearchUsers.fromJson(item)).toList();
       return searchResult;
     } else {
       return [];
@@ -592,6 +655,19 @@ class NetworkService extends ChangeNotifier {
       return posts;
     } else {
       return null;
+    }
+  }
+
+  Future<PostModel> fetchPost(String id) async {
+    final url = Uri.parse('$_baseUrl/post/$id');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, then parse the JSON.
+      return PostModel.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response, then throw an exception.
+      throw Exception('Failed to load post');
     }
   }
 
@@ -986,12 +1062,38 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> reportPost(String postId) async {
+  Future<bool> reportPost(String postId, String ruleBroken) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
-    final response = await http.post(url, headers: _headers);
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({
+          'communityRule': ruleBroken,
+        }));
+    print("REPORT POST HERE:");
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
-      return reportPost(postId);
+      return reportPost(postId, ruleBroken);
+    }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> reportComments(String commentId, String ruleBroken) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/report');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({
+          'communityRule': ruleBroken,
+        }));
+    print("REPORT COMMENT HERE:");
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return reportPost(commentId, ruleBroken);
     }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;

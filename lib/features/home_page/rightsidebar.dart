@@ -373,19 +373,7 @@ class _RightsidebarState extends State<Rightsidebar> {
                               builder: (context) => CustomNavigationBar(
                                     isProfile: true,
                                     myuser: myUser,
-                                  )
-                              // Profile(
-                              //   userName: myUser.username,
-                              //   profileName: myUser.username,
-                              //   displayName: myUser.displayName,
-                              //   profilePicture: myUser.profilePicture,
-                              //   followerCount: myUser.followers,
-                              //   about: myUser.about ?? '',
-                              //   cakeDay: myUser.cakeDay.toString(),
-                              //   bannerPicture: myUser.banner ?? '',
-                              //   isOwnProfile: true,
-                              // ),
-                              ),
+                                  )),
                         );
                       }),
                   _buildListTile(
