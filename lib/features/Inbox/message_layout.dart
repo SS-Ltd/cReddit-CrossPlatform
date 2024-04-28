@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomPopupMenuItem.dart';
-import 'package:reddit_clone/features/Inbox/message_item.dart';
+import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class MessageLayout extends StatelessWidget {
-  final MessageItem message;
+  final Messages message;
   final VoidCallback onTap;
 
   const MessageLayout({super.key, required this.message, required this.onTap});
@@ -24,21 +25,32 @@ class MessageLayout extends StatelessWidget {
         ),
       ),
       title: Text(
-        message.title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        message.subject,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+          height: 1.1,
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 4),
           Text(
-            message.content,
-            style: const TextStyle(color: Colors.grey),
+            message.text,
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+              height: 1.2,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 4),
           Text(
-            '${message.senderUsername} • ${message.time}',
+            'u/${message.from} • ${formatTimestamp(DateTime.parse(message.createdAt))}',
             style: const TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ],

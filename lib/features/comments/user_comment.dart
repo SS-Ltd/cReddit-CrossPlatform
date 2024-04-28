@@ -380,7 +380,7 @@ class UserCommentState extends State<UserComment> {
                                                     fit: BoxFit.cover,
                                                   );
                                                 } else {
-                                                  return Container(); // return an empty container when the file is null
+                                                  return Container();
                                                 }
                                               },
                                             ),

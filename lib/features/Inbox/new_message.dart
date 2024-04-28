@@ -1,6 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/theme/palette.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class NewMessage extends StatefulWidget {
   const NewMessage({super.key});
@@ -63,12 +69,36 @@ class _NewMessageState extends State<NewMessage> {
                         onPressed: areFieldsEmpty()
                             ? null
                             : () async {
-                                // Handle the post action here
-                                Navigator.pop(context, {
-                                  'username': usernameController.text,
-                                  'subject': subjectController.text,
-                                  'message': messageController.text,
-                                });
+                                final result = await context
+                                    .read<NetworkService>()
+                                    .sendMessege(
+                                        usernameController.text,
+                                        subjectController.text,
+                                        messageController.text);
+                                if (result['success']) {
+                                  UserModel user = context
+                                        .read<NetworkService>()
+                                        .getUser();
+                                  CustomSnackBar(
+                                      context: context,
+                                      content: 'Message sent'); 
+
+                                  Messages message = Messages(
+                                    id: result['messageId'],
+                                    from: user.username,
+                                    to: usernameController.text,
+                                    subject: subjectController.text,
+                                    text: messageController.text,
+                                    createdAt: DateTime.now().toString(),
+                                  );
+                                  Navigator.pop(context, message);
+                                }
+                                else {
+                                  CustomSnackBar(
+                                      context: context,
+                                      content: 'Message not sent');
+                                  Navigator.pop(context, null);
+                                }
                               },
                         child: Text('Send',
                             style: TextStyle(

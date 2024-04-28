@@ -228,7 +228,7 @@ class _CommentPageState extends State<CommentPage> {
                     setState(() {
                       UserComment? newComment;
                       if (contentType == false) {
-                        final String commentText = result['content'];
+                        //final String commentText = result['content'];
                         newComment = UserComment(
                           photo: null,
                           imageSource: 2,
@@ -238,15 +238,15 @@ class _CommentPageState extends State<CommentPage> {
                             username: result['user'].username,
                             isImage: contentType,
                             netVote: 1,
-                            content: commentText,
+                            content: result['content'],
                             createdAt: DateTime.now().toString(),
                             commentId: result['commentId'],
                           ),
                         );
                       } else if (contentType == true) {
-                        final File commentImage = result['content'];
+                        //final File commentImage = result['content'];
                         newComment = UserComment(
-                          photo: commentImage,
+                          photo: result['content'],
                           imageSource: 1,
                           hasVoted: 1,
                           comment: Comments(

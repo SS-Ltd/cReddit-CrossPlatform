@@ -448,27 +448,80 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Messages>?> fetchInboxMessages() async {
-  Uri url = Uri.parse('$_baseUrl/message/inbox');
-  final response = await http.get(url, headers: _headers);
-  if (response.statusCode == 403) {
-    refreshToken();
-    return fetchInboxMessages();
+    Uri url = Uri.parse('$_baseUrl/message/');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchInboxMessages();
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<Messages>? inboxMessages =
+          responseData.map((item) => Messages.fromJson(item)).toList();
+      return inboxMessages;
+    } else {
+      return null;
+    }
   }
-  if (response.statusCode == 200) {
-    final List<dynamic> responseData = jsonDecode(response.body);
-    List<Messages> inboxMessages = responseData
-        .map((item) => Messages.fromJson(item))
-        .toList();
-    return inboxMessages;
-  } else {
-    return null;
+
+  Future<bool> markMessageAsRead(String messageId) async {
+    Uri url = Uri.parse('$_baseUrl/message/$messageId/mark-as-read');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markMessageAsRead(messageId);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
-  /*if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body);
-      return responseData
-          .map((commentJson) => Comments.fromJson(commentJson))
-          .toList();*/
-}
+
+  Future<bool> markAllMessagesasRead() async {
+    Uri url = Uri.parse('$_baseUrl/message/mark-all-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAllMessagesasRead();
+    }
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> sendMessege(
+      String to, String subject, String message) async {
+    Uri url = Uri.parse('$_baseUrl/message/');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'to': to,
+        'subject': subject,
+        'message': message,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return sendMessege(to, subject, message);
+    }
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      return {
+        'success': true,
+        'messageId': responseBody['messageId'],
+      };
+    } else {
+      return {
+        'success': false,
+      };
+    }
+  }
 
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
@@ -536,32 +589,30 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<UserModel> getUserDetails(String username) async {
-  Uri url = Uri.parse('$_baseUrl/user/$username');
-  final response = await http.get(url, headers: _headers);
+    Uri url = Uri.parse('$_baseUrl/user/$username');
+    final response = await http.get(url, headers: _headers);
 
-  if (response.statusCode == 403) {
-    refreshToken();
-    getUserDetails(username);
+    if (response.statusCode == 403) {
+      refreshToken();
+      getUserDetails(username);
+    }
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return UserModel.fromJson(json);
+    } else {
+      print('Failed to fetch user details');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to fetch user details');
+    }
   }
-  print(response.body);
-  print(response.statusCode);
-  if (response.statusCode == 200) {
-    final json = jsonDecode(response.body);
-    return UserModel.fromJson(json);
-  } else {
-    print('Failed to fetch user details');
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-    throw Exception('Failed to fetch user details');
-  }
-}
 
   Future<List<SearchComments>> getSearchComment(String comment) async {
-    final parameters = {
-      'query' : comment
-    };
+    final parameters = {'query': comment};
     Uri url = Uri.parse('$_baseUrl/search/comments?'
-    'query=$comment');
+        'query=$comment');
 
     print(parameters);
     print(url);
