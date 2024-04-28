@@ -2,12 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 /// This file contains the [CommentPage] widget, which is a stateful widget that
 /// displays a page for viewing and interacting with comments on a post.
@@ -361,14 +363,36 @@ class _CommentPageState extends State<CommentPage> {
             title: Text('Subscribe'),
           )),
       PopupMenuItem<Menu>(
-          value: Menu.save,
-          child: ListTile(
-            leading: const Icon(Icons.bookmark_add_outlined),
-            title: const Text('Save'),
-            onTap: () async {
-              //    bool isSaved = await context.read<NetworkService>().saveandunsavepost(widget.postId, isSaved)
-            },
-          )),
+        value: Menu.save,
+        child: ListTile(
+          leading: widget.postComment.postModel.isSaved
+              ? const Icon(Icons.bookmark_add)
+              : const Icon(Icons.bookmark_add_outlined),
+          title: const Text('Save'),
+          onTap: () async {
+            bool isSaved = await context
+                .read<NetworkService>()
+                .saveandunsavepost(widget.postComment.postModel.postId,
+                    widget.postComment.postModel.isSaved);
+            if (isSaved == true &&
+                widget.postComment.postModel.isSaved == false) {
+              CustomSnackBar(
+                      content: "Post saved!",
+                      context: context,
+                      backgroundColor: Colors.green)
+                  .show();
+            } else if (isSaved == true &&
+                widget.postComment.postModel.isSaved == true) {
+              CustomSnackBar(
+                      content: "Post unsaved!",
+                      context: context,
+                      backgroundColor: Colors.white,
+                      textColor: Colors.black)
+                  .show();
+            }
+          },
+        ),
+      ),
       const PopupMenuItem<Menu>(
           value: Menu.copytext,
           child: ListTile(
@@ -448,7 +472,14 @@ class _CommentPageState extends State<CommentPage> {
                   .read<NetworkService>()
                   .hidepost(widget.postId, true);
               if (isHidden) {
-                //show snackbar
+                CustomSnackBar(content: "Post hidden!", context: context, backgroundColor: Colors.white, textColor: Colors.black)
+                    .show();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                );
               }
             },
           )),
@@ -459,15 +490,15 @@ class _CommentPageState extends State<CommentPage> {
 enum Menu {
   share,
   subscribe,
-  save, //done
+  save, 
   copytext,
   edit,
   addpostflair,
   markspoiler,
   markNSFW,
   markasbrandaffiliate,
-  delete, //done
-  report, //done
+  delete, 
+  report, 
   block,
-  hide, //done
+  hide, 
 }
