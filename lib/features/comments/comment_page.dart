@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -96,7 +97,7 @@ class _CommentPageState extends State<CommentPage> {
     if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
-        fetchedComments.map((e) => e.communityName = '').toList();
+        //fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
                   photo: comment.isImage ? File(comment.content) : null,
@@ -156,33 +157,35 @@ class _CommentPageState extends State<CommentPage> {
             }
           },
         ),
-        title: isSearching ? TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search Comments',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  _searchController.clear();
-                },
-                icon: const Icon(Icons.clear),
-              ),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-              contentPadding: const EdgeInsets.all(10),
-            ),
-            // onChanged: (value) async {
-            //   setState(() {
-            //     searchQuery = value;
-            //   });
-            //   commentsResults =
-            //       await Provider.of<NetworkService>(context, listen: false)
-            //           .getSearchComments(value, '');
-            //   postsResults =
-            //       await Provider.of<NetworkService>(context, listen: false)
-            //           .getSearchPosts(value, '');
-            //},
-          ) : null,
+        title: isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search Comments',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                // onChanged: (value) async {
+                //   setState(() {
+                //     searchQuery = value;
+                //   });
+                //   commentsResults =
+                //       await Provider.of<NetworkService>(context, listen: false)
+                //           .getSearchComments(value, '');
+                //   postsResults =
+                //       await Provider.of<NetworkService>(context, listen: false)
+                //           .getSearchPosts(value, '');
+                //},
+              )
+            : null,
         actions: isSearching
             ? null
             : [
@@ -424,17 +427,10 @@ class _CommentPageState extends State<CommentPage> {
             )),
       PopupMenuItem<Menu>(
           value: Menu.report,
-          child: ListTile(
-            leading: const Icon(Icons.report),
-            title: const Text('Report'),
-            onTap: () async {
-              bool isReported = await context
-                  .read<NetworkService>()
-                  .reportPost(widget.postId);
-              if (isReported) {
-                //show snackbar
-              }
-            },
+          child: ReportButton(
+            isPost: true,
+            postId: widget.postId,
+            subredditName: widget.postComment.postModel.communityName,
           )),
       const PopupMenuItem<Menu>(
           value: Menu.block,

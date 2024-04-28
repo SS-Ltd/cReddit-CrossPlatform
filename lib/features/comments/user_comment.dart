@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'static_comment_card.dart';
 import 'reply_comment.dart';
@@ -26,8 +27,7 @@ import 'package:reddit_clone/utils/utils_time.dart';
 /// The [UserCommentState] class is the state class for the [UserComment] widget.
 /// It manages the state of the comment, including the number of votes, voting status, replies, and content.
 /// The class also handles user interactions such as upvoting, downvoting, adding replies, and minimizing the comment.
-///
-/// This file is located at /C:/Users/Youssef Darwish/Documents/GitHub/cReddit-CrossPlatform/lib/features/comments/user_comment.dart.
+
 class UserComment extends StatefulWidget {
   final int level;
   File? photo;
@@ -718,18 +718,10 @@ class UserCommentState extends State<UserComment> {
                     Navigator.pop(context);
                   },
                 ),
-              ListTile(
-                leading: const Icon(Icons.flag_outlined),
-                title: const Text('Report'),
-                onTap: () async {
-                  bool reported = await context
-                      .read<NetworkService>()
-                      .reportPost(widget.comment.commentId);
-                  if (reported) {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
+              ReportButton(
+                  isPost: false,
+                  commentId: widget.comment.commentId,
+                  subredditName: widget.comment.communityName),
             ],
           ),
         );
