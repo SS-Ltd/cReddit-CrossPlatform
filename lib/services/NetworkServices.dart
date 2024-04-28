@@ -250,6 +250,8 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchCommentsForPost(postId);
     }
+    print("COMMENT EL POST HNA");
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -1060,12 +1062,38 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> reportPost(String postId) async {
+  Future<bool> reportPost(String postId, String ruleBroken) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
-    final response = await http.post(url, headers: _headers);
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({
+          'communityRule': ruleBroken,
+        }));
+    print("REPORT POST HERE:");
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
-      return reportPost(postId);
+      return reportPost(postId, ruleBroken);
+    }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> reportComments(String commentId, String ruleBroken) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/report');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({
+          'communityRule': ruleBroken,
+        }));
+    print("REPORT COMMENT HERE:");
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return reportPost(commentId, ruleBroken);
     }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
