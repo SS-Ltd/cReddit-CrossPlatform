@@ -7,7 +7,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
-import 'firebase_options.dart';
+import 'services/firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 

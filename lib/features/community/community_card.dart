@@ -10,6 +10,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 /// It also provides a button to join or disjoin the community.
 class CommunityCard extends StatefulWidget {
   final Community community;
+  final bool search;
 
   /// Creates a [CommunityCard] widget.
   ///
@@ -17,6 +18,7 @@ class CommunityCard extends StatefulWidget {
   const CommunityCard({
     super.key,
     required this.community,
+    required this.search,
   });
 
   @override
@@ -80,10 +82,18 @@ class CommunityCardState extends State<CommunityCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                CircleAvatar(
-                  backgroundImage: NetworkImage(widget.community.icon),
-                  radius: 20,
-                ),
+                widget.search
+                    ? SizedBox(
+                        width: 45,
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(widget.community.icon),
+                          radius: 20,
+                        ),
+                      )
+                    : CircleAvatar(
+                        backgroundImage: NetworkImage(widget.community.icon),
+                        radius: 20,
+                      ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(
@@ -99,6 +109,14 @@ class CommunityCardState extends State<CommunityCard> {
                         style: const TextStyle(
                             fontSize: 11, color: Palette.greyColor),
                       ),
+                      if (widget.search)
+                        Text(
+                          widget.community.description ?? '',
+                          style: const TextStyle(
+                              fontSize: 11, color: Palette.greyColor),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                     ],
                   ),
                 ),
@@ -157,12 +175,13 @@ class CommunityCardState extends State<CommunityCard> {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              widget.community.description ?? '',
-              style: const TextStyle(fontSize: 11, color: Palette.greyColor),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            if (!widget.search)
+              Text(
+                widget.community.description ?? '',
+                style: const TextStyle(fontSize: 11, color: Palette.greyColor),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
           ],
         ),
       ),

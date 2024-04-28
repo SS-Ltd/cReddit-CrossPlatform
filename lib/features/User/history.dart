@@ -169,21 +169,10 @@ class _HistoryPageState extends State<HistoryPage> {
     return Column(
       children: [
         Post(
-          communityName: postModel.communityName ?? '',
-          userName: postModel.username,
-          title: postModel.title,
-          profilePicture: postModel.profilePicture,
-          postType: postModel.type,
-          content: postModel.content,
-          commentNumber: postModel.commentCount,
+          postModel: postModel,
           shareNumber: 0,
-          timeStamp: postModel.uploadDate ?? DateTime.now(),
           isHomePage: true,
           isSubRedditPage: false,
-          postId: postModel.postId,
-          votes: postModel.netVote,
-          isDownvoted: postModel.isDownvoted,
-          isUpvoted: postModel.isUpvoted,
         ),
         const Divider(height: 1, thickness: 1),
       ],

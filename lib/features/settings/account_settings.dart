@@ -7,9 +7,10 @@ import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/features/settings/muted_communities.dart';
 import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
+import 'package:reddit_clone/common/selection_button.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/selection_button.dart';
-import 'package:reddit_clone/switch_button.dart';
+import 'package:reddit_clone/common/selection_button.dart';
+import 'package:reddit_clone/common/switch_button.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/settings/manage_notifications.dart';
 

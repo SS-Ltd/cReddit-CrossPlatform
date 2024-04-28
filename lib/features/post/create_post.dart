@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,7 @@ import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
-import 'package:reddit_clone/switch_button.dart';
+import 'package:reddit_clone/common/switch_button.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
@@ -58,6 +59,7 @@ class _CreatePostState extends State<CreatePost> {
   bool _insertpoll = false;
   int count = 0;
   String _pollendsin = "2 Day";
+  String endsInDateTime = '';
 
   bool isspoiler = false;
   bool isBrand = false;
@@ -79,7 +81,6 @@ class _CreatePostState extends State<CreatePost> {
     }
     _isImagePickerOpen = true;
 
-    // Show a dialog to let the user choose between the gallery and the camera
     final source = await showDialog<ImageSource>(
       context: context,
       builder: (context) => AlertDialog(
@@ -114,6 +115,13 @@ class _CreatePostState extends State<CreatePost> {
     _bodyController.dispose();
     _linkController.dispose();
     super.dispose();
+  }
+
+  String calculateendsin(String endsin) {
+    final endsInDuration = Duration(days: int.parse(endsin));
+    final newDate = DateTime.now().add(endsInDuration);
+    endsInDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(newDate);
+    return endsInDateTime;
   }
 
   @override
@@ -156,8 +164,11 @@ class _CreatePostState extends State<CreatePost> {
                                             .map(
                                                 (controller) => controller.text)
                                             .toList(),
-                                        '4-30-2024', //month-day-year
+                                        endsInDateTime, //month-day-year
                                         false,
+                                            // .read<NetworkService>()
+                                            // .user!
+                                            // .isNFSW,
                                         isspoiler)
                                 : (_hasImage)
                                     ? await context
@@ -469,6 +480,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('1');
                                     },
                                   );
                                   Navigator.of(context).pop();
@@ -482,6 +494,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('2');
                                     },
                                   );
                                   Navigator.of(context).pop();
@@ -495,6 +508,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('3');
                                     },
                                   );
                                   Navigator.of(context).pop();
@@ -508,6 +522,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('4');
                                     },
                                   );
                                   Navigator.of(context).pop();
@@ -521,6 +536,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('5');
                                     },
                                   );
                                   Navigator.of(context).pop();
@@ -534,6 +550,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('6');
                                     },
                                   );
                                   Navigator.of(context).pop();
@@ -547,6 +564,7 @@ class _CreatePostState extends State<CreatePost> {
                                   setState(
                                     () {
                                       _pollendsin = value!;
+                                      calculateendsin('7');
                                     },
                                   );
                                   Navigator.of(context).pop();

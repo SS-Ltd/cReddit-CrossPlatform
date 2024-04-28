@@ -268,7 +268,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               profilePicture: widget.myuser!.profilePicture,
               bannerPicture: 'bannerPicture',
               followerCount: widget.myuser!.followers,
-              cakeDay: '2024-03-25T15:37:33.339+00:00')
+              cakeDay: '2024-03-25T15:37:33.339+00:00',
+              isOwnProfile: true,)
           : _pages[_currentIndex],
       bottomNavigationBar: (_currentIndex != 2)
           ? BottomNavigationBar(
