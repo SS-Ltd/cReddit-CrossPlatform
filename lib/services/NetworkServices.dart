@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/search.dart';
@@ -449,12 +450,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<Messages>?> fetchInboxMessages() async {
-    Uri url = Uri.parse('$_baseUrl/message/');
+  Future<List<Messages>?> fetchInboxMessages({int page = 1, int limit = 10}) async {
+    Uri url = Uri.parse('$_baseUrl/message/?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
       refreshToken();
-      return fetchInboxMessages();
+      return fetchInboxMessages(page: page, limit: limit);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
@@ -473,6 +474,8 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return markMessageAsRead(messageId);
     }
+    print(messageId);
+    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -504,7 +507,7 @@ class NetworkService extends ChangeNotifier {
       body: jsonEncode({
         'to': to,
         'subject': subject,
-        'message': message,
+        'text': message,
       }),
     );
     print(response.body);
@@ -512,11 +515,13 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return sendMessege(to, subject, message);
     }
+
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
+      print(responseBody['messageID']);
       return {
         'success': true,
-        'messageId': responseBody['messageId'],
+        'messageID': responseBody['messageID'],
       };
     } else {
       return {
@@ -1244,6 +1249,54 @@ class NetworkService extends ChangeNotifier {
       return response.body;
     } else {
       return "";
+    }
+  }
+
+  Future<bool> markNotificationAsRead(String notificationID) async {
+    Uri url = Uri.parse('$_baseUrl/notification/$notificationID/mark-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markNotificationAsRead(notificationID);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> markAllNotificationAsRead() async {
+    Uri url = Uri.parse('$_baseUrl/notification/mark-all-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAllNotificationAsRead();
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<List<NotificationModel>?> fetchNotifications() async {
+    Uri url = Uri.parse('$_baseUrl/notification/');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchNotifications();
+    }
+    print("NOTIFICATION EL POST HNA");
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      List<NotificationModel> notifications = responseData['notifications']
+          .map<NotificationModel>((item) => NotificationModel.fromJson(item))
+          .toList();
+      return notifications;
+    } else {
+      return null;
     }
   }
 

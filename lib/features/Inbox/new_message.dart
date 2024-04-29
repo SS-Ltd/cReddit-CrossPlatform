@@ -75,23 +75,25 @@ class _NewMessageState extends State<NewMessage> {
                                         usernameController.text,
                                         subjectController.text,
                                         messageController.text);
+
                                 if (result['success']) {
                                   UserModel user = context
                                         .read<NetworkService>()
                                         .getUser();
-                                  CustomSnackBar(
-                                      context: context,
-                                      content: 'Message sent'); 
 
                                   Messages message = Messages(
-                                    id: result['messageId'],
+                                    id: result['messageID'],
                                     from: user.username,
                                     to: usernameController.text,
                                     subject: subjectController.text,
                                     text: messageController.text,
                                     createdAt: DateTime.now().toString(),
                                   );
+                                  CustomSnackBar(
+                                      context: context,
+                                      content: 'Message sent'); 
                                   Navigator.pop(context, message);
+                                  
                                 }
                                 else {
                                   CustomSnackBar(

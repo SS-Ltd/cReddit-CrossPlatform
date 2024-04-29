@@ -421,12 +421,12 @@ class _SubRedditPageState extends State<SubRedditPage> {
           const SizedBox(height: 10),
           Text(
             _subredditDescription,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           Container(
             alignment: Alignment.centerLeft,
             child: TextButton(
-              child: Text('See more', style: TextStyle(color: Colors.blue)),
+              child: const Text('See more', style: TextStyle(color: Colors.blue)),
               onPressed: () {
                 Navigator.push(
                   context,

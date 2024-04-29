@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/common/CustomPopupMenuItem.dart';
-import 'package:reddit_clone/features/Inbox/notification_item.dart';
+import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
 class NotificationLayout extends StatelessWidget {
   const NotificationLayout(
       {super.key, required this.notification, required this.onTap});
 
-  final NotificationItem notification;
+  final NotificationModel notification;
   final VoidCallback onTap;
 
   @override
@@ -31,7 +30,7 @@ class NotificationLayout extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: ' • ${notification.time}',
+              text: ' • ${notification.updatedAt}',
               style: const TextStyle(
                 color: Palette.greyColor,
               ),
@@ -40,7 +39,7 @@ class NotificationLayout extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        notification.description,
+        notification.content,
         style: const TextStyle(color: Colors.grey),
       ),
       trailing: GestureDetector(
