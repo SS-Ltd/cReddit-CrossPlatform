@@ -33,6 +33,17 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
             const Heading(text: 'General'),
             ArrowButton(onPressed: () {}, buttonText: "Mod log", buttonIcon: Icons.list),
             ArrowButton(onPressed: () {}, buttonText: "Insights", buttonIcon: Icons.query_stats),
+            ArrowButton(onPressed: () {}, buttonText: "Community icon", buttonIcon: Icons.reddit),
+            ArrowButton(onPressed: () {}, buttonText: "Description", buttonIcon: Icons.description),
+
+            ArrowButton(onPressed: () {}, buttonText: "Welcome message", buttonIcon: Icons.message),
+            ArrowButton(onPressed: () {}, buttonText: "Topics", buttonIcon: Icons.topic),
+            ArrowButton(onPressed: () {}, buttonText: "Community type", buttonIcon: Icons.lock),
+            ArrowButton(onPressed: () {}, buttonText: "Post type", buttonIcon: Icons.type_specimen),
+
+
+
+
           ],
         ),
       ),
