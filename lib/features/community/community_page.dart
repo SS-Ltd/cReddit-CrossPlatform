@@ -62,6 +62,7 @@ class CommunityPageState extends State<CommunityPage> {
                   },
                   child: CommunityCard(
                     community: snapshot.data![index],
+                    search: false,
                   ),
                 );
               },

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -20,9 +22,25 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleTypeRole</key>
+	<string>Editor</string>
+	<key>CFBundleURLSchemes</key>
+	<array>
+		<string>942562590932-1ijgh9gdddcih56nklc9a2esusme2o21.apps.googleusercontent.com</string>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Explain why your app needs access to the user's media library</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Describe why the app needs access</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Explain why your app needs access to the microphone</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Describe why the app needs access</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -41,9 +59,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

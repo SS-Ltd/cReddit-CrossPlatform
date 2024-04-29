@@ -32,8 +32,12 @@ class Palette {
   static const Color transparent = Colors.transparent;
   static const Color blueJoinColor = Color.fromARGB(255, 3, 69, 168);
   static const Color blueJoinedColor = Color.fromARGB(255, 122, 169, 238);
-  static const Color textFormFieldgreyColor = Color.fromARGB(255, 40, 39, 39);
-  static const Color communityCard = Color.fromARGB(255, 3, 3, 3);
-  static const Color communityPage = Color.fromARGB(255, 12, 12, 12);
+
+  static const Color textFormFieldgreyColor= Color.fromARGB(255, 40, 39, 39);
+  static const Color communityCard= Color.fromARGB(255, 3, 3, 3);
+  static const Color communityPage= Color.fromARGB(255, 12, 12, 12);
   static const Color notificationColor = Color(0xff112731);
+  
+  static const Color commentTile= Color.fromARGB(255, 8, 8, 8);
+
 }

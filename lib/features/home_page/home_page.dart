@@ -38,7 +38,7 @@ import '../../models/post_model.dart';
 /// It wraps the list of posts in a [RefreshIndicator] to enable pull-to-refresh functionality.
 /// Each post is rendered using a [Column] widget, with a [Post] widget and a [Divider] widget.
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key});
+  const HomePage({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -76,8 +76,12 @@ class _HomePageState extends State<HomePage> {
       lastType = selectedMenuItem;
       page = 1;
       posts.clear();
-      getPosts(selectedMenuItem);
+      getPosts(selectedMenuItem.toLowerCase());
     }
+  }
+
+  void cleanItems() {
+    posts.clear();
   }
 
   Future<void> getPosts(String selectedItem) async {
@@ -112,6 +116,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refreshData() async {
+    cleanItems();
     await getPosts(selectedMenuItem);
   }
 
@@ -128,22 +133,10 @@ class _HomePageState extends State<HomePage> {
             return Column(
               children: [
                 Post(
-                  communityName: post.communityName ?? '',
-                  userName: post.username,
-                  title: post.title,
-                  postType: post.type,
-                  content: post.content,
-                  commentNumber: post.commentCount,
+                  postModel: post,
                   shareNumber: 0,
-                  timeStamp: post.uploadDate ?? DateTime.now(),
-                  pollOptions: post.pollOptions,
                   isSubRedditPage: false,
-                  profilePicture: post.profilePicture,
                   isHomePage: true,
-                  postId: post.postId,
-                  votes: post.netVote,
-                  isDownvoted: post.isDownvoted,
-                  isUpvoted: post.isUpvoted,
                 ),
                 const Divider(
                   height: 20,

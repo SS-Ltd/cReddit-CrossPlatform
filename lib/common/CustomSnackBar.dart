@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/theme/palette.dart';
+
 class CustomSnackBar {
   final BuildContext context;
   final String content;
@@ -12,7 +13,6 @@ class CustomSnackBar {
     this.textColor = Palette.whiteColor,
     this.backgroundColor = Palette.blackColor,
   });
-
   void show() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

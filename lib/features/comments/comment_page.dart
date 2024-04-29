@@ -1,13 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 /// This file contains the [CommentPage] widget, which is a stateful widget that
 /// displays a page for viewing and interacting with comments on a post.
@@ -65,6 +67,8 @@ class _CommentPageState extends State<CommentPage> {
   final ScrollController _scrollController = ScrollController();
   final List<GlobalKey> _keys = [];
   final List<double> _commentPositions = [];
+  bool isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -95,7 +99,7 @@ class _CommentPageState extends State<CommentPage> {
     if (fetchedComments != null && mounted) {
       setState(() {
         //comments = fetchedComments;
-        fetchedComments.map((e) => e.communityName = '').toList();
+        //fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
                   photo: comment.isImage ? File(comment.content) : null,
@@ -146,30 +150,72 @@ class _CommentPageState extends State<CommentPage> {
             size: 30,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            if (isSearching) {
+              setState(() {
+                isSearching = false;
+              });
+            } else {
+              Navigator.pop(context);
+            }
           },
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search, size: 30.0),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.sort, size: 30.0),
-          ),
-          PopupMenuButton(
-              onSelected: (Menu item) {},
-              itemBuilder: (BuildContext context) {
-                return menuitems();
-              }),
-          IconButton(
-            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
-            icon: const Icon(Icons.reddit, size: 30.0),
-          ),
-        ],
+        title: isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search Comments',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                // onChanged: (value) async {
+                //   setState(() {
+                //     searchQuery = value;
+                //   });
+                //   commentsResults =
+                //       await Provider.of<NetworkService>(context, listen: false)
+                //           .getSearchComments(value, '');
+                //   postsResults =
+                //       await Provider.of<NetworkService>(context, listen: false)
+                //           .getSearchPosts(value, '');
+                //},
+              )
+            : null,
+        actions: isSearching
+            ? null
+            : [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                    });
+                  },
+                  icon: const Icon(Icons.search, size: 30.0),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.sort, size: 30.0),
+                ),
+                PopupMenuButton(
+                  onSelected: (Menu item) {},
+                  itemBuilder: (BuildContext context) {
+                    return menuitems();
+                  },
+                ),
+                IconButton(
+                  onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
+                  icon: const Icon(Icons.reddit, size: 30.0),
+                ),
+              ],
       ),
-      endDrawer: const Rightsidebar(),
+      endDrawer: isSearching ? null : const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
           return ListView.builder(
@@ -312,6 +358,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   List<PopupMenuEntry<Menu>> menuitems() {
+    bool save = widget.postComment.postModel.isSaved;
     return <PopupMenuEntry<Menu>>[
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
@@ -328,14 +375,44 @@ class _CommentPageState extends State<CommentPage> {
             title: Text('Subscribe'),
           )),
       PopupMenuItem<Menu>(
-          value: Menu.save,
-          child: ListTile(
-            leading: const Icon(Icons.bookmark_add_outlined),
-            title: const Text('Save'),
-            onTap: () async {
-              //    bool isSaved = await context.read<NetworkService>().saveandunsavepost(widget.postId, isSaved)
-            },
-          )),
+        value: Menu.save,
+        child: ListTile(
+          leading: save
+              ? const Icon(Icons.bookmark_add)
+              : const Icon(Icons.bookmark_add_outlined),
+          title: const Text('Save'),
+          onTap: () async {
+            print('save button clicked');
+            print(save);
+            bool isSaved = await context
+                .read<NetworkService>()
+                .saveandunsavepost(widget.postComment.postModel.postId,
+                    !(widget.postComment.postModel.isSaved));
+            if (isSaved == true &&
+                widget.postComment.postModel.isSaved == false) {
+              setState(() {
+                save = !save;
+              });
+              CustomSnackBar(
+                      content: "Post saved!",
+                      context: context,
+                      backgroundColor: Colors.green)
+                  .show();
+            } else if (isSaved == true &&
+                widget.postComment.postModel.isSaved == true) {
+              setState(() {
+                save = !save;
+              });
+              CustomSnackBar(
+                      content: "Post unsaved!",
+                      context: context,
+                      backgroundColor: Colors.white,
+                      textColor: Colors.black)
+                  .show();
+            }
+          },
+        ),
+      ),
       const PopupMenuItem<Menu>(
           value: Menu.copytext,
           child: ListTile(
@@ -394,24 +471,16 @@ class _CommentPageState extends State<CommentPage> {
             )),
       PopupMenuItem<Menu>(
           value: Menu.report,
-          child: ListTile(
-            leading: const Icon(Icons.report),
-            title: const Text('Report'),
-            onTap: () async {
-              print(widget.postId);
-              bool isReported = await context
-                  .read<NetworkService>()
-                  .reportPost(widget.postId);
-              if (isReported) {
-                //show snackbar
-              }
-            },
+          child: ReportButton(
+            isPost: true,
+            postId: widget.postId,
+            subredditName: widget.postComment.postModel.communityName,
           )),
       const PopupMenuItem<Menu>(
           value: Menu.block,
           child: ListTile(
             leading: Icon(Icons.block),
-            title: Text('Block'),
+            title: Text('Block Account'),
           )),
       PopupMenuItem<Menu>(
           value: Menu.hide,
@@ -419,11 +488,23 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.hide_source),
             title: const Text('hide'),
             onTap: () async {
+              print('button clicked');
               bool isHidden = await context
                   .read<NetworkService>()
                   .hidepost(widget.postId, true);
               if (isHidden) {
-                //show snackbar
+                CustomSnackBar(
+                        content: "Post hidden!",
+                        context: context,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black)
+                    .show();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                );
               }
             },
           )),
@@ -434,16 +515,15 @@ class _CommentPageState extends State<CommentPage> {
 enum Menu {
   share,
   subscribe,
-  save, //done
+  save,
   copytext,
   edit,
   addpostflair,
   markspoiler,
   markNSFW,
   markasbrandaffiliate,
-  delete, //done
-  report, //done
+  delete,
+  report,
   block,
-  hide, //done
+  hide,
 }
-

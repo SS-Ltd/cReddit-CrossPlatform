@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/heading.dart';
-import 'package:reddit_clone/switch_button.dart';
+import 'package:reddit_clone/common/switch_button.dart';
 
 class ManageNotifications extends StatefulWidget {
   const ManageNotifications({super.key});
