@@ -3,6 +3,7 @@ import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/features/moderator/approved_user.dart';
 import 'package:reddit_clone/features/moderator/banned_users.dart';
+import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
 import 'package:reddit_clone/features/moderator/muted_users.dart';
 
@@ -64,6 +65,15 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 onPressed: () {},
                 buttonText: "Post type",
                 buttonIcon: Icons.type_specimen),
+            ArrowButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Location()));
+                },
+                buttonText: "Location",
+                buttonIcon: Icons.location_on_outlined),
             const Heading(text: "USER MANAGEMENT"),
             ArrowButton(
                 onPressed: () {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/moderator/add_banned.dart';
-import 'package:reddit_clone/features/moderator/add_moderator.dart';
 
 class BannedUser extends StatefulWidget {
   const BannedUser({super.key});
