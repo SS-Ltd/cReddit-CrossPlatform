@@ -14,6 +14,7 @@ class UserModel {
   final List<String> recentlySearch= [];
   final bool isBlocked;
   //bool? isNFSW;
+  final List<Subreddit> moderator = [];
 
   UserModel({
     required this.username,
@@ -40,12 +41,20 @@ class UserModel {
     recentlySearch.add(searchData);
   }
 
+  void setmoderators(List<Subreddit> communities){
+    moderator.addAll(communities);
+  }
+
   Set<Subreddit> getrecentlyvisited() {
     return recentlyVisited;
   }
 
   List<String> getrecentlySearch(){
     return recentlySearch;
+  }
+
+  List<Subreddit> getmoderators(){
+    return moderator;
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {

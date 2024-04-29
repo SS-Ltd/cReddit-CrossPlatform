@@ -231,7 +231,7 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      widget.isHomePage
+                       widget.isHomePage
                           ? (widget.isSubRedditPage
                               ? GestureDetector(
                                   onTap: () {
@@ -345,32 +345,7 @@ class _PostState extends State<Post> {
                                         style: const TextStyle(
                                           color: Palette.whiteColor,
                                         ),
-                                      ],
-                                    ),
-                                  )))
-                        : (widget.communityName.isEmpty
-                            ? GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AboutUserPopUp(
-                                            userName: widget.userName);
-                                      });
-                                },
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(widget.profilePicture),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      'u/${widget.userName}',
-                                      style: const TextStyle(
-                                        color: Palette.whiteColor,
                                       ),
-
                                       const SizedBox(width: 10),
                                       Text(
                                         formatTimestamp(
@@ -380,17 +355,8 @@ class _PostState extends State<Post> {
                                           color: Colors.grey,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(widget.profilePicture),
+                                    ],
                                   ),
-
                                 )
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,16 +407,16 @@ class _PostState extends State<Post> {
                                               fontSize: 12,
                                               color: Colors.grey,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ))
-                  ],
-                ),
-              ],
+                                    ),
+                                  ],
+                                ))
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           GestureDetector(
