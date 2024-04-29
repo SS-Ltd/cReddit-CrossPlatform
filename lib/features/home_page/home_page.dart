@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -106,9 +107,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // void _onScroll() {
+  // if (_scrollController.hasClients &&
+  //     _scrollController.position.pixels ==
+  //         _scrollController.position.maxScrollExtent &&
+  //     !isLoading) {
+  //   getPosts(selectedMenuItem);
+  // }
+  // }
+
   void _onScroll() {
-    if (_scrollController.hasClients &&
-        _scrollController.position.pixels ==
+    if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
       getPosts(selectedMenuItem);
@@ -127,23 +136,27 @@ class _HomePageState extends State<HomePage> {
         onRefresh: _refreshData,
         child: ListView.builder(
           controller: _scrollController,
-          itemCount: posts.length,
+          itemCount: posts.length + (isLoading ? 1 : 0),
           itemBuilder: (context, index) {
-            final post = posts[index];
-            return Column(
-              children: [
-                Post(
-                  postModel: post,
-                  shareNumber: 0,
-                  isSubRedditPage: false,
-                  isHomePage: true,
-                ),
-                const Divider(
-                  height: 20,
-                  thickness: 1,
-                ), // Add a thin horizontal line
-              ],
-            );
+            if (index < posts.length) {
+              final post = posts[index];
+              return Column(
+                children: [
+                  Post(
+                    postModel: post,
+                    shareNumber: 0,
+                    isSubRedditPage: false,
+                    isHomePage: true,
+                  ),
+                  const Divider(
+                    height: 20,
+                    thickness: 1,
+                  ),
+                ],
+              );
+            } else {
+              return CustomLoadingIndicator();
+            }
           },
         ),
       ),
