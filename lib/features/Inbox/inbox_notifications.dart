@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
 import 'package:reddit_clone/features/Inbox/new_message.dart';
-import 'package:reddit_clone/features/Inbox/notification_item.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/user.dart';
+import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
@@ -23,37 +23,12 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late List<Messages> inboxMessages = [];
+  late List<NotificationModel> notifications = [];
   final ScrollController _scrollController = ScrollController();
   bool isLoading = false;
   int page = 1;
 
-  List<NotificationItem> notifications = [
-    NotificationItem(
-        id: "1",
-        title: "HweiMains",
-        description: "One For All Hwei Winrate",
-        time: "1m"),
-    NotificationItem(
-        id: "2",
-        title: "u/PlasticDragonfruit84 replied to your post",
-        description: "I am a little late here but here is my take",
-        time: "19d"),
-    NotificationItem(
-        id: "3",
-        title: "u/TravelingSloth liked your comment",
-        description: "“Absolutely brilliant point there!”",
-        time: "2h"),
-    NotificationItem(
-        id: "4",
-        title: "u/GreenTechie mentioned you in a comment",
-        description: "I think u/ExampleUser might have some insights on this",
-        time: "5d"),
-    NotificationItem(
-        id: "5",
-        title: "u/CuriousCat posted in r/Cats",
-        description: "Look at my cat’s new hat!",
-        time: "3m"),
-  ];
+  
 
   @override
   void initState() {
@@ -61,6 +36,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
     _tabController = TabController(length: 2, vsync: this);
     _scrollController.addListener(_onScroll);
     fetchInboxMessages();
+    fetchNotifications();
   }
 
   @override
@@ -77,8 +53,8 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
 
   if (maxScroll - currentScroll <= threshold && !isLoading) {
     fetchInboxMessages();
-  }
-}
+    fetchNotifications();
+  }}
 
   Future<void> fetchInboxMessages() async {
     if (!isLoading) {
@@ -104,6 +80,19 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
       }
     }
   }
+
+  Future<void> fetchNotifications() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final fetchedNotifications = await networkService.fetchNotifications();
+    print(fetchedNotifications);
+    if (mounted && fetchedNotifications != null) {
+      setState(() {
+        notifications = fetchedNotifications;
+      });
+    }
+  }
+
+
 
   void _showMenuOptions() {
     showModalBottomSheet(
