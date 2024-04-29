@@ -2,12 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/Inbox/message_item.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
 import 'package:reddit_clone/features/Inbox/new_message.dart';
 import 'package:reddit_clone/features/Inbox/notification_item.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
 import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
@@ -22,6 +23,9 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late List<Messages> inboxMessages = [];
+  final ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
+  int page = 1;
 
   List<NotificationItem> notifications = [
     NotificationItem(
@@ -51,72 +55,53 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
         time: "3m"),
   ];
 
-  List<MessageItem> messages = [
-    MessageItem(
-      subject: "Welcome to Reddit!",
-      text: "Hello, welcome to Reddit! We're glad you're here.",
-      from: "u/RedditAdmin",
-      createdAt: "1h",
-      isRead: false,
-      isDeleted: false,
-      to: "u/ExampleUser",
-    ),
-    MessageItem(
-      subject: "Can we collaborate?",
-      text:
-          "Hi there! I saw your post on r/FlutterDev. Are you open to collaboration on a Flutter project?",
-      from: "u/FlutterFan123",
-      createdAt: "2d",
-      isRead: true,
-      isDeleted: false,
-      to: "u/ExampleUser",
-    ),
-    MessageItem(
-      subject: "Your subscription is expiring",
-      text:
-          "Just a reminder that your subscription to r/PremiumContent is expiring in 3 days.",
-      from: "u/SubscriptionsBot",
-      createdAt: "4d",
-      isRead: false,
-      isDeleted: false,
-      to: "u/ExampleUser",
-    ),
-    MessageItem(
-      subject: "Thank you for your support!",
-      text:
-          "We just wanted to say a big thank you for supporting our Kickstarter campaign.",
-      from: "u/KickstartThis",
-      createdAt: "6d",
-      isRead: true,
-      isDeleted: false,
-      to: "u/ExampleUser",
-    ),
-    MessageItem(
-      subject: "Your order has shipped",
-      text:
-          "Good news! Your order from r/ArtisanGoods has shipped. Track your package here: [link]",
-      from: "u/CraftsmanBot",
-      createdAt: "8d",
-      isRead: false,
-      isDeleted: false,
-      to: "u/ExampleUser",
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _scrollController.addListener(_onScroll);
     fetchInboxMessages();
   }
 
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+  final maxScroll = _scrollController.position.maxScrollExtent;
+  final currentScroll = _scrollController.position.pixels;
+  const threshold = 200.0;
+
+  if (maxScroll - currentScroll <= threshold && !isLoading) {
+    fetchInboxMessages();
+  }
+}
+
   Future<void> fetchInboxMessages() async {
-    final networkService = Provider.of<NetworkService>(context, listen: false);
-    final fetchedMessages = await networkService.fetchInboxMessages();
-    if (mounted && fetchedMessages != null) {
+    if (!isLoading) {
       setState(() {
-        inboxMessages = fetchedMessages;
+        isLoading = true;
       });
+      final networkService =
+          Provider.of<NetworkService>(context, listen: false);
+      final fetchedMessages =
+          await networkService.fetchInboxMessages(page: page);
+      if (mounted) {
+        if (fetchedMessages != null) {
+          setState(() {
+            inboxMessages.addAll(fetchedMessages);
+            page++;
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -231,34 +216,38 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
             },
           ),
           ListView.builder(
-            itemCount: inboxMessages.length,
+            controller: _scrollController,
+            itemCount: inboxMessages.length + (isLoading ? 1 : 0),
             itemBuilder: (context, index) {
-              return MessageLayout(
-                message: inboxMessages[index],
-                onTap: () async {
-                  setState(() {
-                    inboxMessages[index].isRead = true;
-                  });
-                  bool done = await context
-                      .read<NetworkService>()
-                      .markMessageAsRead(inboxMessages[index].id);
-                  setState(() {
-                    if (!done) {
-                      inboxMessages[index].isRead = false;
+              if (index < inboxMessages.length) {
+                return MessageLayout(
+                  message: inboxMessages[index],
+                  onTap: () async {
+                    UserModel user = context.read<NetworkService>().getUser();
+                    if (inboxMessages[index].from == user.username ||
+                        inboxMessages[index].isRead) {
+                      return;
                     }
-                  });
-                },
-              );
+                    setState(() {
+                      inboxMessages[index].isRead = true;
+                    });
+                    bool done = await context
+                        .read<NetworkService>()
+                        .markMessageAsRead(inboxMessages[index].id);
+                    setState(() {
+                      if (!done) {
+                        inboxMessages[index].isRead = false;
+                      }
+                    });
+                  },
+                );
+              } else {
+                return CustomLoadingIndicator();
+              }
             },
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 }

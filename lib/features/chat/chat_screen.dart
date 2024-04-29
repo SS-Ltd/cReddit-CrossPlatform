@@ -4,20 +4,20 @@ import 'package:reddit_clone/models/chatmessages.dart';
 class ChatScreen extends StatefulWidget {
   final String recipientId;
 
-  ChatScreen({required this.recipientId});
+  const ChatScreen({super.key, required this.recipientId});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> {
   List<ChatMessage> messages = [];
   final messageController = TextEditingController();
   bool isFirstMessage = true; // Assuming this is to check if it's a new chat
 
   @override
   void initState() {
-    // TODO: implement initState
+    super.initState();
     messages.add(ChatMessage(
         senderId: 'user1',
         recipientId: 'user2',
@@ -44,9 +44,9 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           children: <Widget>[
-            const Expanded(
+             Expanded(
               child: Text(
                 'Username', // This should be the recipient's username
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -84,11 +84,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     if (showUserInfo)
                       Row(
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             backgroundImage: NetworkImage(
                                 "https://i.imgur.com/BoN9kdC.png"), // Replace with the sender's profile picture URL
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -120,21 +120,21 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget introSection() {
     return Column(
       children: [
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         const CircleAvatar(
           radius: 60,
           backgroundImage: NetworkImage(
               "https://i.imgur.com/BoN9kdC.png"), // Recipient's large profile picture
         ),
-        SizedBox(height: 10),
-        Text(
+        const SizedBox(height: 10),
+        const Text(
           'Username', // Recipient's username
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        Text('Redditor for 7m 25d'),
+        const Text('Redditor for 7m 25d'),
         TextButton(
           onPressed: () {}, // Navigate to recipient's profile
-          child: Text('View Profile'),
+          child: const Text('View Profile'),
         ),
       ],
     );
@@ -146,7 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Row(
         children: <Widget>[
           IconButton(
-            icon: Icon(Icons.camera_alt),
+            icon: const Icon(Icons.camera_alt),
             onPressed: () {
               // Logic to open camera
             },
@@ -154,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: TextField(
               controller: messageController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Type a message',
                 border: InputBorder.none,
               ),
@@ -162,19 +162,19 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.gif),
+            icon: const Icon(Icons.gif),
             onPressed: () {
               // Logic to send GIF
             },
           ),
           IconButton(
-            icon: Icon(Icons.emoji_emotions),
+            icon: const Icon(Icons.emoji_emotions),
             onPressed: () {
               // Logic to insert emoji
             },
           ),
           IconButton(
-            icon: Icon(Icons.send),
+            icon: const Icon(Icons.send),
             color: Colors.blue,
             onPressed: () {
               final message = ChatMessage(

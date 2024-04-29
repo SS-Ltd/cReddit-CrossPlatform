@@ -20,13 +20,13 @@ import 'package:reddit_clone/services/networkServices.dart';
 /// SavedPosts(key: UniqueKey())
 /// ```
 class SavedPosts extends StatefulWidget {
-  const SavedPosts({Key? key}) : super(key: key);
+  const SavedPosts({super.key});
 
   @override
-  _SavedPostsState createState() => _SavedPostsState();
+  SavedPostsState createState() => SavedPostsState();
 }
 
-class _SavedPostsState extends State<SavedPosts> {
+class SavedPostsState extends State<SavedPosts> {
   List<PostModel> posts = [];
   bool isLoading = false;
   int page = 1;
