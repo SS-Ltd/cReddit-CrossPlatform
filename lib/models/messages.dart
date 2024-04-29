@@ -13,7 +13,7 @@ class Messages {
     required this.to,
     required this.subject,
     required this.text,
-    this.isRead = false,
+    this.isRead = true,
     this.isDeleted = false,
     required this.createdAt,
   });
@@ -25,8 +25,8 @@ class Messages {
       to: json['to'],
       subject: json['subject'],
       text: json['text'],
-      isRead: json['isRead'],
-      isDeleted: json['isDeleted'],
+      isRead: json['isRead'] ?? true,
+      isDeleted: json['isDeleted'] ?? false,
       createdAt: json['createdAt'],
     );
   }
