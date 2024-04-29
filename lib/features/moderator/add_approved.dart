@@ -46,22 +46,25 @@ class _AddApprovedState extends State<AddApproved> {
                 ],
               ),
             ),
-            TextField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                prefixText: "u/",
-                hintText: "username",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  prefixText: "u/",
+                  hintText: "username",
+                  border:
+                      OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                ),
+                onChanged: (value) {
+                  setState(
+                    () {
+                      _isusernameempty = value.isEmpty;
+                    },
+                  );
+                },
               ),
-              onChanged: (value) {
-                setState(
-                  () {
-                    _isusernameempty = value.isEmpty;
-                  },
-                );
-              },
             ),
             const Row(
               children: [

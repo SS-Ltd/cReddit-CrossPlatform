@@ -47,20 +47,23 @@ class _AddModeratorState extends State<AddModerator> {
                 ],
               ),
             ),
-            TextField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                prefixText: "u/",
-                hintText: "username",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  prefixText: "u/",
+                  hintText: "username",
+                  border:
+                      OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _isusernameempty = value.isEmpty;
+                  });
+                },
               ),
-              onChanged: (value) {
-                setState(() {
-                  _isusernameempty = value.isEmpty;
-                });
-              },
             ),
             const Padding(
               padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
