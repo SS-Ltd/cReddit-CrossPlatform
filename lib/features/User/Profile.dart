@@ -395,6 +395,7 @@ class _ProfileState extends State<Profile> {
                   imageSource: 0,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                      isPostPage: false,
                   comment: userComments[index],
                 );
               },

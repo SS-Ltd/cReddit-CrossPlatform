@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class NotificationLayout extends StatelessWidget {
   const NotificationLayout(
@@ -30,7 +31,7 @@ class NotificationLayout extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: ' • ${notification.updatedAt}',
+              text: ' • ${formatTimestamp(notification.updatedAt)}',
               style: const TextStyle(
                 color: Palette.greyColor,
               ),

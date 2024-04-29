@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
@@ -69,7 +72,7 @@ class _CommentPageState extends State<CommentPage> {
   final List<double> _commentPositions = [];
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
-
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -80,6 +83,7 @@ class _CommentPageState extends State<CommentPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _calculateCommentPositions();
       });
+    isLoading = false;
     });
   }
 
@@ -98,14 +102,13 @@ class _CommentPageState extends State<CommentPage> {
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
     if (fetchedComments != null && mounted) {
       setState(() {
-        //comments = fetchedComments;
-        //fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
                   photo: comment.isImage ? File(comment.content) : null,
                   imageSource: 0,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  isPostPage: true,
                   comment: comment,
                 ))
             .toList();
@@ -218,37 +221,42 @@ class _CommentPageState extends State<CommentPage> {
       endDrawer: isSearching ? null : const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
-          return ListView.builder(
-            controller: _scrollController,
-            itemCount: _comments.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return widget.postComment;
-              } else if (index - 1 < _keys.length) {
-                return UserComment(
-                  key: _keys[index - 1],
-                  photo: _comments[index - 1].photo,
-                  imageSource:
-                      _comments[index - 1].imageSource, //may need to be fixed
-                  hasVoted: _comments[index - 1].hasVoted,
-                  comment: _comments[index - 1].comment,
-                  onDeleted: () {
-                    setState(() {
-                      _comments.removeAt(index - 1);
-                      _keys.removeAt(index - 1);
-                    });
-                  },
-                  onBlock: (){
-                    setState(() {
-                      //_comments[index - 1].comment.username = "Blocked User";
-                    });
-                  },
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          );
+          
+            return ListView.builder(
+  controller: _scrollController,
+  itemCount: isLoading ? 2 : _comments.length + 1,
+  itemBuilder: (context, index) {
+    if (index == 0) {
+      return widget.postComment;
+    } else if (isLoading) {
+      return CustomLoadingIndicator();
+    } else if (index - 1 < _keys.length) {
+      return UserComment(
+        key: _keys[index - 1],
+        photo: _comments[index - 1].photo,
+        imageSource: _comments[index - 1].imageSource,
+        hasVoted: _comments[index - 1].hasVoted,
+        comment: _comments[index - 1].comment,
+        isPostPage: true,
+        onDeleted: () {
+          setState(() {
+            _comments.removeAt(index - 1);
+            _keys.removeAt(index - 1);
+          });
+        },
+        onBlock: () {
+          setState(() {
+            _comments[index - 1].comment.username = "Blocked User";
+            //_comments[index - 1].isMinimized = ValueNotifier<bool>(true);
+          });
+        },
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  },
+);
+          
         },
       ),
       bottomNavigationBar: Padding(
@@ -279,6 +287,7 @@ class _CommentPageState extends State<CommentPage> {
                           photo: null,
                           imageSource: 2,
                           hasVoted: 1,
+                          isPostPage: true,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
@@ -295,6 +304,7 @@ class _CommentPageState extends State<CommentPage> {
                           photo: result['content'],
                           imageSource: 1,
                           hasVoted: 1,
+                          isPostPage: true,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
