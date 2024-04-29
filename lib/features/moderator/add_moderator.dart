@@ -11,7 +11,8 @@ class AddModerator extends StatefulWidget {
 
 class _AddModeratorSatet extends State<AddModerator> {
   final _userNameController = TextEditingController();
-  List<bool> _checkBoxController = List.generate(5, (_) => true);
+  bool _isusernameempty = true;
+  List<bool> checkBoxController = List.generate(9, (_) => true);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class _AddModeratorSatet extends State<AddModerator> {
           title: const Text("Add a moderator"),
           actions: [
             ElevatedButton(
-              onPressed: _userNameController.text.trim().isEmpty ? null : () {},
+              onPressed: _isusernameempty ? null : () {},
               child: const Text("Invite"),
             ),
           ],
@@ -33,16 +34,30 @@ class _AddModeratorSatet extends State<AddModerator> {
         body: Column(
           children: [
             const Text("Username"),
-            TextField(),
+            TextField(
+              controller: _userNameController,
+              decoration: InputDecoration(
+                prefixText: "u/",
+                hintText: "username",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                contentPadding: const EdgeInsets.all(10),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _isusernameempty = value.isEmpty;
+                });
+              },
+            ),
             const Text("Permissions"),
             Row(
               children: [
                 Checkbox(
-                  value: _checkBoxController[0],
+                  value: checkBoxController[0],
                   onChanged: (value) {
                     setState(
                       () {
-                        _checkBoxController[0] = value!;
+                        checkBoxController[0] = value!;
                       },
                     );
                   },
@@ -56,11 +71,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[1],
+                      value: checkBoxController[1],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[1] = value!;
+                            checkBoxController[1] = value!;
                           },
                         );
                       },
@@ -71,11 +86,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[2],
+                      value: checkBoxController[2],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[2] = value!;
+                            checkBoxController[2] = value!;
                           },
                         );
                       },
@@ -91,11 +106,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[3],
+                      value: checkBoxController[3],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[3] = value!;
+                            checkBoxController[3] = value!;
                           },
                         );
                       },
@@ -106,11 +121,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[4],
+                      value: checkBoxController[4],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[4] = value!;
+                            checkBoxController[4] = value!;
                           },
                         );
                       },
@@ -126,11 +141,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[5],
+                      value: checkBoxController[5],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[5] = value!;
+                            checkBoxController[5] = value!;
                           },
                         );
                       },
@@ -141,11 +156,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[6],
+                      value: checkBoxController[6],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[6] = value!;
+                            checkBoxController[6] = value!;
                           },
                         );
                       },
@@ -161,11 +176,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[7],
+                      value: checkBoxController[7],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[7] = value!;
+                            checkBoxController[7] = value!;
                           },
                         );
                       },
@@ -176,11 +191,11 @@ class _AddModeratorSatet extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
-                      value: _checkBoxController[8],
+                      value: checkBoxController[8],
                       onChanged: (value) {
                         setState(
                           () {
-                            _checkBoxController[8] = value!;
+                            checkBoxController[8] = value!;
                           },
                         );
                       },

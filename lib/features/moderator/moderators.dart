@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/moderator/add_moderator.dart';
 
 class Moderator extends StatefulWidget {
   const Moderator({super.key});
@@ -32,7 +33,13 @@ class _ModeratorState extends State<Moderator>
         title: const Text('Moderators'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (context) => const AddModerator()));
+            },
             icon: const Icon(Icons.add),
           ),
         ],
