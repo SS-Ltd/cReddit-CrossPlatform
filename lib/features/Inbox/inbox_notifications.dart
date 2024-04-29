@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
 import 'package:reddit_clone/features/Inbox/new_message.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
@@ -28,8 +29,6 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   bool isLoading = false;
   int page = 1;
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -47,14 +46,14 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   }
 
   void _onScroll() {
-  final maxScroll = _scrollController.position.maxScrollExtent;
-  final currentScroll = _scrollController.position.pixels;
-  const threshold = 200.0;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    const threshold = 50;
 
-  if (maxScroll - currentScroll <= threshold && !isLoading) {
-    fetchInboxMessages();
-    fetchNotifications();
-  }}
+    if (maxScroll - currentScroll <= threshold && !isLoading) {
+      fetchInboxMessages();
+    }
+  }
 
   Future<void> fetchInboxMessages() async {
     if (!isLoading) {
@@ -66,7 +65,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
       final fetchedMessages =
           await networkService.fetchInboxMessages(page: page);
       if (mounted) {
-        if (fetchedMessages != null) {
+        if (fetchedMessages != null && fetchedMessages.isNotEmpty) {
           setState(() {
             inboxMessages.addAll(fetchedMessages);
             page++;
@@ -92,8 +91,6 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
     }
   }
 
-
-
   void _showMenuOptions() {
     showModalBottomSheet(
         context: context,
@@ -113,10 +110,9 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                           builder: (context) => const NewMessage()),
                     );
                     if (newMessage != null) {
-                      setState(() {
-                        inboxMessages.insert(0, newMessage);
-                      });
+                      setState(() {});
                     }
+
                     Navigator.pop(context);
                   },
                 ),
@@ -191,17 +187,21 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
         controller: _tabController,
         children: [
           ListView.builder(
-            itemCount: notifications.length,
+            itemCount: notifications.length + (isLoading ? 1 : 0),
             itemBuilder: (context, index) {
-              final notification = notifications[index];
-              return NotificationLayout(
-                notification: notification,
-                onTap: () {
-                  setState(() {
-                    notifications[index].isRead = true;
-                  });
-                },
-              );
+              if (index < notifications.length) {
+                final notification = notifications[index];
+                return NotificationLayout(
+                  notification: notification,
+                  onTap: () {
+                    setState(() {
+                      notifications[index].isRead = true;
+                    });
+                  },
+                );
+              } else {
+                return CustomLoadingIndicator();
+              }
             },
           ),
           ListView.builder(

@@ -39,6 +39,7 @@ class UserComment extends StatefulWidget {
   final Comments comment;
   final VoidCallback onDeleted;
   final VoidCallback onBlock;
+  final bool isPostPage; // true for post, false for savedcomments
 
   UserComment({
     super.key,
@@ -49,6 +50,7 @@ class UserComment extends StatefulWidget {
     required this.comment,
     this.onDeleted = defaultOnDeleted,
     this.onBlock = defaultOnBlock,
+    required this.isPostPage,
   });
 
   static void defaultOnDeleted() {}
@@ -102,6 +104,7 @@ class UserCommentState extends State<UserComment> {
           photo: null,
           imageSource: 2,
           hasVoted: 0,
+          isPostPage: true,
           comment: Comments(
             profilePicture: 'assets/MonkeyDLuffy.png',
             username: 'User123',
@@ -124,6 +127,7 @@ class UserCommentState extends State<UserComment> {
           photo: commentImage,
           imageSource: 1,
           hasVoted: 0,
+          isPostPage: true,
           comment: Comments(
             profilePicture: 'assets/MonkeyDLuffy.png',
             username: 'User123',
@@ -251,7 +255,7 @@ class UserCommentState extends State<UserComment> {
                   Row(
                     children: [
                       const SizedBox(height: 55),
-                      if (widget.comment.communityName == '') ...[
+                      if (widget.isPostPage) ...[
                         GestureDetector(
                           onTap: () {
                             showDialog(
@@ -327,28 +331,39 @@ class UserCommentState extends State<UserComment> {
                                     child: ValueListenableBuilder<String>(
                                       valueListenable: content,
                                       builder: (context, value, child) {
-                                        return MarkdownBody(
-                                          data: value,
-                                          styleSheet:
-                                              MarkdownStyleSheet.fromTheme(
-                                                      Theme.of(context))
-                                                  .copyWith(
-                                            p: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          onTapLink: (text, href, title) async {
-                                            if (await canLaunchUrl(
-                                                Uri.parse(href!))) {
-                                              await launchUrl(Uri.parse(href));
-                                            } else {
-                                              CustomSnackBar(
-                                                context: context,
-                                                content:
-                                                    "Could not launch $href",
-                                              ).show();
-                                            }
+                                        return ValueListenableBuilder<bool>(
+                                          valueListenable: isMinimized,
+                                          builder:
+                                              (context, isMinimized, child) {
+                                            String displayText = isMinimized &&
+                                                    value.contains('\n')
+                                                ? value.split('\n')[0]
+                                                : value;
+                                            return RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  WidgetSpan(
+                                                    child: MarkdownBody(
+                                                      data: displayText,
+                                                      styleSheet:
+                                                          MarkdownStyleSheet
+                                                                  .fromTheme(
+                                                                      Theme.of(
+                                                                          context))
+                                                              .copyWith(
+                                                        p: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  if (isMinimized &&
+                                                      value.contains('\n'))
+                                                    const TextSpan(text: '...'),
+                                                ],
+                                              ),
+                                            );
                                           },
                                         );
                                       },
@@ -642,7 +657,6 @@ class UserCommentState extends State<UserComment> {
                     );
                     if (result != null) {
                       final bool contentType = result['contentType'];
-                      print(result);
                       setState(() {
                         if (contentType == false) {
                           content.value = result['content'];
@@ -753,14 +767,16 @@ class UserCommentState extends State<UserComment> {
                       bool blocked = await context
                           .read<NetworkService>()
                           .blockUser(widget.comment.username);
-                      print(blocked);
                       if (blocked) {
                         widget.comment.isBlocked.value = true;
                         CustomSnackBar(
-                            context: context, content: 'User blocked!');
+                                context: context, content: 'User blocked!')
+                            .show();
                       } else {
                         CustomSnackBar(
-                            context: context, content: 'Failed to block User');
+                                context: context,
+                                content: 'Failed to block User')
+                            .show();
                       }
                     }
 

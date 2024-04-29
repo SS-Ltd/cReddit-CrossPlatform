@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/models/chatmessages.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class ChatScreen extends StatefulWidget {
   final String recipientId;
@@ -86,7 +87,7 @@ class ChatScreenState extends State<ChatScreen> {
                         children: [
                           const CircleAvatar(
                             backgroundImage: NetworkImage(
-                                "https://i.imgur.com/BoN9kdC.png"), // Replace with the sender's profile picture URL
+                                "https://i.imgur.com/BoN9kdC.png"),
                           ),
                           const SizedBox(width: 8),
                           Column(
@@ -94,7 +95,7 @@ class ChatScreenState extends State<ChatScreen> {
                             children: [
                               Text(message.senderId),
                               Text(
-                                  '${message.timestamp}'), // Replace with the message's timestamp
+                                  formatTimestamp(message.timestamp)),
                             ],
                           ),
                         ],

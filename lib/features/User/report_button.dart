@@ -158,11 +158,9 @@ class _ReportButtonState extends State<ReportButton> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: const Color.fromRGBO(34, 34, 34, 1),
-      leading: const Icon(Icons.flag, color: Colors.white),
+      leading: const Icon(Icons.flag),
       title: const Text(
         'Report',
-        style: TextStyle(color: Colors.white),
       ),
       onTap: () => showReportSheet(context),
     );

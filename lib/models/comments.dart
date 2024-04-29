@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 class Comments {
   final String profilePicture;
-  final String username;
+  String username;
   final bool isImage;
   final int netVote;
   final String content;

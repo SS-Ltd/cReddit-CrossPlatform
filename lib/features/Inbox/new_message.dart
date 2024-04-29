@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -77,9 +76,8 @@ class _NewMessageState extends State<NewMessage> {
                                         messageController.text);
 
                                 if (result['success']) {
-                                  UserModel user = context
-                                        .read<NetworkService>()
-                                        .getUser();
+                                  UserModel user =
+                                      context.read<NetworkService>().getUser();
 
                                   Messages message = Messages(
                                     id: result['messageID'],
@@ -89,16 +87,9 @@ class _NewMessageState extends State<NewMessage> {
                                     text: messageController.text,
                                     createdAt: DateTime.now().toString(),
                                   );
-                                  CustomSnackBar(
-                                      context: context,
-                                      content: 'Message sent'); 
+
                                   Navigator.pop(context, message);
-                                  
-                                }
-                                else {
-                                  CustomSnackBar(
-                                      context: context,
-                                      content: 'Message not sent');
+                                } else {
                                   Navigator.pop(context, null);
                                 }
                               },
@@ -139,6 +130,7 @@ class _NewMessageState extends State<NewMessage> {
                             Expanded(
                               child: TextFormField(
                                 controller: usernameController,
+                                autofocus: true,
                                 decoration: const InputDecoration(
                                   hintText: 'Username',
                                   hintStyle: TextStyle(
@@ -161,7 +153,6 @@ class _NewMessageState extends State<NewMessage> {
                       label: 'Subject',
                       child: TextFormField(
                         controller: subjectController,
-                        autofocus: true,
                         decoration: const InputDecoration(
                           hintText: 'Subject',
                           hintStyle: TextStyle(
@@ -181,7 +172,6 @@ class _NewMessageState extends State<NewMessage> {
                       label: 'Message',
                       child: TextFormField(
                         controller: messageController,
-                        autofocus: true,
                         maxLines: null,
                         decoration: const InputDecoration(
                           hintText: 'Message',
