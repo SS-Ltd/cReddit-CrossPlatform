@@ -5,11 +5,11 @@ class AddModerator extends StatefulWidget {
 
   @override
   State<AddModerator> createState() {
-    return _AddModeratorSatet();
+    return _AddModeratorState();
   }
 }
 
-class _AddModeratorSatet extends State<AddModerator> {
+class _AddModeratorState extends State<AddModerator> {
   final _userNameController = TextEditingController();
   bool _isusernameempty = true;
   List<bool> checkBoxController = List.generate(9, (_) => true);

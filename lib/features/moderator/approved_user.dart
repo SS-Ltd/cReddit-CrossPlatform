@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/features/moderator/add_moderator.dart';
+import 'package:reddit_clone/features/moderator/add_approved.dart';
 
 class ApprovedUser extends StatefulWidget {
   const ApprovedUser({super.key});
@@ -34,7 +34,7 @@ class _ApprovedUserState extends State<ApprovedUser> {
                     context,
                     MaterialPageRoute(
                         fullscreenDialog: true,
-                        builder: (context) => const AddModerator()));
+                        builder: (context) => const AddApproved()));
               },
               icon: const Icon(Icons.add),
             ),
