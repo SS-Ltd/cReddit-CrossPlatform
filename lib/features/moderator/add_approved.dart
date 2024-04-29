@@ -5,11 +5,11 @@ class AddApproved extends StatefulWidget {
 
   @override
   State<AddApproved> createState() {
-    return _AddModeratorSatet();
+    return _AddApprovedSatet();
   }
 }
 
-class _AddModeratorSatet extends State<AddApproved> {
+class _AddApprovedSatet extends State<AddApproved> {
   final _userNameController = TextEditingController();
   bool _isusernameempty = true;
 
