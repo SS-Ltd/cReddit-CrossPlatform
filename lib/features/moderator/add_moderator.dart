@@ -20,7 +20,9 @@ class _AddModeratorSatet extends State<AddModerator> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: const Icon(Icons.close),
           ),
           title: const Text("Add a moderator"),
