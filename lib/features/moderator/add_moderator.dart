@@ -35,7 +35,18 @@ class _AddModeratorState extends State<AddModerator> {
         ),
         body: Column(
           children: [
-            const Text("Username"),
+            const Divider(
+              thickness: 1,
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Username"),
+                ],
+              ),
+            ),
             TextField(
               controller: _userNameController,
               decoration: InputDecoration(
@@ -51,7 +62,15 @@ class _AddModeratorState extends State<AddModerator> {
                 });
               },
             ),
-            const Text("Permissions"),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Permissions"),
+                ],
+              ),
+            ),
             Row(
               children: [
                 Checkbox(
@@ -68,7 +87,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -84,6 +103,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Access")
                   ],
+                ),
+                const SizedBox(
+                  width: 150,
                 ),
                 Row(
                   children: [
@@ -103,7 +125,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -119,6 +141,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Config")
                   ],
+                ),
+                const SizedBox(
+                  width: 155,
                 ),
                 Row(
                   children: [
@@ -138,7 +163,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -154,6 +179,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Flair")
                   ],
+                ),
+                const SizedBox(
+                  width: 170,
                 ),
                 Row(
                   children: [
@@ -173,7 +201,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -189,6 +217,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Chat config"),
                   ],
+                ),
+                const SizedBox(
+                  width: 125,
                 ),
                 Row(
                   children: [

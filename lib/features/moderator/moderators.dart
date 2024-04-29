@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/features/moderator/add_moderator.dart';
 
 class Moderator extends StatefulWidget {
@@ -90,7 +91,46 @@ class _ModeratorState extends State<Moderator>
                     //                 title: Text(
                     // 'u/${peopleResults[index].username}'),
                     subtitle: const Text('cake'),
-                    //trailing: ,
+                    trailing: IconButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                BottomSheet(
+                                  onClosing: () {},
+                                  builder: (context) => Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10, 20, 10, 20),
+                                    child: Column(
+                                      children: [
+                                        ArrowButton(
+                                            onPressed: () {},
+                                            buttonText: "Edit permissions",
+                                            buttonIcon: Icons.edit),
+                                        ArrowButton(
+                                            onPressed: () {},
+                                            buttonText: "View profile",
+                                            buttonIcon: Icons.person,
+                                            hasarrow: false),
+                                        ArrowButton(
+                                            onPressed: () {},
+                                            buttonText: "Remove",
+                                            buttonIcon: Icons.close,
+                                            hasarrow: false),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.more_vert),
+                    ),
                   ),
                   const Divider(
                     thickness: 1,

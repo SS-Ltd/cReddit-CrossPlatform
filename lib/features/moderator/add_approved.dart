@@ -34,7 +34,18 @@ class _AddApprovedState extends State<AddApproved> {
         ),
         body: Column(
           children: [
-            const Text("Username"),
+            const Divider(
+              thickness: 1,
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Username"),
+                ],
+              ),
+            ),
             TextField(
               controller: _userNameController,
               decoration: InputDecoration(
@@ -52,13 +63,12 @@ class _AddApprovedState extends State<AddApproved> {
                 );
               },
             ),
-            const SizedBox(
-              width: 300,
-              child: Text(
-                "This user will be able to submit cpntent to your community",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                softWrap: true,
-              ),
+            const Row(
+              children: [
+                Text(
+                  "This user will be able to submit cpntent to your community",
+                ),
+              ],
             ),
           ],
         ),
