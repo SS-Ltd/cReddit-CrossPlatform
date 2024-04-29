@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/moderator/add_banned.dart';
 import 'package:reddit_clone/features/moderator/add_moderator.dart';
 
 class BannedUser extends StatefulWidget {
@@ -34,7 +35,7 @@ class _BannedUserState extends State<BannedUser> {
                     context,
                     MaterialPageRoute(
                         fullscreenDialog: true,
-                        builder: (context) => const AddModerator()));
+                        builder: (context) => const Addbanned()));
               },
               icon: const Icon(Icons.add),
             ),
