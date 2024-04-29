@@ -22,7 +22,7 @@ class _AddBannedState extends State<Addbanned> {
   bool _ispermanent = true;
   bool _ishowlongempty = true;
   bool _isnoteempty = true;
-  
+
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
@@ -57,7 +57,7 @@ class _AddBannedState extends State<Addbanned> {
               onChanged: (value) {
                 setState(
                   () {
-                    // _isusernameempty = value.isEmpty;
+                    _isusernameempty = value.isEmpty;
                   },
                 );
               },
@@ -99,7 +99,7 @@ class _AddBannedState extends State<Addbanned> {
               onChanged: (value) {
                 setState(
                   () {
-                    //_isusernameempty = value.isEmpty;
+                    _ismodnoteempty = value.isEmpty;
                   },
                 );
               },
@@ -121,7 +121,7 @@ class _AddBannedState extends State<Addbanned> {
                   onChanged: (value) {
                     setState(
                       () {
-                        //_isusernameempty = value.isEmpty;
+                        _ishowlongempty = value.isEmpty;
                       },
                     );
                   },
@@ -144,7 +144,22 @@ class _AddBannedState extends State<Addbanned> {
               ],
             ),
             const Text("Note to include in ban message"),
-
+            TextField(
+              controller: _noteController,
+              decoration: InputDecoration(
+                hintText: "The user will receive this note in a message",
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                contentPadding: const EdgeInsets.all(10),
+              ),
+              onChanged: (value) {
+                setState(
+                  () {
+                    _isnoteempty = value.isEmpty;
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
