@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class AddModerator extends StatefulWidget {
-  const AddModerator({super.key});
+class AddApproved extends StatefulWidget {
+  const AddApproved({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  State<AddApproved> createState() {
     return _AddModeratorSatet();
   }
 }
 
-class _AddModeratorSatet extends State<AddModerator> {
+class _AddModeratorSatet extends State<AddApproved> {
   final _userNameController = TextEditingController();
   bool _isusernameempty = true;
 

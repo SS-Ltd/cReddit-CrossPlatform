@@ -4,7 +4,7 @@ class AddModerator extends StatefulWidget {
   const AddModerator({super.key});
 
   @override
-  State<StatefulWidget> createState() {
+  State<AddModerator> createState() {
     return _AddModeratorSatet();
   }
 }
