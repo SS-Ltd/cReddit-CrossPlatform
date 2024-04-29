@@ -70,7 +70,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    //_scrollController.dispose();
     super.dispose();
   }
 
@@ -165,16 +165,19 @@ class _SubRedditPageState extends State<SubRedditPage> {
         );
       } else {
         networkService.user?.recentlyVisited.add(details);
-        setState(() {
-          isMember = details.isMember;
-          isJoined.value = isMember;
-          _subredditIcon = details.icon;
-          _subredditBanner = details.banner ?? 'https://picsum.photos/200/300';
-          _subredditMembers = details.members;
-          _subredditRules = details.rules;
-          _subredditModerators = details.moderators;
-          _subredditDescription = details.description!;
-        });
+        if (mounted) {
+          setState(() {
+            isMember = details.isMember;
+            isJoined.value = isMember;
+            _subredditIcon = details.icon;
+            _subredditBanner =
+                details.banner ?? 'https://picsum.photos/200/300';
+            _subredditMembers = details.members;
+            _subredditRules = details.rules;
+            _subredditModerators = details.moderators;
+            _subredditDescription = details.description!;
+          });
+        }
       }
     }
   }

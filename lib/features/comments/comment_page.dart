@@ -232,6 +232,17 @@ class _CommentPageState extends State<CommentPage> {
                       _comments[index - 1].imageSource, //may need to be fixed
                   hasVoted: _comments[index - 1].hasVoted,
                   comment: _comments[index - 1].comment,
+                  onDeleted: () {
+                    setState(() {
+                      _comments.removeAt(index - 1);
+                      _keys.removeAt(index - 1);
+                    });
+                  },
+                  onBlock: (){
+                    setState(() {
+                      //_comments[index - 1].comment.username = "Blocked User";
+                    });
+                  },
                 );
               } else {
                 return const SizedBox.shrink();
@@ -263,7 +274,7 @@ class _CommentPageState extends State<CommentPage> {
                     setState(() {
                       UserComment? newComment;
                       if (contentType == false) {
-                        final String commentText = result['content'];
+                        //final String commentText = result['content'];
                         newComment = UserComment(
                           photo: null,
                           imageSource: 2,
@@ -273,15 +284,15 @@ class _CommentPageState extends State<CommentPage> {
                             username: result['user'].username,
                             isImage: contentType,
                             netVote: 1,
-                            content: commentText,
+                            content: result['content'],
                             createdAt: DateTime.now().toString(),
                             commentId: result['commentId'],
                           ),
                         );
                       } else if (contentType == true) {
-                        final File commentImage = result['content'];
+                        //final File commentImage = result['content'];
                         newComment = UserComment(
-                          photo: commentImage,
+                          photo: result['content'],
                           imageSource: 1,
                           hasVoted: 1,
                           comment: Comments(

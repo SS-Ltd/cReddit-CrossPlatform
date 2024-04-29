@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/messages.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/search.dart';
@@ -448,6 +449,82 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<Messages>?> fetchInboxMessages() async {
+    Uri url = Uri.parse('$_baseUrl/message/');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchInboxMessages();
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<Messages>? inboxMessages =
+          responseData.map((item) => Messages.fromJson(item)).toList();
+      return inboxMessages;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> markMessageAsRead(String messageId) async {
+    Uri url = Uri.parse('$_baseUrl/message/$messageId/mark-as-read');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markMessageAsRead(messageId);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> markAllMessagesasRead() async {
+    Uri url = Uri.parse('$_baseUrl/message/mark-all-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAllMessagesasRead();
+    }
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> sendMessege(
+      String to, String subject, String message) async {
+    Uri url = Uri.parse('$_baseUrl/message/');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'to': to,
+        'subject': subject,
+        'message': message,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return sendMessege(to, subject, message);
+    }
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      return {
+        'success': true,
+        'messageId': responseBody['messageId'],
+      };
+    } else {
+      return {
+        'success': false,
+      };
+    }
+  }
+
   Future<bool> createCommunity(String name, bool isNSFW) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
@@ -519,14 +596,18 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       getUserDetails(username);
     }
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return UserModel.fromJson(json);
     } else {
+      print('Failed to fetch user details');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
       throw Exception('Failed to fetch user details');
     }
   }
-
 
   Future<List<SearchComments>> getSearchComments(
       String comment, String username) async {

@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 /// A page for editing a comment.
 ///
@@ -110,57 +113,66 @@ class _EditCommentPageState extends State<EditCommentPage> {
         ),
         actions: <Widget>[
           TextButton(
-              child: const Text('Save',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  )),
-              onPressed: () async {
-                // Add your logic to save the edited comment
-                if (_controller.text.isNotEmpty) {
-                  bool edited = await context
-                      .read<NetworkService>()
-                      .editTextComment(widget.commentId, _controller.text);
-                  if (edited) {
-                    Navigator.pop(context, {
-                      'content': _controller.text,
-                      'contentType': widget.contentType,
-                      'imageSource': widget.imageSource,
-                    });
-                    CustomSnackBar(
-                      context: context,
-                      content: 'Comment edited successfully',
-                    ).show();
-                  } else {
-                    CustomSnackBar(
-                      context: context,
-                      content: 'Failed to edit comment',
-                    ).show();
-                  }
-                }
-                if (_image != null) {
-                  bool edited = await context
-                      .read<NetworkService>()
-                      .editImageComment(widget.commentId, _image!);
-                  if (edited) {
-                    Navigator.pop(context, {
-                      'content': _image,
-                      'contentType': widget.contentType,
-                      'imageSource': widget.imageSource,
-                    });
-                    CustomSnackBar(
-                      context: context,
-                      content: 'Comment edited successfully',
-                    ).show();
-                  } else {
-                    CustomSnackBar(
-                      context: context,
-                      content: 'Failed to edit comment',
-                    ).show();
-                  }
-                }
-              }),
+            child: const Text('Save',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                )),
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return FutureBuilder<Map<String, dynamic>>(
+                    future: saveComment(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const AlertDialog(
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Palette.blueColor),
+                              ),
+                              SizedBox(width: 30),
+                              Text("Saving comment..."),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.done) {
+                        if (snapshot.data != null &&
+                            snapshot.data!['edited'] == true) {
+                          // comment was saved successfully
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(snapshot.data);
+                            CustomSnackBar(
+                              context: context,
+                              content: 'Comment editted successfully',
+                            ).show();
+                          });
+                        } else if (snapshot.data != null &&
+                            snapshot.data!['edited'] == false) {
+                          // comment saving failed
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            CustomSnackBar(
+                              context: context,
+                              content: 'Failed to edit comment',
+                            ).show();
+                          });
+                        }
+                        return const SizedBox.shrink();
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
       body: Padding(
@@ -228,5 +240,31 @@ class _EditCommentPageState extends State<EditCommentPage> {
         ),
       ),
     );
+  }
+
+  Future<Map<String, dynamic>> saveComment() async {
+    if (_controller.text.isNotEmpty) {
+      bool edited = await context
+          .read<NetworkService>()
+          .editTextComment(widget.commentId, _controller.text);
+      return {
+        'edited': edited,
+        'content': _controller.text,
+        'contentType': widget.contentType,
+        'imageSource': widget.imageSource,
+      };
+    }
+    if (_image != null) {
+      bool edited = await context
+          .read<NetworkService>()
+          .editImageComment(widget.commentId, _image!);
+      return {
+        'edited': edited,
+        'content': _image,
+        'contentType': widget.contentType,
+        'imageSource': widget.imageSource,
+      };
+    }
+    return {'edited': false};
   }
 }

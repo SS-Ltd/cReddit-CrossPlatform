@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 class Comments {
   final String profilePicture;
   final String username;
@@ -13,6 +14,8 @@ class Comments {
   String? communityName;
   final String? postId; //
   final String? title; //
+  ValueNotifier<bool> isDeleted =ValueNotifier(false);
+  ValueNotifier<bool> isBlocked =ValueNotifier(false);
 
   Comments({
     required this.profilePicture,
@@ -28,6 +31,7 @@ class Comments {
     this.communityName = '',
     this.postId = '',
     this.title = '',
+    
   });
 
   factory Comments.fromJson(Map<String, dynamic> json) {

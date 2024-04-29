@@ -1,17 +1,19 @@
 class MessageItem {
-  String id;
-  String title;
-  String content;
-  String senderUsername;
+  final String from;
+  final String to;
+  final String subject;
+  final String text;
   bool isRead;
-  String time;
+  bool isDeleted;
+  final String createdAt;
 
   MessageItem({
-    required this.id,
-    required this.title,
-    required this.content,
-    required this.senderUsername,
-    this.isRead = false,
-    required this.time,
+    required this.from,
+    required this.to,
+    required this.subject,
+    required this.text,
+    required this.isRead,
+    required this.isDeleted,
+    required this.createdAt,
   });
 }

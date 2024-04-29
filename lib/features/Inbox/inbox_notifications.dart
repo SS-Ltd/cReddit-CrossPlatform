@@ -1,8 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/message_item.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
+import 'package:reddit_clone/features/Inbox/new_message.dart';
 import 'package:reddit_clone/features/Inbox/notification_item.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
+import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/theme/palette.dart';
 
 class InboxNotificationPage extends StatefulWidget {
   const InboxNotificationPage({super.key});
@@ -14,6 +21,7 @@ class InboxNotificationPage extends StatefulWidget {
 class _InboxNotificationPageState extends State<InboxNotificationPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late List<Messages> inboxMessages = [];
 
   List<NotificationItem> notifications = [
     NotificationItem(
@@ -45,48 +53,53 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
 
   List<MessageItem> messages = [
     MessageItem(
-      id: "1",
-      title: "Welcome to Reddit!",
-      content: "Hello, welcome to Reddit! We're glad you're here.",
-      senderUsername: "u/RedditAdmin",
-      time: "1h",
+      subject: "Welcome to Reddit!",
+      text: "Hello, welcome to Reddit! We're glad you're here.",
+      from: "u/RedditAdmin",
+      createdAt: "1h",
       isRead: false,
+      isDeleted: false,
+      to: "u/ExampleUser",
     ),
     MessageItem(
-      id: "2",
-      title: "Can we collaborate?",
-      content:
+      subject: "Can we collaborate?",
+      text:
           "Hi there! I saw your post on r/FlutterDev. Are you open to collaboration on a Flutter project?",
-      senderUsername: "u/FlutterFan123",
-      time: "2d",
+      from: "u/FlutterFan123",
+      createdAt: "2d",
       isRead: true,
+      isDeleted: false,
+      to: "u/ExampleUser",
     ),
     MessageItem(
-      id: "3",
-      title: "Your subscription is expiring",
-      content:
+      subject: "Your subscription is expiring",
+      text:
           "Just a reminder that your subscription to r/PremiumContent is expiring in 3 days.",
-      senderUsername: "u/SubscriptionsBot",
-      time: "4d",
+      from: "u/SubscriptionsBot",
+      createdAt: "4d",
       isRead: false,
+      isDeleted: false,
+      to: "u/ExampleUser",
     ),
     MessageItem(
-      id: "4",
-      title: "Thank you for your support!",
-      content:
+      subject: "Thank you for your support!",
+      text:
           "We just wanted to say a big thank you for supporting our Kickstarter campaign.",
-      senderUsername: "u/KickstartThis",
-      time: "6d",
+      from: "u/KickstartThis",
+      createdAt: "6d",
       isRead: true,
+      isDeleted: false,
+      to: "u/ExampleUser",
     ),
     MessageItem(
-      id: "5",
-      title: "Your order has shipped",
-      content:
+      subject: "Your order has shipped",
+      text:
           "Good news! Your order from r/ArtisanGoods has shipped. Track your package here: [link]",
-      senderUsername: "u/CraftsmanBot",
-      time: "8d",
+      from: "u/CraftsmanBot",
+      createdAt: "8d",
       isRead: false,
+      isDeleted: false,
+      to: "u/ExampleUser",
     ),
   ];
 
@@ -94,58 +107,110 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    fetchInboxMessages();
+  }
+
+  Future<void> fetchInboxMessages() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final fetchedMessages = await networkService.fetchInboxMessages();
+    if (mounted && fetchedMessages != null) {
+      setState(() {
+        inboxMessages = fetchedMessages;
+      });
+    }
   }
 
   void _showMenuOptions() {
     showModalBottomSheet(
-      context: context,
-      shape: Border.all(style: BorderStyle.none),
-      builder: (BuildContext context) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.message, color: Colors.black),
-              title: const Text('New Message',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.pop(context),
+        context: context,
+        shape: Border.all(style: BorderStyle.none),
+        builder: (BuildContext context) {
+          return Container(
+            color: Palette.backgroundColor,
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.edit_outlined),
+                  title: const Text('New Message'),
+                  onTap: () async {
+                    final newMessage = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NewMessage()),
+                    );
+                    if (newMessage != null) {
+                      setState(() {
+                        inboxMessages.insert(0, newMessage);
+                      });
+                    }
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.mark_email_read),
+                  title: const Text('Mark all inbox tabs as read'),
+                  onTap: () async {
+                    bool done = await context
+                        .read<NetworkService>()
+                        .markAllMessagesasRead();
+                    if (!done) {
+                      return;
+                    }
+                    setState(() {
+                      for (var message in inboxMessages) {
+                        message.isRead = true;
+                      }
+                      for (var notification in notifications) {
+                        notification.isRead = true;
+                      }
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings_outlined),
+                  title: const Text('Edit notification settings'),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.mark_email_read, color: Colors.black),
-              title: const Text('Mark all inbox tabs as read',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.black),
-              title: const Text('Edit notification settings',
-                  style: TextStyle(color: Colors.black)),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inbox'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: _showMenuOptions,
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Notifications'),
-            Tab(text: 'Messages'),
+      backgroundColor: Palette.settingsHeading,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Stack(
+          children: [
+            AppBar(
+              automaticallyImplyLeading: false,
+              bottom: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: 'Notifications'),
+                  Tab(text: 'Messages'),
+                ],
+                labelStyle: const TextStyle(fontSize: 16),
+                labelColor: Palette.whiteColor,
+                indicator: const UnderlineTabIndicator(
+                    borderSide:
+                        BorderSide(width: 2.0, color: Palette.blueColor),
+                    insets: EdgeInsets.symmetric(horizontal: -20)),
+              ),
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: IconButton(
+                icon: const Icon(Icons.more_vert),
+                onPressed: _showMenuOptions,
+              ),
+            ),
           ],
-          labelStyle: const TextStyle(fontSize: 16),
-          indicatorSize: TabBarIndicatorSize.tab,
         ),
       ),
       body: TabBarView(
@@ -166,14 +231,21 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
             },
           ),
           ListView.builder(
-            itemCount: messages.length,
+            itemCount: inboxMessages.length,
             itemBuilder: (context, index) {
-              final message = messages[index];
               return MessageLayout(
-                message: message,
-                onTap: () {
+                message: inboxMessages[index],
+                onTap: () async {
                   setState(() {
-                    messages[index].isRead = true;
+                    inboxMessages[index].isRead = true;
+                  });
+                  bool done = await context
+                      .read<NetworkService>()
+                      .markMessageAsRead(inboxMessages[index].id);
+                  setState(() {
+                    if (!done) {
+                      inboxMessages[index].isRead = false;
+                    }
                   });
                 },
               );

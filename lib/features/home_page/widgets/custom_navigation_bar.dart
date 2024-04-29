@@ -280,8 +280,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   widget.isProfile = false;
                 });
               },
-              selectedFontSize: 12, // Adjust the selected font size
-              unselectedFontSize: 12, // Adjust the unselected font size
+              selectedFontSize: 11, // Adjust the selected font size
+              unselectedFontSize: 11, // Adjust the unselected font size
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(

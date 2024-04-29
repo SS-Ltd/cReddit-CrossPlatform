@@ -45,7 +45,6 @@ dependencies:
   google_sign_in: ^6.2.1
   path_provider: ^2.1.2
   flutter_polls: ^0.1.6
-  #android_intent_plus: ^5.0.1
   video_player: ^2.2.12
   chewie: ^1.0.0
   flutter_spinkit: ^5.2.1
@@ -53,6 +52,8 @@ dependencies:
   dartdoc: ^8.0.8
   firebase_core: ^2.30.0
   firebase_messaging: ^14.8.2
+  loading_indicator: ^3.1.1
+  flutter_markdown: ^0.7.1
   firebase_analytics: ^10.10.2
   
 

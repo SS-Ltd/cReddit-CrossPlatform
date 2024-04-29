@@ -6,9 +6,10 @@ class CustomSnackBar {
   final String content;
   final Color textColor;
   final Color backgroundColor;
+
   CustomSnackBar({
-    required this.context,
-    required this.content,
+    required this.context, 
+    required this.content, 
     this.textColor = Palette.whiteColor,
     this.backgroundColor = Palette.blackColor,
   });
