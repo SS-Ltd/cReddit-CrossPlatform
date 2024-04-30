@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
@@ -63,11 +64,14 @@ class StaticCommentCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             contentType == false
-                ? Text(
-                    content,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
+                ? MarkdownBody(
+                    data: content,
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                        .copyWith(
+                      p: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
                     ),
                   )
                 : contentType == true && imageSource == 0

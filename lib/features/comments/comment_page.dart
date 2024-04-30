@@ -73,8 +73,10 @@ class _CommentPageState extends State<CommentPage> {
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   bool isLoading = true;
+
   @override
   void initState() {
+    print(widget.postComment.postModel.isModerator);
     super.initState();
     fetchComments(widget.postId).then((_) {
       for (var i = 0; i < _comments.length; i++) {
@@ -83,7 +85,7 @@ class _CommentPageState extends State<CommentPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _calculateCommentPositions();
       });
-    isLoading = false;
+      isLoading = false;
     });
   }
 
@@ -110,6 +112,7 @@ class _CommentPageState extends State<CommentPage> {
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
                   isPostPage: true,
                   comment: comment,
+                  isModerator: widget.postComment.postModel.isModerator,
                 ))
             .toList();
       });
@@ -221,42 +224,41 @@ class _CommentPageState extends State<CommentPage> {
       endDrawer: isSearching ? null : const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
-          
-            return ListView.builder(
-  controller: _scrollController,
-  itemCount: isLoading ? 2 : _comments.length + 1,
-  itemBuilder: (context, index) {
-    if (index == 0) {
-      return widget.postComment;
-    } else if (isLoading) {
-      return CustomLoadingIndicator();
-    } else if (index - 1 < _keys.length) {
-      return UserComment(
-        key: _keys[index - 1],
-        photo: _comments[index - 1].photo,
-        imageSource: _comments[index - 1].imageSource,
-        hasVoted: _comments[index - 1].hasVoted,
-        comment: _comments[index - 1].comment,
-        isPostPage: true,
-        onDeleted: () {
-          setState(() {
-            _comments.removeAt(index - 1);
-            _keys.removeAt(index - 1);
-          });
-        },
-        onBlock: () {
-          setState(() {
-            _comments[index - 1].comment.username = "Blocked User";
-            //_comments[index - 1].isMinimized = ValueNotifier<bool>(true);
-          });
-        },
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  },
-);
-          
+          return ListView.builder(
+            controller: _scrollController,
+            itemCount: isLoading ? 2 : _comments.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return widget.postComment;
+              } else if (isLoading) {
+                return CustomLoadingIndicator();
+              } else if (index - 1 < _keys.length) {
+                return UserComment(
+                  key: _keys[index - 1],
+                  photo: _comments[index - 1].photo,
+                  imageSource: _comments[index - 1].imageSource,
+                  hasVoted: _comments[index - 1].hasVoted,
+                  comment: _comments[index - 1].comment,
+                  isModerator: _comments[index - 1].isModerator,
+                  isPostPage: true,
+                  onDeleted: () {
+                    setState(() {
+                      _comments.removeAt(index - 1);
+                      _keys.removeAt(index - 1);
+                    });
+                  },
+                  onBlock: () {
+                    setState(() {
+                      _comments[index - 1].comment.username = "Blocked User";
+                      //_comments[index - 1].isMinimized = ValueNotifier<bool>(true);
+                    });
+                  },
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          );
         },
       ),
       bottomNavigationBar: Padding(
@@ -288,6 +290,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 2,
                           hasVoted: 1,
                           isPostPage: true,
+                          isModerator: widget.postComment.postModel.isModerator,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
@@ -305,6 +308,7 @@ class _CommentPageState extends State<CommentPage> {
                           imageSource: 1,
                           hasVoted: 1,
                           isPostPage: true,
+                          isModerator: widget.postComment.postModel.isModerator,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,

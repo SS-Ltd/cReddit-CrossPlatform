@@ -10,10 +10,9 @@ class Comments {
   final bool isUpvoted;
   final bool isDownvoted;
   bool isSaved;
-
   String? communityName;
-  final String? postId; //
-  final String? title; //
+  final String? postId;
+  final String? title;
   ValueNotifier<bool> isDeleted =ValueNotifier(false);
   ValueNotifier<bool> isBlocked =ValueNotifier(false);
 
@@ -39,7 +38,7 @@ class Comments {
       profilePicture:
           json['profilePicture'] is String ? json['profilePicture'] : '',
       username: json['username'],
-      isImage: json['isImage'] == null ? false : json['isImage'],
+      isImage: json['isImage'] ?? false,
       netVote: json['netVote'],
       content: json['content'],
       createdAt: json['createdAt'],

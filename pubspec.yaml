@@ -55,6 +55,7 @@ dependencies:
   loading_indicator: ^3.1.1
   flutter_markdown: ^0.7.1
   firebase_analytics: ^10.10.2
+  flutter_iconpicker: ^3.0.1
   
 
   # The following adds the Cupertino Icons font to your application.
