@@ -254,8 +254,6 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchCommentsForPost(postId);
     }
-    print("COMMENT EL POST HNA");
-    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData

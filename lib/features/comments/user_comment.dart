@@ -18,6 +18,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// This file contains the implementation of the [UserComment] widget and its related classes.
 ///
@@ -40,6 +41,7 @@ class UserComment extends StatefulWidget {
   final VoidCallback onDeleted;
   final VoidCallback onBlock;
   final bool isPostPage; // true for post, false for savedcomments
+  bool isModerator;
 
   UserComment({
     super.key,
@@ -51,6 +53,7 @@ class UserComment extends StatefulWidget {
     this.onDeleted = defaultOnDeleted,
     this.onBlock = defaultOnBlock,
     required this.isPostPage,
+    this.isModerator = false,
   });
 
   static void defaultOnDeleted() {}
@@ -105,6 +108,7 @@ class UserCommentState extends State<UserComment> {
           imageSource: 2,
           hasVoted: 0,
           isPostPage: true,
+          isModerator: widget.isModerator,
           comment: Comments(
             profilePicture: 'assets/MonkeyDLuffy.png',
             username: 'User123',
@@ -128,6 +132,7 @@ class UserCommentState extends State<UserComment> {
           imageSource: 1,
           hasVoted: 0,
           isPostPage: true,
+          isModerator: widget.isModerator,
           comment: Comments(
             profilePicture: 'assets/MonkeyDLuffy.png',
             username: 'User123',
@@ -268,7 +273,6 @@ class UserCommentState extends State<UserComment> {
                           child: CircleAvatar(
                             backgroundImage:
                                 NetworkImage(widget.comment.profilePicture),
-                            //radius: 18,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -308,9 +312,7 @@ class UserCommentState extends State<UserComment> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
-                              const SizedBox(
-                                  height:
-                                      4), // Provides spacing of 4 logical pixels between title and username/community.
+                              const SizedBox(height: 4),
                               Text(
                                 '${widget.comment.username} . r/${widget.comment.communityName}  .  ${formatTimestamp(DateTime.parse(widget.comment.createdAt))}',
                                 style: const TextStyle(
@@ -476,6 +478,19 @@ class UserCommentState extends State<UserComment> {
                             showCommentOptions(user, numofTiles);
                           },
                         ),
+                        if(widget.isModerator)...[
+                        IconButton(
+                          icon: Transform.scale(
+                            scale: 1.1,
+                            child: const Icon(Icons.shield_outlined),
+                          ),
+                          onPressed: () {
+                            modOptions(3);
+                          }
+                          
+                        ),
+                        ]
+                        else
                         IconButton(
                           icon: const Icon(Icons.reply_sharp),
                           onPressed: _addReply,
@@ -598,37 +613,85 @@ class UserCommentState extends State<UserComment> {
     );
   }
 
+  OverlayEntry? overlayEntry;
+
+void showOverlay(int numofTiles) {
+  double height = numofTiles * 56;
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      left: 8,
+      right: 8,
+      bottom: height,
+      child: Material(
+          color: Colors.transparent,
+          child: ValueListenableBuilder<String>(
+            valueListenable: content,
+            builder: (context, contentValue, child) {
+              return ValueListenableBuilder<File?>(
+                valueListenable: photo,
+                builder: (context, photoValue, child) {
+                  return StaticCommentCard(
+                    content: contentValue,
+                    contentType: widget.comment.isImage,
+                    photo: photoValue,
+                    imageSource: widget.imageSource,
+                    staticComment: widget.comment,
+                  );
+                },
+              );
+            },
+          )),
+    ),
+  );
+
+  Overlay.of(context).insert(overlayEntry!);
+}
+
+void modOptions(int numofTiles) {
+  showOverlay(numofTiles);
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+    builder: (context) {
+      return Wrap(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.only(left: 16, top: 14),
+            alignment: Alignment.topLeft,
+            child: const Text(
+              'Moderator',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Palette.greyColor
+              ),
+            ),
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.report),
+            title: const Text('Accept Comment'),
+            onTap: () {
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.block),
+            title: const Text('Remove Comment'),
+            onTap: () {
+            },
+          ),
+        ],
+      );
+    },
+  ).then((_) {
+      // Remove the overlay entry after the modal bottom sheet is dismissed
+      overlayEntry?.remove();
+    });
+}
+  
   void showCommentOptions(UserModel user, int numofTiles) {
-    double height = numofTiles * 56;
-
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: 8,
-        right: 8,
-        bottom: height,
-        child: Material(
-            color: Colors.transparent,
-            child: ValueListenableBuilder<String>(
-              valueListenable: content,
-              builder: (context, contentValue, child) {
-                return ValueListenableBuilder<File?>(
-                  valueListenable: photo,
-                  builder: (context, photoValue, child) {
-                    return StaticCommentCard(
-                      content: contentValue,
-                      contentType: widget.comment.isImage,
-                      photo: photoValue,
-                      imageSource: widget.imageSource,
-                      staticComment: widget.comment,
-                    );
-                  },
-                );
-              },
-            )),
-      ),
-    );
-
-    Overlay.of(context).insert(overlayEntry);
+    showOverlay(numofTiles);
 
     showModalBottomSheet(
       context: context,
@@ -779,7 +842,6 @@ class UserCommentState extends State<UserComment> {
                             .show();
                       }
                     }
-
                     Navigator.pop(context);
                   },
                 ),
@@ -793,7 +855,7 @@ class UserCommentState extends State<UserComment> {
       },
     ).then((_) {
       // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry.remove();
+      overlayEntry?.remove();
     });
   }
 }

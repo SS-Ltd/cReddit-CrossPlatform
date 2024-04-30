@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'cReddit',
       theme: AppTheme.darkTheme,
+
       home: Scaffold(
         body: PageView(
           children: const [
