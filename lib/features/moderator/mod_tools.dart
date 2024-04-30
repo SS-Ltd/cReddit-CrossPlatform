@@ -3,6 +3,7 @@ import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/features/moderator/approved_user.dart';
 import 'package:reddit_clone/features/moderator/banned_users.dart';
+import 'package:reddit_clone/features/moderator/community_type.dart';
 import 'package:reddit_clone/features/moderator/description.dart';
 import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
@@ -65,7 +66,12 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Topics",
                 buttonIcon: Icons.topic),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CommunityType()));
+                },
                 buttonText: "Community type",
                 buttonIcon: Icons.lock),
             ArrowButton(
