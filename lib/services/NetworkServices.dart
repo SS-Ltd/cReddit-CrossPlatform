@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/messages.dart';
@@ -450,7 +452,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<Messages>?> fetchInboxMessages({int page = 1, int limit = 10}) async {
+  Future<List<Messages>?> fetchInboxMessages(
+      {int page = 1, int limit = 10}) async {
     Uri url = Uri.parse('$_baseUrl/message/?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
