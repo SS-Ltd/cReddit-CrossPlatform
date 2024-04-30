@@ -22,8 +22,8 @@ class PostModel {
   bool isDownvoted;
   final bool isSaved;
   final bool isHidden;
-  final bool isJoined;
-  final bool isModerator;
+  bool isJoined;
+  bool isModerator;
   bool? isBlocked;
   // final DateTime? uploadDate;
   final bool isNSFW;
@@ -52,14 +52,13 @@ class PostModel {
     required this.isDownvoted,
     required this.isSaved,
     required this.isHidden,
-    required this.isJoined,
-    required this.isModerator,
+    this.isJoined = false,
+    this.isModerator = false,
     this.isBlocked,
     required this.isNSFW,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     return PostModel(
       postId: json['_id'],
       type: json['type'],
@@ -90,8 +89,8 @@ class PostModel {
       isDownvoted: json['isDownvoted'],
       isSaved: json['isSaved'],
       isHidden: json['isHidden'],
-      isJoined: json['isJoined'],
-      isModerator: json['isModerator'],
+      isJoined: json['isJoined'] ?? false,
+      isModerator: json['isModerator'] ?? false,
       isBlocked: json['isBlocked'],
       isNSFW: json['isNSFW'],
     );

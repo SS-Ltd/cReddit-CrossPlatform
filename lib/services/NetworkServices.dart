@@ -254,8 +254,6 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchCommentsForPost(postId);
     }
-    print("COMMENT EL POST HNA");
-    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -577,6 +575,8 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return getSubredditDetails(subredditName);
     }
+    print("hheeiei");
+    print(response.body);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
@@ -590,7 +590,8 @@ class NetworkService extends ChangeNotifier {
           rules: [],
           moderators: [],
           description: '',
-          isNSFW: false);
+          isNSFW: false,
+          isModerator: false);
     } else {
       return null;
     }

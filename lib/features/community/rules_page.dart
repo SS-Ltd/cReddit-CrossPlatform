@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 class RulesPage extends StatelessWidget {
   final List<String> rules;
+  final List<String> moderators;
   final String description;
   final String subredditName;
   final String bannerURL;
-
   RulesPage(
       {required this.rules,
       required this.description,
       required this.subredditName,
-      required this.bannerURL});
+      required this.bannerURL,
+      required this.moderators});
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +87,36 @@ class RulesPage extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text('${index + 1}. ${rules[index]}',
+                            style: TextStyle(fontSize: 14)),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                    child: Text(
+                      'Moderators',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Divider(),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: moderators.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('${index + 1}. ${moderators[index]}',
                             style: TextStyle(fontSize: 14)),
                       );
                     },

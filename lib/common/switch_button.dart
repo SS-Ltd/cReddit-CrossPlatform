@@ -71,6 +71,7 @@ class _SwitchButtonState extends State<SwitchButton> {
                         : Icon(widget.buttonicon, color: Palette.whiteColor),
                     const SizedBox(width: 10),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           widget.buttonText,
