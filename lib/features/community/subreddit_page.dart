@@ -43,6 +43,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   late final ValueNotifier<bool> isJoined;
   Future<bool>? _future;
   bool isMember = false;
+  bool isModerator = false;
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
@@ -118,6 +119,13 @@ class _SubRedditPageState extends State<SubRedditPage> {
         sort: currentSort.toLowerCase());
 
     if (posts != null && posts.isNotEmpty) {
+      for (var element in posts) {
+        element.isJoined = isMember;
+        element.isModerator = isModerator;
+      }
+    }
+
+    if (posts != null && posts.isNotEmpty) {
       if (mounted) {
         setState(() {
           subredditPosts.addAll(posts);
@@ -168,6 +176,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         if (mounted) {
           setState(() {
             isMember = details.isMember;
+            isModerator = details.isModerator;
             isJoined.value = isMember;
             _subredditIcon = details.icon;
             _subredditBanner =
@@ -426,7 +435,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
           Container(
             alignment: Alignment.centerLeft,
             child: TextButton(
-              child: const Text('See more', style: TextStyle(color: Colors.blue)),
+              child:
+                  const Text('See more', style: TextStyle(color: Colors.blue)),
               onPressed: () {
                 Navigator.push(
                   context,
