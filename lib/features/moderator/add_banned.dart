@@ -154,6 +154,7 @@ class _AddBannedState extends State<Addbanned> {
                 SizedBox(
                   width: 100,
                   child: TextField(
+                    keyboardType: TextInputType.number,
                     controller: _howlongController,
                     decoration: InputDecoration(
                       hintText: "1 day",

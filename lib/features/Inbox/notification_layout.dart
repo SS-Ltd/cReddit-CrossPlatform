@@ -17,8 +17,8 @@ class NotificationLayout extends StatelessWidget {
       tileColor: notification.isRead
           ? Palette.backgroundColor
           : Palette.notificationColor,
-      leading: const CircleAvatar(
-        backgroundImage: AssetImage('assets/hehe.png'),
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(notification.profilePic),
       ),
       title: RichText(
         text: TextSpan(
