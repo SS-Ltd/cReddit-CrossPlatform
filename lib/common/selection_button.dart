@@ -4,15 +4,17 @@ import 'package:reddit_clone/theme/palette.dart';
 class SelectionButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
-  final IconData buttonIcon;
+  final IconData? buttonIcon;
   final String selectedtext;
+  final String optional;
 
   const SelectionButton({
     super.key,
     required this.onPressed,
     required this.buttonText,
-    required this.buttonIcon,
     required this.selectedtext,
+    this.buttonIcon,
+    this.optional = '',
   });
 
   @override
@@ -34,17 +36,32 @@ class SelectionButton extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
-                  buttonIcon,
-                  color: Palette.whiteColor,
-                ),
+                buttonIcon == null
+                    ? const SizedBox()
+                    : Icon(
+                        buttonIcon,
+                        color: Palette.whiteColor,
+                      ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(
-                      color: Palette.whiteColor,
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        buttonText,
+                        style: const TextStyle(
+                          color: Palette.whiteColor,
+                        ),
+                      ),
+                      if (optional.isNotEmpty)
+                        SizedBox(
+                          width: 300,
+                          child: Text(
+                            optional,
+                            style: const TextStyle(color: Palette.whiteColor),
+                            softWrap: true,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],

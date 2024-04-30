@@ -22,7 +22,7 @@ class _DescriptionState extends State<Description> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.close),
+            icon: const Icon(Icons.arrow_back),
           ),
           title: const Text("Description"),
           actions: [
