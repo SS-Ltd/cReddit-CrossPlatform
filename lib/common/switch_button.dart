@@ -5,14 +5,16 @@ class SwitchButton extends StatefulWidget {
   SwitchButton(
       {super.key,
       required this.buttonText,
-      required this.buttonicon,
       required this.onPressed,
-      required this.switchvalue});
+      required this.switchvalue,
+      this.buttonicon,
+      this.optional = ''});
 
   final String buttonText;
-  final IconData buttonicon;
+  final IconData? buttonicon;
   final ValueChanged<bool> onPressed;
   bool switchvalue;
+  final String optional;
 
   @override
   State<SwitchButton> createState() {
@@ -48,30 +50,46 @@ class _SwitchButtonState extends State<SwitchButton> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _switchValue = !_switchValue;
-                      widget.switchvalue = _switchValue;
-                    });
-                    widget.onPressed(widget.switchvalue);
-                  },
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0.0),
-                      ),
+                onPressed: () {
+                  setState(() {
+                    _switchValue = !_switchValue;
+                    widget.switchvalue = _switchValue;
+                  });
+                  widget.onPressed(widget.switchvalue);
+                },
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(widget.buttonicon, color: Palette.whiteColor),
-                      const SizedBox(width: 10),
-                      Text(
-                        widget.buttonText,
-                        style: const TextStyle(color: Palette.whiteColor),
-                      ),
-                    ],
-                  )),
+                ),
+                child: Row(
+                  children: [
+                    widget.buttonicon == null
+                        ? const SizedBox()
+                        : Icon(widget.buttonicon, color: Palette.whiteColor),
+                    const SizedBox(width: 10),
+                    Column(
+                      children: [
+                        Text(
+                          widget.buttonText,
+                          style: const TextStyle(color: Palette.whiteColor),
+                        ),
+                        if (widget.optional.isNotEmpty)
+                          SizedBox(
+                            width: 300,
+                            child: Text(
+                              widget.optional,
+                              style: const TextStyle(color: Palette.whiteColor),
+                              softWrap: true,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           Row(
