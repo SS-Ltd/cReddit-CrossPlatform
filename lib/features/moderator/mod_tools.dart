@@ -7,6 +7,7 @@ import 'package:reddit_clone/features/moderator/description.dart';
 import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
 import 'package:reddit_clone/features/moderator/muted_users.dart';
+import 'package:reddit_clone/features/moderator/post_types.dart';
 
 class ModeratorTools extends StatefulWidget {
   const ModeratorTools({super.key});
@@ -68,7 +69,12 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Community type",
                 buttonIcon: Icons.lock),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PostTypes()));
+                },
                 buttonText: "Post type",
                 buttonIcon: Icons.type_specimen),
             ArrowButton(

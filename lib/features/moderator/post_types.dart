@@ -29,7 +29,14 @@ class _PostTypesState extends State<PostTypes> {
             ),
           ],
         ),
+        body: Column(children: [
+          
+        ],),
       ),
     );
   }
+
+
+  
+
 }
