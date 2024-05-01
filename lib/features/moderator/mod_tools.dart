@@ -9,6 +9,7 @@ import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
 import 'package:reddit_clone/features/moderator/muted_users.dart';
 import 'package:reddit_clone/features/moderator/post_types.dart';
+import 'package:reddit_clone/features/moderator/queues.dart';
 import 'package:reddit_clone/features/moderator/rules.dart';
 import 'package:reddit_clone/features/moderator/schedule_posts.dart';
 
@@ -96,7 +97,10 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonIcon: Icons.location_on_outlined),
             const Heading(text: "CONTENT & REGULATIONS"),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Queues()));
+                },
                 buttonText: "Queues",
                 buttonIcon: Icons.queue),
             ArrowButton(
