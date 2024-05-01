@@ -22,7 +22,9 @@ class _RulesState extends State<Rules> {
         leading: _isEditing
             ? null
             : IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 icon: const Icon(Icons.arrow_back),
               ),
         title: _isEditing
