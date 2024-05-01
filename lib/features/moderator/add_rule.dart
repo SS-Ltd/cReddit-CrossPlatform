@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AddRule extends StatefulWidget {
-  const AddRule({super.key});
+  const AddRule({super.key, this.isEditing = false});
+
+  final bool isEditing;
 
   @override
   State<AddRule> createState() {
@@ -27,7 +29,7 @@ class _AddRuleState extends State<AddRule> {
             },
             icon: const Icon(Icons.close),
           ),
-          title: const Text("Create rule"),
+          title: widget.isEditing ? const Text("Edit rule") : const Text("Create rule"),
           actions: [
             ElevatedButton(
               onPressed: _istitleempty ? null : () {},

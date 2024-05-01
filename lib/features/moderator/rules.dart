@@ -45,6 +45,7 @@ class _RulesState extends State<Rules> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
+                            fullscreenDialog: true,
                             builder: (context) => const AddRule()));
                   },
                   icon: const Icon(Icons.add),
@@ -137,13 +138,47 @@ class _RulesState extends State<Rules> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
+                            fullscreenDialog: true,
                             builder: (context) => const AddRule()));
                   },
                   child: const Text("Create Rule"),
                 ),
               ],
             )
-          : Column(),
+          : ListView.builder(
+              //itemCount: rules.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (context) => const AddRule(
+                                      isEditing: true,
+                                    )));
+                      },
+                      leading: CircleAvatar(
+                        child: Text("${index + 1}"),
+                      ),
+                      //title: Text("Rule name"),
+                      subtitle: const Text('Description of the rule'),
+                      trailing: _isEditing
+                          ? IconButton(
+                              onPressed: () {}, icon: const Icon(Icons.delete))
+                          : IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.arrow_forward_ios)),
+                    ),
+                    const Divider(
+                      thickness: 1,
+                    ),
+                  ],
+                );
+              },
+            ),
     );
   }
 }
