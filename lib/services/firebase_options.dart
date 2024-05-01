@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '737898149215',
     projectId: 'creddit-by-ss-ltd',
     storageBucket: 'creddit-by-ss-ltd.appspot.com',
-    iosBundleId: 'com.example.redditClone',
+    iosBundleId: 'com.example.redditClone3',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
