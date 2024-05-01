@@ -13,20 +13,62 @@ class Rules extends StatefulWidget {
 
 class _RulesState extends State<Rules> {
   List<String> rules = [];
+  bool _isEditing = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: Expanded(
-          child: Column(
-            children: [const Text("Rules"), Text("${rules.length} / 15 rules", style: const TextStyle(fontSize: 12),)],
-          ),
-        ),
+        leading: _isEditing
+            ? null
+            : IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.arrow_back),
+              ),
+        title: _isEditing
+            ? const Text("Edit Rules")
+            : Expanded(
+                child: Column(
+                  children: [
+                    const Text("Rules"),
+                    Text(
+                      "${rules.length} / 15 rules",
+                      style: const TextStyle(fontSize: 12),
+                    )
+                  ],
+                ),
+              ),
+        actions: rules.isNotEmpty && !_isEditing
+            ? [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddRule()));
+                  },
+                  icon: const Icon(Icons.add),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isEditing = true;
+                    });
+                  },
+                  icon: const Icon(Icons.edit),
+                ),
+              ]
+            : _isEditing
+                ? [
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isEditing = false;
+                          });
+                        },
+                        child: const Text("Done"))
+                  ]
+                : null,
       ),
       body: rules.isEmpty
           ? Column(
@@ -87,7 +129,9 @@ class _RulesState extends State<Rules> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
