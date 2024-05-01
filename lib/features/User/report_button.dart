@@ -39,15 +39,25 @@ class _ReportButtonState extends State<ReportButton> {
     "Personal information",
     "Non-consensual"
   ];
+  bool _isMounted = false;
 
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
     fetchReasons().then((value) {
-      setState(() {
-        reasons = value;
-      });
+      if (_isMounted) {
+        setState(() {
+          reasons = value;
+        });
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _isMounted = false;
+    super.dispose();
   }
 
   Future<List<String>> fetchReasons() async {

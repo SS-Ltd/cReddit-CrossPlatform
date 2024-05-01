@@ -485,11 +485,9 @@ class UserCommentState extends State<UserComment> {
                             child: const Icon(Icons.shield_outlined),
                           ),
                           onPressed: () {
-                            CustomSnackBar(
-                              context: context,
-                              content: 'Reported!',
-                            ).show();
-                          },
+                            modOptions(3);
+                          }
+                          
                         ),
                         ]
                         else
@@ -615,37 +613,85 @@ class UserCommentState extends State<UserComment> {
     );
   }
 
+  OverlayEntry? overlayEntry;
+
+void showOverlay(int numofTiles) {
+  double height = numofTiles * 56;
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      left: 8,
+      right: 8,
+      bottom: height,
+      child: Material(
+          color: Colors.transparent,
+          child: ValueListenableBuilder<String>(
+            valueListenable: content,
+            builder: (context, contentValue, child) {
+              return ValueListenableBuilder<File?>(
+                valueListenable: photo,
+                builder: (context, photoValue, child) {
+                  return StaticCommentCard(
+                    content: contentValue,
+                    contentType: widget.comment.isImage,
+                    photo: photoValue,
+                    imageSource: widget.imageSource,
+                    staticComment: widget.comment,
+                  );
+                },
+              );
+            },
+          )),
+    ),
+  );
+
+  Overlay.of(context).insert(overlayEntry!);
+}
+
+void modOptions(int numofTiles) {
+  showOverlay(numofTiles);
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+    builder: (context) {
+      return Wrap(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.only(left: 16, top: 14),
+            alignment: Alignment.topLeft,
+            child: const Text(
+              'Moderator',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Palette.greyColor
+              ),
+            ),
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.report),
+            title: const Text('Accept Comment'),
+            onTap: () {
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.block),
+            title: const Text('Remove Comment'),
+            onTap: () {
+            },
+          ),
+        ],
+      );
+    },
+  ).then((_) {
+      // Remove the overlay entry after the modal bottom sheet is dismissed
+      overlayEntry?.remove();
+    });
+}
+  
   void showCommentOptions(UserModel user, int numofTiles) {
-    double height = numofTiles * 56;
-
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: 8,
-        right: 8,
-        bottom: height,
-        child: Material(
-            color: Colors.transparent,
-            child: ValueListenableBuilder<String>(
-              valueListenable: content,
-              builder: (context, contentValue, child) {
-                return ValueListenableBuilder<File?>(
-                  valueListenable: photo,
-                  builder: (context, photoValue, child) {
-                    return StaticCommentCard(
-                      content: contentValue,
-                      contentType: widget.comment.isImage,
-                      photo: photoValue,
-                      imageSource: widget.imageSource,
-                      staticComment: widget.comment,
-                    );
-                  },
-                );
-              },
-            )),
-      ),
-    );
-
-    Overlay.of(context).insert(overlayEntry);
+    showOverlay(numofTiles);
 
     showModalBottomSheet(
       context: context,
@@ -809,7 +855,7 @@ class UserCommentState extends State<UserComment> {
       },
     ).then((_) {
       // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry.remove();
+      overlayEntry?.remove();
     });
   }
 }

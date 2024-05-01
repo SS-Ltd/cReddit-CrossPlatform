@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
@@ -21,10 +23,10 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -89,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (mounted) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
+                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
                   );
                 }
               },
@@ -199,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: isFilled
                       ? () async {
                           if (mounted) {
-                            if (_formKey.currentState!.validate()) {
+                            if (_formKey.currentState!.validate()) {         
                               await context.read<NetworkService>().login(
                                   emailController.text,
                                   passwordController.text);
