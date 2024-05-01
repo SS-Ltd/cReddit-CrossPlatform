@@ -9,6 +9,7 @@ import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
 import 'package:reddit_clone/features/moderator/muted_users.dart';
 import 'package:reddit_clone/features/moderator/post_types.dart';
+import 'package:reddit_clone/features/moderator/schedule_posts.dart';
 
 class ModeratorTools extends StatefulWidget {
   const ModeratorTools({super.key});
@@ -92,6 +93,24 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 },
                 buttonText: "Location",
                 buttonIcon: Icons.location_on_outlined),
+            const Heading(text: "CONTENT & REGULATIONS"),
+            ArrowButton(
+                onPressed: () {},
+                buttonText: "Queues",
+                buttonIcon: Icons.queue),
+            ArrowButton(
+                onPressed: () {},
+                buttonText: "Rules",
+                buttonIcon: Icons.rule_folder),
+            ArrowButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SchedulePosts()));
+                },
+                buttonText: "Scheduled posts",
+                buttonIcon: Icons.query_builder),
             const Heading(text: "USER MANAGEMENT"),
             ArrowButton(
                 onPressed: () {

@@ -23,10 +23,12 @@ import 'package:reddit_clone/common/switch_button.dart';
 class CreatePost extends StatefulWidget {
   /// The constructor for the [CreatePost] widget.
   /// [profile] indicates whether the post is being created from a user's profile or not.
-  const CreatePost({super.key, required this.profile});
+  const CreatePost(
+      {super.key, required this.profile, this.ismoderator = false});
 
   /// Indicates whether the post is being created from a user's profile or not.
   final bool profile;
+  final bool ismoderator;
 
   @override
   State<CreatePost> createState() {
@@ -65,6 +67,8 @@ class _CreatePostState extends State<CreatePost> {
   bool isBrand = false;
 
   Subreddit? details;
+
+  bool repeating = true;
 
   Future getSubredditDetails(String subredditName) async {
     final subredditDetails =
@@ -143,6 +147,75 @@ class _CreatePostState extends State<CreatePost> {
         ),
         actions: [
           Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: widget.ismoderator && !_istitleempty
+                ? IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  BottomSheet(
+                                    onClosing: () {},
+                                    builder: (context) => Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 20, 10, 20),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              IconButton(
+                                                onPressed: () {},
+                                                icon: const Icon(
+                                                    Icons.arrow_back),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {},
+                                                child: const Text("Clear"),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Row(
+                                                children: [
+                                                  Text("Starts on date", style: TextStyle(fontSize: 20),),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10,),
+                                              const Row(
+                                                children: [
+                                                  Text("Starts at time"),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SwitchButton(
+                                                      buttonText:
+                                                          "Repeat weekly on Tuesday",
+                                                      onPressed: (value) {},
+                                                      switchvalue: repeating),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ]);
+                          });
+                    },
+                    icon: const Icon(Icons.more_horiz),
+                  )
+                : null,
+          ),
+          Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
@@ -166,9 +239,9 @@ class _CreatePostState extends State<CreatePost> {
                                             .toList(),
                                         endsInDateTime, //month-day-year
                                         false,
-                                            // .read<NetworkService>()
-                                            // .user!
-                                            // .isNFSW,
+                                        // .read<NetworkService>()
+                                        // .user!
+                                        // .isNFSW,
                                         isspoiler)
                                 : (_hasImage)
                                     ? await context
