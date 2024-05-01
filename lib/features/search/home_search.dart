@@ -4,7 +4,7 @@ import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/search/comment_tile.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/community.dart';

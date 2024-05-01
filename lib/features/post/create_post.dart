@@ -7,7 +7,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/common/switch_button.dart';
 
 //This Screen is now used to create a post
