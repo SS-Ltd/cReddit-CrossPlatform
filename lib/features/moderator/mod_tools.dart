@@ -9,6 +9,7 @@ import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
 import 'package:reddit_clone/features/moderator/muted_users.dart';
 import 'package:reddit_clone/features/moderator/post_types.dart';
+import 'package:reddit_clone/features/moderator/rules.dart';
 import 'package:reddit_clone/features/moderator/schedule_posts.dart';
 
 class ModeratorTools extends StatefulWidget {
@@ -99,7 +100,10 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Queues",
                 buttonIcon: Icons.queue),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Rules()));
+                },
                 buttonText: "Rules",
                 buttonIcon: Icons.rule_folder),
             ArrowButton(
