@@ -372,7 +372,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   List<PopupMenuEntry<Menu>> menuitems() {
-    bool save = widget.postComment.postModel.isSaved;
+    bool isPostSaved = widget.postComment.postModel.isSaved;
     return <PopupMenuEntry<Menu>>[
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
@@ -391,13 +391,16 @@ class _CommentPageState extends State<CommentPage> {
       PopupMenuItem<Menu>(
         value: Menu.save,
         child: ListTile(
-          leading: save
+          leading: isPostSaved
               ? const Icon(Icons.bookmark_add)
               : const Icon(Icons.bookmark_add_outlined),
-          title: const Text('Save'),
+          title: isPostSaved ? const Text('Unsave') : const Text("Save"),
           onTap: () async {
             print('save button clicked');
-            print(save);
+            print(isPostSaved);
+            print('save button clicked');
+            print(widget.postComment.postModel.isSaved);
+            print(widget.postComment.postModel.postId);
             bool isSaved = await context
                 .read<NetworkService>()
                 .saveandunsavepost(widget.postComment.postModel.postId,
@@ -405,7 +408,7 @@ class _CommentPageState extends State<CommentPage> {
             if (isSaved == true &&
                 widget.postComment.postModel.isSaved == false) {
               setState(() {
-                save = !save;
+                isPostSaved = !isPostSaved;
               });
               CustomSnackBar(
                       content: "Post saved!",
@@ -415,7 +418,7 @@ class _CommentPageState extends State<CommentPage> {
             } else if (isSaved == true &&
                 widget.postComment.postModel.isSaved == true) {
               setState(() {
-                save = !save;
+                isPostSaved = !isPostSaved;
               });
               CustomSnackBar(
                       content: "Post unsaved!",
@@ -440,13 +443,13 @@ class _CommentPageState extends State<CommentPage> {
               leading: Icon(Icons.edit),
               title: Text('Edit'),
             )),
-      if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.addpostflair,
-            child: ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Add post flair'),
-            )),
+      // if (widget.username == context.read<NetworkService>().user?.username)
+      //   const PopupMenuItem<Menu>(
+      //       value: Menu.addpostflair,
+      //       child: ListTile(
+      //         leading: Icon(Icons.add),
+      //         title: Text('Add post flair'),
+      //       )),
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
             value: Menu.markspoiler,
@@ -490,11 +493,17 @@ class _CommentPageState extends State<CommentPage> {
             postId: widget.postId,
             subredditName: widget.postComment.postModel.communityName,
           )),
-      const PopupMenuItem<Menu>(
+      PopupMenuItem<Menu>(
           value: Menu.block,
           child: ListTile(
-            leading: Icon(Icons.block),
-            title: Text('Block Account'),
+            leading: const Icon(Icons.block),
+            title: const Text('Block Account'),
+            onTap: () {
+              
+              // bool isBlocked = await context
+              //     .read<NetworkService>()
+              //     .blockUser(widget.postComment.postModel.username);
+            },
           )),
       PopupMenuItem<Menu>(
           value: Menu.hide,

@@ -1057,6 +1057,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': value}));
+        print(response.statusCode);
+        print(response.body);
+        print(response);
+        print(postId);
     if (response.statusCode == 403) {
       refreshToken();
       return saveandunsavepost(postId, value);
