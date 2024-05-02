@@ -634,7 +634,6 @@ class NetworkService extends ChangeNotifier {
     } else {
       return false;
     }
-
   }
 
   Future<UserModel> getUserDetails(String username) async {
