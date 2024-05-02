@@ -639,9 +639,23 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> removeModerator(String username) async {
+  Future<bool> leaveModerator(String username) async {
     Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
     final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return leaveModerator(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url, headers: _headers, body: jsonEncode({'username': username}));
     if (response.statusCode == 403) {
       refreshToken();
       return removeModerator(username);
@@ -651,7 +665,7 @@ class NetworkService extends ChangeNotifier {
     } else {
       return false;
     }
-  }
+  }  
 
   Future<UserModel> getUserDetails(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/$username');
