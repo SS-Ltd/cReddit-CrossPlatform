@@ -137,12 +137,11 @@ class _HomeSearchState extends State<HomeSearch>
                         itemBuilder: (context, index) {
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  communitiesResults[index].icon),
+                              backgroundImage:
+                                  NetworkImage(communitiesResults[index].icon),
                             ),
                             subtitle: Text(
-                              "${communitiesResults[index].members} members" 
-                            ),
+                                "${communitiesResults[index].members} members"),
                             title: Text(communitiesResults[index].name),
                             onTap: () {
                               Navigator.push(
@@ -343,7 +342,9 @@ class _HomeSearchState extends State<HomeSearch>
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                CommentTile(comment: commentsResults[index], isProfile: false),
+                                CommentTile(
+                                    comment: commentsResults[index],
+                                    isProfile: false),
                                 const Divider(
                                   thickness: 1,
                                 ),

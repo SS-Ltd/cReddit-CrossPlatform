@@ -35,8 +35,10 @@ class CustomNavigationBar extends StatefulWidget {
   /// Creates a custom navigation bar widget.
   ///
   /// The [key] parameter is used to provide a global key for the widget.
-  CustomNavigationBar({super.key, required this.isProfile, this.myuser});
+  CustomNavigationBar(
+      {super.key, required this.isProfile, this.myuser, this.navigateToChat});
 
+  bool? navigateToChat;
   bool isProfile;
   final UserModel? myuser;
 
@@ -108,6 +110,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     ),
     const InboxNotificationPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.navigateToChat != null && widget.navigateToChat!) {
+      _currentIndex = 3;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

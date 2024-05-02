@@ -57,6 +57,7 @@ dependencies:
   firebase_analytics: ^10.10.2
   flutter_iconpicker: ^3.0.1
   syncfusion_flutter_datepicker: ^25.1.42
+  textfield_tags: ^3.0.1
   
 
   # The following adds the Cupertino Icons font to your application.
