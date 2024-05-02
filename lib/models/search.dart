@@ -154,3 +154,63 @@ class SearchCommunities {
     );
   }
 }
+
+class SearchHashtag{
+
+  final String id;
+  final String postID;
+  final String postTitle;
+  final String postUsername;
+  final int postVotes;
+  final String postPicture;
+  final DateTime postCreatedAt;
+  final bool isPostNsfw;
+  final bool isPostSpoiler;
+  final String communityName;
+  final DateTime createdAt;
+  final String username;
+  final int netVote;
+  final int commentCount;
+  final String commentPicture;
+  final String content;
+
+  SearchHashtag({
+    required this.id,
+    required this.postID,
+    required this.postTitle,
+    required this.postUsername,
+    required this.postVotes,
+    required this.postPicture,
+    required this.postCreatedAt,
+    required this.isPostNsfw,
+    required this.isPostSpoiler,
+    required this.communityName,
+    required this.createdAt,
+    required this.username,
+    required this.netVote,
+    required this.commentCount,
+    required this.commentPicture,
+    required this.content,
+  });
+
+  factory SearchHashtag.fromJson(Map<String, dynamic> json) {
+    return SearchHashtag(
+      id: json['_id'],
+      postID: json['postID'],
+      postTitle: json['postTitle'],
+      postUsername: json['postUsername'],
+      postVotes: json['postVotes'],
+      postPicture: json['postPicture'],
+      postCreatedAt: DateTime.parse(json['postCreatedAt']),
+      isPostNsfw: json['isPostNsfw'],
+      isPostSpoiler: json['isPostSpoiler'],
+      communityName: json['communityName'],
+      createdAt: DateTime.parse(json['createdAt']),
+      username: json['username'],
+      netVote: json['netVote'],
+      commentCount: json['commentCount'],
+      commentPicture: json['commentPicture'],
+      content: json['content'],
+    );
+  }
+}

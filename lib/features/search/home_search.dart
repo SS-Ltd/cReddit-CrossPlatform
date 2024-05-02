@@ -32,6 +32,7 @@ class _HomeSearchState extends State<HomeSearch>
   List<SearchPosts> postsResults = [];
   List<SearchCommunities> communitiesResults = [];
   List<SearchUsers> peopleResults = [];
+  List<SearchHashtag> hashtagsResults = [];
 
   String sortOption = '';
   String timeOption = '';
@@ -43,7 +44,7 @@ class _HomeSearchState extends State<HomeSearch>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _selectedIndex = _tabController.index;
@@ -122,7 +123,10 @@ class _HomeSearchState extends State<HomeSearch>
                     ),
                     Tab(
                       text: "People",
-                    )
+                    ),
+                    Tab(
+                      text: "Hashtags",
+                    ),
                   ],
                 ),
         ),
@@ -393,6 +397,49 @@ class _HomeSearchState extends State<HomeSearch>
                             );
                           },
                         ),
+                        //Hashtags
+                        ListView.builder(
+                          itemCount: hashtagsResults.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () async {
+                                    UserModel myUser = await context
+                                        .read<NetworkService>()
+                                        .getMyDetails();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            CustomNavigationBar(
+                                          isProfile: true,
+                                          myuser: myUser,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  // leading: CircleAvatar(
+                                  //   backgroundImage: NetworkImage(
+                                  //       hashtagsResults[index].profilePicture),
+                                  // ),
+                                  title: Text(
+                                      'u/${hashtagsResults[index].username}'),
+                                  subtitle: const Text('cake'),
+                                  trailing: FollowButton(
+                                      userName: 'userName',
+                                      profileName:
+                                          hashtagsResults[index].username),
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+
+                        ///
                       ],
                     ),
                   ),
