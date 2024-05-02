@@ -23,8 +23,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  // final String _baseUrl = 'https://creddit.tech/API';
-  final String _baseUrl = 'http://192.168.1.10:3000';
+  final String _baseUrl = 'https://creddit.tech/API';
+  //final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -805,7 +805,7 @@ class NetworkService extends ChangeNotifier {
     String sort = 'hot',
     String time = 'all',
     int page = 1,
-    int limit = 5,
+    int limit = 10,
   }) async {
     final url = Uri.parse('$_baseUrl/user/$username/posts?'
         'sort=$sort'
@@ -1144,7 +1144,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchSavedComments(
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1163,7 +1163,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchUserComments(String username,
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/$username/comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
