@@ -3,12 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
+import 'package:reddit_clone/features/moderator/mod_tools.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'services/firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,9 +29,11 @@ void main() async {
     // APNS token is available, make FCM plugin API requests...
     print('APNS Token: $apnsToken');
 
-    // Get the token for this device
-    String? token = await FirebaseMessaging.instance.getToken();
-    print('Firebase Messaging Token: $token');
+
+  // Get the token for this device
+  String? token = await FirebaseMessaging.instance.getToken();
+  print('Firebase Messaging Token: $token');
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
     // Listen for token refresh
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
@@ -42,9 +46,6 @@ void main() async {
   } else {
     print('APNS token is not available');
   }
-
-  /*erGc-ukqRWCfdKkGDsN9Gw:APA91bHOxUdPTEc-xxvHWYb9wbqu7kZptm6QbC27B7_yUHTvCnRl0aNp8m0IzxD2oXdxM3DJAqrDWnu_K8hOXiXbjxdgHjiy7yaPT7DB1WovE7k7YCwqeFcMm2ifqCmRISqvs9iOtJ-u */
-  /*cn-qARCcT3evjZeSM-Swdv:APA91bE-n10FJBae7FJEGvIdb5d5p_TdndGmzCiBw8ELSiR-nnht8qq9CbpKUxjF_WnFvyJP_lxOVJJd_LYXi-QsqJgdsyGUftcA9bditrnCNuFQ7XRfHII1Fcjwr5zJmCMVkTOfL_7D */
 
   runApp(MultiProvider(
     providers: [
@@ -64,10 +65,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'cReddit',
       theme: AppTheme.darkTheme,
-      home: Scaffold(
+      home:
+          //ModeratorTools(),
+          Scaffold(
         body: PageView(
-          children: <Widget>[
-            const LoginScreen(),
+          children: const [
+            LoginScreen(),
             SignUpScreen(),
           ],
         ),

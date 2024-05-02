@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -76,8 +77,12 @@ class _HomePageState extends State<HomePage> {
       lastType = selectedMenuItem;
       page = 1;
       posts.clear();
-      getPosts(selectedMenuItem);
+      getPosts(selectedMenuItem.toLowerCase());
     }
+  }
+
+  void cleanItems() {
+    posts.clear();
   }
 
   Future<void> getPosts(String selectedItem) async {
@@ -103,8 +108,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    if (_scrollController.hasClients &&
-        _scrollController.position.pixels ==
+    if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
       getPosts(selectedMenuItem);
@@ -112,35 +116,48 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refreshData() async {
+    cleanItems();
     await getPosts(selectedMenuItem);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            final post = posts[index];
-            return Column(
-              children: [
-                Post(
-                  postModel: post,
-                  shareNumber: 0,
-                  isSubRedditPage: false,
-                  isHomePage: true,
-                ),
-                const Divider(
-                  height: 20,
-                  thickness: 1,
-                ), // Add a thin horizontal line
-              ],
-            );
-          },
-        ),
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: _refreshData,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: posts.length + (isLoading ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < posts.length) {
+                  final post = posts[index];
+                  return Column(
+                    children: [
+                      Post(
+                        postModel: post,
+                        shareNumber: 0,
+                        isSubRedditPage: false,
+                        isHomePage: true,
+                      ),
+                      const Divider(
+                        height: 20,
+                        thickness: 1,
+                      ),
+                    ],
+                  );
+                } else {
+                  return posts.isNotEmpty
+                      ? Center(child: CustomLoadingIndicator())
+                      : const SizedBox.shrink();
+                }
+              },
+            ),
+          ),
+          if (isLoading && posts.isEmpty)
+            Center(child: CustomLoadingIndicator()),
+        ],
       ),
     );
   }

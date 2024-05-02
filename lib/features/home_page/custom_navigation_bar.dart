@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Inbox/inbox_notifications.dart';
 import 'package:reddit_clone/features/User/Profile.dart';
+import 'package:reddit_clone/features/chat/chat_list.dart';
+import 'package:reddit_clone/features/chat/newchat.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
@@ -28,6 +30,7 @@ import 'package:reddit_clone/models/user.dart';
 ///   key: GlobalKey(),
 /// )
 /// ```
+// ignore: must_be_immutable
 class CustomNavigationBar extends StatefulWidget {
   /// Creates a custom navigation bar widget.
   ///
@@ -55,6 +58,54 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const HomePage(),
     const CommunityPage(),
     const CreatePost(profile: false),
+    const ChatListScreen(
+      chatInfo: [
+        {
+          'id': 'user1',
+          'name': 'User One',
+          'lastMessage': 'Hey, how are you?',
+          'time': '10:45 PM',
+          'unread': true,
+          'profilePic': 'https://picsum.photos/240'
+        },
+        {
+          'id': 'user2',
+          'name': 'User Two',
+          'lastMessage': 'Let\'s meet tomorrow',
+          'time': '9:15 PM',
+          'unread': true,
+          'profilePic': 'https://picsum.photos/200'
+        },
+        {
+          'id': 'user3',
+          'name': 'User Three',
+          'lastMessage': 'Thank you!',
+          'time': '8:03 PM',
+          'unread': false,
+          'profilePic': 'https://picsum.photos/201'
+        },
+      ],
+      channelInfo: [
+        {
+          'name': 'Channel One',
+          'subredditName': 'r/Wholesome',
+          'description': 'Wholesome & Heartwarming',
+          'profilePic': 'https://picsum.photos/202'
+        },
+        {
+          'name': 'Channel Two',
+          'subredditName': 'r/Heartwarming',
+          'description': 'Heartwarming stories',
+          'profilePic': 'https://picsum.photos/203'
+        },
+        {
+          'name': 'Channel Three',
+          'subredditName': 'r/FeelGood',
+          'description': 'Feel good, positive news',
+          'profilePic': 'https://picsum.photos/204'
+        },
+      ],
+    ),
     const InboxNotificationPage(),
   ];
 
@@ -65,10 +116,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
     List<Subreddit>? listRecentlyVisited = recentlyvisited?.toList();
-    int listsize = listRecentlyVisited?.length ?? 0;
-    String selectedMenuItem = "Hot"; // Store the selected menu item here
 
-    print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
       key: _scaffoldKey,
       drawer: widget.isProfile
@@ -106,36 +154,22 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                       ),
                     ],
                   ),
-                  showrecently
-                      ? SingleChildScrollView(
-                          padding: EdgeInsets.zero,
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            itemCount: (listRecentlyVisited != null &&
-                                    listRecentlyVisited.length > 3 &&
-                                    showall == false)
-                                ? 3
-                                : (listRecentlyVisited?.length ?? 0),
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(listRecentlyVisited != null
-                                    ? listRecentlyVisited[
-                                            listRecentlyVisited.length -
-                                                1 -
-                                                index]
-                                        .name
-                                    : ''),
-                              );
-                            },
-                          ),
-                        )
-                      : const SizedBox(),
+                  Visibility(
+                    visible: showrecently,
+                    child: buildRecentlyVisited(listRecentlyVisited),
+                  ),
                   const Divider(
                     height: 30,
                     thickness: 1,
                     color: Colors.white,
                   ),
+                  buildModeratingSection(context),
+                  const Divider(
+                    height: 30,
+                    thickness: 1,
+                    color: Colors.white,
+                  ),
+                  buildYourCommunitiesSection(context),
                 ],
               ),
             ),
@@ -169,18 +203,36 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                                   child: const Text('Inbox'),
                                 ),
                   actions: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => const HomeSearch(),
+                    if (_currentIndex == 3)
+                      IconButton(
+                        icon: const Icon(Icons.message),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NewChatPage()),
+                          );
+                        },
+                      ),
+                    _currentIndex == 3
+                        ? IconButton(
+                            icon: const Icon(Icons.sort),
+                            onPressed: () {
+                              _showFilterModal(context);
+                            },
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => const HomeSearch(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.search, size: 30.0),
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.search, size: 30.0),
-                    ),
                     IconButton(
                       onPressed: () =>
                           _scaffoldKey.currentState!.openEndDrawer(),
@@ -200,7 +252,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               bannerPicture: 'bannerPicture',
               followerCount: widget.myuser!.followers,
               cakeDay: '2024-03-25T15:37:33.339+00:00',
-              isOwnProfile: true,)
+              isOwnProfile: true,
+            )
           : _pages[_currentIndex],
       bottomNavigationBar: (_currentIndex != 2)
           ? BottomNavigationBar(
@@ -212,8 +265,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   widget.isProfile = false;
                 });
               },
-              selectedFontSize: 12, // Adjust the selected font size
-              unselectedFontSize: 12, // Adjust the unselected font size
+              selectedFontSize: 11, // Adjust the selected font size
+              unselectedFontSize: 11, // Adjust the unselected font size
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(
@@ -228,4 +281,112 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           : null,
     );
   }
+
+  bool isChatChannelsApplied = false;
+  bool isGroupChatsApplied = false;
+  bool isDirectChatsApplied = false;
+
+  void _showFilterModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Wrap(
+              children: <Widget>[
+                const ListTile(
+                  title: Text('Filter Chats'),
+                ),
+                const Divider(),
+                CheckboxListTile(
+                  title: const Text('Chat Channels'),
+                  value: isChatChannelsApplied,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      isChatChannelsApplied = newValue ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('Group Chats'),
+                  value: isGroupChatsApplied,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      isGroupChatsApplied = newValue ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('Direct Chats'),
+                  value: isDirectChatsApplied,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      isDirectChatsApplied = newValue ?? false;
+                    });
+                  },
+                ),
+                Center(
+                  child: Container(
+                    width: 400,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text('Done'),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+Widget buildRecentlyVisited(List<Subreddit>? subreddits) {
+  return ListView.builder(
+    padding: EdgeInsets.zero,
+    shrinkWrap: true,
+    itemCount: subreddits?.length ?? 0,
+    itemBuilder: (context, index) {
+      return ListTile(
+        title: Text(subreddits![index].name),
+      );
+    },
+  );
+}
+
+Widget buildModeratingSection(BuildContext context) {
+  return ExpansionTile(
+    title: const Text("Moderating"),
+    children: [
+      ListTile(
+        title: const Text("Mod Feed"),
+        onTap: () {},
+      ),
+      ListTile(
+        title: const Text("Queues"),
+        onTap: () {},
+      ),
+      ListTile(
+        title: const Text("Modmail"),
+        onTap: () {},
+      ),
+    ],
+  );
+}
+
+Widget buildYourCommunitiesSection(BuildContext context) {
+  return ExpansionTile(
+    title: const Text("Your communities"),
+    children: [
+      ListTile(
+        title: const Text("+ Create a community"),
+        onTap: () {},
+      ),
+    ],
+  );
 }

@@ -231,7 +231,7 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      widget.isHomePage
+                       widget.isHomePage
                           ? (widget.isSubRedditPage
                               ? GestureDetector(
                                   onTap: () {
@@ -559,6 +559,7 @@ class _PostState extends State<Post> {
                 onPressed: widget.isHomePage
                     ? () {
                         Post postComment = Post(
+
                           postModel: widget.postModel,
                           isHomePage: false,
                           isSubRedditPage: false,
@@ -568,6 +569,7 @@ class _PostState extends State<Post> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => CommentPage(
+
                               postId: widget.postModel.postId,
                               postComment: postComment,
                               postTitle: widget.postModel.title,

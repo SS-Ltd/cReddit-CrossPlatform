@@ -5,6 +5,7 @@ class PostTile extends StatelessWidget {
   const PostTile({super.key, required this.post, required this.isProfile});
   final SearchPosts post;
   final bool isProfile;
+  
   @override
   Widget build(BuildContext context) {
     bool isCommunity = post.communityName != '';

@@ -1,12 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
+import 'package:reddit_clone/common/block_pop_up.dart';
+import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 
 /// This file contains the [CommentPage] widget, which is a stateful widget that
 /// displays a page for viewing and interacting with comments on a post.
@@ -66,9 +73,11 @@ class _CommentPageState extends State<CommentPage> {
   final List<double> _commentPositions = [];
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  bool isLoading = true;
 
   @override
   void initState() {
+    print(widget.postComment.postModel.isModerator);
     super.initState();
     fetchComments(widget.postId).then((_) {
       for (var i = 0; i < _comments.length; i++) {
@@ -77,6 +86,7 @@ class _CommentPageState extends State<CommentPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _calculateCommentPositions();
       });
+      isLoading = false;
     });
   }
 
@@ -95,15 +105,15 @@ class _CommentPageState extends State<CommentPage> {
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
     if (fetchedComments != null && mounted) {
       setState(() {
-        //comments = fetchedComments;
-        fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
                   photo: comment.isImage ? File(comment.content) : null,
                   imageSource: 0,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  isPostPage: true,
                   comment: comment,
+                  isModerator: widget.postComment.postModel.isModerator,
                 ))
             .toList();
       });
@@ -156,33 +166,35 @@ class _CommentPageState extends State<CommentPage> {
             }
           },
         ),
-        title: isSearching ? TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search Comments',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  _searchController.clear();
-                },
-                icon: const Icon(Icons.clear),
-              ),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-              contentPadding: const EdgeInsets.all(10),
-            ),
-            // onChanged: (value) async {
-            //   setState(() {
-            //     searchQuery = value;
-            //   });
-            //   commentsResults =
-            //       await Provider.of<NetworkService>(context, listen: false)
-            //           .getSearchComments(value, '');
-            //   postsResults =
-            //       await Provider.of<NetworkService>(context, listen: false)
-            //           .getSearchPosts(value, '');
-            //},
-          ) : null,
+        title: isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search Comments',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                // onChanged: (value) async {
+                //   setState(() {
+                //     searchQuery = value;
+                //   });
+                //   commentsResults =
+                //       await Provider.of<NetworkService>(context, listen: false)
+                //           .getSearchComments(value, '');
+                //   postsResults =
+                //       await Provider.of<NetworkService>(context, listen: false)
+                //           .getSearchPosts(value, '');
+                //},
+              )
+            : null,
         actions: isSearching
             ? null
             : [
@@ -215,18 +227,33 @@ class _CommentPageState extends State<CommentPage> {
         builder: (BuildContext listViewContext) {
           return ListView.builder(
             controller: _scrollController,
-            itemCount: _comments.length + 1,
+            itemCount: isLoading ? 2 : _comments.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return widget.postComment;
+              } else if (isLoading) {
+                return CustomLoadingIndicator();
               } else if (index - 1 < _keys.length) {
                 return UserComment(
                   key: _keys[index - 1],
                   photo: _comments[index - 1].photo,
-                  imageSource:
-                      _comments[index - 1].imageSource, //may need to be fixed
+                  imageSource: _comments[index - 1].imageSource,
                   hasVoted: _comments[index - 1].hasVoted,
                   comment: _comments[index - 1].comment,
+                  isModerator: _comments[index - 1].isModerator,
+                  isPostPage: true,
+                  onDeleted: () {
+                    setState(() {
+                      _comments.removeAt(index - 1);
+                      _keys.removeAt(index - 1);
+                    });
+                  },
+                  onBlock: () {
+                    setState(() {
+                      _comments[index - 1].comment.username = "Blocked User";
+                      //_comments[index - 1].isMinimized = ValueNotifier<bool>(true);
+                    });
+                  },
                 );
               } else {
                 return const SizedBox.shrink();
@@ -258,27 +285,31 @@ class _CommentPageState extends State<CommentPage> {
                     setState(() {
                       UserComment? newComment;
                       if (contentType == false) {
-                        final String commentText = result['content'];
+                        //final String commentText = result['content'];
                         newComment = UserComment(
                           photo: null,
                           imageSource: 2,
                           hasVoted: 1,
+                          isPostPage: true,
+                          isModerator: widget.postComment.postModel.isModerator,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
                             isImage: contentType,
                             netVote: 1,
-                            content: commentText,
+                            content: result['content'],
                             createdAt: DateTime.now().toString(),
                             commentId: result['commentId'],
                           ),
                         );
                       } else if (contentType == true) {
-                        final File commentImage = result['content'];
+                        //final File commentImage = result['content'];
                         newComment = UserComment(
-                          photo: commentImage,
+                          photo: result['content'],
                           imageSource: 1,
                           hasVoted: 1,
+                          isPostPage: true,
+                          isModerator: widget.postComment.postModel.isModerator,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
@@ -342,6 +373,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   List<PopupMenuEntry<Menu>> menuitems() {
+    bool isPostSaved = widget.postComment.postModel.isSaved;
     return <PopupMenuEntry<Menu>>[
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
@@ -358,14 +390,47 @@ class _CommentPageState extends State<CommentPage> {
             title: Text('Subscribe'),
           )),
       PopupMenuItem<Menu>(
-          value: Menu.save,
-          child: ListTile(
-            leading: const Icon(Icons.bookmark_add_outlined),
-            title: const Text('Save'),
-            onTap: () async {
-              //    bool isSaved = await context.read<NetworkService>().saveandunsavepost(widget.postId, isSaved)
-            },
-          )),
+        value: Menu.save,
+        child: ListTile(
+          leading: isPostSaved
+              ? const Icon(Icons.bookmark_add)
+              : const Icon(Icons.bookmark_add_outlined),
+          title: isPostSaved ? const Text('Unsave') : const Text("Save"),
+          onTap: () async {
+            print('save button clicked');
+            print(isPostSaved);
+            print('save button clicked');
+            print(widget.postComment.postModel.isSaved);
+            print(widget.postComment.postModel.postId);
+            bool isSaved = await context
+                .read<NetworkService>()
+                .saveandunsavepost(widget.postComment.postModel.postId,
+                    !(widget.postComment.postModel.isSaved));
+            if (isSaved == true &&
+                widget.postComment.postModel.isSaved == false) {
+              setState(() {
+                isPostSaved = !isPostSaved;
+              });
+              CustomSnackBar(
+                      content: "Post saved!",
+                      context: context,
+                      backgroundColor: Colors.green)
+                  .show();
+            } else if (isSaved == true &&
+                widget.postComment.postModel.isSaved == true) {
+              setState(() {
+                isPostSaved = !isPostSaved;
+              });
+              CustomSnackBar(
+                      content: "Post unsaved!",
+                      context: context,
+                      backgroundColor: Colors.white,
+                      textColor: Colors.black)
+                  .show();
+            }
+          },
+        ),
+      ),
       const PopupMenuItem<Menu>(
           value: Menu.copytext,
           child: ListTile(
@@ -379,13 +444,13 @@ class _CommentPageState extends State<CommentPage> {
               leading: Icon(Icons.edit),
               title: Text('Edit'),
             )),
-      if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.addpostflair,
-            child: ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Add post flair'),
-            )),
+      // if (widget.username == context.read<NetworkService>().user?.username)
+      //   const PopupMenuItem<Menu>(
+      //       value: Menu.addpostflair,
+      //       child: ListTile(
+      //         leading: Icon(Icons.add),
+      //         title: Text('Add post flair'),
+      //       )),
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
             value: Menu.markspoiler,
@@ -424,23 +489,27 @@ class _CommentPageState extends State<CommentPage> {
             )),
       PopupMenuItem<Menu>(
           value: Menu.report,
-          child: ListTile(
-            leading: const Icon(Icons.report),
-            title: const Text('Report'),
-            onTap: () async {
-              bool isReported = await context
-                  .read<NetworkService>()
-                  .reportPost(widget.postId);
-              if (isReported) {
-                //show snackbar
-              }
-            },
+          child: ReportButton(
+            isPost: true,
+            postId: widget.postId,
+            subredditName: widget.postComment.postModel.communityName,
           )),
-      const PopupMenuItem<Menu>(
+      PopupMenuItem<Menu>(
           value: Menu.block,
           child: ListTile(
-            leading: Icon(Icons.block),
-            title: Text('Block'),
+            leading: const Icon(Icons.block),
+            title: const Text('Block Account'),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BlockPopUp(
+                        userName: widget.postComment.postModel.username);
+                  });
+              // bool isBlocked = await context
+              //     .read<NetworkService>()
+              //     .blockUser(widget.postComment.postModel.username);
+            },
           )),
       PopupMenuItem<Menu>(
           value: Menu.hide,
@@ -448,11 +517,23 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.hide_source),
             title: const Text('hide'),
             onTap: () async {
+              print('button clicked');
               bool isHidden = await context
                   .read<NetworkService>()
                   .hidepost(widget.postId, true);
               if (isHidden) {
-                //show snackbar
+                CustomSnackBar(
+                        content: "Post hidden!",
+                        context: context,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black)
+                    .show();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                );
               }
             },
           )),
@@ -463,15 +544,15 @@ class _CommentPageState extends State<CommentPage> {
 enum Menu {
   share,
   subscribe,
-  save, //done
+  save,
   copytext,
   edit,
   addpostflair,
   markspoiler,
   markNSFW,
   markasbrandaffiliate,
-  delete, //done
-  report, //done
+  delete,
+  report,
   block,
-  hide, //done
+  hide,
 }

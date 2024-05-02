@@ -97,6 +97,7 @@ class _SavedCommentsState extends State<SavedComments> {
                   imageSource: 0,
                   hasVoted: mappingVotes(savedComments![index].isUpvoted,
                       savedComments![index].isDownvoted),
+                      isPostPage: false,
                   comment: savedComments![index],
                 );
               } else {

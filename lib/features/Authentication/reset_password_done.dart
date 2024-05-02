@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/gestures.dart';
@@ -8,9 +10,6 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:io' show Platform;
-import 'package:logging/logging.dart';
-
 
 /// This widget represents the screen for the "Reset Password Done" page.
 /// It displays a confirmation message and options for the user to resend the reset email or open the email app.
@@ -73,8 +72,8 @@ class _ResetPasswordDoneState extends State<ResetPasswordDone> {
               Navigator.pop(context);
             },
           ),
-          title:
-            SvgPicture.asset(AssetsConstants.redditLogo, width: 50, height: 50),
+          title: SvgPicture.asset(AssetsConstants.redditLogo,
+              width: 50, height: 50),
           centerTitle: true,
           actions: <Widget>[
             Padding(

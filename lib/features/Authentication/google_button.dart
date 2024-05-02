@@ -4,7 +4,7 @@ import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 
 /// A button widget that allows users to sign in with Google.
 ///

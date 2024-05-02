@@ -18,10 +18,10 @@ import 'dart:async';
 /// It includes form validation and enables the sign-up button only when the
 /// email and password fields are filled.
 class SignUpScreen extends StatefulWidget {
-  SignUpScreen({super.key});
+  const SignUpScreen({super.key});
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
 /// The state of the [SignUpScreen].
@@ -30,7 +30,7 @@ class SignUpScreen extends StatefulWidget {
 /// editing controllers for the email and password fields, the form validation,
 /// and the visibility of the keyboard. It also handles the navigation to the
 /// login screen and the sign-up button's functionality.
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final ValueNotifier<bool> isFormFilled = ValueNotifier<bool>(false);

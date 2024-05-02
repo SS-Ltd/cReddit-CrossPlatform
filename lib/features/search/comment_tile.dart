@@ -6,8 +6,10 @@ import 'package:reddit_clone/theme/palette.dart';
 //large card has rgba 255, 19,19,19
 
 class CommentTile extends StatelessWidget {
-  const CommentTile({super.key, required this.comment});
+  const CommentTile(
+      {super.key, required this.comment, required this.isProfile});
   final SearchComments comment;
+  final bool isProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +35,25 @@ class CommentTile extends StatelessWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                isCommunity
-                    ? Text(
-                        'r/${comment.communityName}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                isProfile
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'r/${comment.communityName}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          Text('u/${comment.username}'),
+                        ],
                       )
-                    : Text('u/${comment.username}'),
+                    : isCommunity
+                        ? Text(
+                            'r/${comment.communityName}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          )
+                        : Text('u/${comment.username}'),
                 const SizedBox(
                   width: 5,
                 ),
@@ -74,7 +88,8 @@ class CommentTile extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(
-                        height: 10,),
+                        height: 10,
+                      ),
                       Text(comment.content),
                       const SizedBox(
                         height: 10,
@@ -95,9 +110,11 @@ class CommentTile extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Row(children: [
-              Text('${comment.commentCount.toString()} comments'),  
-            ],)
+            Row(
+              children: [
+                Text('${comment.commentCount.toString()} comments'),
+              ],
+            )
           ],
         ),
       ),

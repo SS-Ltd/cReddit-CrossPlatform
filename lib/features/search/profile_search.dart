@@ -3,6 +3,7 @@ import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/features/search/comment_tile.dart';
 
 class ProfileSearch extends StatefulWidget {
   const ProfileSearch(
@@ -101,7 +102,7 @@ class _ProfileSearchState extends State<ProfileSearch>
               ),
       ),
       body: isSearching
-          ? Column()
+          ? const Column()
           : Column(
               children: [
                 Padding(
@@ -171,11 +172,18 @@ class _ProfileSearchState extends State<ProfileSearch>
                       commentsResults.isEmpty
                           ? noResults()
                           : ListView.builder(
-                              itemCount: commentsResults.length,
-                              itemBuilder: (context, index) {
-                                return ListTile();
-                              },
-                            ),
+                          itemCount: commentsResults.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                CommentTile(comment: commentsResults[index], isProfile: true),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                              ],
+                            );
+                          },
+                        ), 
                     ],
                   ),
                 ),

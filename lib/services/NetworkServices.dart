@@ -1,5 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/chat.dart';
+import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/search.dart';
@@ -18,7 +23,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
   final String _baseUrl = 'https://creddit.tech/API';
-  //final String _baseUrl = 'http://192.168.1.7:3000/';
+  // final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -435,6 +440,8 @@ class NetworkService extends ChangeNotifier {
   Future<bool> blockUser(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/block/$username');
     final response = await http.post(url, headers: _headers);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return blockUser(username);
@@ -443,6 +450,87 @@ class NetworkService extends ChangeNotifier {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<Messages>?> fetchInboxMessages(
+      {int page = 1, int limit = 10}) async {
+    Uri url = Uri.parse('$_baseUrl/message/?page=$page&limit=$limit');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchInboxMessages(page: page, limit: limit);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<Messages>? inboxMessages =
+          responseData.map((item) => Messages.fromJson(item)).toList();
+      return inboxMessages;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> markMessageAsRead(String messageId) async {
+    Uri url = Uri.parse('$_baseUrl/message/$messageId/mark-as-read');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markMessageAsRead(messageId);
+    }
+    print(messageId);
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> markAllMessagesasRead() async {
+    Uri url = Uri.parse('$_baseUrl/message/mark-all-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAllMessagesasRead();
+    }
+    print(response.body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> sendMessege(
+      String to, String subject, String message) async {
+    Uri url = Uri.parse('$_baseUrl/message/');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'to': to,
+        'subject': subject,
+        'text': message,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return sendMessege(to, subject, message);
+    }
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      print(responseBody['messageID']);
+      return {
+        'success': true,
+        'messageID': responseBody['messageID'],
+      };
+    } else {
+      return {
+        'success': false,
+      };
     }
   }
 
@@ -490,6 +578,8 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return getSubredditDetails(subredditName);
     }
+    print("hheeiei");
+    print(response.body);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
@@ -503,7 +593,8 @@ class NetworkService extends ChangeNotifier {
           rules: [],
           moderators: [],
           description: '',
-          isNSFW: false);
+          isNSFW: false,
+          isModerator: false);
     } else {
       return null;
     }
@@ -517,10 +608,15 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       getUserDetails(username);
     }
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return UserModel.fromJson(json);
     } else {
+      print('Failed to fetch user details');
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
       throw Exception('Failed to fetch user details');
     }
   }
@@ -530,7 +626,6 @@ class NetworkService extends ChangeNotifier {
     final parameters = {'query': comment, 'user': username};
     Uri url = Uri.parse('$_baseUrl/search/comments')
         .replace(queryParameters: parameters);
-
     print(parameters);
     final response = await http.get(url, headers: _headers);
     print(response.statusCode);
@@ -965,6 +1060,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': value}));
+    print(response.statusCode);
+    print(response.body);
+    print(response);
+    print(postId);
     if (response.statusCode == 403) {
       refreshToken();
       return saveandunsavepost(postId, value);
@@ -992,9 +1091,11 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<bool> hidepost(String postId, bool value) async {
+    print('asdasd');
     Uri url = Uri.parse('$_baseUrl/post/$postId/hide');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isHidden': value}));
+    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       return hidepost(postId, value);
@@ -1060,12 +1161,38 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> reportPost(String postId) async {
+  Future<bool> reportPost(String postId, String ruleBroken) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/report');
-    final response = await http.post(url, headers: _headers);
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({
+          'communityRule': ruleBroken,
+        }));
+    print("REPORT POST HERE:");
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
-      return reportPost(postId);
+      return reportPost(postId, ruleBroken);
+    }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> reportComments(String commentId, String ruleBroken) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/report');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode({
+          'communityRule': ruleBroken,
+        }));
+    print("REPORT COMMENT HERE:");
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return reportPost(commentId, ruleBroken);
     }
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
@@ -1133,6 +1260,66 @@ class NetworkService extends ChangeNotifier {
       return response.body;
     } else {
       return "";
+    }
+  }
+
+  Future<bool> markNotificationAsRead(String notificationID) async {
+    Uri url = Uri.parse('$_baseUrl/notification/$notificationID/mark-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markNotificationAsRead(notificationID);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> markAllNotificationAsRead() async {
+    Uri url = Uri.parse('$_baseUrl/notification/mark-all-as-read');
+    final response = await http.put(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAllNotificationAsRead();
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<List<NotificationModel>?> fetchNotifications() async {
+    Uri url = Uri.parse('$_baseUrl/notification/');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchNotifications();
+    }
+    print("NOTIFICATION EL POST HNA");
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      List<NotificationModel> notifications = responseData['notifications']
+          .map<NotificationModel>((item) => NotificationModel.fromJson(item))
+          .toList();
+      return notifications;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Chat>?> fetchChats() async {
+    Uri url = Uri.parse('$_baseUrl/chat/');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((item) => Chat.fromJson(item)).toList();
+    } else {
+      return null;
     }
   }
 
