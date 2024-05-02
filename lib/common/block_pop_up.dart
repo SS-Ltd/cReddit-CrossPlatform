@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
-import 'package:reddit_clone/services/NetworkServices.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 
 class BlockPopUp extends StatelessWidget {

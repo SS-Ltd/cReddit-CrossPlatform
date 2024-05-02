@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/moderator/add_rule.dart';
+import 'package:reddit_clone/models/rule.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:provider/provider.dart';
 
 class Rules extends StatefulWidget {
-  const Rules({super.key});
+  const Rules({super.key, required this.currentCommunity});
+
+  final String currentCommunity;
 
   @override
   State<Rules> createState() {
@@ -12,8 +17,22 @@ class Rules extends StatefulWidget {
 }
 
 class _RulesState extends State<Rules> {
-  List<String> rules = [];
+  List<SubredditRule>? rules = [];
   bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetcheddata();
+  }
+
+  Future<void> fetcheddata() async {
+    rules =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSubredditRules(widget.currentCommunity);
+    rules ??= [];
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +53,13 @@ class _RulesState extends State<Rules> {
                   children: [
                     const Text("Rules"),
                     Text(
-                      "${rules.length} / 15 rules",
+                      "${rules?.length} / 15 rules",
                       style: const TextStyle(fontSize: 12),
                     )
                   ],
                 ),
               ),
-        actions: rules.isNotEmpty && !_isEditing
+        actions: rules!.isNotEmpty && !_isEditing
             ? [
                 IconButton(
                   onPressed: () {
@@ -73,7 +92,7 @@ class _RulesState extends State<Rules> {
                   ]
                 : null,
       ),
-      body: rules.isEmpty
+      body: rules!.isEmpty
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

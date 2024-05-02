@@ -7,6 +7,7 @@ import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/rule.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -598,6 +599,42 @@ class NetworkService extends ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  Future<List<SubredditRule>?> getSubredditRules(String subredditName) async {
+
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/rules');
+    final response = await http.get(url, headers: _headers);
+    
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSubredditRules(subredditName);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SubredditRule> rules = responseData
+          .map((item) => SubredditRule.fromJson(item))
+          .toList();
+      return rules;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> addModerator(String username) async {
+
+    Uri url = Uri.parse('$_baseUrl/mod/invite/$username');
+    final response = await http.post(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return addModerator(username);
+    } 
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   Future<UserModel> getUserDetails(String username) async {
