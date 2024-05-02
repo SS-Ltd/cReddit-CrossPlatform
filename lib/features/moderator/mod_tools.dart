@@ -14,7 +14,9 @@ import 'package:reddit_clone/features/moderator/rules.dart';
 import 'package:reddit_clone/features/moderator/schedule_posts.dart';
 
 class ModeratorTools extends StatefulWidget {
-  const ModeratorTools({super.key});
+  const ModeratorTools({super.key, required this.communityName});
+
+  final String communityName;
 
   @override
   State<ModeratorTools> createState() {
@@ -106,7 +108,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
             ArrowButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Rules()));
+                      MaterialPageRoute(builder: (context) => Rules(currentCommunity:  widget.communityName)));
                 },
                 buttonText: "Rules",
                 buttonIcon: Icons.rule_folder),

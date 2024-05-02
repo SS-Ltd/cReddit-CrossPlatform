@@ -7,6 +7,7 @@ import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/rule.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -22,8 +23,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://creddit.tech/API';
-  // final String _baseUrl = 'http://192.168.1.10:3000';
+  // final String _baseUrl = 'https://creddit.tech/API';
+  final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -597,6 +598,41 @@ class NetworkService extends ChangeNotifier {
           isModerator: false);
     } else {
       return null;
+    }
+  }
+
+  Future<List<SubredditRule>?> getSubredditRules(String subredditName) async {
+
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/rules');
+    final response = await http.get(url, headers: _headers);
+    
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSubredditRules(subredditName);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SubredditRule> rules = responseData
+          .map((item) => SubredditRule.fromJson(item))
+          .toList();
+      return rules;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> addModerator(String username) async {
+
+    Uri url = Uri.parse('$_baseUrl/mod/invite/$username');
+    final response = await http.post(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return addModerator(username);
+    } 
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -1356,6 +1392,44 @@ class NetworkService extends ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  Future<bool> createGroupChatRoom(String name, List<String> members) async {
+    Uri url = Uri.parse('$_baseUrl/chat');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'name': name,
+        'members': members,
+      }),
+    );
+    print(response.body);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createGroupChatRoom(name, members);
+    }
+
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<bool> createPrivateChatRoom(List<String> member) async {
+    Uri url = Uri.parse('$_baseUrl/chat');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'members': member,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createPrivateChatRoom(member);
+    }
+
+    return response.statusCode == 200 || response.statusCode == 201;
   }
 
   void _updateCookie(http.Response response) {

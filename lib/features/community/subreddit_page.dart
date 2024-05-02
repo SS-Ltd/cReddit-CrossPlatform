@@ -29,7 +29,7 @@ import 'package:reddit_clone/theme/palette.dart';
 /// The widget manages the loading state, pagination, and sorting state using state variables and the [setState] method.
 /// The widget also disposes of the scroll controller when it is no longer needed to prevent memory leaks.
 class SubRedditPage extends StatefulWidget {
-  final String? subredditName;
+  final String subredditName;
 
   const SubRedditPage({super.key, required this.subredditName});
 
@@ -382,7 +382,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ModeratorTools(),
+                            builder: (context) => ModeratorTools(communityName: widget.subredditName),
                           ),
                         );
                       },
