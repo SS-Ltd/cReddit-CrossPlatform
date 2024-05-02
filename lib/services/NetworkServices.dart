@@ -439,6 +439,8 @@ class NetworkService extends ChangeNotifier {
   Future<bool> blockUser(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/block/$username');
     final response = await http.post(url, headers: _headers);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return blockUser(username);

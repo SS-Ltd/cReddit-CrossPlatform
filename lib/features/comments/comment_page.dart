@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
+import 'package:reddit_clone/common/block_pop_up.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
@@ -499,7 +500,12 @@ class _CommentPageState extends State<CommentPage> {
             leading: const Icon(Icons.block),
             title: const Text('Block Account'),
             onTap: () {
-              
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BlockPopUp(
+                        userName: widget.postComment.postModel.username);
+                  });
               // bool isBlocked = await context
               //     .read<NetworkService>()
               //     .blockUser(widget.postComment.postModel.username);

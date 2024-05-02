@@ -1,20 +1,12 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/services/NetworkServices.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/common/arrow_button.dart';
-import 'package:reddit_clone/features/User/Profile.dart';
-import 'package:reddit_clone/models/user.dart';
-import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/features/User/block_button.dart';
-/// A dialog box that displays information about a user.
-///
-/// This dialog box is used to show details about a user, such as their username,
-/// karma points, and options to interact with the user's profile.
-class AboutUserPopUp extends StatelessWidget {
+
+class BlockPopUp extends StatelessWidget {
   final String userName;
 
-  const AboutUserPopUp({required this.userName, super.key});
+  const BlockPopUp({required this.userName, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,63 +17,66 @@ class AboutUserPopUp extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('u/$userName'),
-            ],
-          ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 25.0),
-            child: Container(
-              height: 200,
-              child: Image.asset(
-                'assets/hehe.png',
-                fit: BoxFit.contain,
-              ),
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Block u/$userName?",
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ),
-          ArrowButton(
-              onPressed: () async {
-                UserModel myUser = await context
-                    .read<NetworkService>()
-                    .getUserDetails(userName);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      userName: myUser.username,
-                      profileName: myUser.username,
-                      displayName: myUser.displayName,
-                      profilePicture: myUser.profilePicture,
-                      followerCount: myUser.followers,
-                      about: myUser.about!,
-                      cakeDay: myUser.cakeDay.toString(),
-                      bannerPicture: myUser.banner!,
-                      isOwnProfile: false,
+          const Text("They won't be able to contact you or view your profile, posts or comments."),
+          Padding(
+            padding: const EdgeInsets.only(top: 10,),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 130,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Cancel")),
+                ),
+                SizedBox(
+                  width: 140,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      bool isBlocked =
+                          await context.read<NetworkService>().blockUser(userName);
+                      if (isBlocked) {
+                        CustomSnackBar(
+                                content:
+                                    "The Author of this post has been blocked.",
+                                context: context,
+                                backgroundColor: Colors.white)
+                            .show();
+                        Navigator.of(context).pop();
+                      } else {
+                        CustomSnackBar(
+                                content: "Failed to block the user.",
+                                context: context,
+                                backgroundColor: Colors.white)
+                            .show();
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
                     ),
+                    child: const Text("Block Account"),
                   ),
-                );
-              },
-              buttonText: 'View Profile',
-              buttonIcon: Icons.person,
-              hasarrow: false),
-          Padding(
-            padding: const EdgeInsets.all(0),
-            child: ArrowButton(
-                onPressed: () {},
-                buttonText: 'Send Message',
-                buttonIcon: Icons.mail_outline,
-                hasarrow: false),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(0),
-            child: BlockButton(isCircular: false, onPressed: () {}),
-          ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );
   }
 }
-
-  
