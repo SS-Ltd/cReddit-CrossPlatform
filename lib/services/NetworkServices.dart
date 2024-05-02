@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
@@ -22,7 +23,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
   final String _baseUrl = 'https://creddit.tech/API';
-  //final String _baseUrl = 'http://192.168.1.7:3000/';
+  // final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -1340,6 +1341,18 @@ class NetworkService extends ChangeNotifier {
           .map<NotificationModel>((item) => NotificationModel.fromJson(item))
           .toList();
       return notifications;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Chat>?> fetchChats() async {
+    Uri url = Uri.parse('$_baseUrl/chat/');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((item) => Chat.fromJson(item)).toList();
     } else {
       return null;
     }
