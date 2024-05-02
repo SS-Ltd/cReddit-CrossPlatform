@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -128,6 +129,38 @@ class _CreatePostState extends State<CreatePost> {
     return endsInDateTime;
   }
 
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+
+  Future<void> __chooseDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000)!,
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  Future<void> _chooseTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime ?? TimeOfDay.now(),
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
+  final currentdate = DateTime.now();
+  final currenttime = TimeOfDay.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,6 +183,7 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15),
             child: widget.ismoderator && !_istitleempty
                 ? IconButton(
+                    icon: const Icon(Icons.more_horiz),
                     onPressed: () {
                       showModalBottomSheet(
                           context: context,
@@ -159,59 +193,125 @@ class _CreatePostState extends State<CreatePost> {
                                 children: [
                                   BottomSheet(
                                     onClosing: () {},
-                                    builder: (context) => Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 20, 10, 20),
-                                      child: Column(
-                                        children: [
-                                          Row(
+                                    builder: (context) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 15, 20, 0),
+                                          child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
+                                              const Text("Post Settings"),
                                               IconButton(
                                                 onPressed: () {},
-                                                icon: const Icon(
-                                                    Icons.arrow_back),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {},
-                                                child: const Text("Clear"),
+                                                icon: const Icon(Icons.close),
                                               ),
                                             ],
                                           ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Row(
-                                                children: [
-                                                  Text("Starts on date", style: TextStyle(fontSize: 20),),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10,),
-                                              const Row(
-                                                children: [
-                                                  Text("Starts at time"),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SwitchButton(
-                                                      buttonText:
-                                                          "Repeat weekly on Tuesday",
-                                                      onPressed: (value) {},
-                                                      switchvalue: repeating),
-                                                ],
-                                              )
-                                            ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: ListTile(
+                                            leading: const Icon(
+                                                Icons.calendar_month_outlined),
+                                            title: const Text("Schedule Post"),
+                                            trailing: const Icon(
+                                                Icons.arrow_forward_ios),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              showModalBottomSheet(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        BottomSheet(
+                                                            onClosing: () {},
+                                                            builder:
+                                                                (context) =>
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                          .fromLTRB(
+                                                                          10,
+                                                                          10,
+                                                                          10,
+                                                                          10),
+                                                                      child:
+                                                                          Column(
+                                                                        children: [
+                                                                          Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              IconButton(
+                                                                                onPressed: () {},
+                                                                                icon: const Icon(Icons.arrow_back),
+                                                                              ),
+                                                                              const Text(
+                                                                                "Schedule Post",
+                                                                                style: TextStyle(fontSize: 20),
+                                                                              ),
+                                                                              ElevatedButton(
+                                                                                onPressed: () {},
+                                                                                child: const Text("Clear"),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height:
+                                                                                10,
+                                                                          ),
+                                                                          Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  const Text(
+                                                                                    "Starts on date",
+                                                                                    style: TextStyle(fontSize: 20),
+                                                                                  ),
+                                                                                  GestureDetector(onTap: () => __chooseDate(context), child: Text(DateFormat.yMMMd().format(_selectedDate))),
+                                                                                ],
+                                                                              ),
+                                                                              const SizedBox(
+                                                                                height: 10,
+                                                                              ),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  const Text("Starts at time"),
+                                                                                  GestureDetector(onTap: () => _chooseTime(context), child: Text(_selectedTime.format(context))),
+                                                                                ],
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  SwitchButton(buttonText: "Repeat weekly on ${DateFormat('EEEE').format(currentdate)}", onPressed: (value) {}, switchvalue: repeating),
+                                                                                ],
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ))
+                                                      ],
+                                                    );
+                                                  });
+                                            },
                                           ),
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ]);
                           });
                     },
-                    icon: const Icon(Icons.more_horiz),
                   )
                 : null,
           ),
