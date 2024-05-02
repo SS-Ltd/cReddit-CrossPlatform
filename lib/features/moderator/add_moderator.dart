@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:provider/provider.dart';
 
 class AddModerator extends StatefulWidget {
-  const AddModerator({super.key});
+  const AddModerator({super.key, required this.communityName});
+
+final String communityName;
+  
 
   @override
   State<AddModerator> createState() {
@@ -28,7 +34,18 @@ class _AddModeratorState extends State<AddModerator> {
           title: const Text("Add a moderator"),
           actions: [
             ElevatedButton(
-              onPressed: _isusernameempty ? null : () {},
+              onPressed: _isusernameempty ? null : () async {
+                bool newModerator = await Provider.of<NetworkService>(context,
+                        listen: false)
+                    .addModerator(
+                        _userNameController.text, widget.communityName);
+                  print(newModerator);
+                  print(_userNameController.text);
+                if (newModerator) {
+                  CustomSnackBar(context: context, content: "u/${_userNameController.text} was invited", backgroundColor: Colors.white, textColor: Colors.black).show();
+                  Navigator.pop(context);
+                }
+              },
               child: const Text("Invite"),
             ),
           ],

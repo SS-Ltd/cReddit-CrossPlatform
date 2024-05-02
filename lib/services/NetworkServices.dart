@@ -602,33 +602,63 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<SubredditRule>?> getSubredditRules(String subredditName) async {
-
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/rules');
     final response = await http.get(url, headers: _headers);
-    
+
     if (response.statusCode == 403) {
       refreshToken();
       return getSubredditRules(subredditName);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
-      List<SubredditRule> rules = responseData
-          .map((item) => SubredditRule.fromJson(item))
-          .toList();
+      List<SubredditRule> rules =
+          responseData.map((item) => SubredditRule.fromJson(item)).toList();
       return rules;
     } else {
       return null;
     }
   }
 
-  Future<bool> addModerator(String username) async {
-
-    Uri url = Uri.parse('$_baseUrl/mod/invite/$username');
-    final response = await http.post(url, headers: _headers);
+  Future<bool> addModerator(String username, String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/mod/invite/$communityName');
+    final response = await http.post(url,
+        headers: _headers, body: jsonEncode({'username': username}));
     if (response.statusCode == 403) {
       refreshToken();
-      return addModerator(username);
-    } 
+      return addModerator(username, communityName);
+    }
+    print("isadded");
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> leaveModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return leaveModerator(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeModerator(username);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -673,6 +703,27 @@ class NetworkService extends ChangeNotifier {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchComments> searchResult =
           responseData.map((item) => SearchComments.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchHashtag>> getSearchHashtags(String hashtag) async {
+    final parameters = {'query': hashtag};
+    Uri url = Uri.parse('$_baseUrl/search/hashtags')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchHashtags(hashtag);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchHashtag> searchResult =
+          responseData.map((item) => SearchHashtag.fromJson(item)).toList();
       return searchResult;
     } else {
       return [];
@@ -1187,8 +1238,8 @@ class NetworkService extends ChangeNotifier {
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isApproved': isApproved}));
 
-        print(response.statusCode);
-        print(response.body);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return approveComment(commentId, isApproved);
@@ -1204,8 +1255,8 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isRemoved': isRemoved}));
-        print(response.statusCode);
-        print(response.body);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return removeComment(commentId, isRemoved);

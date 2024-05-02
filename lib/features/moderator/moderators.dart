@@ -4,7 +4,9 @@ import 'package:reddit_clone/features/moderator/add_moderator.dart';
 import 'package:reddit_clone/theme/palette.dart';
 
 class Moderator extends StatefulWidget {
-  const Moderator({super.key});
+  const Moderator({super.key, required this.communityName});
+
+  final String communityName;
 
   @override
   State<Moderator> createState() {
@@ -40,7 +42,7 @@ class _ModeratorState extends State<Moderator>
                   context,
                   MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (context) => const AddModerator()));
+                      builder: (context) => AddModerator(communityName: widget.communityName,)));
             },
             icon: const Icon(Icons.add),
           ),
