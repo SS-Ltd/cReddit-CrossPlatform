@@ -23,8 +23,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://creddit.tech/API';
-  // final String _baseUrl = 'http://192.168.1.10:3000';
+  // final String _baseUrl = 'https://creddit.tech/API';
+  final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -1393,6 +1393,44 @@ class NetworkService extends ChangeNotifier {
     } else {
       return null;
     }
+  }
+
+  Future<bool> createGroupChatRoom(String name, List<String> members) async {
+    Uri url = Uri.parse('$_baseUrl/chat');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'name': name,
+        'members': members,
+      }),
+    );
+    print(response.body);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createGroupChatRoom(name, members);
+    }
+
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<bool> createPrivateChatRoom(List<String> member) async {
+    Uri url = Uri.parse('$_baseUrl/chat');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'members': member,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createPrivateChatRoom(member);
+    }
+
+    return response.statusCode == 200 || response.statusCode == 201;
   }
 
   void _updateCookie(http.Response response) {
