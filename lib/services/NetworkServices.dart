@@ -1146,6 +1146,41 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> approveComment(String commentId, bool isApproved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/approve');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isApproved': isApproved}));
+
+        print(response.statusCode);
+        print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return approveComment(commentId, isApproved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeComment(String commentId, bool isRemoved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isApproved': isRemoved}));
+        print(response.statusCode);
+        print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeComment(commentId, isRemoved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 //////////////////////////////////////////check
   Future<bool> followpost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/follow');
