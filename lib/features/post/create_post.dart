@@ -30,6 +30,7 @@ class CreatePost extends StatefulWidget {
   /// Indicates whether the post is being created from a user's profile or not.
   final bool profile;
   final bool ismoderator;
+  //final String communityname
 
   @override
   State<CreatePost> createState() {
@@ -132,6 +133,10 @@ class _CreatePostState extends State<CreatePost> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
 
+  DateTime scheduledDate = DateTime.now();
+  TimeOfDay scheduledTime = TimeOfDay.now();
+  bool _isSaved = false;
+  bool scheduleRepeating  = true;
   Future<void> __chooseDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -223,86 +228,143 @@ class _CreatePostState extends State<CreatePost> {
                                             onTap: () {
                                               Navigator.pop(context);
                                               showModalBottomSheet(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        BottomSheet(
-                                                            onClosing: () {},
-                                                            builder:
-                                                                (context) =>
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                          .fromLTRB(
-                                                                          10,
-                                                                          10,
-                                                                          10,
-                                                                          10),
-                                                                      child:
-                                                                          Column(
-                                                                        children: [
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.spaceBetween,
-                                                                            children: [
-                                                                              IconButton(
-                                                                                onPressed: () {},
-                                                                                icon: const Icon(Icons.arrow_back),
-                                                                              ),
-                                                                              const Text(
-                                                                                "Schedule Post",
-                                                                                style: TextStyle(fontSize: 20),
-                                                                              ),
-                                                                              ElevatedButton(
-                                                                                onPressed: () {},
-                                                                                child: const Text("Clear"),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
-                                                                          Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                children: [
-                                                                                  const Text(
-                                                                                    "Starts on date",
-                                                                                    style: TextStyle(fontSize: 20),
-                                                                                  ),
-                                                                                  GestureDetector(onTap: () => __chooseDate(context), child: Text(DateFormat.yMMMd().format(_selectedDate))),
-                                                                                ],
-                                                                              ),
-                                                                              const SizedBox(
-                                                                                height: 10,
-                                                                              ),
-                                                                              Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                children: [
-                                                                                  const Text("Starts at time"),
-                                                                                  GestureDetector(onTap: () => _chooseTime(context), child: Text(_selectedTime.format(context))),
-                                                                                ],
-                                                                              ),
-                                                                              Row(
-                                                                                children: [
-                                                                                  SwitchButton(buttonText: "Repeat weekly on ${DateFormat('EEEE').format(currentdate)}", onPressed: (value) {}, switchvalue: repeating),
-                                                                                ],
-                                                                              )
-                                                                            ],
-                                                                          ),
-                                                                        ],
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      BottomSheet(
+                                                        onClosing: () {},
+                                                        builder: (context) =>
+                                                            Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(10,
+                                                                  10, 10, 10),
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  IconButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .arrow_back),
+                                                                  ),
+                                                                  const Text(
+                                                                    "Schedule Post",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            20),
+                                                                  ),
+                                                                  !_isSaved
+                                                                      ? ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            setState(() {
+                                                                              scheduledDate = _selectedDate;
+                                                                              scheduledTime = _selectedTime;
+                                                                              _isSaved = true;
+                                                                              scheduleRepeating = repeating;
+                                                                            });
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              const Text("Save"),
+                                                                        )
+                                                                      : ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            setState(() {
+                                                                              scheduledDate = DateTime.now();
+                                                                              _selectedDate = DateTime.now();
+                                                                              scheduledTime = TimeOfDay.now();
+                                                                              _selectedTime = TimeOfDay.now();
+                                                                              scheduleRepeating = true;
+                                                                              repeating = true;
+                                                                              _isSaved = false;
+                                                                            });
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              const Text("Clear"),
+                                                                        ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      const Text(
+                                                                        "Starts on date",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20),
                                                                       ),
-                                                                    ))
-                                                      ],
-                                                    );
-                                                  });
+                                                                      GestureDetector(
+                                                                          onTap: () => __chooseDate(
+                                                                              context),
+                                                                          child:
+                                                                              Text(DateFormat.yMMMd().format(_selectedDate))),
+                                                                    ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      const Text(
+                                                                          "Starts at time"),
+                                                                      GestureDetector(
+                                                                          onTap: () => _chooseTime(
+                                                                              context),
+                                                                          child:
+                                                                              Text(_selectedTime.format(context))),
+                                                                    ],
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      SwitchButton(
+                                                                          buttonText:
+                                                                              "Repeat weekly on ${DateFormat('EEEE').format(currentdate)}",
+                                                                          onPressed:
+                                                                              (value) {
+                                                                                setState(() {
+                                                                                  repeating = value;
+                                                                                });
+                                                                              },
+                                                                          switchvalue:
+                                                                              repeating),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              );
                                             },
                                           ),
                                         )
@@ -377,31 +439,34 @@ class _CreatePostState extends State<CreatePost> {
                           },
                     child: const Text('Post'),
                   )
-                : ElevatedButton(
-                    onPressed: _istitleempty
-                        ? null
-                        : () async {
-                            final returneddata = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                fullscreenDialog: true,
-                                builder: (context) => CommunityChoice(
-                                  chosenCommunity: chosenCommunity,
-                                ),
-                              ),
-                            );
-                            setState(
-                              () {
-                                if (returneddata != null) {
-                                  chosenCommunity = returneddata.toString();
-                                  hascommunity = true;
-                                  getSubredditDetails(chosenCommunity);
-                                }
+                : _isSaved
+                    ? ElevatedButton(
+                        onPressed: () {}, child: const Text("Schedule"))
+                    : ElevatedButton(
+                        onPressed: _istitleempty
+                            ? null
+                            : () async {
+                                final returneddata = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (context) => CommunityChoice(
+                                      chosenCommunity: chosenCommunity,
+                                    ),
+                                  ),
+                                );
+                                setState(
+                                  () {
+                                    if (returneddata != null) {
+                                      chosenCommunity = returneddata.toString();
+                                      hascommunity = true;
+                                      getSubredditDetails(chosenCommunity);
+                                    }
+                                  },
+                                );
                               },
-                            );
-                          },
-                    //in this case we will go to choose the community
-                    child: const Text('Next')),
+                        //in this case we will go to choose the community
+                        child: const Text('Next')),
           ),
         ],
       ),
