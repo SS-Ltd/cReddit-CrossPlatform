@@ -10,9 +10,9 @@ import 'package:flutter_polls/flutter_polls.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
+import 'package:reddit_clone/features/home_page/moderator_pop_up.dart';
 
 class Post extends StatefulWidget {
-
   final PostModel postModel;
   final int shareNumber;
   final bool isHomePage;
@@ -582,6 +582,17 @@ class _PostState extends State<Post> {
               ),
               Text(widget.postModel.commentCount.toString()),
               const Spacer(),
+              if (widget.postModel.isModerator)
+              IconButton(
+                icon: const Icon(Icons.shield_outlined),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ModeratorPopUP(postModel: widget.postModel);
+                      });
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.ios_share),
                 //other icon: ios_share, share
@@ -612,9 +623,7 @@ bool isVideo(String url) {
 }
 
 class _ControlsOverlay extends StatelessWidget {
-  const _ControlsOverlay({
-    super.key,
-    required this.controller});
+  const _ControlsOverlay({super.key, required this.controller});
 
   final VideoPlayerController controller;
 
