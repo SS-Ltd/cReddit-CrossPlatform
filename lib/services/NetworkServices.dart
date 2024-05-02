@@ -1167,7 +1167,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> removeComment(String commentId, bool isRemoved) async {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
     final response = await http.patch(url,
-        headers: _headers, body: jsonEncode({'isApproved': isRemoved}));
+        headers: _headers, body: jsonEncode({'isRemoved': isRemoved}));
         print(response.statusCode);
         print(response.body);
     if (response.statusCode == 403) {

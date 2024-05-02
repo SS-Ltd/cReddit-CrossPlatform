@@ -226,7 +226,6 @@ class UserCommentState extends State<UserComment> {
     content = ValueNotifier<String>(widget.comment.content);
     photo = ValueNotifier<File?>(widget.photo);
     isApproved = ValueNotifier<bool>(widget.comment.isApproved);
-    //isRemoved = ValueNotifier<bool>(widget.comment.isRemoved);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -239,6 +238,7 @@ class UserCommentState extends State<UserComment> {
     content.dispose();
     photo.dispose();
     isMinimized.dispose();
+    isApproved.dispose();
     super.dispose();
   }
 
@@ -768,12 +768,26 @@ class UserCommentState extends State<UserComment> {
                                 foregroundColor: Palette.whiteColor,
                                 minimumSize: const Size(double.infinity, 40),
                               ),
-                              child: const Text('Button 1'),
+                              child: const Text('It\'s spam'),
                             ),
                             const SizedBox(height: 16.0),
                             ElevatedButton(
-                              onPressed: () {
-                                // handle button press
+                              onPressed: () async {
+                                bool removed = await context
+                                    .read<NetworkService>()
+                                    .removeComment(widget.comment.commentId, true);
+                                if (removed) {
+                                  widget.comment.isDeleted.value = true;
+                                  CustomSnackBar(
+                                    context: context,
+                                    content: 'Comment Removed!',
+                                  ).show();
+                                } else {
+                                  CustomSnackBar(
+                                    context: context,
+                                    content: 'Failed to remove comment!',
+                                  ).show();
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Palette.blueJoinColor,
@@ -783,7 +797,7 @@ class UserCommentState extends State<UserComment> {
                                   borderRadius: BorderRadius.circular(18),
                                 ),
                               ),
-                              child: const Text('Button 2'),
+                              child: const Text('No specific reason'),
                             ),
                           ],
                         ),
