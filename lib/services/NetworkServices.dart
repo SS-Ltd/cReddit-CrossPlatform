@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/chat.dart';
+import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
@@ -1151,8 +1152,8 @@ class NetworkService extends ChangeNotifier {
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isApproved': isApproved}));
 
-        print(response.statusCode);
-        print(response.body);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return approveComment(commentId, isApproved);
@@ -1168,8 +1169,8 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isApproved': isRemoved}));
-        print(response.statusCode);
-        print(response.body);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return removeComment(commentId, isRemoved);
@@ -1347,7 +1348,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Chat>?> fetchChats() async {
-    Uri url = Uri.parse('$_baseUrl/chat/');
+    Uri url = Uri.parse('$_baseUrl/chat/?page=1&limit=100');
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
@@ -1394,6 +1395,18 @@ class NetworkService extends ChangeNotifier {
     }
 
     return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<List<ChatMessages>?> fetchChatMessages(String chatId) async {
+    Uri url = Uri.parse('$_baseUrl/chat/$chatId');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((item) => ChatMessages.fromJson(item)).toList();
+    } else {
+      return null;
+    }
   }
 
   void _updateCookie(http.Response response) {

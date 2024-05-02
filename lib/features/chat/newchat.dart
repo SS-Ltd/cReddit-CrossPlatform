@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/chat/chat_list.dart';
-import 'package:reddit_clone/features/chat/chat_screen.dart';
 import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
