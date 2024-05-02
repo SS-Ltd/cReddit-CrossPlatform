@@ -51,11 +51,13 @@ void main() async {
       ChangeNotifierProvider(
           create: (context) => MenuState()) // Add GoogleSignInService provider
     ],
-    child: MyApp(),
+    child: const MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

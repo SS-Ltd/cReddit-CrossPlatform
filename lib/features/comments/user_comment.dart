@@ -85,6 +85,8 @@ class UserCommentState extends State<UserComment> {
   late ValueNotifier<bool> isMinimized;
   late ValueNotifier<String> content;
   late ValueNotifier<File?> photo;
+  late ValueNotifier<bool> isApproved;
+  late ValueNotifier<bool> isRemoved;
 
   void _addReply() async {
     final result = await Navigator.push(
@@ -223,6 +225,8 @@ class UserCommentState extends State<UserComment> {
     hasVoted = ValueNotifier<int>(widget.hasVoted);
     content = ValueNotifier<String>(widget.comment.content);
     photo = ValueNotifier<File?>(widget.photo);
+    isApproved = ValueNotifier<bool>(widget.comment.isApproved);
+    //isRemoved = ValueNotifier<bool>(widget.comment.isRemoved);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -300,6 +304,25 @@ class UserCommentState extends State<UserComment> {
                           style:
                               const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
+                        const SizedBox(width: 5),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: isMinimized,
+                          builder: (context, isMinimizedValue, child) {
+                            return ValueListenableBuilder<bool>(
+                              valueListenable: isApproved,
+                              builder: (context, approve, child) {
+                                if (!isMinimizedValue &&
+                                    approve &&
+                                    widget.isModerator) {
+                                  return const Icon(Icons.check,
+                                      color: Palette.greenColor);
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            );
+                          },
+                        ),
                       ] else ...[
                         Expanded(
                           child: Column(
@@ -329,44 +352,30 @@ class UserCommentState extends State<UserComment> {
                             height: 50,
                             child: widget.comment.isImage == false
                                 ? Align(
-                                    alignment: Alignment.centerLeft,
+                                    alignment: Alignment.bottomLeft,
                                     child: ValueListenableBuilder<String>(
                                       valueListenable: content,
                                       builder: (context, value, child) {
-                                        return ValueListenableBuilder<bool>(
-                                          valueListenable: isMinimized,
-                                          builder:
-                                              (context, isMinimized, child) {
-                                            String displayText = isMinimized &&
-                                                    value.contains('\n')
+                                        String displayText =
+                                            value.contains('\n')
                                                 ? value.split('\n')[0]
                                                 : value;
-                                            return RichText(
-                                              text: TextSpan(
-                                                children: [
-                                                  WidgetSpan(
-                                                    child: MarkdownBody(
-                                                      data: displayText,
-                                                      styleSheet:
-                                                          MarkdownStyleSheet
-                                                                  .fromTheme(
-                                                                      Theme.of(
-                                                                          context))
-                                                              .copyWith(
-                                                        p: const TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  if (isMinimized &&
-                                                      value.contains('\n'))
-                                                    const TextSpan(text: '...'),
-                                                ],
+                                        return SizedBox(
+                                          height: 33,
+                                          child: SingleChildScrollView(
+                                            child: MarkdownBody(
+                                              data: displayText,
+                                              styleSheet:
+                                                  MarkdownStyleSheet.fromTheme(
+                                                          Theme.of(context))
+                                                      .copyWith(
+                                                p: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
                                               ),
-                                            );
-                                          },
+                                            ),
+                                          ),
                                         );
                                       },
                                     ),
@@ -478,23 +487,20 @@ class UserCommentState extends State<UserComment> {
                             showCommentOptions(user, numofTiles);
                           },
                         ),
-                        if(widget.isModerator)...[
-                        IconButton(
-                          icon: Transform.scale(
-                            scale: 1.1,
-                            child: const Icon(Icons.shield_outlined),
+                        if (widget.isModerator) ...[
+                          IconButton(
+                              icon: Transform.scale(
+                                scale: 1.1,
+                                child: const Icon(Icons.shield_outlined),
+                              ),
+                              onPressed: () {
+                                modOptions(3);
+                              }),
+                        ] else
+                          IconButton(
+                            icon: const Icon(Icons.reply_sharp),
+                            onPressed: _addReply,
                           ),
-                          onPressed: () {
-                            modOptions(3);
-                          }
-                          
-                        ),
-                        ]
-                        else
-                        IconButton(
-                          icon: const Icon(Icons.reply_sharp),
-                          onPressed: _addReply,
-                        ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
@@ -615,84 +621,191 @@ class UserCommentState extends State<UserComment> {
 
   OverlayEntry? overlayEntry;
 
-void showOverlay(int numofTiles) {
-  double height = numofTiles * 56;
-  overlayEntry = OverlayEntry(
-    builder: (context) => Positioned(
-      left: 8,
-      right: 8,
-      bottom: height,
-      child: Material(
-          color: Colors.transparent,
-          child: ValueListenableBuilder<String>(
-            valueListenable: content,
-            builder: (context, contentValue, child) {
-              return ValueListenableBuilder<File?>(
-                valueListenable: photo,
-                builder: (context, photoValue, child) {
-                  return StaticCommentCard(
-                    content: contentValue,
-                    contentType: widget.comment.isImage,
-                    photo: photoValue,
-                    imageSource: widget.imageSource,
-                    staticComment: widget.comment,
-                  );
-                },
-              );
-            },
-          )),
-    ),
-  );
+  void showOverlay(int numofTiles) {
+    double height = numofTiles * 56;
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: 8,
+        right: 8,
+        bottom: height,
+        child: Material(
+            color: Colors.transparent,
+            child: ValueListenableBuilder<String>(
+              valueListenable: content,
+              builder: (context, contentValue, child) {
+                return ValueListenableBuilder<File?>(
+                  valueListenable: photo,
+                  builder: (context, photoValue, child) {
+                    return StaticCommentCard(
+                      content: contentValue,
+                      contentType: widget.comment.isImage,
+                      photo: photoValue,
+                      imageSource: widget.imageSource,
+                      staticComment: widget.comment,
+                    );
+                  },
+                );
+              },
+            )),
+      ),
+    );
 
-  Overlay.of(context).insert(overlayEntry!);
-}
+    Overlay.of(context).insert(overlayEntry!);
+  }
 
-void modOptions(int numofTiles) {
-  showOverlay(numofTiles);
-
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: const Color.fromARGB(255, 19, 19, 19),
-    builder: (context) {
-      return Wrap(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(left: 16, top: 14),
-            alignment: Alignment.topLeft,
-            child: const Text(
-              'Moderator',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Palette.greyColor
-              ),
-            ),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.report),
-            title: const Text('Accept Comment'),
-            onTap: () {
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.block),
-            title: const Text('Remove Comment'),
-            onTap: () {
-            },
-          ),
-        ],
-      );
-    },
-  ).then((_) {
-      // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry?.remove();
-    });
-}
-  
-  void showCommentOptions(UserModel user, int numofTiles) {
+  void modOptions(int numofTiles) {
     showOverlay(numofTiles);
 
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+      builder: (context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(left: 16, top: 14),
+              alignment: Alignment.topLeft,
+              child: const Text(
+                'Moderator',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Palette.greyColor),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.check),
+              title: const Text('Approve Comment'),
+              onTap: () async {
+                bool approved = await context
+                    .read<NetworkService>()
+                    .approveComment(widget.comment.commentId, true);
+                if (approved) {
+                  CustomSnackBar(
+                    context: context,
+                    content: 'Comment Approved!',
+                  ).show();
+                } else {
+                  CustomSnackBar(
+                    context: context,
+                    content: 'Failed to approve comment!',
+                  ).show();
+                }
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.block),
+              title: const Text('Remove Comment'),
+              onTap: () {
+                overlayEntry?.remove();
+
+                showModalBottomSheet(
+                  backgroundColor: Palette.backgroundColor,
+                  context: context,
+                  builder: (context) => Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Flexible(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  'Why is this comment being removed?',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Image.asset(
+                            'assets/reddit_char.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                  'r/${widget.comment.communityName ?? ''} needs removal reasons',
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Palette.whiteColor),
+                                  textAlign: TextAlign.center),
+                              const Text(
+                                  'Use removal reasons to explain to users why their content was removed.',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Palette.greyColor),
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                // handle button press
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.blueJoinColor,
+                                foregroundColor: Palette.whiteColor,
+                                minimumSize: const Size(double.infinity, 40),
+                              ),
+                              child: const Text('Button 1'),
+                            ),
+                            const SizedBox(height: 16.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                // handle button press
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.blueJoinColor,
+                                foregroundColor: Palette.whiteColor,
+                                minimumSize: const Size(double.infinity, 40),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              child: const Text('Button 2'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ).then((_) {
+                  showOverlay(numofTiles);
+                });
+              },
+            ),
+            const SizedBox(height: 10)
+          ],
+        );
+      },
+    ).then((_) {
+      overlayEntry?.remove();
+    });
+  }
+
+  void showCommentOptions(UserModel user, int numofTiles) {
+    showOverlay(numofTiles);
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color.fromARGB(255, 19, 19, 19),
@@ -854,7 +967,6 @@ void modOptions(int numofTiles) {
         );
       },
     ).then((_) {
-      // Remove the overlay entry after the modal bottom sheet is dismissed
       overlayEntry?.remove();
     });
   }

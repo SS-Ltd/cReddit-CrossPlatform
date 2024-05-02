@@ -1059,10 +1059,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': value}));
-        print(response.statusCode);
-        print(response.body);
-        print(response);
-        print(postId);
+    print(response.statusCode);
+    print(response.body);
+    print(response);
+    print(postId);
     if (response.statusCode == 403) {
       refreshToken();
       return saveandunsavepost(postId, value);
@@ -1142,6 +1142,41 @@ class NetworkService extends ChangeNotifier {
     } else {
       // Handle error or empty case appropriately
       return null;
+    }
+  }
+
+  Future<bool> approveComment(String commentId, bool isApproved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/approve');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isApproved': isApproved}));
+
+        print(response.statusCode);
+        print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return approveComment(commentId, isApproved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeComment(String commentId, bool isRemoved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isApproved': isRemoved}));
+        print(response.statusCode);
+        print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeComment(commentId, isRemoved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 

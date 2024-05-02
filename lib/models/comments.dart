@@ -13,8 +13,10 @@ class Comments {
   String? communityName;
   final String? postId;
   final String? title;
-  ValueNotifier<bool> isDeleted =ValueNotifier(false);
-  ValueNotifier<bool> isBlocked =ValueNotifier(false);
+  ValueNotifier<bool> isDeleted = ValueNotifier(false);
+  ValueNotifier<bool> isBlocked = ValueNotifier(false);
+  bool isApproved;
+  //bool isRemoved;
 
   Comments({
     required this.profilePicture,
@@ -30,7 +32,8 @@ class Comments {
     this.communityName = '',
     this.postId = '',
     this.title = '',
-    
+    this.isApproved = false,
+    //this.isRemoved = false,
   });
 
   factory Comments.fromJson(Map<String, dynamic> json) {
@@ -49,6 +52,8 @@ class Comments {
       communityName: json['communityName'] ?? json['parentPostUsername'] ?? '',
       postId: json['postID'] is String ? json['postID'] : '',
       title: json['title'] ?? '',
+      isApproved: json['isApproved'],
+      //isRemoved: json['isRemoved']?? false,
     );
   }
 }
