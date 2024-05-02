@@ -23,8 +23,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  // final String _baseUrl = 'https://creddit.tech/API';
-  final String _baseUrl = 'http://192.168.1.10:3000';
+  final String _baseUrl = 'https://creddit.tech/API';
+  //final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -621,14 +621,31 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> addModerator(String username) async {
+  Future<bool> addModerator(String username, String communityName) async {
 
-    Uri url = Uri.parse('$_baseUrl/mod/invite/$username');
-    final response = await http.post(url, headers: _headers);
+    Uri url = Uri.parse('$_baseUrl/mod/invite/$communityName');
+    final response = await http.post(url, headers: _headers, body: jsonEncode({'username': username}));
     if (response.statusCode == 403) {
       refreshToken();
-      return addModerator(username);
+      return addModerator(username, communityName);
     } 
+    print("isadded");
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeModerator(username);
+    }
     if (response.statusCode == 200) {
       return true;
     } else {

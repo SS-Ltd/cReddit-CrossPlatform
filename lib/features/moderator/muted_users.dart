@@ -34,7 +34,7 @@ class _MutedUserState extends State<MutedUser> {
                     context,
                     MaterialPageRoute(
                         fullscreenDialog: true,
-                        builder: (context) => const AddModerator()));
+                        builder: (context) => const AddModerator(communityName: "",)));
               },
               icon: const Icon(Icons.add),
             ),

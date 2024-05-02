@@ -127,7 +127,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Moderator()));
+                          builder: (context) => Moderator(communityName: widget.communityName,)));
                 },
                 buttonText: "Moderators",
                 buttonIcon: Icons.shield_outlined),
