@@ -189,9 +189,6 @@ class _CommentPageState extends State<CommentPage> {
                 //   commentsResults =
                 //       await Provider.of<NetworkService>(context, listen: false)
                 //           .getSearchComments(value, '');
-                //   postsResults =
-                //       await Provider.of<NetworkService>(context, listen: false)
-                //           .getSearchPosts(value, '');
                 //},
               )
             : null,
