@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/common/block_pop_up.dart';
+import 'package:reddit_clone/common/delete_post_pop_up.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
@@ -371,6 +372,7 @@ class _CommentPageState extends State<CommentPage> {
 
   List<PopupMenuEntry<Menu>> menuitems() {
     bool isPostSaved = widget.postComment.postModel.isSaved;
+
     return <PopupMenuEntry<Menu>>[
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
@@ -380,12 +382,14 @@ class _CommentPageState extends State<CommentPage> {
             title: Text('Share'),
           ),
         ),
-      const PopupMenuItem<Menu>(
-          value: Menu.subscribe,
-          child: ListTile(
-            leading: Icon(Icons.add_alert),
-            title: Text('Subscribe'),
-          )),
+      PopupMenuItem<Menu>(
+        value: Menu.subscribe,
+        child: ListTile(
+          leading: const Icon(Icons.add_alert),
+          title: const Text('Subscribe'),
+          onTap: () {},
+        ),
+      ),
       PopupMenuItem<Menu>(
         value: Menu.save,
         child: ListTile(
@@ -438,32 +442,25 @@ class _CommentPageState extends State<CommentPage> {
             )),
       // if (widget.username == context.read<NetworkService>().user?.username)
       //   const PopupMenuItem<Menu>(
-      //       value: Menu.addpostflair,
+      //       value: Menu.markspoiler,
       //       child: ListTile(
-      //         leading: Icon(Icons.add),
-      //         title: Text('Add post flair'),
+      //         leading: Icon(Icons.warning),
+      //         title: Text('Mark spoiler'),
       //       )),
-      if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.markspoiler,
-            child: ListTile(
-              leading: Icon(Icons.warning),
-              title: Text('Mark spoiler'),
-            )),
-      if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.markNSFW,
-            child: ListTile(
-              leading: Icon(Icons.warning),
-              title: Text('Mark NSFW'),
-            )),
-      if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.markasbrandaffiliate,
-            child: ListTile(
-              leading: Icon(Icons.warning),
-              title: Text('Mark as brand affiliate'),
-            )),
+      // if (widget.username == context.read<NetworkService>().user?.username)
+      //   const PopupMenuItem<Menu>(
+      //       value: Menu.markNSFW,
+      //       child: ListTile(
+      //         leading: Icon(Icons.warning),
+      //         title: Text('Mark NSFW'),
+      //       )),
+      // if (widget.username == context.read<NetworkService>().user?.username)
+      //   const PopupMenuItem<Menu>(
+      //       value: Menu.markasbrandaffiliate,
+      //       child: ListTile(
+      //         leading: Icon(Icons.warning),
+      //         title: Text('Mark as brand affiliate'),
+      //       )),
       if (widget.username == context.read<NetworkService>().user?.username)
         PopupMenuItem<Menu>(
             value: Menu.delete,
@@ -471,61 +468,67 @@ class _CommentPageState extends State<CommentPage> {
               leading: const Icon(Icons.delete),
               title: const Text('Delete'),
               onTap: () async {
-                bool isDeleted = await context
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DeletePostPopUp(postId: widget.postId);
+                    });
+              },
+            )),
+      if (widget.username != context.read<NetworkService>().user?.username)
+        PopupMenuItem<Menu>(
+            value: Menu.report,
+            child: ReportButton(
+              isPost: true,
+              postId: widget.postId,
+              subredditName: widget.postComment.postModel.communityName,
+            )),
+      if (widget.username != context.read<NetworkService>().user?.username)
+        PopupMenuItem<Menu>(
+            value: Menu.block,
+            child: ListTile(
+              leading: const Icon(Icons.block),
+              title: const Text('Block Account'),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return BlockPopUp(
+                          userName: widget.postComment.postModel.username);
+                    });
+              },
+            )),
+      if (widget.username != context.read<NetworkService>().user?.username)
+        PopupMenuItem<Menu>(
+            value: Menu.hide,
+            child: ListTile(
+              leading: const Icon(Icons.hide_source),
+              title: const Text('hide'),
+              onTap: () async {
+                print('button clicked');
+                bool isHidden = await context
                     .read<NetworkService>()
-                    .deletepost(widget.postId);
-                if (isDeleted) {
-                  //show snackbar
+                    .hidepost(widget.postId, true);
+                if (isHidden) {
+                  CustomSnackBar(
+                          content: "Post hidden!",
+                          context: context,
+                          backgroundColor: Colors.white,
+                          textColor: Colors.black)
+                      .show();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      (route) => false);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const HomePage(),
+                  //   ),
+                  // );
                 }
               },
             )),
-      PopupMenuItem<Menu>(
-          value: Menu.report,
-          child: ReportButton(
-            isPost: true,
-            postId: widget.postId,
-            subredditName: widget.postComment.postModel.communityName,
-          )),
-      PopupMenuItem<Menu>(
-          value: Menu.block,
-          child: ListTile(
-            leading: const Icon(Icons.block),
-            title: const Text('Block Account'),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return BlockPopUp(
-                        userName: widget.postComment.postModel.username);
-                  });
-            },
-          )),
-      PopupMenuItem<Menu>(
-          value: Menu.hide,
-          child: ListTile(
-            leading: const Icon(Icons.hide_source),
-            title: const Text('hide'),
-            onTap: () async {
-              print('button clicked');
-              bool isHidden = await context
-                  .read<NetworkService>()
-                  .hidepost(widget.postId, true);
-              if (isHidden) {
-                CustomSnackBar(
-                        content: "Post hidden!",
-                        context: context,
-                        backgroundColor: Colors.white,
-                        textColor: Colors.black)
-                    .show();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const HomePage(),
-                  ),
-                );
-              }
-            },
-          )),
     ];
   }
 }
