@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
+import 'package:reddit_clone/models/search.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class NewChatPage extends StatefulWidget {
   @override
@@ -7,6 +11,7 @@ class NewChatPage extends StatefulWidget {
 
 class _NewChatPageState extends State<NewChatPage> {
   List<String> selectedUsers = [];
+  List<SearchUsers> peopleResults = [];
   String groupName = '';
 
   @override
@@ -18,7 +23,7 @@ class _NewChatPageState extends State<NewChatPage> {
           TextButton(
             onPressed: selectedUsers.isEmpty
                 ? null
-                : () {
+                : () async {
                     if (selectedUsers.length > 1) {
                       showDialog(
                         context: context,
@@ -32,10 +37,24 @@ class _NewChatPageState extends State<NewChatPage> {
                           actions: [
                             TextButton(
                               child: const Text('Create'),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (groupName.isNotEmpty) {
                                   // Create group chat
-                                  Navigator.pop(context);
+                                  bool created =
+                                      await Provider.of<NetworkService>(context,
+                                              listen: false)
+                                          .createGroupChatRoom(
+                                              groupName, selectedUsers);
+                                  if (created) {
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CustomNavigationBar(
+                                                  isProfile: false,
+                                                  navigateToChat: true,
+                                                )));
+                                  }
                                 }
                               },
                             ),
@@ -44,6 +63,19 @@ class _NewChatPageState extends State<NewChatPage> {
                       );
                     } else {
                       // Create single chat
+                      bool created = await Provider.of<NetworkService>(context,
+                              listen: false)
+                          .createPrivateChatRoom(selectedUsers);
+
+                      if (created) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomNavigationBar(
+                                      isProfile: false,
+                                      navigateToChat: true,
+                                    )));
+                      }
                     }
                   },
             child: const Text(
@@ -55,6 +87,21 @@ class _NewChatPageState extends State<NewChatPage> {
       ),
       body: Column(
         children: [
+          Wrap(
+            children: selectedUsers
+                .map((user) => Chip(
+                      label: Text(user),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      onDeleted: () {
+                        setState(() {
+                          selectedUsers.remove(user);
+                        });
+                      },
+                    ))
+                .toList(),
+          ),
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text('Search for people by username to chat with them.'),
@@ -66,29 +113,38 @@ class _NewChatPageState extends State<NewChatPage> {
                 labelText: 'Search username',
                 prefixIcon: Icon(Icons.search),
               ),
-              onChanged: (value) {
+              onChanged: (value) async {
                 // Search for users
+                peopleResults =
+                    await Provider.of<NetworkService>(context, listen: false)
+                        .getSearchUsers(value);
+                setState(() {
+                  peopleResults = peopleResults;
+                });
               },
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: 10, // Replace with your user list length
+              itemCount: peopleResults.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text('User $index'), // Replace with your user name
+                  title: Text(peopleResults[index].username),
                   trailing: Checkbox(
-                    value: selectedUsers.contains('User $index'),
-                    onChanged: (checked) {
-                      setState(() {
-                        if (checked == true) {
-                          selectedUsers.add('User $index');
-                        } else {
-                          selectedUsers.remove('User $index');
-                        }
-                      });
-                    },
+                    value:
+                        selectedUsers.contains(peopleResults[index].username),
+                    onChanged: null,
                   ),
+                  onTap: () {
+                    setState(() {
+                      if (selectedUsers
+                          .contains(peopleResults[index].username)) {
+                        selectedUsers.remove(peopleResults[index].username);
+                      } else {
+                        selectedUsers.add(peopleResults[index].username);
+                      }
+                    });
+                  },
                 );
               },
             ),

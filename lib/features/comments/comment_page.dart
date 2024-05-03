@@ -1,5 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
+import 'package:reddit_clone/common/block_pop_up.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
@@ -69,9 +73,11 @@ class _CommentPageState extends State<CommentPage> {
   final List<double> _commentPositions = [];
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  bool isLoading = true;
 
   @override
   void initState() {
+    print(widget.postComment.postModel.isModerator);
     super.initState();
     fetchComments(widget.postId).then((_) {
       for (var i = 0; i < _comments.length; i++) {
@@ -80,6 +86,7 @@ class _CommentPageState extends State<CommentPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _calculateCommentPositions();
       });
+      isLoading = false;
     });
   }
 
@@ -98,15 +105,15 @@ class _CommentPageState extends State<CommentPage> {
     final fetchedComments = await networkService.fetchCommentsForPost(postId);
     if (fetchedComments != null && mounted) {
       setState(() {
-        //comments = fetchedComments;
-        //fetchedComments.map((e) => e.communityName = '').toList();
         _comments = fetchedComments
             .map((comment) => UserComment(
                   photo: comment.isImage ? File(comment.content) : null,
                   imageSource: 0,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
+                  isPostPage: true,
                   comment: comment,
+                  isModerator: widget.postComment.postModel.isModerator,
                 ))
             .toList();
       });
@@ -220,27 +227,31 @@ class _CommentPageState extends State<CommentPage> {
         builder: (BuildContext listViewContext) {
           return ListView.builder(
             controller: _scrollController,
-            itemCount: _comments.length + 1,
+            itemCount: isLoading ? 2 : _comments.length + 1,
             itemBuilder: (context, index) {
               if (index == 0) {
                 return widget.postComment;
+              } else if (isLoading) {
+                return CustomLoadingIndicator();
               } else if (index - 1 < _keys.length) {
                 return UserComment(
                   key: _keys[index - 1],
                   photo: _comments[index - 1].photo,
-                  imageSource:
-                      _comments[index - 1].imageSource, //may need to be fixed
+                  imageSource: _comments[index - 1].imageSource,
                   hasVoted: _comments[index - 1].hasVoted,
                   comment: _comments[index - 1].comment,
+                  isModerator: _comments[index - 1].isModerator,
+                  isPostPage: true,
                   onDeleted: () {
                     setState(() {
                       _comments.removeAt(index - 1);
                       _keys.removeAt(index - 1);
                     });
                   },
-                  onBlock: (){
+                  onBlock: () {
                     setState(() {
-                      //_comments[index - 1].comment.username = "Blocked User";
+                      _comments[index - 1].comment.username = "Blocked User";
+                      //_comments[index - 1].isMinimized = ValueNotifier<bool>(true);
                     });
                   },
                 );
@@ -279,6 +290,8 @@ class _CommentPageState extends State<CommentPage> {
                           photo: null,
                           imageSource: 2,
                           hasVoted: 1,
+                          isPostPage: true,
+                          isModerator: widget.postComment.postModel.isModerator,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
@@ -295,6 +308,8 @@ class _CommentPageState extends State<CommentPage> {
                           photo: result['content'],
                           imageSource: 1,
                           hasVoted: 1,
+                          isPostPage: true,
+                          isModerator: widget.postComment.postModel.isModerator,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
@@ -358,7 +373,7 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   List<PopupMenuEntry<Menu>> menuitems() {
-    bool save = widget.postComment.postModel.isSaved;
+    bool isPostSaved = widget.postComment.postModel.isSaved;
     return <PopupMenuEntry<Menu>>[
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
@@ -377,13 +392,16 @@ class _CommentPageState extends State<CommentPage> {
       PopupMenuItem<Menu>(
         value: Menu.save,
         child: ListTile(
-          leading: save
+          leading: isPostSaved
               ? const Icon(Icons.bookmark_add)
               : const Icon(Icons.bookmark_add_outlined),
-          title: const Text('Save'),
+          title: isPostSaved ? const Text('Unsave') : const Text("Save"),
           onTap: () async {
             print('save button clicked');
-            print(save);
+            print(isPostSaved);
+            print('save button clicked');
+            print(widget.postComment.postModel.isSaved);
+            print(widget.postComment.postModel.postId);
             bool isSaved = await context
                 .read<NetworkService>()
                 .saveandunsavepost(widget.postComment.postModel.postId,
@@ -391,7 +409,7 @@ class _CommentPageState extends State<CommentPage> {
             if (isSaved == true &&
                 widget.postComment.postModel.isSaved == false) {
               setState(() {
-                save = !save;
+                isPostSaved = !isPostSaved;
               });
               CustomSnackBar(
                       content: "Post saved!",
@@ -401,7 +419,7 @@ class _CommentPageState extends State<CommentPage> {
             } else if (isSaved == true &&
                 widget.postComment.postModel.isSaved == true) {
               setState(() {
-                save = !save;
+                isPostSaved = !isPostSaved;
               });
               CustomSnackBar(
                       content: "Post unsaved!",
@@ -426,13 +444,13 @@ class _CommentPageState extends State<CommentPage> {
               leading: Icon(Icons.edit),
               title: Text('Edit'),
             )),
-      if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.addpostflair,
-            child: ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Add post flair'),
-            )),
+      // if (widget.username == context.read<NetworkService>().user?.username)
+      //   const PopupMenuItem<Menu>(
+      //       value: Menu.addpostflair,
+      //       child: ListTile(
+      //         leading: Icon(Icons.add),
+      //         title: Text('Add post flair'),
+      //       )),
       if (widget.username == context.read<NetworkService>().user?.username)
         const PopupMenuItem<Menu>(
             value: Menu.markspoiler,
@@ -476,11 +494,22 @@ class _CommentPageState extends State<CommentPage> {
             postId: widget.postId,
             subredditName: widget.postComment.postModel.communityName,
           )),
-      const PopupMenuItem<Menu>(
+      PopupMenuItem<Menu>(
           value: Menu.block,
           child: ListTile(
-            leading: Icon(Icons.block),
-            title: Text('Block Account'),
+            leading: const Icon(Icons.block),
+            title: const Text('Block Account'),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BlockPopUp(
+                        userName: widget.postComment.postModel.username);
+                  });
+              // bool isBlocked = await context
+              //     .read<NetworkService>()
+              //     .blockUser(widget.postComment.postModel.username);
+            },
           )),
       PopupMenuItem<Menu>(
           value: Menu.hide,

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/services/networkServices.dart';
+import 'package:provider/provider.dart';
 
 class AddModerator extends StatefulWidget {
-  const AddModerator({super.key});
+  const AddModerator({super.key, required this.communityName});
+
+final String communityName;
+  
 
   @override
   State<AddModerator> createState() {
@@ -28,30 +34,63 @@ class _AddModeratorState extends State<AddModerator> {
           title: const Text("Add a moderator"),
           actions: [
             ElevatedButton(
-              onPressed: _isusernameempty ? null : () {},
+              onPressed: _isusernameempty ? null : () async {
+                bool newModerator = await Provider.of<NetworkService>(context,
+                        listen: false)
+                    .addModerator(
+                        _userNameController.text, widget.communityName);
+                  print(newModerator);
+                  print(_userNameController.text);
+                if (newModerator) {
+                  CustomSnackBar(context: context, content: "u/${_userNameController.text} was invited", backgroundColor: Colors.white, textColor: Colors.black).show();
+                  Navigator.pop(context);
+                }
+              },
               child: const Text("Invite"),
             ),
           ],
         ),
         body: Column(
           children: [
-            const Text("Username"),
-            TextField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                prefixText: "u/",
-                hintText: "username",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _isusernameempty = value.isEmpty;
-                });
-              },
+            const Divider(
+              thickness: 1,
             ),
-            const Text("Permissions"),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Username"),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  prefixText: "u/",
+                  hintText: "username",
+                  border:
+                      OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _isusernameempty = value.isEmpty;
+                  });
+                },
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Permissions"),
+                ],
+              ),
+            ),
             Row(
               children: [
                 Checkbox(
@@ -68,7 +107,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -84,6 +123,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Access")
                   ],
+                ),
+                const SizedBox(
+                  width: 150,
                 ),
                 Row(
                   children: [
@@ -103,7 +145,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -119,6 +161,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Config")
                   ],
+                ),
+                const SizedBox(
+                  width: 155,
                 ),
                 Row(
                   children: [
@@ -138,7 +183,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -154,6 +199,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Flair")
                   ],
+                ),
+                const SizedBox(
+                  width: 170,
                 ),
                 Row(
                   children: [
@@ -173,7 +221,7 @@ class _AddModeratorState extends State<AddModerator> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -189,6 +237,9 @@ class _AddModeratorState extends State<AddModerator> {
                     ),
                     const Text("Chat config"),
                   ],
+                ),
+                const SizedBox(
+                  width: 125,
                 ),
                 Row(
                   children: [

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/community/rules_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/features/moderator/mod_tools.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
@@ -28,7 +29,7 @@ import 'package:reddit_clone/theme/palette.dart';
 /// The widget manages the loading state, pagination, and sorting state using state variables and the [setState] method.
 /// The widget also disposes of the scroll controller when it is no longer needed to prevent memory leaks.
 class SubRedditPage extends StatefulWidget {
-  final String? subredditName;
+  final String subredditName;
 
   const SubRedditPage({super.key, required this.subredditName});
 
@@ -43,6 +44,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   late final ValueNotifier<bool> isJoined;
   Future<bool>? _future;
   bool isMember = false;
+  bool isModerator = false;
   String currentSort = 'Hot';
   String currentIcon = 'Hot';
   List<String> posts = List.generate(20, (index) => 'Post $index');
@@ -118,6 +120,13 @@ class _SubRedditPageState extends State<SubRedditPage> {
         sort: currentSort.toLowerCase());
 
     if (posts != null && posts.isNotEmpty) {
+      for (var element in posts) {
+        element.isJoined = isMember;
+        element.isModerator = isModerator;
+      }
+    }
+
+    if (posts != null && posts.isNotEmpty) {
       if (mounted) {
         setState(() {
           subredditPosts.addAll(posts);
@@ -168,6 +177,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         if (mounted) {
           setState(() {
             isMember = details.isMember;
+            isModerator = details.isModerator;
             isJoined.value = isMember;
             _subredditIcon = details.icon;
             _subredditBanner =
@@ -176,6 +186,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
             _subredditRules = details.rules;
             _subredditModerators = details.moderators;
             _subredditDescription = details.description!;
+            _subredditModerators = details.moderators;
           });
         }
       }
@@ -364,58 +375,74 @@ class _SubRedditPageState extends State<SubRedditPage> {
                   ],
                 ),
               ),
-              ValueListenableBuilder<bool>(
-                valueListenable: isJoined,
-                builder: (context, value, child) {
-                  return SizedBox(
-                    height: 33,
-                    child: ButtonTheme(
-                      minWidth: 0,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _future = joinOrDisjoinSubreddit();
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          backgroundColor: value
-                              ? Palette.transparent
-                              : Palette.blueJoinColor,
-                          foregroundColor: value
-                              ? Palette.blueJoinedColor
-                              : Palette.whiteColor,
-                          side: value
-                              ? const BorderSide(
-                                  color: Palette.blueJoinedColor, width: 2.0)
-                              : BorderSide.none,
-                          padding: EdgeInsets.zero, // Add this line
-                        ),
-                        child: FutureBuilder<bool>(
-                          future: _future,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<bool> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Palette.blueJoinedColor),
-                                ),
-                              );
-                            } else {
-                              return Text(isJoined.value ? 'Joined' : 'Join');
-                            }
-                          },
-                        ),
-                      ),
+              isModerator
+                  ? ElevatedButton(
+                      onPressed: () {
+                        // Navigate to the mod tools page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModeratorTools(communityName: widget.subredditName),
+                          ),
+                        );
+                      },
+                      child: const Text('Mod Tools'),
+                    )
+                  : ValueListenableBuilder<bool>(
+                      valueListenable: isJoined,
+                      builder: (context, value, child) {
+                        return SizedBox(
+                          height: 33,
+                          child: ButtonTheme(
+                            minWidth: 0,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _future = joinOrDisjoinSubreddit();
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                backgroundColor: value
+                                    ? Palette.transparent
+                                    : Palette.blueJoinColor,
+                                foregroundColor: value
+                                    ? Palette.blueJoinedColor
+                                    : Palette.whiteColor,
+                                side: value
+                                    ? const BorderSide(
+                                        color: Palette.blueJoinedColor,
+                                        width: 2.0)
+                                    : BorderSide.none,
+                                padding: EdgeInsets.zero, // Add this line
+                              ),
+                              child: FutureBuilder<bool>(
+                                future: _future,
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<bool> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Palette.blueJoinedColor),
+                                      ),
+                                    );
+                                  } else {
+                                    return Text(
+                                        isJoined.value ? 'Joined' : 'Join');
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -426,7 +453,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
           Container(
             alignment: Alignment.centerLeft,
             child: TextButton(
-              child: const Text('See more', style: TextStyle(color: Colors.blue)),
+              child:
+                  const Text('See more', style: TextStyle(color: Colors.blue)),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -435,6 +463,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
                       rules: _subredditRules,
                       description: _subredditDescription,
                       subredditName: widget.subredditName ?? '',
+                      moderators: _subredditModerators,
                       bannerURL: _subredditBanner,
                     ),
                   ),

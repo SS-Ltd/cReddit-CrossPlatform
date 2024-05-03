@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/chat/chat_screen.dart';
 import 'package:reddit_clone/features/chat/view_all_channels.dart';
+import 'package:reddit_clone/models/chat.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
-class ChatListScreen extends StatelessWidget {
+class ChatListScreen extends StatefulWidget {
   final List<Map<String, dynamic>> chatInfo; // List of chat information
   final List<Map<String, dynamic>> channelInfo; // List of channels information
-
   const ChatListScreen(
       {super.key, required this.chatInfo, required this.channelInfo});
+
+  @override
+  State<ChatListScreen> createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends State<ChatListScreen> {
+  List<Chat> chats = [];
+
+  Future<void> fetchChats() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final posts = await networkService.fetchChats();
+    if (posts == null) return;
+    setState(() {
+      chats = posts;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchChats();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +57,7 @@ class ChatListScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              ViewAllChannels(channels: channelInfo),
+                              ViewAllChannels(channels: widget.channelInfo),
                         ),
                       );
                     },
@@ -46,9 +71,9 @@ class ChatListScreen extends StatelessWidget {
               height: 100, // Increased height for better layout
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: channelInfo.length,
+                itemCount: widget.channelInfo.length,
                 itemBuilder: (context, index) {
-                  final channel = channelInfo[index];
+                  final channel = widget.channelInfo[index];
                   return Container(
                     width: 375, // Adjusted width
                     padding:
@@ -121,22 +146,23 @@ class ChatListScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: chatInfo.length,
+                itemCount: chats.length,
                 itemBuilder: (context, index) {
-                  final chat = chatInfo[index];
-                  bool isUnread = chat['unread'];
+                  final chat = chats[index];
+                  bool isUnread = false; //change when mahmoud finishes
                   return Card(
                     color: Palette.settingsHeading,
                     child: ListTile(
-                      leading: CircleAvatar(
-                          backgroundImage: NetworkImage(chat['profilePic'])),
-                      title: Text(chat['name'],
+                      leading: const CircleAvatar(
+                          backgroundImage:
+                              NetworkImage('https://picsum.photos/200/300')),
+                      title: Text(chat.name,
                           style: TextStyle(
                               color: isUnread ? Colors.white : Colors.grey[400],
                               fontWeight: isUnread
                                   ? FontWeight.bold
                                   : FontWeight.normal)),
-                      subtitle: Text(chat['lastMessage'],
+                      subtitle: Text(chat.lastSentMessage?.content ?? '',
                           style: TextStyle(
                               color:
                                   isUnread ? Colors.white : Colors.grey[400])),
@@ -144,7 +170,7 @@ class ChatListScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           const SizedBox(height: 5),
-                          Text(chat['time'],
+                          Text(formatTimestamp(chat.updatedAt as DateTime),
                               style: TextStyle(
                                   color: Colors.grey[400], fontSize: 12)),
                           const SizedBox(height: 15),
@@ -161,8 +187,10 @@ class ChatListScreen extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ChatScreen(recipientId: chat['id'])));
+                                builder: (context) => ChatScreen(
+                                      recipientId: chat.id,
+                                      chatId: chat.id,
+                                    )));
                       },
                     ),
                   );

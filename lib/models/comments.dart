@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 class Comments {
   final String profilePicture;
-  final String username;
+  String username;
   final bool isImage;
   final int netVote;
   final String content;
@@ -10,12 +10,13 @@ class Comments {
   final bool isUpvoted;
   final bool isDownvoted;
   bool isSaved;
-
   String? communityName;
-  final String? postId; //
-  final String? title; //
-  ValueNotifier<bool> isDeleted =ValueNotifier(false);
-  ValueNotifier<bool> isBlocked =ValueNotifier(false);
+  final String? postId;
+  final String? title;
+  ValueNotifier<bool> isDeleted = ValueNotifier(false);
+  ValueNotifier<bool> isBlocked = ValueNotifier(false);
+  bool isApproved;
+  //bool isRemoved;
 
   Comments({
     required this.profilePicture,
@@ -31,7 +32,8 @@ class Comments {
     this.communityName = '',
     this.postId = '',
     this.title = '',
-    
+    this.isApproved = false,
+    //this.isRemoved = false,
   });
 
   factory Comments.fromJson(Map<String, dynamic> json) {
@@ -39,7 +41,7 @@ class Comments {
       profilePicture:
           json['profilePicture'] is String ? json['profilePicture'] : '',
       username: json['username'],
-      isImage: json['isImage'] == null ? false : json['isImage'],
+      isImage: json['isImage'] ?? false,
       netVote: json['netVote'],
       content: json['content'],
       createdAt: json['createdAt'],
@@ -50,6 +52,8 @@ class Comments {
       communityName: json['communityName'] ?? json['parentPostUsername'] ?? '',
       postId: json['postID'] is String ? json['postID'] : '',
       title: json['title'] ?? '',
+      isApproved: json['isApproved'],
+      //isRemoved: json['isRemoved']?? false,
     );
   }
 }

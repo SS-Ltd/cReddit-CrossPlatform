@@ -39,15 +39,25 @@ class _ReportButtonState extends State<ReportButton> {
     "Personal information",
     "Non-consensual"
   ];
+  bool _isMounted = false;
 
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
     fetchReasons().then((value) {
-      setState(() {
-        reasons = value;
-      });
+      if (_isMounted) {
+        setState(() {
+          reasons = value;
+        });
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _isMounted = false;
+    super.dispose();
   }
 
   Future<List<String>> fetchReasons() async {
@@ -158,11 +168,9 @@ class _ReportButtonState extends State<ReportButton> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: const Color.fromRGBO(34, 34, 34, 1),
-      leading: const Icon(Icons.flag, color: Colors.white),
+      leading: const Icon(Icons.flag),
       title: const Text(
         'Report',
-        style: TextStyle(color: Colors.white),
       ),
       onTap: () => showReportSheet(context),
     );

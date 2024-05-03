@@ -123,33 +123,41 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: posts.length + (isLoading ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index < posts.length) {
-              final post = posts[index];
-              return Column(
-                children: [
-                  Post(
-                    postModel: post,
-                    shareNumber: 0,
-                    isSubRedditPage: false,
-                    isHomePage: true,
-                  ),
-                  const Divider(
-                    height: 20,
-                    thickness: 1,
-                  ),
-                ],
-              );
-            } else {
-              return CustomLoadingIndicator();
-            }
-          },
-        ),
+      body: Stack(
+        children: [
+          RefreshIndicator(
+            onRefresh: _refreshData,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: posts.length + (isLoading ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < posts.length) {
+                  final post = posts[index];
+                  return Column(
+                    children: [
+                      Post(
+                        postModel: post,
+                        shareNumber: 0,
+                        isSubRedditPage: false,
+                        isHomePage: true,
+                      ),
+                      const Divider(
+                        height: 20,
+                        thickness: 1,
+                      ),
+                    ],
+                  );
+                } else {
+                  return posts.isNotEmpty
+                      ? Center(child: CustomLoadingIndicator())
+                      : const SizedBox.shrink();
+                }
+              },
+            ),
+          ),
+          if (isLoading && posts.isEmpty)
+            Center(child: CustomLoadingIndicator()),
+        ],
       ),
     );
   }

@@ -44,87 +44,132 @@ class _AddBannedState extends State<Addbanned> {
         ),
         body: Column(
           children: [
-            const Text("Username"),
-            TextField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                prefixText: "u/",
-                hintText: "username",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Username"),
+                ],
               ),
-              onChanged: (value) {
-                setState(
-                  () {
-                    _isusernameempty = value.isEmpty;
-                  },
-                );
-              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  prefixText: "u/",
+                  hintText: "username",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                onChanged: (value) {
+                  setState(
+                    () {
+                      _isusernameempty = value.isEmpty;
+                    },
+                  );
+                },
+              ),
             ),
             const SizedBox(
               height: 10,
             ),
-            const Text("Reason for ban"),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Reason for ban"),
+                ],
+              ),
+            ),
             //update this////////////
-            TextField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                prefixText: "u/",
-                hintText: "username",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  prefixText: "u/",
+                  hintText: "username",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                onChanged: (value) {
+                  setState(
+                    () {
+                      //_isusernameempty = value.isEmpty;
+                    },
+                  );
+                },
               ),
-              onChanged: (value) {
-                setState(
-                  () {
-                    //_isusernameempty = value.isEmpty;
-                  },
-                );
-              },
             ),
             const SizedBox(
               height: 10,
             ),
-            const Text("Mod note"),
-            TextField(
-              controller: _modnoteController,
-              decoration: InputDecoration(
-                hintText: "Only mods will see this",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Mod note"),
+                ],
               ),
-              onChanged: (value) {
-                setState(
-                  () {
-                    _ismodnoteempty = value.isEmpty;
-                  },
-                );
-              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: TextField(
+                controller: _modnoteController,
+                decoration: InputDecoration(
+                  hintText: "Only mods will see this",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                onChanged: (value) {
+                  setState(
+                    () {
+                      _ismodnoteempty = value.isEmpty;
+                    },
+                  );
+                },
+              ),
             ),
             const SizedBox(
               height: 10,
             ),
-            const Text("How long"),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("How long"),
+                ],
+              ),
+            ),
             Row(
               children: [
-                TextField(
-                  controller: _howlongController,
-                  decoration: InputDecoration(
-                    hintText: "1 day",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(40)),
-                    contentPadding: const EdgeInsets.all(10),
+                SizedBox(
+                  width: 100,
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    controller: _howlongController,
+                    decoration: InputDecoration(
+                      hintText: "1 day",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40)),
+                      contentPadding: const EdgeInsets.all(10),
+                    ),
+                    onChanged: (value) {
+                      setState(
+                        () {
+                          _ishowlongempty = value.isEmpty;
+                        },
+                      );
+                    },
                   ),
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        _ishowlongempty = value.isEmpty;
-                      },
-                    );
-                  },
                 ),
                 const Text('Days'),
                 const SizedBox(
@@ -144,21 +189,24 @@ class _AddBannedState extends State<Addbanned> {
               ],
             ),
             const Text("Note to include in ban message"),
-            TextField(
-              controller: _noteController,
-              decoration: InputDecoration(
-                hintText: "The user will receive this note in a message",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: TextField(
+                controller: _noteController,
+                decoration: InputDecoration(
+                  hintText: "The user will receive this note in a message",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.all(10),
+                ),
+                onChanged: (value) {
+                  setState(
+                    () {
+                      _isnoteempty = value.isEmpty;
+                    },
+                  );
+                },
               ),
-              onChanged: (value) {
-                setState(
-                  () {
-                    _isnoteempty = value.isEmpty;
-                  },
-                );
-              },
             ),
           ],
         ),

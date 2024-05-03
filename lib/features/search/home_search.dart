@@ -4,7 +4,7 @@ import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/search/comment_tile.dart';
 import 'package:reddit_clone/features/search/post_tile.dart';
 import 'package:reddit_clone/models/community.dart';
@@ -32,6 +32,7 @@ class _HomeSearchState extends State<HomeSearch>
   List<SearchPosts> postsResults = [];
   List<SearchCommunities> communitiesResults = [];
   List<SearchUsers> peopleResults = [];
+  List<SearchHashtag> hashtagsResults = [];
 
   String sortOption = '';
   String timeOption = '';
@@ -43,7 +44,7 @@ class _HomeSearchState extends State<HomeSearch>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _selectedIndex = _tabController.index;
@@ -122,7 +123,10 @@ class _HomeSearchState extends State<HomeSearch>
                     ),
                     Tab(
                       text: "People",
-                    )
+                    ),
+                    Tab(
+                      text: "Hashtags",
+                    ),
                   ],
                 ),
         ),
@@ -137,12 +141,11 @@ class _HomeSearchState extends State<HomeSearch>
                         itemBuilder: (context, index) {
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  communitiesResults[index].icon),
+                              backgroundImage:
+                                  NetworkImage(communitiesResults[index].icon),
                             ),
                             subtitle: Text(
-                              "${communitiesResults[index].members} members" 
-                            ),
+                                "${communitiesResults[index].members} members"),
                             title: Text(communitiesResults[index].name),
                             onTap: () {
                               Navigator.push(
@@ -343,7 +346,9 @@ class _HomeSearchState extends State<HomeSearch>
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                CommentTile(comment: commentsResults[index], isProfile: false),
+                                CommentTile(
+                                    comment: commentsResults[index],
+                                    isProfile: false),
                                 const Divider(
                                   thickness: 1,
                                 ),
@@ -392,6 +397,49 @@ class _HomeSearchState extends State<HomeSearch>
                             );
                           },
                         ),
+                        //Hashtags
+                        ListView.builder(
+                          itemCount: hashtagsResults.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () async {
+                                    UserModel myUser = await context
+                                        .read<NetworkService>()
+                                        .getMyDetails();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            CustomNavigationBar(
+                                          isProfile: true,
+                                          myuser: myUser,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  // leading: CircleAvatar(
+                                  //   backgroundImage: NetworkImage(
+                                  //       hashtagsResults[index].profilePicture),
+                                  // ),
+                                  title: Text(
+                                      'u/${hashtagsResults[index].username}'),
+                                  subtitle: const Text('cake'),
+                                  trailing: FollowButton(
+                                      userName: 'userName',
+                                      profileName:
+                                          hashtagsResults[index].username),
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+
+                        ///
                       ],
                     ),
                   ),

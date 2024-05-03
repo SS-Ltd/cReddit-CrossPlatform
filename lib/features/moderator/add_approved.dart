@@ -34,31 +34,44 @@ class _AddApprovedState extends State<AddApproved> {
         ),
         body: Column(
           children: [
-            const Text("Username"),
-            TextField(
-              controller: _userNameController,
-              decoration: InputDecoration(
-                prefixText: "u/",
-                hintText: "username",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
-              ),
-              onChanged: (value) {
-                setState(
-                  () {
-                    _isusernameempty = value.isEmpty;
-                  },
-                );
-              },
+            const Divider(
+              thickness: 1,
             ),
-            const SizedBox(
-              width: 300,
-              child: Text(
-                "This user will be able to submit cpntent to your community",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                softWrap: true,
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Username"),
+                ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: TextField(
+                controller: _userNameController,
+                decoration: InputDecoration(
+                  prefixText: "u/",
+                  hintText: "username",
+                  border:
+                      OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                  contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                ),
+                onChanged: (value) {
+                  setState(
+                    () {
+                      _isusernameempty = value.isEmpty;
+                    },
+                  );
+                },
+              ),
+            ),
+            const Row(
+              children: [
+                Text(
+                  "This user will be able to submit cpntent to your community",
+                ),
+              ],
             ),
           ],
         ),

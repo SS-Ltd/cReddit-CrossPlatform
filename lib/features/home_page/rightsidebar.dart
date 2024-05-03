@@ -4,7 +4,7 @@ import 'package:reddit_clone/features/community/create_community_page.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/history.dart';
 import 'package:reddit_clone/features/User/saved.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';

@@ -18,6 +18,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// This file contains the implementation of the [UserComment] widget and its related classes.
 ///
@@ -39,6 +40,8 @@ class UserComment extends StatefulWidget {
   final Comments comment;
   final VoidCallback onDeleted;
   final VoidCallback onBlock;
+  final bool isPostPage; // true for post, false for savedcomments
+  bool isModerator;
 
   UserComment({
     super.key,
@@ -49,6 +52,8 @@ class UserComment extends StatefulWidget {
     required this.comment,
     this.onDeleted = defaultOnDeleted,
     this.onBlock = defaultOnBlock,
+    required this.isPostPage,
+    this.isModerator = false,
   });
 
   static void defaultOnDeleted() {}
@@ -80,6 +85,8 @@ class UserCommentState extends State<UserComment> {
   late ValueNotifier<bool> isMinimized;
   late ValueNotifier<String> content;
   late ValueNotifier<File?> photo;
+  late ValueNotifier<bool> isApproved;
+  late ValueNotifier<bool> isRemoved;
 
   void _addReply() async {
     final result = await Navigator.push(
@@ -102,6 +109,8 @@ class UserCommentState extends State<UserComment> {
           photo: null,
           imageSource: 2,
           hasVoted: 0,
+          isPostPage: true,
+          isModerator: widget.isModerator,
           comment: Comments(
             profilePicture: 'assets/MonkeyDLuffy.png',
             username: 'User123',
@@ -124,6 +133,8 @@ class UserCommentState extends State<UserComment> {
           photo: commentImage,
           imageSource: 1,
           hasVoted: 0,
+          isPostPage: true,
+          isModerator: widget.isModerator,
           comment: Comments(
             profilePicture: 'assets/MonkeyDLuffy.png',
             username: 'User123',
@@ -214,6 +225,7 @@ class UserCommentState extends State<UserComment> {
     hasVoted = ValueNotifier<int>(widget.hasVoted);
     content = ValueNotifier<String>(widget.comment.content);
     photo = ValueNotifier<File?>(widget.photo);
+    isApproved = ValueNotifier<bool>(widget.comment.isApproved);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -226,6 +238,7 @@ class UserCommentState extends State<UserComment> {
     content.dispose();
     photo.dispose();
     isMinimized.dispose();
+    isApproved.dispose();
     super.dispose();
   }
 
@@ -251,7 +264,7 @@ class UserCommentState extends State<UserComment> {
                   Row(
                     children: [
                       const SizedBox(height: 55),
-                      if (widget.comment.communityName == '') ...[
+                      if (widget.isPostPage) ...[
                         GestureDetector(
                           onTap: () {
                             showDialog(
@@ -264,7 +277,6 @@ class UserCommentState extends State<UserComment> {
                           child: CircleAvatar(
                             backgroundImage:
                                 NetworkImage(widget.comment.profilePicture),
-                            //radius: 18,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -292,6 +304,25 @@ class UserCommentState extends State<UserComment> {
                           style:
                               const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
+                        const SizedBox(width: 5),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: isMinimized,
+                          builder: (context, isMinimizedValue, child) {
+                            return ValueListenableBuilder<bool>(
+                              valueListenable: isApproved,
+                              builder: (context, approve, child) {
+                                if (!isMinimizedValue &&
+                                    approve &&
+                                    widget.isModerator) {
+                                  return const Icon(Icons.check,
+                                      color: Palette.greenColor);
+                                } else {
+                                  return Container();
+                                }
+                              },
+                            );
+                          },
+                        ),
                       ] else ...[
                         Expanded(
                           child: Column(
@@ -304,9 +335,7 @@ class UserCommentState extends State<UserComment> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
-                              const SizedBox(
-                                  height:
-                                      4), // Provides spacing of 4 logical pixels between title and username/community.
+                              const SizedBox(height: 4),
                               Text(
                                 '${widget.comment.username} . r/${widget.comment.communityName}  .  ${formatTimestamp(DateTime.parse(widget.comment.createdAt))}',
                                 style: const TextStyle(
@@ -323,33 +352,30 @@ class UserCommentState extends State<UserComment> {
                             height: 50,
                             child: widget.comment.isImage == false
                                 ? Align(
-                                    alignment: Alignment.centerLeft,
+                                    alignment: Alignment.bottomLeft,
                                     child: ValueListenableBuilder<String>(
                                       valueListenable: content,
                                       builder: (context, value, child) {
-                                        return MarkdownBody(
-                                          data: value,
-                                          styleSheet:
-                                              MarkdownStyleSheet.fromTheme(
-                                                      Theme.of(context))
-                                                  .copyWith(
-                                            p: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
+                                        String displayText =
+                                            value.contains('\n')
+                                                ? value.split('\n')[0]
+                                                : value;
+                                        return SizedBox(
+                                          height: 33,
+                                          child: SingleChildScrollView(
+                                            child: MarkdownBody(
+                                              data: displayText,
+                                              styleSheet:
+                                                  MarkdownStyleSheet.fromTheme(
+                                                          Theme.of(context))
+                                                      .copyWith(
+                                                p: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                          onTapLink: (text, href, title) async {
-                                            if (await canLaunchUrl(
-                                                Uri.parse(href!))) {
-                                              await launchUrl(Uri.parse(href));
-                                            } else {
-                                              CustomSnackBar(
-                                                context: context,
-                                                content:
-                                                    "Could not launch $href",
-                                              ).show();
-                                            }
-                                          },
                                         );
                                       },
                                     ),
@@ -461,10 +487,20 @@ class UserCommentState extends State<UserComment> {
                             showCommentOptions(user, numofTiles);
                           },
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.reply_sharp),
-                          onPressed: _addReply,
-                        ),
+                        if (widget.isModerator) ...[
+                          IconButton(
+                              icon: Transform.scale(
+                                scale: 1.1,
+                                child: const Icon(Icons.shield_outlined),
+                              ),
+                              onPressed: () {
+                                modOptions(3);
+                              }),
+                        ] else
+                          IconButton(
+                            icon: const Icon(Icons.reply_sharp),
+                            onPressed: _addReply,
+                          ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
@@ -583,10 +619,11 @@ class UserCommentState extends State<UserComment> {
     );
   }
 
-  void showCommentOptions(UserModel user, int numofTiles) {
-    double height = numofTiles * 56;
+  OverlayEntry? overlayEntry;
 
-    OverlayEntry overlayEntry = OverlayEntry(
+  void showOverlay(int numofTiles) {
+    double height = numofTiles * 56;
+    overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         left: 8,
         right: 8,
@@ -613,8 +650,176 @@ class UserCommentState extends State<UserComment> {
       ),
     );
 
-    Overlay.of(context).insert(overlayEntry);
+    Overlay.of(context).insert(overlayEntry!);
+  }
 
+  void modOptions(int numofTiles) {
+    showOverlay(numofTiles);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color.fromARGB(255, 19, 19, 19),
+      builder: (context) {
+        return Wrap(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(left: 16, top: 14),
+              alignment: Alignment.topLeft,
+              child: const Text(
+                'Moderator',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Palette.greyColor),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.check),
+              title: const Text('Approve Comment'),
+              onTap: () async {
+                bool approved = await context
+                    .read<NetworkService>()
+                    .approveComment(widget.comment.commentId, true);
+                if (approved) {
+                  CustomSnackBar(
+                    context: context,
+                    content: 'Comment Approved!',
+                  ).show();
+                } else {
+                  CustomSnackBar(
+                    context: context,
+                    content: 'Failed to approve comment!',
+                  ).show();
+                }
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.block),
+              title: const Text('Remove Comment'),
+              onTap: () {
+                overlayEntry?.remove();
+
+                showModalBottomSheet(
+                  backgroundColor: Palette.backgroundColor,
+                  context: context,
+                  builder: (context) => Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Flexible(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  'Why is this comment being removed?',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Image.asset(
+                            'assets/reddit_char.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                  'r/${widget.comment.communityName ?? ''} needs removal reasons',
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Palette.whiteColor),
+                                  textAlign: TextAlign.center),
+                              const Text(
+                                  'Use removal reasons to explain to users why their content was removed.',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Palette.greyColor),
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                // handle button press
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.blueJoinColor,
+                                foregroundColor: Palette.whiteColor,
+                                minimumSize: const Size(double.infinity, 40),
+                              ),
+                              child: const Text('It\'s spam'),
+                            ),
+                            const SizedBox(height: 16.0),
+                            ElevatedButton(
+                              onPressed: () async {
+                                bool removed = await context
+                                    .read<NetworkService>()
+                                    .removeComment(widget.comment.commentId, true);
+                                if (removed) {
+                                  widget.comment.isDeleted.value = true;
+                                  CustomSnackBar(
+                                    context: context,
+                                    content: 'Comment Removed!',
+                                  ).show();
+                                } else {
+                                  CustomSnackBar(
+                                    context: context,
+                                    content: 'Failed to remove comment!',
+                                  ).show();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.blueJoinColor,
+                                foregroundColor: Palette.whiteColor,
+                                minimumSize: const Size(double.infinity, 40),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              child: const Text('No specific reason'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ).then((_) {
+                  showOverlay(numofTiles);
+                });
+              },
+            ),
+            const SizedBox(height: 10)
+          ],
+        );
+      },
+    ).then((_) {
+      overlayEntry?.remove();
+    });
+  }
+
+  void showCommentOptions(UserModel user, int numofTiles) {
+    showOverlay(numofTiles);
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color.fromARGB(255, 19, 19, 19),
@@ -642,7 +847,6 @@ class UserCommentState extends State<UserComment> {
                     );
                     if (result != null) {
                       final bool contentType = result['contentType'];
-                      print(result);
                       setState(() {
                         if (contentType == false) {
                           content.value = result['content'];
@@ -753,17 +957,18 @@ class UserCommentState extends State<UserComment> {
                       bool blocked = await context
                           .read<NetworkService>()
                           .blockUser(widget.comment.username);
-                      print(blocked);
                       if (blocked) {
                         widget.comment.isBlocked.value = true;
                         CustomSnackBar(
-                            context: context, content: 'User blocked!');
+                                context: context, content: 'User blocked!')
+                            .show();
                       } else {
                         CustomSnackBar(
-                            context: context, content: 'Failed to block User');
+                                context: context,
+                                content: 'Failed to block User')
+                            .show();
                       }
                     }
-
                     Navigator.pop(context);
                   },
                 ),
@@ -776,8 +981,7 @@ class UserCommentState extends State<UserComment> {
         );
       },
     ).then((_) {
-      // Remove the overlay entry after the modal bottom sheet is dismissed
-      overlayEntry.remove();
+      overlayEntry?.remove();
     });
   }
 }

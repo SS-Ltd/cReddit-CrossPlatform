@@ -30,12 +30,15 @@ import 'package:reddit_clone/models/user.dart';
 ///   key: GlobalKey(),
 /// )
 /// ```
+// ignore: must_be_immutable
 class CustomNavigationBar extends StatefulWidget {
   /// Creates a custom navigation bar widget.
   ///
   /// The [key] parameter is used to provide a global key for the widget.
-  CustomNavigationBar({super.key, required this.isProfile, this.myuser});
+  CustomNavigationBar(
+      {super.key, required this.isProfile, this.myuser, this.navigateToChat});
 
+  bool? navigateToChat;
   bool isProfile;
   final UserModel? myuser;
 
@@ -109,16 +112,22 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.navigateToChat != null && widget.navigateToChat!) {
+      _currentIndex = 3;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final menuState = Provider.of<MenuState>(context, listen: false);
 
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
     List<Subreddit>? listRecentlyVisited = recentlyvisited?.toList();
-    int listsize = listRecentlyVisited?.length ?? 0;
-    String selectedMenuItem = "Hot"; // Store the selected menu item here
 
-    print('User is logged in: ${user?.isLoggedIn}');
     return Scaffold(
       key: _scaffoldKey,
       drawer: widget.isProfile
@@ -156,36 +165,22 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                       ),
                     ],
                   ),
-                  showrecently
-                      ? SingleChildScrollView(
-                          padding: EdgeInsets.zero,
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            itemCount: (listRecentlyVisited != null &&
-                                    listRecentlyVisited.length > 3 &&
-                                    showall == false)
-                                ? 3
-                                : (listRecentlyVisited?.length ?? 0),
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(listRecentlyVisited != null
-                                    ? listRecentlyVisited[
-                                            listRecentlyVisited.length -
-                                                1 -
-                                                index]
-                                        .name
-                                    : ''),
-                              );
-                            },
-                          ),
-                        )
-                      : const SizedBox(),
+                  Visibility(
+                    visible: showrecently,
+                    child: buildRecentlyVisited(listRecentlyVisited),
+                  ),
                   const Divider(
                     height: 30,
                     thickness: 1,
                     color: Colors.white,
                   ),
+                  buildModeratingSection(context),
+                  const Divider(
+                    height: 30,
+                    thickness: 1,
+                    color: Colors.white,
+                  ),
+                  buildYourCommunitiesSection(context),
                 ],
               ),
             ),
@@ -268,7 +263,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               bannerPicture: 'bannerPicture',
               followerCount: widget.myuser!.followers,
               cakeDay: '2024-03-25T15:37:33.339+00:00',
-              isOwnProfile: true,)
+              isOwnProfile: true,
+            )
           : _pages[_currentIndex],
       bottomNavigationBar: (_currentIndex != 2)
           ? BottomNavigationBar(
@@ -307,58 +303,101 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       builder: (BuildContext bc) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              child: Wrap(
-                children: <Widget>[
-                  const ListTile(
-                    title: Text('Filter Chats'),
-                  ),
-                  const Divider(),
-                  CheckboxListTile(
-                    title: const Text('Chat Channels'),
-                    value: isChatChannelsApplied,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        isChatChannelsApplied = newValue ?? false;
-                      });
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: const Text('Group Chats'),
-                    value: isGroupChatsApplied,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        isGroupChatsApplied = newValue ?? false;
-                      });
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: const Text('Direct Chats'),
-                    value: isDirectChatsApplied,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        isDirectChatsApplied = newValue ?? false;
-                      });
-                    },
-                  ),
-                  Center(
-                    child: Container(
-                      width: 400,
-                      child: ElevatedButton(
-                        child: const Text('Done'),
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                        ),
+            return Wrap(
+              children: <Widget>[
+                const ListTile(
+                  title: Text('Filter Chats'),
+                ),
+                const Divider(),
+                CheckboxListTile(
+                  title: const Text('Chat Channels'),
+                  value: isChatChannelsApplied,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      isChatChannelsApplied = newValue ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('Group Chats'),
+                  value: isGroupChatsApplied,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      isGroupChatsApplied = newValue ?? false;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  title: const Text('Direct Chats'),
+                  value: isDirectChatsApplied,
+                  onChanged: (bool? newValue) {
+                    setState(() {
+                      isDirectChatsApplied = newValue ?? false;
+                    });
+                  },
+                ),
+                Center(
+                  child: Container(
+                    width: 400,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
                       ),
+                      child: const Text('Done'),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         );
       },
     );
   }
+}
+
+Widget buildRecentlyVisited(List<Subreddit>? subreddits) {
+  return ListView.builder(
+    padding: EdgeInsets.zero,
+    shrinkWrap: true,
+    itemCount: subreddits?.length ?? 0,
+    itemBuilder: (context, index) {
+      return ListTile(
+        title: Text(subreddits![index].name),
+      );
+    },
+  );
+}
+
+Widget buildModeratingSection(BuildContext context) {
+  return ExpansionTile(
+    title: const Text("Moderating"),
+    children: [
+      ListTile(
+        title: const Text("Mod Feed"),
+        onTap: () {},
+      ),
+      ListTile(
+        title: const Text("Queues"),
+        onTap: () {},
+      ),
+      ListTile(
+        title: const Text("Modmail"),
+        onTap: () {},
+      ),
+    ],
+  );
+}
+
+Widget buildYourCommunitiesSection(BuildContext context) {
+  return ExpansionTile(
+    title: const Text("Your communities"),
+    children: [
+      ListTile(
+        title: const Text("+ Create a community"),
+        onTap: () {},
+      ),
+    ],
+  );
 }

@@ -3,11 +3,20 @@ import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/heading.dart';
 import 'package:reddit_clone/features/moderator/approved_user.dart';
 import 'package:reddit_clone/features/moderator/banned_users.dart';
+import 'package:reddit_clone/features/moderator/community_type.dart';
+import 'package:reddit_clone/features/moderator/description.dart';
+import 'package:reddit_clone/features/moderator/location.dart';
 import 'package:reddit_clone/features/moderator/moderators.dart';
 import 'package:reddit_clone/features/moderator/muted_users.dart';
+import 'package:reddit_clone/features/moderator/post_types.dart';
+import 'package:reddit_clone/features/moderator/queues.dart';
+import 'package:reddit_clone/features/moderator/rules.dart';
+import 'package:reddit_clone/features/moderator/schedule_posts.dart';
 
 class ModeratorTools extends StatefulWidget {
-  const ModeratorTools({super.key});
+  const ModeratorTools({super.key, required this.communityName});
+
+  final String communityName;
 
   @override
   State<ModeratorTools> createState() {
@@ -45,7 +54,12 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Community icon",
                 buttonIcon: Icons.reddit),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Description()));
+                },
                 buttonText: "Description",
                 buttonIcon: Icons.description),
             ArrowButton(
@@ -57,20 +71,63 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Topics",
                 buttonIcon: Icons.topic),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CommunityType()));
+                },
                 buttonText: "Community type",
                 buttonIcon: Icons.lock),
             ArrowButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PostTypes()));
+                },
                 buttonText: "Post type",
                 buttonIcon: Icons.type_specimen),
+            ArrowButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Location()));
+                },
+                buttonText: "Location",
+                buttonIcon: Icons.location_on_outlined),
+            const Heading(text: "CONTENT & REGULATIONS"),
+            ArrowButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Queues()));
+                },
+                buttonText: "Queues",
+                buttonIcon: Icons.queue),
+            ArrowButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Rules(currentCommunity:  widget.communityName)));
+                },
+                buttonText: "Rules",
+                buttonIcon: Icons.rule_folder),
+            ArrowButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SchedulePosts()));
+                },
+                buttonText: "Scheduled posts",
+                buttonIcon: Icons.query_builder),
             const Heading(text: "USER MANAGEMENT"),
             ArrowButton(
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Moderator()));
+                          builder: (context) => Moderator(communityName: widget.communityName,)));
                 },
                 buttonText: "Moderators",
                 buttonIcon: Icons.shield_outlined),

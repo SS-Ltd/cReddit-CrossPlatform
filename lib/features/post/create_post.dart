@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:reddit_clone/features/home_page/widgets/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/common/switch_button.dart';
 
 //This Screen is now used to create a post
@@ -23,10 +24,13 @@ import 'package:reddit_clone/common/switch_button.dart';
 class CreatePost extends StatefulWidget {
   /// The constructor for the [CreatePost] widget.
   /// [profile] indicates whether the post is being created from a user's profile or not.
-  const CreatePost({super.key, required this.profile});
+  const CreatePost(
+      {super.key, required this.profile, this.ismoderator = false});
 
   /// Indicates whether the post is being created from a user's profile or not.
   final bool profile;
+  final bool ismoderator;
+  //final String communityname
 
   @override
   State<CreatePost> createState() {
@@ -65,6 +69,8 @@ class _CreatePostState extends State<CreatePost> {
   bool isBrand = false;
 
   Subreddit? details;
+
+  bool repeating = true;
 
   Future getSubredditDetails(String subredditName) async {
     final subredditDetails =
@@ -124,6 +130,42 @@ class _CreatePostState extends State<CreatePost> {
     return endsInDateTime;
   }
 
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+
+  DateTime scheduledDate = DateTime.now();
+  TimeOfDay scheduledTime = TimeOfDay.now();
+  bool _isSaved = false;
+  bool scheduleRepeating  = true;
+  Future<void> __chooseDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000)!,
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  Future<void> _chooseTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime ?? TimeOfDay.now(),
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
+  final currentdate = DateTime.now();
+  final currenttime = TimeOfDay.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,6 +184,199 @@ class _CreatePostState extends State<CreatePost> {
           },
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: widget.ismoderator && !_istitleempty
+                ? IconButton(
+                    icon: const Icon(Icons.more_horiz),
+                    onPressed: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  BottomSheet(
+                                    onClosing: () {},
+                                    builder: (context) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 15, 20, 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text("Post Settings"),
+                                              IconButton(
+                                                onPressed: () {},
+                                                icon: const Icon(Icons.close),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: ListTile(
+                                            leading: const Icon(
+                                                Icons.calendar_month_outlined),
+                                            title: const Text("Schedule Post"),
+                                            trailing: const Icon(
+                                                Icons.arrow_forward_ios),
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      BottomSheet(
+                                                        onClosing: () {},
+                                                        builder: (context) =>
+                                                            Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(10,
+                                                                  10, 10, 10),
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  IconButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .arrow_back),
+                                                                  ),
+                                                                  const Text(
+                                                                    "Schedule Post",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            20),
+                                                                  ),
+                                                                  !_isSaved
+                                                                      ? ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            setState(() {
+                                                                              scheduledDate = _selectedDate;
+                                                                              scheduledTime = _selectedTime;
+                                                                              _isSaved = true;
+                                                                              scheduleRepeating = repeating;
+                                                                            });
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              const Text("Save"),
+                                                                        )
+                                                                      : ElevatedButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            setState(() {
+                                                                              scheduledDate = DateTime.now();
+                                                                              _selectedDate = DateTime.now();
+                                                                              scheduledTime = TimeOfDay.now();
+                                                                              _selectedTime = TimeOfDay.now();
+                                                                              scheduleRepeating = true;
+                                                                              repeating = true;
+                                                                              _isSaved = false;
+                                                                            });
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              const Text("Clear"),
+                                                                        ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      const Text(
+                                                                        "Starts on date",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                          onTap: () => __chooseDate(
+                                                                              context),
+                                                                          child:
+                                                                              Text(DateFormat.yMMMd().format(_selectedDate))),
+                                                                    ],
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    height: 10,
+                                                                  ),
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      const Text(
+                                                                          "Starts at time"),
+                                                                      GestureDetector(
+                                                                          onTap: () => _chooseTime(
+                                                                              context),
+                                                                          child:
+                                                                              Text(_selectedTime.format(context))),
+                                                                    ],
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      SwitchButton(
+                                                                          buttonText:
+                                                                              "Repeat weekly on ${DateFormat('EEEE').format(currentdate)}",
+                                                                          onPressed:
+                                                                              (value) {
+                                                                                setState(() {
+                                                                                  repeating = value;
+                                                                                });
+                                                                              },
+                                                                          switchvalue:
+                                                                              repeating),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ]);
+                          });
+                    },
+                  )
+                : null,
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
@@ -166,9 +401,9 @@ class _CreatePostState extends State<CreatePost> {
                                             .toList(),
                                         endsInDateTime, //month-day-year
                                         false,
-                                            // .read<NetworkService>()
-                                            // .user!
-                                            // .isNFSW,
+                                        // .read<NetworkService>()
+                                        // .user!
+                                        // .isNFSW,
                                         isspoiler)
                                 : (_hasImage)
                                     ? await context
@@ -204,31 +439,34 @@ class _CreatePostState extends State<CreatePost> {
                           },
                     child: const Text('Post'),
                   )
-                : ElevatedButton(
-                    onPressed: _istitleempty
-                        ? null
-                        : () async {
-                            final returneddata = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                fullscreenDialog: true,
-                                builder: (context) => CommunityChoice(
-                                  chosenCommunity: chosenCommunity,
-                                ),
-                              ),
-                            );
-                            setState(
-                              () {
-                                if (returneddata != null) {
-                                  chosenCommunity = returneddata.toString();
-                                  hascommunity = true;
-                                  getSubredditDetails(chosenCommunity);
-                                }
+                : _isSaved
+                    ? ElevatedButton(
+                        onPressed: () {}, child: const Text("Schedule"))
+                    : ElevatedButton(
+                        onPressed: _istitleempty
+                            ? null
+                            : () async {
+                                final returneddata = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (context) => CommunityChoice(
+                                      chosenCommunity: chosenCommunity,
+                                    ),
+                                  ),
+                                );
+                                setState(
+                                  () {
+                                    if (returneddata != null) {
+                                      chosenCommunity = returneddata.toString();
+                                      hascommunity = true;
+                                      getSubredditDetails(chosenCommunity);
+                                    }
+                                  },
+                                );
                               },
-                            );
-                          },
-                    //in this case we will go to choose the community
-                    child: const Text('Next')),
+                        //in this case we will go to choose the community
+                        child: const Text('Next')),
           ),
         ],
       ),

@@ -1,9 +1,14 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/chat.dart';
+import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/rule.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -20,7 +25,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
   final String _baseUrl = 'https://creddit.tech/API';
-  //final String _baseUrl = 'http://192.168.1.7:3000/';
+  //final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -252,8 +257,6 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return fetchCommentsForPost(postId);
     }
-    print("COMMENT EL POST HNA");
-    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData
@@ -439,6 +442,8 @@ class NetworkService extends ChangeNotifier {
   Future<bool> blockUser(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/block/$username');
     final response = await http.post(url, headers: _headers);
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return blockUser(username);
@@ -450,7 +455,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<Messages>?> fetchInboxMessages({int page = 1, int limit = 10}) async {
+  Future<List<Messages>?> fetchInboxMessages(
+      {int page = 1, int limit = 10}) async {
     Uri url = Uri.parse('$_baseUrl/message/?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
@@ -574,6 +580,8 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return getSubredditDetails(subredditName);
     }
+    print("hheeiei");
+    print(response.body);
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
       return Subreddit.fromJson(json);
@@ -587,9 +595,75 @@ class NetworkService extends ChangeNotifier {
           rules: [],
           moderators: [],
           description: '',
-          isNSFW: false);
+          isNSFW: false,
+          isModerator: false);
     } else {
       return null;
+    }
+  }
+
+  Future<List<SubredditRule>?> getSubredditRules(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/rules');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSubredditRules(subredditName);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SubredditRule> rules =
+          responseData.map((item) => SubredditRule.fromJson(item)).toList();
+      return rules;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> addModerator(String username, String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/mod/invite/$communityName');
+    final response = await http.post(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return addModerator(username, communityName);
+    }
+    print("isadded");
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> leaveModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return leaveModerator(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeModerator(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -630,6 +704,27 @@ class NetworkService extends ChangeNotifier {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchComments> searchResult =
           responseData.map((item) => SearchComments.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchHashtag>> getSearchHashtags(String hashtag) async {
+    final parameters = {'query': hashtag};
+    Uri url = Uri.parse('$_baseUrl/search/hashtags')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchHashtags(hashtag);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchHashtag> searchResult =
+          responseData.map((item) => SearchHashtag.fromJson(item)).toList();
       return searchResult;
     } else {
       return [];
@@ -762,7 +857,7 @@ class NetworkService extends ChangeNotifier {
     String sort = 'hot',
     String time = 'all',
     int page = 1,
-    int limit = 5,
+    int limit = 10,
   }) async {
     final url = Uri.parse('$_baseUrl/user/$username/posts?'
         'sort=$sort'
@@ -1053,6 +1148,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/post/$postId/save');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isSaved': value}));
+    print(response.statusCode);
+    print(response.body);
+    print(response);
+    print(postId);
     if (response.statusCode == 403) {
       refreshToken();
       return saveandunsavepost(postId, value);
@@ -1097,7 +1196,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchSavedComments(
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1116,7 +1215,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchUserComments(String username,
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/$username/comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1132,6 +1231,41 @@ class NetworkService extends ChangeNotifier {
     } else {
       // Handle error or empty case appropriately
       return null;
+    }
+  }
+
+  Future<bool> approveComment(String commentId, bool isApproved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/approve');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isApproved': isApproved}));
+
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return approveComment(commentId, isApproved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeComment(String commentId, bool isRemoved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isRemoved': isRemoved}));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeComment(commentId, isRemoved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -1295,6 +1429,68 @@ class NetworkService extends ChangeNotifier {
           .map<NotificationModel>((item) => NotificationModel.fromJson(item))
           .toList();
       return notifications;
+    } else {
+      return null;
+    }
+  }
+
+  Future<List<Chat>?> fetchChats() async {
+    Uri url = Uri.parse('$_baseUrl/chat/?page=1&limit=100');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((item) => Chat.fromJson(item)).toList();
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> createGroupChatRoom(String name, List<String> members) async {
+    Uri url = Uri.parse('$_baseUrl/chat');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'name': name,
+        'members': members,
+      }),
+    );
+    print(response.body);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createGroupChatRoom(name, members);
+    }
+
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<bool> createPrivateChatRoom(List<String> member) async {
+    Uri url = Uri.parse('$_baseUrl/chat');
+    final response = await http.post(
+      url,
+      headers: _headers,
+      body: jsonEncode({
+        'members': member,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createPrivateChatRoom(member);
+    }
+
+    return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<List<ChatMessages>?> fetchChatMessages(String chatId) async {
+    Uri url = Uri.parse('$_baseUrl/chat/$chatId');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((item) => ChatMessages.fromJson(item)).toList();
     } else {
       return null;
     }
