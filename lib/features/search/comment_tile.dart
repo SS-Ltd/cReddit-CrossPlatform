@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/comments/comment_page.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/theme/palette.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 //small card has rgba 255, 8,8,8
 //large card has rgba 255, 19,19,19
@@ -59,9 +63,31 @@ class CommentTile extends StatelessWidget {
                 ),
               ],
             ),
-            Text(
-              comment.postTitle,
-              style: const TextStyle(fontSize: 16),
+            GestureDetector(
+              child: Text(
+                comment.postTitle,
+                style: const TextStyle(fontSize: 16),
+              ),
+              onTap: () async {
+                Post postComment = Post(
+                  postModel:
+                      await Provider.of<NetworkService>(context, listen: false)
+                          .fetchPost(comment.postID),
+                  isHomePage: false,
+                  isSubRedditPage: false,
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommentPage(
+                      postId: comment.postID,
+                      postComment: postComment,
+                      postTitle: comment.postTitle,
+                      username: comment.postUsername,
+                    ),
+                  ),
+                );
+              },
             ),
             SizedBox(
               width: 500,

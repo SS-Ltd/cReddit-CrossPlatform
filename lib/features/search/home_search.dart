@@ -100,6 +100,9 @@ class _HomeSearchState extends State<HomeSearch>
               peopleResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchUsers(value);
+              hashtagsResults =
+                  await Provider.of<NetworkService>(context, listen: false)
+                      .getSearchHashtags(value);
             },
             onTap: () {
               setState(() {
@@ -132,6 +135,7 @@ class _HomeSearchState extends State<HomeSearch>
         ),
         body: isSearching
             ? Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (communitiesResults.isNotEmpty) const Text('Communities'),
                   if (communitiesResults.isNotEmpty)
@@ -201,17 +205,19 @@ class _HomeSearchState extends State<HomeSearch>
                       ),
                     ),
                   if (searchQuery.isNotEmpty)
-                    TextButton(
-                      onPressed: () {
-                        setState(
-                          () {
-                            isSearching = false;
-                          },
-                        );
-                      },
-                      child: Text(
-                        'Search for $searchQuery',
-                        style: const TextStyle(fontSize: 20),
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(
+                            () {
+                              isSearching = false;
+                            },
+                          );
+                        },
+                        child: Text(
+                          'Search for $searchQuery',
+                          style: const TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
                 ],
