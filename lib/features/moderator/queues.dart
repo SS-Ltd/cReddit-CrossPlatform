@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:reddit_clone/theme/theme.dart';
 
 class Queues extends StatefulWidget {
@@ -212,7 +211,7 @@ class _QueuesState extends State<Queues> with SingleTickerProviderStateMixin {
                   );
                 },
                 child: Text(_selectedFilter)),
-            ElevatedButton(onPressed: () {}, child: Text("sort")),
+            ElevatedButton(onPressed: () {}, child: const Text("sort")),
           ],
           labelStyle: const TextStyle(fontSize: 16),
           indicator: const UnderlineTabIndicator(
@@ -223,11 +222,87 @@ class _QueuesState extends State<Queues> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const <Widget>[
-          Text('All Queues'),
-          Text('Editable Queues'),
-          Text('Uneditable Queues'),
-          Text('Custom Queues'),
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Good job",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "Everything's been reviewed",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text("Go to community page")),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Good job",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "Everything's been reviewed",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text("Go to community page")),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Good job",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "Everything's been reviewed",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text("Go to community page")),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Good job",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "Everything's been reviewed",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text("Go to community page")),
+            ],
+          ),
         ],
       ),
     );
