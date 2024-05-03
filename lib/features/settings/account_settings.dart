@@ -9,7 +9,6 @@ import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
 import 'package:reddit_clone/common/selection_button.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-import 'package:reddit_clone/common/selection_button.dart';
 import 'package:reddit_clone/common/switch_button.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/settings/manage_notifications.dart';
@@ -47,8 +46,10 @@ class AccountSettings extends StatefulWidget {
 
 class _AccountSettingsState extends State<AccountSettings> {
   String gender = '';
+  String chosenGender = '';
   bool allowFollow = true;
   bool showCount = false;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -60,6 +61,7 @@ class _AccountSettingsState extends State<AccountSettings> {
           return Text('Error: ${snapshot.error}');
         } else {
           final settings = context.read<NetworkService>().userSettings;
+          gender = settings!.account.gender;
           return Scaffold(
             backgroundColor: Palette.appBar,
             appBar: AppBar(
@@ -87,7 +89,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                       },
                       buttonText: 'Update email address',
                       buttonIcon: Icons.settings,
-                      optional: settings!.account.email,
+                      optional: gender,
                     ),
                     ArrowButton(
                         onPressed: () {
@@ -106,10 +108,79 @@ class _AccountSettingsState extends State<AccountSettings> {
                         buttonIcon: Icons.location_on_outlined,
                         optional: 'Use approximate location (based on IP)'),
                     SelectionButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                BottomSheet(
+                                  onClosing: () {},
+                                  builder: (context) => Column(
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            20, 10, 10, 0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Gender",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            // TextButton(
+                                            //   onPressed: () {
+                                            //     setState(() {
+                                            //       gender = chosenGender;
+                                            //     });
+                                            //     Navigator.pop(context);
+                                            //   },
+                                            //   child: const Text("Done"),
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                      RadioListTile(
+                                        title: const Text("Man"),
+                                        value: 'Man',
+                                        groupValue: gender,
+                                        onChanged: (value) {
+                                          setState(
+                                            () {
+                                              gender = value.toString();
+                                            },
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      RadioListTile(
+                                        title: const Text("Woman"),
+                                        value: 'Woman',
+                                        groupValue: gender,
+                                        onChanged: (value) {
+                                          setState(
+                                            () {
+                                              gender = value.toString();
+                                            },
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                       buttonText: "Gender",
                       buttonIcon: Icons.person,
-                      selectedtext: settings.account.gender,
+                      selectedtext: gender,
                     ),
                     const Heading(text: 'CONNECTED ACCOUNTS'),
                     Row(

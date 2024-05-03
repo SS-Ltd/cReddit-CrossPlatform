@@ -455,6 +455,22 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> unBlockUser(String username) async {
+    Uri url = Uri.parse('$_baseUrl/user/block/$username');
+    final response = await http.delete(url, headers: _headers);
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return blockUser(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<List<Messages>?> fetchInboxMessages(
       {int page = 1, int limit = 10}) async {
     Uri url = Uri.parse('$_baseUrl/message/?page=$page&limit=$limit');

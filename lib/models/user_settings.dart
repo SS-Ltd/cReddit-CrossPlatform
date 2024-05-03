@@ -1,28 +1,28 @@
 class UserSettings {
   final Account account;
   final Profile profile;
-  //final SafetyAndPrivacy safetyAndPrivacy;
-  // final FeedSettings feedSettings;
-  //final Notifications notifications;
-  //final EmailSettings emailSettings;
+  final SafetyAndPrivacy safetyAndPrivacy;
+  final FeedSettings feedSettings;
+  final Notifications notifications;
+  final EmailSettings emailSettings;
 
   UserSettings({
     required this.account,
     required this.profile,
-    //required this.safetyAndPrivacy,
-    //required this.feedSettings,
-    //required this.notifications,
-    //required this.emailSettings,
+    required this.safetyAndPrivacy,
+    required this.feedSettings,
+    required this.notifications,
+    required this.emailSettings,
   });
 
   factory UserSettings.fromJson(Map<String, dynamic> json) {
     return UserSettings(
       account: Account.fromJson(json['account']),
       profile: Profile.fromJson(json['profile']),
-      //safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['safetyAndPrivacy']),
-      //feedSettings: FeedSettings.fromJson(json['feedSettings']),
-      //  notifications: Notifications.fromJson(json['notifications']),
-      //    emailSettings: EmailSettings.fromJson(json['email']),
+      safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['safetyAndPrivacy']),
+      feedSettings: FeedSettings.fromJson(json['feedSettings']),
+      notifications: Notifications.fromJson(json['notifications']),
+      emailSettings: EmailSettings.fromJson(json['email']),
     );
   }
 }
@@ -100,18 +100,18 @@ class SocialLink {
 }
 
 class SafetyAndPrivacy {
-  final List<String> blockedUsers;
-  final List<String> mutedCommunities;
+  final List<BlockedUser> blockedUsers;
+ // final List<String> mutedCommunities;
 
   SafetyAndPrivacy({
     required this.blockedUsers,
-    required this.mutedCommunities,
+   // required this.mutedCommunities,
   });
 
   factory SafetyAndPrivacy.fromJson(Map<String, dynamic> json) {
     return SafetyAndPrivacy(
-      blockedUsers: List<String>.from(json['blockedUsers']['username']),
-      mutedCommunities: List<String>.from(json['mutedCommunities']['name']),
+      blockedUsers: (json['blockedUsers'] as List).map((user) => BlockedUser.fromJson(user)).toList(),
+     // mutedCommunities: List<String>.from(json['mutedCommunities']['name'] ?? []),
     );
   }
 }
@@ -199,6 +199,20 @@ class EmailSettings {
     return EmailSettings(
       followEmail: json['followEmail'],
       chatEmail: json['chatEmail'],
+    );
+  }
+}
+
+class BlockedUser{
+  String username;
+  String profilePicture;
+
+  BlockedUser({required this.username, required this.profilePicture});
+
+  factory BlockedUser.fromJson(Map<String, dynamic> json){
+    return BlockedUser(
+      username: json['username'],
+      profilePicture: json['profilePicture'],
     );
   }
 }
