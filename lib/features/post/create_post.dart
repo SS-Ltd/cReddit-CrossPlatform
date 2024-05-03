@@ -42,12 +42,11 @@ class CreatePost extends StatefulWidget {
 /// It manages the state of the text controllers, image picker, link insertion, poll insertion, and other UI elements.
 class _CreatePostState extends State<CreatePost> {
   final _titleController = TextEditingController();
-  final _bodyController = TextEditingController();
-  final List<TextEditingController> _optionControllers =
-      List.generate(6, (index) => TextEditingController());
-
   bool _istitleempty = true;
+
+  final _bodyController = TextEditingController();
   bool _isbodyempty = true;
+
   String chosenCommunity = "";
   bool hascommunity = false;
 
@@ -60,6 +59,8 @@ class _CreatePostState extends State<CreatePost> {
   bool _insertlink = false;
   bool _islinkempty = true;
 
+  final List<TextEditingController> _optionControllers =
+      List.generate(6, (index) => TextEditingController());
   bool _insertpoll = false;
   int count = 0;
   String _pollendsin = "2 Day";
@@ -71,6 +72,14 @@ class _CreatePostState extends State<CreatePost> {
   Subreddit? details;
 
   bool repeating = true;
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+  DateTime scheduledDate = DateTime.now();
+  TimeOfDay scheduledTime = TimeOfDay.now();
+  bool _isSaved = false;
+  bool scheduleRepeating = true;
+  final currentdate = DateTime.now();
+  final currenttime = TimeOfDay.now();
 
   Future getSubredditDetails(String subredditName) async {
     final subredditDetails =
@@ -130,13 +139,6 @@ class _CreatePostState extends State<CreatePost> {
     return endsInDateTime;
   }
 
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
-
-  DateTime scheduledDate = DateTime.now();
-  TimeOfDay scheduledTime = TimeOfDay.now();
-  bool _isSaved = false;
-  bool scheduleRepeating  = true;
   Future<void> __chooseDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -162,9 +164,6 @@ class _CreatePostState extends State<CreatePost> {
       });
     }
   }
-
-  final currentdate = DateTime.now();
-  final currenttime = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
@@ -347,10 +346,10 @@ class _CreatePostState extends State<CreatePost> {
                                                                               "Repeat weekly on ${DateFormat('EEEE').format(currentdate)}",
                                                                           onPressed:
                                                                               (value) {
-                                                                                setState(() {
-                                                                                  repeating = value;
-                                                                                });
-                                                                              },
+                                                                            setState(() {
+                                                                              repeating = value;
+                                                                            });
+                                                                          },
                                                                           switchvalue:
                                                                               repeating),
                                                                     ],
@@ -653,7 +652,7 @@ class _CreatePostState extends State<CreatePost> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
+                    onPressed: _hasImage || _insertpoll ? null : () {
                       setState(() {
                         _insertlink = !_insertlink;
                       });
@@ -661,19 +660,21 @@ class _CreatePostState extends State<CreatePost> {
                     icon: const Icon(Icons.link),
                   ),
                   IconButton(
-                    onPressed: getImage,
+                    onPressed: _insertlink || _insertpoll ? null : getImage,
                     icon: const Icon(Icons.image),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: _insertlink || _insertpoll || _hasImage ? null : () {},
                     icon: const Icon(Icons.video_library_outlined),
                   ),
                   IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _insertpoll = !_insertpoll;
-                      });
-                    },
+                    onPressed: _insertlink || _hasImage
+                        ? null
+                        : () {
+                            setState(() {
+                              _insertpoll = !_insertpoll;
+                            });
+                          },
                     icon: const Icon(Icons.poll_outlined),
                   ),
                 ],
