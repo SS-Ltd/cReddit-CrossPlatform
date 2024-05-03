@@ -407,44 +407,41 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: hashtagsResults.length,
                           itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  onTap: () async {
-                                    UserModel myUser = await context
-                                        .read<NetworkService>()
-                                        .getMyDetails();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            CustomNavigationBar(
-                                          isProfile: true,
-                                          myuser: myUser,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  // leading: CircleAvatar(
-                                  //   backgroundImage: NetworkImage(
-                                  //       hashtagsResults[index].profilePicture),
-                                  // ),
-                                  title: Text(
-                                      'u/${hashtagsResults[index].username}'),
-                                  subtitle: const Text('cake'),
-                                  trailing: FollowButton(
-                                      userName: 'userName',
-                                      profileName:
-                                          hashtagsResults[index].username),
-                                ),
-                                const Divider(
-                                  thickness: 1,
-                                ),
-                              ],
+                            return GestureDetector(
+                              onTap: () async {
+                                Post postComment = Post(
+                                  postModel: await Provider.of<NetworkService>(
+                                          context,
+                                          listen: false)
+                                      .fetchPost(hashtagsResults[index].postID),
+                                  isHomePage: false,
+                                  isSubRedditPage: false,
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CommentPage(
+                                      postId: hashtagsResults[index].postID,
+                                      postComment: postComment,
+                                      postTitle: hashtagsResults[index].postTitle,
+                                      username: hashtagsResults[index].username,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Column(
+                                children: [
+                                  // PostTile(
+                                  //     hashtag: hashtagsResults[index],
+                                  //     isProfile: false),
+                                  Divider(
+                                    thickness: 1,
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ),
-
                         ///
                       ],
                     ),
