@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/chatmessages.dart';
+import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatScreen extends StatefulWidget {
   final String recipientId;
@@ -21,6 +23,10 @@ class ChatScreenState extends State<ChatScreen> {
   final messageController = TextEditingController();
   bool isFirstMessage = true; // Assuming this is to check if it's a new chat
   List<ChatMessages> chatMessages = [];
+  IO.Socket socket = IO.io('http://192.168.1.10:3000', <String, dynamic>{
+    'autoConnect': false,
+    'transports': ['websocket'],
+  });
 
   Future<void> fetchChatMessages() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
@@ -29,6 +35,13 @@ class ChatScreenState extends State<ChatScreen> {
     setState(() {
       chatMessages = messages;
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    socket.disconnect();
   }
 
   @override
@@ -55,6 +68,36 @@ class ChatScreenState extends State<ChatScreen> {
         message: 'Hello!!!!!!!',
         timestamp: DateTime.now()));
     fetchChatMessages();
+    connectAndListen();
+  }
+
+  void connectAndListen() {
+    UserModel user = context.read<NetworkService>().getUser();
+    socket.connect();
+    socket.on('connect', (data) => print('Connected'));
+    socket
+        .emit('joinRoom', {'rooms': widget.chatId, 'username': user.username});
+    socket.on('newMessage', (data) {
+      if (mounted) {
+        print('New message: $data');
+        //Add the new message to the chatMessages list
+        setState(() {
+          chatMessages.add(ChatMessages(
+            id: 'some-id', // Replace with actual id
+            user: data['username'],
+            room: 'some-room', // Replace with actual room
+            content: data['message'],
+            isDeleted: false, // Replace with actual isDeleted
+            reactions: [], // Replace with actual reactions
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ));
+        });
+      }
+    });
+    socket.on('error', (data) => print('Error: $data'));
+    socket.on('onlineUser', (data) => print('Online user: $data'));
+    socket.on('joinedRoom', (data) => print('Joined room: $data'));
   }
 
   @override
@@ -193,18 +236,24 @@ class ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.send),
             color: Colors.blue,
             onPressed: () {
-              final message = ChatMessage(
-                senderId: 'currentUserId', // Replace with the current user's ID
-                recipientId: widget.recipientId,
-                message: messageController.text,
-                timestamp: DateTime.now(),
-              );
-              setState(() {
-                messages.add(message);
-                isFirstMessage =
-                    false; // After the first message, remove the intro section
+              // final message = ChatMessage(
+              //   senderId: 'currentUserId', // Replace with the current user's ID
+              //   recipientId: widget.recipientId,
+              //   message: messageController.text,
+              //   timestamp: DateTime.now(),
+              // );
+              // setState(() {
+              //   messages.add(message);
+              //   isFirstMessage =
+              //       false; // After the first message, remove the intro section
+              // });
+              // messageController.clear();
+              UserModel user = context.read<NetworkService>().getUser();
+              socket.emit('chatMessage', {
+                'username': user.username,
+                'message': messageController.text,
+                'roomId': widget.chatId
               });
-              messageController.clear();
             },
           ),
         ],
