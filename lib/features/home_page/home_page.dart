@@ -107,15 +107,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // void _onScroll() {
-  // if (_scrollController.hasClients &&
-  //     _scrollController.position.pixels ==
-  //         _scrollController.position.maxScrollExtent &&
-  //     !isLoading) {
-  //   getPosts(selectedMenuItem);
-  // }
-  // }
-
   void _onScroll() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
