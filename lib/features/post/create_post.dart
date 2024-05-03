@@ -380,8 +380,8 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
-                    onPressed: _istitleempty
-                        ? null
+                    onPressed: _istitleempty 
+                        ? null : _isbodyempty ? null 
                         : () async {
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
@@ -516,7 +516,56 @@ class _CreatePostState extends State<CreatePost> {
                             ],
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BottomSheet(
+                                    onClosing: () {},
+                                    builder: (context) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              5, 10, 0, 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              IconButton(
+                                                onPressed: () {},
+                                                icon: const Icon(Icons.close),
+                                              ),
+                                              const Text(
+                                                "Community Rules",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const Divider(
+                                          thickness: 1,
+                                        ),
+                                        const Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                          child: Text(
+                                              "Rules are different for each community. Reviewing the rules can help you be more successful when posting or commenting in this community."),
+                                        ),
+                                        //ListView.builder(itemBuilder: itemBuilder),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("I Understand"))
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                             child: const Text("Rules"),
                           ),
                         ],
@@ -636,8 +685,9 @@ class _CreatePostState extends State<CreatePost> {
                     )
                   : const SizedBox(),
               TextField(
+                enabled: _insertlink || _hasImage ? false : true,
                 decoration: InputDecoration(
-                  labelText: _isbodyempty ? 'body text (optional)' : '',
+                  labelText: _isbodyempty & chosenCommunity.isEmpty ? 'body text (optional)' : chosenCommunity.isNotEmpty & _isbodyempty ? 'body text' : '',
                   border: InputBorder.none,
                 ),
                 controller: _bodyController,
@@ -652,11 +702,13 @@ class _CreatePostState extends State<CreatePost> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: _hasImage || _insertpoll ? null : () {
-                      setState(() {
-                        _insertlink = !_insertlink;
-                      });
-                    },
+                    onPressed: _hasImage || _insertpoll
+                        ? null
+                        : () {
+                            setState(() {
+                              _insertlink = !_insertlink;
+                            });
+                          },
                     icon: const Icon(Icons.link),
                   ),
                   IconButton(
@@ -664,7 +716,8 @@ class _CreatePostState extends State<CreatePost> {
                     icon: const Icon(Icons.image),
                   ),
                   IconButton(
-                    onPressed: _insertlink || _insertpoll || _hasImage ? null : () {},
+                    onPressed:
+                        _insertlink || _insertpoll || _hasImage ? null : () {},
                     icon: const Icon(Icons.video_library_outlined),
                   ),
                   IconButton(
