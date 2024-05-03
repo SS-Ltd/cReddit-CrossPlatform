@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/settings/forgot_password.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +80,6 @@ class _UpdateEmailState extends State<UpdateEmail> {
                     ],
                   ),
                 ),
-                ///////////////////////////////////////
                 Form(
                   key: _formKey,
                   child: Column(
@@ -117,13 +117,12 @@ class _UpdateEmailState extends State<UpdateEmail> {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your password';
                           }
-                          // else if (value.length < 8) {
-                          //   return 'Password must be at least 8 characters long';
-                          // }
+                          else if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
                           return null;
                         },
                       ),
-                      //////////////////////////////////////////
                       SizedBox(
                         child: Align(
                           alignment: Alignment.centerRight,
@@ -152,8 +151,6 @@ class _UpdateEmailState extends State<UpdateEmail> {
                                   _passwordController.clear();
                                   Navigator.pop(context);
                                 },
-                                // style: ElevatedButton.styleFrom(
-                                //     minimumSize: const Size(150, 40)),
                                 child: const Text('Cancel'),
                               ),
                             ),
@@ -162,17 +159,26 @@ class _UpdateEmailState extends State<UpdateEmail> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                   String changeresponse =  await context
+                                    int changeResponse = await context
                                         .read<NetworkService>()
                                         .updateemail(
                                           _emailController.text,
                                           _passwordController.text,
                                         );
-                                        print(changeresponse);
+                                    if (changeResponse == 200) {
+                                      CustomSnackBar(
+                                          context: context,
+                                          content: "Email Changed Successfully",
+                                          backgroundColor: Colors.green);
+                                    } else if (changeResponse == 500) {
+                                      CustomSnackBar(
+                                          context: context,
+                                          content:
+                                              "Error Changing Email, Please Try Again",
+                                          backgroundColor: Colors.red);
+                                    }
                                   }
                                 },
-                                // style: ElevatedButton.styleFrom(
-                                //     minimumSize: const Size(150, 40)),
                                 child: const Text('Save'),
                               ),
                             ),

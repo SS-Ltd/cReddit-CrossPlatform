@@ -68,15 +68,15 @@ class MyApp extends StatelessWidget {
       title: 'cReddit',
       theme: AppTheme.darkTheme,
       home:
-          const ModeratorTools(communityName: "",),
-      //     Scaffold(
-      //   body: PageView(
-      //     children: const [
-      //       LoginScreen(),
-      //       SignUpScreen(),
-      //     ],
-      //   ),
-      // ),
+//          const ModeratorTools(communityName: "",),
+          Scaffold(
+        body: PageView(
+          children: const [
+            LoginScreen(),
+            SignUpScreen(),
+          ],
+        ),
+      ),
     );
   }
 }

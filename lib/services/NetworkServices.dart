@@ -1341,18 +1341,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<String> updateemail(String newemail, String password) async {
+  Future<int> updateemail(String newemail, String password) async {
     Uri url = Uri.parse('$_baseUrl/user/change-email');
     final response = await http.patch(url,
         headers: _headers,
         body: jsonEncode({'password': password, 'newEmail': newemail}));
-    if (response.statusCode == 200) {
-      return response.body;
-    } else if (response.statusCode == 400) {
-      return response.body;
-    } else {
-      return "";
-    }
+    return response.statusCode;
   }
 
   Future<String> resetusername(String email) async {
