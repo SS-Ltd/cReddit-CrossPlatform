@@ -506,9 +506,6 @@ class _CommentPageState extends State<CommentPage> {
                     return BlockPopUp(
                         userName: widget.postComment.postModel.username);
                   });
-              // bool isBlocked = await context
-              //     .read<NetworkService>()
-              //     .blockUser(widget.postComment.postModel.username);
             },
           )),
       PopupMenuItem<Menu>(

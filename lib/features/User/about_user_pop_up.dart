@@ -8,6 +8,7 @@ import 'package:reddit_clone/features/User/Profile.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/User/block_button.dart';
+
 /// A dialog box that displays information about a user.
 ///
 /// This dialog box is used to show details about a user, such as their username,
@@ -77,22 +78,20 @@ class AboutUserPopUp extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(0),
-            child: ArrowButton(onPressed: () {
-                            showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return BlockPopUp(
-                        userName: userName);
-                  });
-              // bool isBlocked = await context
-              //     .read<NetworkService>()
-              //     .blockUser(userName);
-            }, buttonText: "Block account", buttonIcon: Icons.person_off_outlined, hasarrow: false),
+            child: ArrowButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BlockPopUp(userName: userName);
+                      });
+                },
+                buttonText: "Block account",
+                buttonIcon: Icons.person_off_outlined,
+                hasarrow: false),
           ),
         ],
       ),
     );
   }
 }
-
-  
