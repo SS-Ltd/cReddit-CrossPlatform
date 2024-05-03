@@ -49,19 +49,23 @@ class BlockPopUp extends StatelessWidget {
                     onPressed: () async {
                       bool isBlocked =
                           await context.read<NetworkService>().blockUser(userName);
+                          print(isBlocked);
+                          print(userName);
                       if (isBlocked) {
                         CustomSnackBar(
                                 content:
                                     "The Author of this post has been blocked.",
                                 context: context,
-                                backgroundColor: Colors.white)
+                                backgroundColor: Colors.white,
+                                textColor: Colors.black)
                             .show();
                         Navigator.of(context).pop();
                       } else {
                         CustomSnackBar(
                                 content: "Failed to block the user.",
                                 context: context,
-                                backgroundColor: Colors.white)
+                                backgroundColor: Colors.white,
+                                textColor: Colors.black)
                             .show();
                         Navigator.of(context).pop();
                       }
