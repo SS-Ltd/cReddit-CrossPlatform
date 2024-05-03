@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -134,7 +135,6 @@ class _CommentPostPageState extends State<CommentPostPage> {
                           });
                         } else if (snapshot.data != null &&
                             snapshot.data!['success'] == false) {
-                          // comment posting failed
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             CustomSnackBar(
                               context: context,
@@ -196,8 +196,120 @@ class _CommentPostPageState extends State<CommentPostPage> {
             ),
             const Divider(color: Colors.grey, thickness: 0.15),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                IconButton(
+                    icon: const Icon(Icons.link),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          String text = '';
+                          String link = '';
+                          return AlertDialog(
+                            backgroundColor: Palette.settingsHeading,
+                            title: const Text('Insert a link'),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  TextField(
+  onChanged: (value) {
+    text = value;
+  },
+  decoration: const InputDecoration(
+    hintText: "Name",
+    border: InputBorder.none,
+  ),
+),
+TextField(
+  onChanged: (value) {
+    link = value;
+  },
+  decoration: const InputDecoration(
+    hintText: "Link",
+    border: InputBorder.none,
+  ),
+),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Palette.transparent,
+                                          foregroundColor: Palette.greyColor,
+                                          shadowColor: Palette.transparent,
+                                          minimumSize:
+                                              const Size(double.infinity, 40),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(18),
+                                          ),
+                                        ),
+                                        child: const Text('Cancel'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Palette.blueJoinColor,
+                                          foregroundColor: Palette.whiteColor,
+                                          shadowColor: Palette.transparent,
+                                          minimumSize:
+                                              const Size(double.infinity, 40),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(18),
+                                          ),
+                                        ),
+                                        child: const Text('Insert'),
+                                        onPressed: () {
+                                          if (text.isEmpty || link.isEmpty) {
+                                            Navigator.of(context).pop();
+                                            CustomSnackBar(
+                                              context: context,
+                                              content:
+                                                  'Please fill in both fields',
+                                            ).show();
+                                          } else {
+                                            String markdownLink =
+                                                '[$text](http://$link)';
+                                            Navigator.of(context)
+                                                .pop(markdownLink);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ).then((markdownLink) {
+                        if (markdownLink != null) {
+                          _controller.text += markdownLink;
+                          setState(() {
+                            _isTextFieldFilled = true;
+                          });
+                        }
+                      });
+                    }),
                 if (_image != null)
                   IconButton(
                     icon: const Icon(Icons.delete),

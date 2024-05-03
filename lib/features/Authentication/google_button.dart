@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:reddit_clone/common/ImageButton.dart';
 import 'package:reddit_clone/services/google_service.dart';
@@ -37,9 +40,8 @@ class GoogleButton extends StatelessWidget {
             await Provider.of<GoogleService>(context, listen: false)
                 .handleGoogleSignIn();
         if (!isAuthenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to sign in with Google')),
-          );
+          CustomSnackBar(
+              context: context, content: 'Failed to sign in with Google');
           return;
         }
         String googleAccessToken =
@@ -49,9 +51,8 @@ class GoogleButton extends StatelessWidget {
             .read<NetworkService>()
             .sendGoogleAccessToken(googleAccessToken);
         if (!isValidated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to sign in with Google')),
-          );
+          CustomSnackBar(
+              context: context, content: 'Failed to sign in with Google');
           return;
         }
 
