@@ -8,6 +8,7 @@ import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/rule.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'dart:convert';
@@ -23,8 +24,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  // final String _baseUrl = 'https://creddit.tech/API';
-  final String _baseUrl = 'http://192.168.1.10:3000';
+  final String _baseUrl = 'https://creddit.tech/API';
+  //final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -601,6 +602,71 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<List<SubredditRule>?> getSubredditRules(String subredditName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/rules');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSubredditRules(subredditName);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SubredditRule> rules =
+          responseData.map((item) => SubredditRule.fromJson(item)).toList();
+      return rules;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> addModerator(String username, String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/mod/invite/$communityName');
+    final response = await http.post(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return addModerator(username, communityName);
+    }
+    print("isadded");
+    print(response.statusCode);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> leaveModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return leaveModerator(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removeModerator(String username) async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removeModerator(username);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<UserModel> getUserDetails(String username) async {
     Uri url = Uri.parse('$_baseUrl/user/$username');
     final response = await http.get(url, headers: _headers);
@@ -638,6 +704,27 @@ class NetworkService extends ChangeNotifier {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchComments> searchResult =
           responseData.map((item) => SearchComments.fromJson(item)).toList();
+      return searchResult;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<SearchHashtag>> getSearchHashtags(String hashtag) async {
+    final parameters = {'query': hashtag};
+    Uri url = Uri.parse('$_baseUrl/search/hashtags')
+        .replace(queryParameters: parameters);
+
+    final response = await http.get(url, headers: _headers);
+    print(response.statusCode);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getSearchHashtags(hashtag);
+    }
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<SearchHashtag> searchResult =
+          responseData.map((item) => SearchHashtag.fromJson(item)).toList();
       return searchResult;
     } else {
       return [];
@@ -770,7 +857,7 @@ class NetworkService extends ChangeNotifier {
     String sort = 'hot',
     String time = 'all',
     int page = 1,
-    int limit = 5,
+    int limit = 10,
   }) async {
     final url = Uri.parse('$_baseUrl/user/$username/posts?'
         'sort=$sort'
@@ -1109,7 +1196,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchSavedComments(
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1128,7 +1215,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchUserComments(String username,
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/$username/comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1168,7 +1255,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> removeComment(String commentId, bool isRemoved) async {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
     final response = await http.patch(url,
-        headers: _headers, body: jsonEncode({'isApproved': isRemoved}));
+        headers: _headers, body: jsonEncode({'isRemoved': isRemoved}));
     print(response.statusCode);
     print(response.body);
     if (response.statusCode == 403) {
