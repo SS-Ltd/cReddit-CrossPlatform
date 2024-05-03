@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/comments/user_comment.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
@@ -60,8 +61,9 @@ int mappingVotes(bool isUpvoted, bool isDownvoted) {
 
 class _ProfileState extends State<Profile> {
   // final List<String> feedMenuItems = ['hot', 'top', 'new'];
+  final ScrollController _scrollController = ScrollController();
+
   bool isLoadingPosts = false;
-  bool hasMorePosts = true;
   int postsPage = 1;
 
   bool isLoadingComments = false;
@@ -72,74 +74,102 @@ class _ProfileState extends State<Profile> {
   List<Comments> userComments = [];
 
   /// Fetches the user posts from the network.
-  Future<void> fetchUserPosts({bool refresh = false}) async {
-    if (isLoadingPosts) return;
-    if (refresh) {
-      userPosts = [];
-      postsPage = 1;
-      hasMorePosts = true;
-    }
-    if (!hasMorePosts) return;
+  Future<void> fetchUserPosts() async {
+    if (!isLoadingPosts) {
+      setState(() {
+        isLoadingPosts = true;
+      });
 
-    setState(() {
-      isLoadingPosts = true;
-    });
+      final networkService =
+          Provider.of<NetworkService>(context, listen: false);
+      final posts = await networkService.fetchUserPosts(
+        widget.userName,
+        page: postsPage,
+      );
 
-    final networkService = Provider.of<NetworkService>(context, listen: false);
-    final posts = await networkService.fetchUserPosts(
-      widget.userName,
-      page: postsPage,
-      limit: 100, // or another appropriate limit
-    );
-
-    setState(() {
-      if (posts != null && posts.isNotEmpty) {
-        userPosts.addAll(posts);
-        postsPage++;
-      } else {
-        hasMorePosts = false;
+      if (mounted) {
+        setState(() {
+          if (posts != null && posts.isNotEmpty) {
+            setState(() {
+              userPosts.addAll(posts);
+              postsPage++;
+              isLoadingPosts = false;
+            });
+          } else {
+            setState(() {
+              isLoadingPosts = false;
+            });
+          }
+        });
       }
-      isLoadingPosts = false;
-    });
+    }
   }
 
   /// Fetches the user comments from the network.
-  Future<void> fetchUserComments({bool refresh = false}) async {
-    if (isLoadingComments) return;
-    if (refresh) {
-      userComments = [];
-      commentsPage = 1;
-      hasMoreComments = true;
-    }
-    if (!hasMoreComments) return;
+  Future<void> fetchUserComments() async {
+    if (!isLoadingComments) {
+      // if (refresh) {
+      //   userComments = [];
+      //   commentsPage = 1;
+      //   hasMoreComments = true;
+      // }
+      setState(() {
+        isLoadingComments = true;
+      });
+      // if (!hasMoreComments) return;
 
-    setState(() {
-      isLoadingComments = true;
-    });
+      final networkService =
+          Provider.of<NetworkService>(context, listen: false);
+      final comments = await networkService.fetchUserComments(
+        widget.userName,
+        page: commentsPage,
+      );
 
-    final networkService = Provider.of<NetworkService>(context, listen: false);
-    final comments = await networkService.fetchUserComments(
-      widget.userName,
-      page: commentsPage,
-      limit: 20, // or another appropriate limit
-    );
-
-    setState(() {
-      if (comments != null && comments.isNotEmpty) {
-        userComments.addAll(comments);
-        commentsPage++;
-      } else {
-        hasMoreComments = false;
+      if (mounted) {
+        setState(() {
+          if (comments != null && comments.isNotEmpty) {
+            setState(() {
+              userComments.addAll(comments);
+              commentsPage++;
+              isLoadingComments = false;
+            });
+          } else {
+            setState(() {
+              isLoadingComments = false;
+            });
+          }
+        });
       }
-      isLoadingComments = false;
-    });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     fetchUserPosts();
     fetchUserComments();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    const threshold = 200;
+    if (widget.selectedTab == TabSelection.posts) {
+      if (maxScroll - currentScroll <= threshold && !isLoadingPosts) {
+        fetchUserPosts();
+      }
+    } else if (widget.selectedTab == TabSelection.comments) {
+      if (maxScroll - currentScroll <= threshold && !isLoadingComments) {
+        fetchUserComments();
+      }
+    }
   }
 
   /// Formats the cake day string to a readable format.
@@ -158,6 +188,7 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildProfileContent() {
     return CustomScrollView(
+      controller: _scrollController,
       slivers: [
         SliverAppBar(
           flexibleSpace: Stack(
@@ -182,7 +213,10 @@ class _ProfileState extends State<Profile> {
                   context,
                   MaterialPageRoute(
                     fullscreenDialog: true,
-                    builder: (context) => ProfileSearch(displayName: widget.displayName, username: widget.userName,),
+                    builder: (context) => ProfileSearch(
+                      displayName: widget.displayName,
+                      username: widget.userName,
+                    ),
                   ),
                 );
               },
@@ -321,6 +355,7 @@ class _ProfileState extends State<Profile> {
                         onTap: () {
                           setState(() {
                             widget.selectedTab = TabSelection.posts;
+                            _scrollController.jumpTo(0);
                           });
                         },
                         child: Text(
@@ -336,6 +371,7 @@ class _ProfileState extends State<Profile> {
                         onTap: () {
                           setState(() {
                             widget.selectedTab = TabSelection.comments;
+                            _scrollController.jumpTo(0);
                           });
                         },
                         child: Text(
@@ -351,6 +387,7 @@ class _ProfileState extends State<Profile> {
                         onTap: () {
                           setState(() {
                             widget.selectedTab = TabSelection.about;
+                            _scrollController.jumpTo(0);
                           });
                         },
                         child: Text(
@@ -395,7 +432,7 @@ class _ProfileState extends State<Profile> {
                   imageSource: 0,
                   hasVoted:
                       mappingVotes(comment.isUpvoted, comment.isDownvoted),
-                      isPostPage: false,
+                  isPostPage: false,
                   comment: userComments[index],
                 );
               },
@@ -427,7 +464,10 @@ class _ProfileState extends State<Profile> {
               context,
               MaterialPageRoute(
                 fullscreenDialog: true,
-                builder: (context) => ProfileSearch(displayName: widget.displayName, username: widget.userName,),
+                builder: (context) => ProfileSearch(
+                  displayName: widget.displayName,
+                  username: widget.userName,
+                ),
               ),
             );
           },

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/chatmessages.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class ChatScreen extends StatefulWidget {
   final String recipientId;
+  final String chatId;
 
-  const ChatScreen({super.key, required this.recipientId});
+  const ChatScreen(
+      {super.key, required this.recipientId, required this.chatId});
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -15,6 +20,16 @@ class ChatScreenState extends State<ChatScreen> {
   List<ChatMessage> messages = [];
   final messageController = TextEditingController();
   bool isFirstMessage = true; // Assuming this is to check if it's a new chat
+  List<ChatMessages> chatMessages = [];
+
+  Future<void> fetchChatMessages() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final messages = await networkService.fetchChatMessages(widget.chatId);
+    if (messages == null) return;
+    setState(() {
+      chatMessages = messages;
+    });
+  }
 
   @override
   void initState() {
@@ -39,6 +54,7 @@ class ChatScreenState extends State<ChatScreen> {
         recipientId: 'user2',
         message: 'Hello!!!!!!!',
         timestamp: DateTime.now()));
+    fetchChatMessages();
   }
 
   @override
@@ -47,7 +63,7 @@ class ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Row(
           children: <Widget>[
-             Expanded(
+            Expanded(
               child: Text(
                 'Username', // This should be the recipient's username
                 style: TextStyle(fontWeight: FontWeight.bold),
@@ -68,13 +84,13 @@ class ChatScreenState extends State<ChatScreen> {
           isFirstMessage ? introSection() : Container(),
           Expanded(
             child: ListView.builder(
-              itemCount: messages.length,
+              itemCount: chatMessages.length,
               itemBuilder: (context, index) {
-                final message = messages[index];
+                final chatMessage = chatMessages[index];
                 bool showUserInfo = true; // Default to showing user info
                 // Check if the current message is from the same sender as the previous one
                 if (index > 0 &&
-                    messages[index - 1].senderId == message.senderId) {
+                    chatMessages[index - 1].user == chatMessage.user) {
                   showUserInfo =
                       false; // Do not show user info if the sender is the same
                 }
@@ -86,16 +102,15 @@ class ChatScreenState extends State<ChatScreen> {
                       Row(
                         children: [
                           const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "https://i.imgur.com/BoN9kdC.png"),
+                            backgroundImage:
+                                NetworkImage("https://i.imgur.com/BoN9kdC.png"),
                           ),
                           const SizedBox(width: 8),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(message.senderId),
-                              Text(
-                                  formatTimestamp(message.timestamp)),
+                              Text(chatMessage.user ?? ''),
+                              Text(formatTimestamp(chatMessage.createdAt)),
                             ],
                           ),
                         ],
@@ -105,7 +120,7 @@ class ChatScreenState extends State<ChatScreen> {
                           top: 2.0,
                           bottom: 8.0,
                           left: 50.0), // Add left padding to the message
-                      child: Text(message.message),
+                      child: Text(chatMessage.content),
                     ),
                   ],
                 );

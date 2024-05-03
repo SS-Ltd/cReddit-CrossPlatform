@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/chat.dart';
+import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'dart:io';
@@ -856,7 +857,7 @@ class NetworkService extends ChangeNotifier {
     String sort = 'hot',
     String time = 'all',
     int page = 1,
-    int limit = 5,
+    int limit = 10,
   }) async {
     final url = Uri.parse('$_baseUrl/user/$username/posts?'
         'sort=$sort'
@@ -1195,7 +1196,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchSavedComments(
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/saved-comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1214,7 +1215,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Comments>?> fetchUserComments(String username,
-      {int page = 1, int limit = 20}) async {
+      {int page = 1, int limit = 10}) async {
     Uri url =
         Uri.parse('$_baseUrl/user/$username/comments?page=$page&limit=$limit');
     final response = await http.get(url, headers: _headers);
@@ -1434,7 +1435,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<Chat>?> fetchChats() async {
-    Uri url = Uri.parse('$_baseUrl/chat/');
+    Uri url = Uri.parse('$_baseUrl/chat/?page=1&limit=100');
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
@@ -1481,6 +1482,18 @@ class NetworkService extends ChangeNotifier {
     }
 
     return response.statusCode == 200 || response.statusCode == 201;
+  }
+
+  Future<List<ChatMessages>?> fetchChatMessages(String chatId) async {
+    Uri url = Uri.parse('$_baseUrl/chat/$chatId');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((item) => ChatMessages.fromJson(item)).toList();
+    } else {
+      return null;
+    }
   }
 
   void _updateCookie(http.Response response) {
