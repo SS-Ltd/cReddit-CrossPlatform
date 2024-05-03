@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/settings/forgot_password.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
@@ -196,13 +197,15 @@ class _ChangePasswordState extends State<ChangePassword> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    String changeresponse = await context
+                                    int changeresponse = await context
                                         .read<NetworkService>()
                                         .updatepassword(
                                             _newPasswordController.text,
                                             _confirmPasswordController.text,
                                             _currentPasswordController.text);
-                                    Navigator.pop(context);
+                                    if (changeresponse == 200) {
+                                      CustomSnackBar(context: context, content: "Password Changed Successfully", backgroundColor: Colors.green);
+                                    }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

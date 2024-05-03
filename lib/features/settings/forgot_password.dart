@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/settings/reset_username.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:email_validator/email_validator.dart';
@@ -149,12 +150,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 TextButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      String changeresponse =
+                      int changeresponse =
                           await context.read<NetworkService>().resetpassword(
                                 _emailController.text,
                                 _userNameController.text,
                               );
-                      print(changeresponse);
+                      if (changeresponse == 200) {
+                        CustomSnackBar(
+                            context: context,
+                            content: "Please Check Your Email",
+                            backgroundColor: Colors.green);
+                      } else if (changeresponse == 404) {
+                        CustomSnackBar(
+                            context: context,
+                            content: "User not found",
+                            backgroundColor: Colors.red);
+                      }
                     }
                   },
                   style: ButtonStyle(

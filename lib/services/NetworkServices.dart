@@ -1322,7 +1322,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<String> updatepassword(
+  Future<int> updatepassword(
       String newPassword, String confirmPassword, String oldPassword) async {
     Uri url = Uri.parse('$_baseUrl/user/change-password');
     final response = await http.patch(url,
@@ -1332,13 +1332,7 @@ class NetworkService extends ChangeNotifier {
           'newPassword': newPassword,
           'confirmPassword': confirmPassword
         }));
-    if (response.statusCode == 200) {
-      return response.body;
-    } else if (response.statusCode == 400) {
-      return response.body;
-    } else {
-      return "";
-    }
+    return response.statusCode;
   }
 
   Future<int> updateemail(String newemail, String password) async {
@@ -1349,33 +1343,19 @@ class NetworkService extends ChangeNotifier {
     return response.statusCode;
   }
 
-  Future<String> resetusername(String email) async {
+  Future<int> resetusername(String email) async {
     Uri url = Uri.parse('$_baseUrl/user/forgot-username');
     final response = await http.post(url,
         headers: _headers, body: jsonEncode({'email': email}));
-    if (response.statusCode == 200) {
-      return response.body;
-    } else if (response.statusCode == 404) {
-      return response.body;
-    } else {
-      return "";
-    }
+    return response.statusCode;
   }
 
-  Future<String> resetpassword(String email, String username) async {
+  Future<int> resetpassword(String email, String username) async {
     Uri url = Uri.parse('$_baseUrl/user/forgot-password');
     final response = await http.post(url,
         headers: _headers,
         body: jsonEncode({'username': username, 'email': email}));
-    if (response.statusCode == 200) {
-      return response.body;
-    } else if (response.statusCode == 404) {
-      return response.body;
-    } else if (response.statusCode == 500) {
-      return response.body;
-    } else {
-      return "";
-    }
+    return response.statusCode;
   }
 
   Future<bool> markNotificationAsRead(String notificationID) async {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/services/networkServices.dart';
 
 /// A widget that displays an alert dialog for resetting the username.
 class ResetUsername extends StatefulWidget {
@@ -103,11 +103,13 @@ class _ResetUsernameState extends State<ResetUsername> {
                 TextButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      String changeresponse =
+                      int changeresponse =
                           await context.read<NetworkService>().resetusername(
                                 _emailController.text,
                               );
-                      print(changeresponse);
+                      if (changeresponse == 200) {
+                        CustomSnackBar(context: context, content: "Please Check Your Email", backgroundColor: Colors.green);
+                      }
                     }
                     Navigator.pop(context);
                   },
