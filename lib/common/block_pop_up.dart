@@ -49,8 +49,6 @@ class BlockPopUp extends StatelessWidget {
                     onPressed: () async {
                       bool isBlocked =
                           await context.read<NetworkService>().blockUser(userName);
-                          print(isBlocked);
-                          print(userName);
                       if (isBlocked) {
                         CustomSnackBar(
                                 content:

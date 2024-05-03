@@ -628,8 +628,6 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return addModerator(username, communityName);
     }
-    print("isadded");
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       return true;

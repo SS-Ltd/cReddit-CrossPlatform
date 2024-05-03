@@ -39,8 +39,6 @@ class _AddModeratorState extends State<AddModerator> {
                         listen: false)
                     .addModerator(
                         _userNameController.text, widget.communityName);
-                  print(newModerator);
-                  print(_userNameController.text);
                 if (newModerator) {
                   CustomSnackBar(context: context, content: "u/${_userNameController.text} was invited", backgroundColor: Colors.white, textColor: Colors.black).show();
                   Navigator.pop(context);

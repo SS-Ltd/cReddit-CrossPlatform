@@ -397,11 +397,6 @@ class _CommentPageState extends State<CommentPage> {
               : const Icon(Icons.bookmark_add_outlined),
           title: isPostSaved ? const Text('Unsave') : const Text("Save"),
           onTap: () async {
-            print('save button clicked');
-            print(isPostSaved);
-            print('save button clicked');
-            print(widget.postComment.postModel.isSaved);
-            print(widget.postComment.postModel.postId);
             bool isSaved = await context
                 .read<NetworkService>()
                 .saveandunsavepost(widget.postComment.postModel.postId,
