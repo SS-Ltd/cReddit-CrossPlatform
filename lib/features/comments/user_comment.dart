@@ -760,9 +760,7 @@ class UserCommentState extends State<UserComment> {
                         Column(
                           children: [
                             ElevatedButton(
-                              onPressed: () {
-                                // handle button press
-                              },
+                              onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Palette.blueJoinColor,
                                 foregroundColor: Palette.whiteColor,
