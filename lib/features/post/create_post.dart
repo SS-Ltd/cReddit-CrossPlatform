@@ -381,7 +381,7 @@ class _CreatePostState extends State<CreatePost> {
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
                     onPressed: _istitleempty 
-                        ? null : _isbodyempty ? null 
+                        ? null : _isbodyempty && _hasImage && _insertlink && _insertpoll ? null 
                         : () async {
                             String type = _insertlink ? "Links" : "Post";
                             bool newpost = _insertpoll
@@ -421,9 +421,11 @@ class _CreatePostState extends State<CreatePost> {
                                             type,
                                             chosenCommunity,
                                             _titleController.text,
-                                            _bodyController.text,
+                                            _linkController.text,
                                             false,
                                             isspoiler);
+                                    print('asdasd');
+                                    print(newpost);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.push(

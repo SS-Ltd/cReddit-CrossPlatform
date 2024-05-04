@@ -264,14 +264,16 @@ class _AccountSettingsState extends State<AccountSettings> {
                       onPressed: () async {
                         bool isDeleted =
                             await context.read<NetworkService>().deleteUser();
-                        await context.read<NetworkService>().logout();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
+                        if (isDeleted) {
+                          await context.read<NetworkService>().logout();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                            (Route<dynamic> route) => false,
+                          );
+                        }
                       },
                       buttonText: "Delete Account",
                       buttonIcon: Icons.delete_forever_outlined,

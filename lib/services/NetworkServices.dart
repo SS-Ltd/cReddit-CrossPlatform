@@ -1041,6 +1041,14 @@ class NetworkService extends ChangeNotifier {
         'isNSFW': isNSFW,
       }),
     );
+    print(response.body);
+    print(type);
+    print(communityname);
+    print(title);
+    print(content);
+    print(isNSFW);
+    print(isSpoiler);
+    print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
       return createNewTextOrLinkPost(
