@@ -85,6 +85,7 @@ class _HomeSearchState extends State<HomeSearch>
               contentPadding: const EdgeInsets.all(10),
             ),
             onChanged: (value) async {
+              if(!mounted) return;
               setState(() {
                 searchQuery = value;
               });

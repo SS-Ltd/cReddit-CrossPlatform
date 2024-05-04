@@ -749,6 +749,7 @@ class NetworkService extends ChangeNotifier {
       refreshToken();
       return getSearchHashtags(hashtag);
     }
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
       List<SearchHashtag> searchResult =
@@ -1029,6 +1030,7 @@ class NetworkService extends ChangeNotifier {
   Future<bool> createNewTextOrLinkPost(String type, String communityname,
       String title, String content, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
+    print("klam");
     final response = await http.post(
       url,
       headers: _headers,
@@ -1036,11 +1038,12 @@ class NetworkService extends ChangeNotifier {
         'type': type,
         'communityName': communityname,
         'title': title,
-        'content': content,
+        'content': "http://$content",
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
     );
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return createNewTextOrLinkPost(
@@ -1053,10 +1056,10 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNewImagePost(String communityname, String title,
+  Future<Map<String, dynamic>> createNewImagePost(String communityname, String title,
       File imageFile, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
-
+    print("wslt");
     http.MultipartRequest request = http.MultipartRequest('POST', url);
 
     request.headers.addAll(_headers);
@@ -1074,16 +1077,27 @@ class NetworkService extends ChangeNotifier {
     ));
 
     http.StreamedResponse response = await request.send();
-
+    String responseBody = await response.stream.bytesToString();
+    print(response.statusCode);
+    print(responseBody);
     if (response.statusCode == 403) {
       refreshToken();
       return createNewImagePost(
           communityname, title, imageFile, isNSFW, isSpoiler);
     }
+    
+    var parsedJson = jsonDecode(responseBody);
+
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return true;
+      if (parsedJson['postId'] != null) {
+        String postId = parsedJson['postId'];
+        return {'success': true, 'postId': postId};
+      } else {
+        return {'success': false};
+        
+      }
     } else {
-      return false;
+      return {'success': false, 'message': parsedJson['message']};
     }
   }
 

@@ -214,23 +214,23 @@ class _CommentPostPageState extends State<CommentPostPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   TextField(
-  onChanged: (value) {
-    text = value;
-  },
-  decoration: const InputDecoration(
-    hintText: "Name",
-    border: InputBorder.none,
-  ),
-),
-TextField(
-  onChanged: (value) {
-    link = value;
-  },
-  decoration: const InputDecoration(
-    hintText: "Link",
-    border: InputBorder.none,
-  ),
-),
+                                    onChanged: (value) {
+                                      text = value;
+                                    },
+                                    decoration: const InputDecoration(
+                                      hintText: "Name",
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                  TextField(
+                                    onChanged: (value) {
+                                      link = value;
+                                    },
+                                    decoration: const InputDecoration(
+                                      hintText: "Link",
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

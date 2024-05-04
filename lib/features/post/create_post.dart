@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
@@ -10,6 +13,8 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/common/switch_button.dart';
+import 'package:reddit_clone/theme/palette.dart';
+import 'package:video_player/video_player.dart';
 
 //This Screen is now used to create a post
 //We can use it either to create a post from Home Screen and post to comminity
@@ -55,6 +60,11 @@ class _CreatePostState extends State<CreatePost> {
   bool _isImagePickerOpen = false;
   bool _hasImage = false;
 
+  File? _video;
+  bool _hasVideo = false;
+  VideoPlayerController? _videoPlayerController;
+
+
   final _linkController = TextEditingController();
   bool _insertlink = false;
   bool _islinkempty = true;
@@ -96,10 +106,49 @@ class _CreatePostState extends State<CreatePost> {
     }
     _isImagePickerOpen = true;
 
+    try {
+      final source = await showDialog<ImageSource>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Choose image source'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Gallery'),
+              onPressed: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+            TextButton(
+              child: const Text('Camera'),
+              onPressed: () => Navigator.pop(context, ImageSource.camera),
+            ),
+          ],
+        ),
+      );
+      if (source != null) {
+        final pickedFile = await picker.pickImage(source: source);
+        setState(() {
+          if (pickedFile != null) {
+            _image = File(pickedFile.path);
+            _hasImage = true;
+          }
+        });
+      }
+    } catch (e) {
+      // Handle error if needed
+    } finally {
+      _isImagePickerOpen = false;
+    }
+  }
+
+  Future getVideo() async {
+    if (_isImagePickerOpen) {
+      return;
+    }
+    _isImagePickerOpen = true;
+
     final source = await showDialog<ImageSource>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Choose image source'),
+        title: const Text('Choose video source'),
         actions: <Widget>[
           TextButton(
             child: const Text('Gallery'),
@@ -113,22 +162,29 @@ class _CreatePostState extends State<CreatePost> {
       ),
     );
     if (source != null) {
-      final pickedFile = await picker.pickImage(source: source);
+      final pickedFile = await picker.pickVideo(source: source);
       setState(() {
         if (pickedFile != null) {
-          _image = File(pickedFile.path);
-          _hasImage = true;
+          _video = File(pickedFile.path);
+          _hasVideo = true;
+
+          _videoPlayerController = VideoPlayerController.file(_video!)
+        ..initialize().then((_) {
+          setState(() {});
+        });
         }
       });
     }
     _isImagePickerOpen = false;
   }
 
+
   @override
   void dispose() {
     _titleController.dispose();
     _bodyController.dispose();
     _linkController.dispose();
+    _videoPlayerController?.dispose();
     super.dispose();
   }
 
@@ -380,65 +436,65 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
-                    onPressed: _istitleempty 
-                        ? null : _isbodyempty && _hasImage && _insertlink && _insertpoll ? null 
-                        : () async {
-                            String type = _insertlink ? "Link" : "Post";
-                            String data = _insertlink
-                                ? _linkController.text
-                                : _bodyController.text;
-                            bool newpost = _insertpoll
-                                ? await context
-                                    //poll post
-                                    .read<NetworkService>()
-                                    .createNewPollPost(
-                                        chosenCommunity,
-                                        _titleController.text,
-                                        _bodyController.text,
-                                        _optionControllers
-                                            .where((controller) =>
-                                                controller.text.isNotEmpty)
-                                            .map(
-                                                (controller) => controller.text)
-                                            .toList(),
-                                        endsInDateTime, //month-day-year
-                                        false,
-                                        // .read<NetworkService>()
-                                        // .user!
-                                        // .isNFSW,
-                                        isspoiler)
-                                : (_hasImage)
+                    onPressed: _istitleempty
+                        ? null
+                        : _isbodyempty &&
+                                _hasImage &&
+                                _insertlink &&
+                                _insertpoll &&
+                                _hasVideo
+                            ? null
+                            : () async {
+                                String type = _insertlink ? "Link" : "Post";
+                                String data = _insertlink
+                                    ? _linkController.text
+                                    : _bodyController.text;
+                                var newpost = _insertpoll
                                     ? await context
-                                        //image post
                                         .read<NetworkService>()
-                                        .createNewImagePost(
+                                        .createNewPollPost(
                                             chosenCommunity,
                                             _titleController.text,
-                                            _image!,
+                                            _bodyController.text,
+                                            _optionControllers
+                                                .where((controller) => controller.text.isNotEmpty)
+                                                .map((controller) => controller.text)
+                                                .toList(),
+                                            endsInDateTime, //month-day-year
                                             false,
                                             isspoiler)
-                                    : await context
-                                        //text or link post
-                                        .read<NetworkService>()
-                                        .createNewTextOrLinkPost(
-                                            type,
-                                            chosenCommunity,
-                                            _titleController.text,
-                                            data,
-                                            false,
-                                            isspoiler);
-                            ////////////////////////////////////////////////////////
-                            if (newpost) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CustomNavigationBar(
-                                    isProfile: false,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                                    : (_hasImage || _hasVideo)
+                                        ? await context
+                                            .read<NetworkService>()
+                                            .createNewImagePost(
+                                                chosenCommunity,
+                                                _titleController.text,
+                                                _hasImage ? _image! : _video!,
+                                                false,
+                                                isspoiler)
+                                        : await context
+                                            .read<NetworkService>()
+                                            .createNewTextOrLinkPost(
+                                                type, chosenCommunity, _titleController.text, data, false, isspoiler);
+
+                                bool success = false;
+                                if (newpost is Map<String, dynamic>) {
+                                  success = newpost['success'];
+                                } else if (newpost is bool) {
+                                  success = newpost;
+                                }
+
+                                if (success) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CustomNavigationBar(
+                                        isProfile: false,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
                     child: const Text('Post'),
                   )
                 : _isSaved
@@ -688,9 +744,13 @@ class _CreatePostState extends State<CreatePost> {
                     )
                   : const SizedBox(),
               TextField(
-                enabled: _insertlink || _hasImage ? false : true,
+                enabled: _insertlink || _hasImage || _hasVideo ? false : true,
                 decoration: InputDecoration(
-                  labelText: _isbodyempty & chosenCommunity.isEmpty ? 'body text (optional)' : chosenCommunity.isNotEmpty & _isbodyempty ? 'body text' : '',
+                  labelText: _isbodyempty & chosenCommunity.isEmpty
+                      ? 'body text (optional)'
+                      : chosenCommunity.isNotEmpty & _isbodyempty
+                          ? 'body text'
+                          : '',
                   border: InputBorder.none,
                 ),
                 controller: _bodyController,
@@ -702,10 +762,76 @@ class _CreatePostState extends State<CreatePost> {
                   );
                 },
               ),
+              _hasImage
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.file(_image!),
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: IconButton(
+                            icon: const Icon(Icons.cancel, color: Palette.greyColor),
+                            onPressed: () {
+                              setState(() {
+                                _hasImage = false;
+                                _image = null;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox(),
+              _hasVideo
+                ? (_videoPlayerController?.value.isInitialized ?? false)
+                    ? Stack(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (_videoPlayerController!.value.isPlaying) {
+                                  _videoPlayerController!.pause();
+                                } else {
+                                  _videoPlayerController!.play();
+                                }
+                              });
+                            },
+                            child: AspectRatio(
+                              aspectRatio: _videoPlayerController!.value.aspectRatio,
+                              child: Stack(
+                                alignment: Alignment.bottomCenter,
+                                children: <Widget>[
+                                  VideoPlayer(_videoPlayerController!),
+                                  VideoProgressIndicator(_videoPlayerController!, allowScrubbing: true),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: IconButton(
+                              icon: const Icon(Icons.cancel, color: Palette.greyColor),
+                              onPressed: () {
+                                setState(() {
+                                  _hasVideo = false;
+                                  _videoPlayerController?.dispose();
+                                  _videoPlayerController = null;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    : CustomLoadingIndicator()
+                : const SizedBox(),
               Row(
                 children: [
                   IconButton(
-                    onPressed: _hasImage || _insertpoll
+                    onPressed: _hasImage || _insertpoll || _hasVideo
                         ? null
                         : () {
                             setState(() {
@@ -715,16 +841,27 @@ class _CreatePostState extends State<CreatePost> {
                     icon: const Icon(Icons.link),
                   ),
                   IconButton(
-                    onPressed: _insertlink || _insertpoll ? null : getImage,
+                    onPressed: _insertlink || _insertpoll || _hasVideo
+                        ? null
+                        : () {
+                            print("aloo");
+                            getImage();
+                            print("alooo2");
+                          },
                     icon: const Icon(Icons.image),
                   ),
                   IconButton(
-                    onPressed:
-                        _insertlink || _insertpoll || _hasImage ? null : () {},
+                    onPressed: _insertlink || _insertpoll || _hasImage
+                        ? null
+                        : () {
+                            print("aloo");
+                            getVideo();
+                            print("alooo2");
+                          },
                     icon: const Icon(Icons.video_library_outlined),
                   ),
                   IconButton(
-                    onPressed: _insertlink || _hasImage
+                    onPressed: _insertlink || _hasImage || _hasVideo
                         ? null
                         : () {
                             setState(() {
