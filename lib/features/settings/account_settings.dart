@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
+import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/settings/change_password.dart';
 import 'package:reddit_clone/features/settings/chat_messages_permissions.dart';
 import 'package:reddit_clone/common/heading.dart';
@@ -89,7 +90,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                       },
                       buttonText: 'Update email address',
                       buttonIcon: Icons.settings,
-                      optional: gender,
+                      optional: settings.account.email,
                     ),
                     ArrowButton(
                         onPressed: () {
@@ -120,8 +121,8 @@ class _AccountSettingsState extends State<AccountSettings> {
                                   builder: (context) => Column(
                                     children: [
                                       const Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                            20, 10, 10, 0),
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 10, 10, 0),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -186,22 +187,12 @@ class _AccountSettingsState extends State<AccountSettings> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Google'),
-                            ),
-                          ],
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          child: Text('Google'),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {}, child: const Text('Connect')),
-                          ],
-                        )
+                        ElevatedButton(
+                            onPressed: () {}, child: const Text('Connect'))
                       ],
                     ),
                     const Heading(text: 'CONTACT SETTINGS'),
@@ -255,16 +246,37 @@ class _AccountSettingsState extends State<AccountSettings> {
                         buttonText: 'Chat and messaging permissions',
                         buttonIcon: Icons.message),
                     SwitchButton(
-                        buttonText: "Allow people to follow you",
-                        buttonicon: Icons.person_add_alt_sharp,
-                        onPressed: (value) {},
-                        switchvalue: allowFollow),
+                      buttonText: "Allow people to follow you",
+                      buttonicon: Icons.person_add_alt_sharp,
+                      onPressed: (value) {},
+                      switchvalue: allowFollow,
+                    ),
+                    // optional: "Followers will be notified about posts you make to your profile and see them in their home feed."),
                     SwitchButton(
-                        buttonText: "show your follower count",
-                        buttonicon: Icons.numbers,
-                        onPressed: (value) {},
-                        switchvalue: showCount),
-                    const Heading(text: 'PRIVACY'),
+                      buttonText: "show your follower count",
+                      buttonicon: Icons.numbers,
+                      onPressed: (value) {},
+                      switchvalue: showCount,
+                    ),
+                    //optional: "Turning this off hides your follower count on your profile from others."),
+                    const Heading(text: ''),
+                    ArrowButton(
+                      onPressed: () async {
+                        bool isDeleted =
+                            await context.read<NetworkService>().deleteUser();
+                        await context.read<NetworkService>().logout();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                      buttonText: "Delete Account",
+                      buttonIcon: Icons.delete_forever_outlined,
+                      hasarrow: false,
+                    ),
                   ],
                 ),
               ),

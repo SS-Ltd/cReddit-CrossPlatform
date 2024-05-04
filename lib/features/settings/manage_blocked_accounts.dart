@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,8 @@ class ManageBlockedAccounts extends StatefulWidget {
 
 class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
   final _userNameController = TextEditingController();
-
+  List<SearchUsers> peopleResults = [];
+  bool isSearching = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -40,6 +42,9 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
               ),
               body: Column(
                 children: [
+                  const Divider(
+                    thickness: 2,
+                  ),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -52,6 +57,15 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                             borderRadius: BorderRadius.circular(40)),
                         contentPadding: const EdgeInsets.all(10),
                       ),
+                      onChanged: (value) async {
+                        peopleResults = await Provider.of<NetworkService>(
+                                context,
+                                listen: false)
+                            .getSearchUsers(value);
+                            setState(() {
+                              isSearching = true;
+                            });
+                      },
                     ),
                   ),
                   Expanded(
@@ -69,7 +83,6 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                               .safetyAndPrivacy.blockedUsers[index].username),
                           trailing: ElevatedButton(
                             onPressed: () async {
-                              print("saadasdas");
                               bool unBlock = await context
                                   .read<NetworkService>()
                                   .unBlockUser(settings.safetyAndPrivacy
@@ -80,10 +93,11 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                                       .removeAt(index);
                                 });
                                 CustomSnackBar(
-                                    context: context,
-                                    content:
-                                        "${settings.safetyAndPrivacy.blockedUsers[index].username} unblocked",
-                                    backgroundColor: Colors.green).show();
+                                        context: context,
+                                        content:
+                                            "${settings.safetyAndPrivacy.blockedUsers[index].username} unblocked",
+                                        backgroundColor: Colors.green)
+                                    .show();
                               }
                             },
                             child: const Text("Unblock"),
