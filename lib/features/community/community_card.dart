@@ -145,7 +145,7 @@ class CommunityCardState extends State<CommunityCard> {
                                 ? const BorderSide(
                                     color: Palette.blueJoinedColor, width: 2.0)
                                 : BorderSide.none,
-                            padding: EdgeInsets.zero, // Add this line
+                            padding: EdgeInsets.zero,
                           ),
                           child: FutureBuilder<bool>(
                             future: _future,

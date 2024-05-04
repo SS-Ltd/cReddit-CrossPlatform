@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/post/community_choice.dart';
@@ -476,13 +477,14 @@ class _CreatePostState extends State<CreatePost> {
                                             .read<NetworkService>()
                                             .createNewTextOrLinkPost(
                                                 type, chosenCommunity, _titleController.text, data, false, isspoiler);
-
+                                print(newpost);
                                 bool success = false;
                                 if (newpost is Map<String, dynamic>) {
                                   success = newpost['success'];
                                 } else if (newpost is bool) {
                                   success = newpost;
                                 }
+                                
 
                                 if (success) {
                                   Navigator.push(
@@ -494,6 +496,9 @@ class _CreatePostState extends State<CreatePost> {
                                     ),
                                   );
                                 }
+                                else {
+  CustomSnackBar(content: (newpost as Map<String, dynamic>)['message'], context: context).show();
+}
                               },
                     child: const Text('Post'),
                   )

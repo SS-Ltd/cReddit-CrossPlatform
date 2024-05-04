@@ -211,7 +211,7 @@ class LoginScreenState extends State<LoginScreen> {
                               if (user != null && user.isLoggedIn) {
                                 Navigator.popUntil(
                                     context, (route) => route.isFirst);
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>

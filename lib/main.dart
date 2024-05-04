@@ -28,24 +28,21 @@ void main() async {
   if (apnsToken != null) {
     // APNS token is available, make FCM plugin API requests...
     print('APNS Token: $apnsToken');
-
+  }
 
   // Get the token for this device
   String? token = await FirebaseMessaging.instance.getToken();
   print('Firebase Messaging Token: $token');
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
-    // Listen for token refresh
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-      // Save new token if necessary
-      print('Token refreshed: $newToken');
-    }).onError((err) {
-      // Handle any errors
-      print('Error refreshing token: $err');
-    });
-  } else {
-    print('APNS token is not available');
-  }
+  // Listen for token refresh
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    // Save new token if necessary
+    print('Token refreshed: $newToken');
+  }).onError((err) {
+    // Handle any errors
+    print('Error refreshing token: $err');
+  });
 
   runApp(MultiProvider(
     providers: [

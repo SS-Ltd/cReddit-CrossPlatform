@@ -1056,8 +1056,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> createNewImagePost(String communityname, String title,
-      File imageFile, bool isNSFW, bool isSpoiler) async {
+  Future<Map<String, dynamic>> createNewImagePost(String communityname,
+      String title, File imageFile, bool isNSFW, bool isSpoiler) async {
     Uri url = Uri.parse('$_baseUrl/post');
     print("wslt");
     http.MultipartRequest request = http.MultipartRequest('POST', url);
@@ -1085,7 +1085,7 @@ class NetworkService extends ChangeNotifier {
       return createNewImagePost(
           communityname, title, imageFile, isNSFW, isSpoiler);
     }
-    
+
     var parsedJson = jsonDecode(responseBody);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -1094,7 +1094,6 @@ class NetworkService extends ChangeNotifier {
         return {'success': true, 'postId': postId};
       } else {
         return {'success': false};
-        
       }
     } else {
       return {'success': false, 'message': parsedJson['message']};
