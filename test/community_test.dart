@@ -12,33 +12,27 @@ void main() {
     // Replace the following with your expected output.
     final expectedCommunities = [
       Community(
-        name: 'Sandrine_Kuhic',
-        icon: 'https://picsum.photos/seed/sBHDq9/640/480',
-        members: 9,
+        name: 'Annamae.Rohan10',
+        icon: 'https://loremflickr.com/640/480?lock=4497597033086976',
+        members: 99,
         description:
-            'Absens amplitudo animus atrocitas sui. Modi audeo ocer solitudo' 
-            ' verecundia cogo tenus modi vereor. Laborum aetas absum stella'
-            ' tergiversatio.',
+            'Sunt capio vapulus deorsum ultio comburo validus defessus. Ait caritas utique earum sumptus bibo assentator. Sulum vitae laborum pauper pax aestas ipsum currus nam caute.',
         isJoined: false,
       ),
       Community(
-        name: 'Karelle_Brown73',
-        icon: 'https://picsum.photos/seed/h2XebzN/640/480',
-        members: 8,
+        name: 'Carlotta.Kreiger61',
+        icon: 'https://loremflickr.com/640/480?lock=3683531003789312',
+        members: 94,
         description:
-            'Toties debitis auditor alienus decimus facilis. Dicta acsi aliquid'
-            ' velit adeo tantillus audeo stabilis ratione. Creta unde curatio'
-            ' cohibeo currus chirographum cui appono volubilis.',
+            'Qui absum aiunt vehemens cernuus cenaculum accendo alveus occaecati bonus. Voluptate arbitro caste celo quaerat concedo. Summa strues vereor spero.',
         isJoined: false,
       ),
       Community(
-        name: 'Schuyler.Schamberger62',
-        icon: 'https://picsum.photos/seed/fPl2qC/640/480',
-        members: 7,
+        name: 'Petra.Hilpert',
+        icon: 'https://loremflickr.com/640/480?lock=3105074939166720',
+        members: 81,
         description:
-            'Acsi appositus caute repellat creber vero certus capto. Architecto'
-            ' adeptio villa admitto utilis. Molestiae abeo soleo crapula volva'
-            ' decimus vulgivagus decens.',
+            'Laborum alias tabula surculus campana. Porro commodo numquam vulgo surgo undique voluptas. Facilis caste incidunt ventus tergiversatio conculco temperantia adaugeo ipsum taceo.',
         isJoined: false,
       ),
     ];

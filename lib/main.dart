@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
-import 'package:reddit_clone/features/moderator/mod_tools.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/theme.dart';
 import 'package:reddit_clone/services/google_service.dart';
@@ -64,9 +63,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'cReddit',
       theme: AppTheme.darkTheme,
-      home:
-//          const ModeratorTools(communityName: "",),
-          Scaffold(
+      home: Scaffold(
         body: PageView(
           children: const [
             LoginScreen(),
