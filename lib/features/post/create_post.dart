@@ -383,7 +383,10 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _istitleempty 
                         ? null : _isbodyempty && _hasImage && _insertlink && _insertpoll ? null 
                         : () async {
-                            String type = _insertlink ? "Links" : "Post";
+                            String type = _insertlink ? "Link" : "Post";
+                            String data = _insertlink
+                                ? _linkController.text
+                                : _bodyController.text;
                             bool newpost = _insertpoll
                                 ? await context
                                     //poll post
@@ -421,11 +424,9 @@ class _CreatePostState extends State<CreatePost> {
                                             type,
                                             chosenCommunity,
                                             _titleController.text,
-                                            _linkController.text,
+                                            data,
                                             false,
                                             isspoiler);
-                                    print('asdasd');
-                                    print(newpost);
                             ////////////////////////////////////////////////////////
                             if (newpost) {
                               Navigator.push(

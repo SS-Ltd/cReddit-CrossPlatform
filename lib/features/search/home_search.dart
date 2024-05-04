@@ -390,7 +390,6 @@ class _HomeSearchState extends State<HomeSearch>
                                   ),
                                   title: Text(
                                       'u/${peopleResults[index].username}'),
-                                  subtitle: const Text('cake'),
                                   trailing: FollowButton(
                                       userName: 'userName',
                                       profileName:
@@ -407,42 +406,49 @@ class _HomeSearchState extends State<HomeSearch>
                         ListView.builder(
                           itemCount: hashtagsResults.length,
                           itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () async {
-                                Post postComment = Post(
-                                  postModel: await Provider.of<NetworkService>(
-                                          context,
-                                          listen: false)
-                                      .fetchPost(hashtagsResults[index].postID),
-                                  isHomePage: false,
-                                  isSubRedditPage: false,
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CommentPage(
-                                      postId: hashtagsResults[index].postID,
-                                      postComment: postComment,
-                                      postTitle: hashtagsResults[index].postTitle,
-                                      username: hashtagsResults[index].username,
+                            return Column(
+                              children: [
+                                ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                      hashtagsResults[index].postPicture,
                                     ),
                                   ),
-                                );
-                              },
-                              child: const Column(
-                                children: [
-                                  // PostTile(
-                                  //     hashtag: hashtagsResults[index],
-                                  //     isProfile: false),
-                                  Divider(
-                                    thickness: 1,
-                                  ),
-                                ],
-                              ),
+                                  title: Text(hashtagsResults[index].username),
+                                  subtitle:
+                                      Text(hashtagsResults[index].postTitle),
+                                  onTap: () async {
+                                    Post postComment = Post(
+                                      postModel: await Provider.of<
+                                                  NetworkService>(context,
+                                              listen: false)
+                                          .fetchPost(
+                                              hashtagsResults[index].postID),
+                                      isHomePage: false,
+                                      isSubRedditPage: false,
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CommentPage(
+                                          postId: hashtagsResults[index].postID,
+                                          postComment: postComment,
+                                          postTitle:
+                                              hashtagsResults[index].postTitle,
+                                          username:
+                                              hashtagsResults[index].username,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                )
+                              ],
                             );
                           },
                         ),
-                        ///
                       ],
                     ),
                   ),
