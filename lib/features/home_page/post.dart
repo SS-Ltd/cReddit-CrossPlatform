@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
@@ -70,11 +72,21 @@ class _PostState extends State<Post> {
         return Column(
           children: [
             if (isImage(widget.postModel.content))
-              Image.network(
-                widget.postModel.content,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              )
+              if (widget.postModel.isSpoiler)
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Image.network(
+                    widget.postModel.content,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else
+                Image.network(
+                  widget.postModel.content,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
             else if (isVideo(widget.postModel.content))
               _controllerInitialized
                   ? AspectRatio(
@@ -231,7 +243,7 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                       widget.isHomePage
+                      widget.isHomePage
                           ? (widget.isSubRedditPage
                               ? GestureDetector(
                                   onTap: () {
@@ -559,7 +571,6 @@ class _PostState extends State<Post> {
                 onPressed: widget.isHomePage
                     ? () {
                         Post postComment = Post(
-
                           postModel: widget.postModel,
                           isHomePage: false,
                           isSubRedditPage: false,
@@ -569,7 +580,6 @@ class _PostState extends State<Post> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => CommentPage(
-
                               postId: widget.postModel.postId,
                               postComment: postComment,
                               postTitle: widget.postModel.title,
@@ -583,16 +593,16 @@ class _PostState extends State<Post> {
               Text(widget.postModel.commentCount.toString()),
               const Spacer(),
               if (widget.postModel.isModerator)
-              IconButton(
-                icon: const Icon(Icons.shield_outlined),
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return ModeratorPopUP(postModel: widget.postModel);
-                      });
-                },
-              ),
+                IconButton(
+                  icon: const Icon(Icons.shield_outlined),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ModeratorPopUP(postModel: widget.postModel);
+                        });
+                  },
+                ),
               IconButton(
                 icon: const Icon(Icons.ios_share),
                 //other icon: ios_share, share
