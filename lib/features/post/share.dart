@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/choose_community.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/utils/utils_time.dart';
 
 class Share extends StatefulWidget {
-
   const Share({super.key, required this.post});
 
   final PostModel? post;
@@ -67,11 +67,39 @@ class _ShareState extends State<Share> {
                 },
               ),
               const Divider(thickness: 1),
-              Text(widget.post!.title),
+              const SizedBox(height: 7),
+              Text(
+                widget.post!.title,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 25),
               Container(
-                height: 200,
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text('r/${widget.post!.communityName}'),
+                        const SizedBox(width: 10),
+                        Text(
+                          formatTimestamp(widget.post!.createdAt),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text('u/${widget.post!.username}'),
+                      ],
+                    ),
+                    Text(
+                      widget.post!.title,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
                 ),
               ),
             ],
