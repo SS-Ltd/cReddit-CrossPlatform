@@ -13,7 +13,24 @@ class _ChooseCommunityState extends State<ChooseCommunity>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Dialog.fullscreen(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Choose a Community'),
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {},
+              child: const Text("Next"),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

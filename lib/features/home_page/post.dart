@@ -671,7 +671,7 @@ class _PostState extends State<Post> {
                                                   MaterialPageRoute(
                                                     fullscreenDialog: true,
                                                     builder: (context) =>
-                                                        const Share(),
+                                                        Share(post: widget.postModel,),
                                                   ),
                                                 );
                                               },
