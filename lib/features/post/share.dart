@@ -68,6 +68,12 @@ class _ShareState extends State<Share> {
               ),
               const Divider(thickness: 1),
               Text(widget.post!.title),
+              Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  
+                ),
+              ),
             ],
           ),
         ),
