@@ -24,8 +24,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://creddit.tech/API';
-  //final String _baseUrl = 'http://192.168.1.10:3000';
+  // final String _baseUrl = 'https://creddit.tech/API';
+  final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -1522,4 +1522,17 @@ class NetworkService extends ChangeNotifier {
         'Content-Type': 'application/json',
         if (_cookie.isNotEmpty) 'Cookie': _cookie,
       };
+
+  String getAccessToken() {
+    String? rawCookie = _headers['Cookie'];
+    if (rawCookie != null) {
+      var start = rawCookie.indexOf('accessToken=');
+      if (start != -1) {
+        start += 'accessToken='.length;
+        var end = rawCookie.indexOf(';', start);
+        return rawCookie.substring(start, end);
+      }
+    }
+    return '';
+  }
 }

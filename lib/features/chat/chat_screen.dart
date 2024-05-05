@@ -23,11 +23,7 @@ class ChatScreenState extends State<ChatScreen> {
   final messageController = TextEditingController();
   bool isFirstMessage = true; // Assuming this is to check if it's a new chat
   List<ChatMessages> chatMessages = [];
-  IO.Socket socket = IO.io('http://192.168.1.10:3000', <String, dynamic>{
-    'autoConnect': false,
-    'transports': ['websocket'],
-  });
-
+  late IO.Socket socket;
   Future<void> fetchChatMessages() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final messages = await networkService.fetchChatMessages(widget.chatId);
@@ -39,7 +35,6 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     socket.disconnect();
   }
@@ -67,6 +62,15 @@ class ChatScreenState extends State<ChatScreen> {
         recipientId: 'user2',
         message: 'Hello!!!!!!!',
         timestamp: DateTime.now()));
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final accessToken = networkService.getAccessToken();
+    socket = IO.io('http://192.168.1.10:3000', <String, dynamic>{
+      'autoConnect': false,
+      'transports': ['websocket'],
+      'extraHeaders': {
+        'cookie': 'accessToken=$accessToken',
+      },
+    });
     fetchChatMessages();
     connectAndListen();
   }
@@ -252,7 +256,8 @@ class ChatScreenState extends State<ChatScreen> {
               socket.emit('chatMessage', {
                 'username': user.username,
                 'message': messageController.text,
-                'roomId': widget.chatId
+                'roomId': widget.chatId,
+                //MAHMOUD ENTA 3AYZ HAGA ZY KDA?
               });
             },
           ),
