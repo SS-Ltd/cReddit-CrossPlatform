@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
+import 'package:reddit_clone/features/home_page/choose_community.dart';
+import 'package:reddit_clone/features/post/share.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
@@ -604,10 +606,107 @@ class _PostState extends State<Post> {
                   },
                 ),
               IconButton(
-                icon: const Icon(Icons.ios_share),
-                //other icon: ios_share, share
+                icon: const Icon(Icons.share),
                 onPressed: () {
-                  // share post
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          BottomSheet(
+                            onClosing: () {},
+                            builder: (context) => Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 20, 10, 20),
+                              child: Column(
+                                children: [
+                                  const Row(
+                                    children: [
+                                      Text(
+                                        "Share",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    fullscreenDialog: true,
+                                                    builder: (context) =>
+                                                        const ChooseCommunity(),
+                                                  ),
+                                                );
+                                              },
+                                              icon: const Icon(Icons.share),
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                              ),
+                                            ),
+                                            const Text("Community"),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    fullscreenDialog: true,
+                                                    builder: (context) =>
+                                                        const Share(),
+                                                  ),
+                                                );
+                                              },
+                                              icon: const Icon(Icons.reddit),
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                              ),
+                                            ),
+                                            const Text("Profile"),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(Icons.link),
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.white),
+                                              ),
+                                            ),
+                                            const Text("Copy Link"),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
               if (widget.shareNumber > 0) Text(widget.shareNumber.toString()),
