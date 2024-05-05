@@ -96,6 +96,49 @@ class _ChooseCommunityState extends State<ChooseCommunity> {
               const SizedBox(
                 height: 20,
               ),
+              if (joinedCommunities != null)
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("Joined"),
+                  ],
+                ),
+              if (joinedCommunities != null)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: joinedCommunities!.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            onTap: () {
+                              widget.homePage
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        fullscreenDialog: true,
+                                        builder: (context) => Share(
+                                          post: widget.post,
+                                          communityName:
+                                              joinedCommunities![index].name,
+                                        ),
+                                      ),
+                                    )
+                                  : Navigator.of(context).pop(
+                                      joinedCommunities![index].name,
+                                    );
+                            },
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  joinedCommunities![index].profilePicture),
+                            ),
+                            title: Text('r/${joinedCommunities![index].name}'),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
               if (listRecentlyVisited.isNotEmpty)
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -137,49 +180,6 @@ class _ChooseCommunityState extends State<ChooseCommunity> {
                                   NetworkImage(listRecentlyVisited[index].icon),
                             ),
                             title: Text('r/${listRecentlyVisited[index].name}'),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              if (joinedCommunities != null)
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text("Joined"),
-                  ],
-                ),
-              if (joinedCommunities != null)
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: joinedCommunities!.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            onTap: () {
-                              widget.homePage
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (context) => Share(
-                                          post: widget.post,
-                                          communityName:
-                                              joinedCommunities![index].name,
-                                        ),
-                                      ),
-                                    )
-                                  : Navigator.of(context).pop(
-                                      joinedCommunities![index].name,
-                                    );
-                            },
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  joinedCommunities![index].profilePicture),
-                            ),
-                            title: Text('r/${joinedCommunities![index].name}'),
                           ),
                         ],
                       );

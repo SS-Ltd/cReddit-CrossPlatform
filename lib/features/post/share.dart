@@ -11,11 +11,10 @@ class Share extends StatefulWidget {
       {super.key,
       required this.post,
       required this.communityName,
-      this.community});
+      });
 
   final PostModel? post;
   final String communityName;
-  final Subreddit? community;
 
   @override
   State<StatefulWidget> createState() {
@@ -26,6 +25,12 @@ class Share extends StatefulWidget {
 class _ShareState extends State<Share> {
   String chosenCommunity = "";
   Subreddit? details;
+
+  @override
+  void initState() {
+    super.initState();
+    getSubredditDetails(widget.communityName);
+  }
 
   Future getSubredditDetails(String subredditName) async {
     final subredditDetails =
@@ -75,10 +80,7 @@ class _ShareState extends State<Share> {
                               )
                             //not handled
                             : CircleAvatar(
-                                backgroundImage: NetworkImage(context
-                                    .read<NetworkService>()
-                                    .user!
-                                    .profilePicture),
+                                backgroundImage: NetworkImage(details!.icon),
                               ),
                     const SizedBox(width: 10),
                     Text(
