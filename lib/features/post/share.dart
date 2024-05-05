@@ -6,9 +6,10 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class Share extends StatefulWidget {
-  const Share({super.key, required this.post});
+  const Share({super.key, required this.post, this.communityName});
 
   final PostModel? post;
+  final String? communityName;
 
   @override
   State<StatefulWidget> createState() {
@@ -17,6 +18,9 @@ class Share extends StatefulWidget {
 }
 
 class _ShareState extends State<Share> {
+
+  String chosenCommunity = "";
+
   @override
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
@@ -56,14 +60,19 @@ class _ShareState extends State<Share> {
                     const Icon(Icons.keyboard_arrow_down_sharp),
                   ],
                 ),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  final returnedData = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (context) => const ChooseCommunity(),
+                      builder: (context) => const ChooseCommunity(homePage: false,),
                     ),
                   );
+                  setState(() {
+                    if(returnedData != null){
+                      chosenCommunity = returnedData.toString();
+                    }
+                  });
                 },
               ),
               const Divider(thickness: 1),

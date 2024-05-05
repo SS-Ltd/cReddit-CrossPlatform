@@ -648,7 +648,7 @@ class _PostState extends State<Post> {
                                                   MaterialPageRoute(
                                                     fullscreenDialog: true,
                                                     builder: (context) =>
-                                                        const ChooseCommunity(),
+                                                        ChooseCommunity(homePage: true, post: widget.postModel,),
                                                   ),
                                                 );
                                               },
