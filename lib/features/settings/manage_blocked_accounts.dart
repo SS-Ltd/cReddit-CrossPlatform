@@ -62,9 +62,9 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                                 context,
                                 listen: false)
                             .getSearchUsers(value);
-                            setState(() {
-                              isSearching = true;
-                            });
+                        setState(() {
+                          isSearching = true;
+                        });
                       },
                     ),
                   ),
@@ -74,11 +74,12 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                       itemBuilder: (context, index) {
                         return ListTile(
                           leading: CircleAvatar(
-                              radius: 10,
-                              backgroundImage: NetworkImage(settings
-                                  .safetyAndPrivacy
-                                  .blockedUsers[index]
-                                  .profilePicture)),
+                            radius: 10,
+                            backgroundImage: NetworkImage(settings
+                                .safetyAndPrivacy
+                                .blockedUsers[index]
+                                .profilePicture),
+                          ),
                           title: Text(settings
                               .safetyAndPrivacy.blockedUsers[index].username),
                           trailing: ElevatedButton(

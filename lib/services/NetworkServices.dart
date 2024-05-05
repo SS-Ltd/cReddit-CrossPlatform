@@ -432,6 +432,20 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> unmuteCommunity(String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/mute');
+    final response = await http.delete(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return unmuteCommunity(communityName);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }  
+
   Future<bool> saveOrUnsaveComment(String commentId, bool isSaved) async {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/save');
     final response = await http.patch(url,

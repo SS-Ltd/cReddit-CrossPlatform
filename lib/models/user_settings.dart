@@ -101,17 +101,17 @@ class SocialLink {
 
 class SafetyAndPrivacy {
   final List<BlockedUser> blockedUsers;
- // final List<String> mutedCommunities;
+  final List<MutedCommunities> mutedCommunities;
 
   SafetyAndPrivacy({
     required this.blockedUsers,
-   // required this.mutedCommunities,
+    required this.mutedCommunities,
   });
 
   factory SafetyAndPrivacy.fromJson(Map<String, dynamic> json) {
     return SafetyAndPrivacy(
       blockedUsers: (json['blockedUsers'] as List).map((user) => BlockedUser.fromJson(user)).toList(),
-     // mutedCommunities: List<String>.from(json['mutedCommunities']['name'] ?? []),
+      mutedCommunities: (json['mutedCommunities'] as List).map((community) => MutedCommunities.fromJson(community)).toList(),
     );
   }
 }
@@ -212,6 +212,20 @@ class BlockedUser{
   factory BlockedUser.fromJson(Map<String, dynamic> json){
     return BlockedUser(
       username: json['username'],
+      profilePicture: json['profilePicture'],
+    );
+  }
+}
+
+class MutedCommunities{
+  String name;
+  String profilePicture;
+
+  MutedCommunities({required this.name, required this.profilePicture});
+
+  factory MutedCommunities.fromJson(Map<String, dynamic> json){
+    return MutedCommunities(
+      name: json['name'],
       profilePicture: json['profilePicture'],
     );
   }
