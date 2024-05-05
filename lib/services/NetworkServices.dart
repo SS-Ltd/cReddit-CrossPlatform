@@ -382,6 +382,28 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> editTextPost(String postId, String content) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId');
+
+    http.MultipartRequest request = http.MultipartRequest('PATCH', url);
+
+    request.headers.addAll(_headers);
+
+    request.fields['content'] = content;
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return editTextPost(postId, content);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> joinSubReddit(String subredditName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$subredditName/join');
     final response = await http.post(url, headers: _headers);
