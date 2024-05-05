@@ -8,6 +8,7 @@ import 'package:reddit_clone/common/delete_post_pop_up.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
+import 'package:reddit_clone/features/post/edit_post.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
@@ -434,12 +435,22 @@ class _CommentPageState extends State<CommentPage> {
             title: Text('Copy text'),
           )),
       if (widget.username == context.read<NetworkService>().user?.username)
-        const PopupMenuItem<Menu>(
-            value: Menu.edit,
-            child: ListTile(
-              leading: Icon(Icons.edit),
-              title: Text('Edit'),
-            )),
+        PopupMenuItem<Menu>(
+          value: Menu.edit,
+          child: ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (context) => EditPost(postId: widget.postId),
+                ),
+              );
+            },
+          ),
+        ),
       // if (widget.username == context.read<NetworkService>().user?.username)
       //   const PopupMenuItem<Menu>(
       //       value: Menu.markspoiler,
