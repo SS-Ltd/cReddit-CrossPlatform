@@ -74,21 +74,24 @@ class _PostState extends State<Post> {
         return Column(
           children: [
             if (isImage(widget.postModel.content))
-              if (widget.postModel.isSpoiler)
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Image.network(
-                    widget.postModel.content,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              else
-                Image.network(
-                  widget.postModel.content,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                )
+              ClipRect(
+                child: Stack(
+                  children: [
+                    Image.network(
+                      widget.postModel.content,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                    if (widget.postModel.isSpoiler)
+                      Positioned.fill(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                          child: Container(color: Colors.transparent,),
+                        ),
+                      ),
+                  ],
+                ),
+              )
             else if (isVideo(widget.postModel.content))
               _controllerInitialized
                   ? AspectRatio(
