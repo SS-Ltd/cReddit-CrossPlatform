@@ -6,14 +6,12 @@ import 'package:reddit_clone/services/networkServices.dart';
 /// A widget that allows the user to choose a community for posting.
 class CommunityChoice extends StatefulWidget {
   /// The chosen community for posting.
-  String chosenCommunity;
 
   /// Constructs a [CommunityChoice] widget.
   ///
   /// The [chosenCommunity] parameter is required.
-  CommunityChoice({
+  const CommunityChoice({
     super.key,
-    required this.chosenCommunity,
   });
 
   @override

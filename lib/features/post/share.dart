@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:reddit_clone/features/home_page/choose_community.dart';
+import 'package:reddit_clone/features/post/choose_community.dart';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class Share extends StatefulWidget {
-  const Share({super.key, required this.post, this.communityName});
+  const Share(
+      {super.key,
+      required this.post,
+      required this.communityName,
+      this.community});
 
   final PostModel? post;
-  final String? communityName;
+  final String communityName;
+  final Subreddit? community;
 
   @override
   State<StatefulWidget> createState() {
@@ -18,8 +24,16 @@ class Share extends StatefulWidget {
 }
 
 class _ShareState extends State<Share> {
-
   String chosenCommunity = "";
+  Subreddit? details;
+
+  Future getSubredditDetails(String subredditName) async {
+    final subredditDetails =
+        await context.read<NetworkService>().getSubredditDetails(subredditName);
+    setState(() {
+      details = subredditDetails;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +61,35 @@ class _ShareState extends State<Share> {
               GestureDetector(
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          context.read<NetworkService>().user!.profilePicture),
-                    ),
+                    (widget.communityName == "My Profile" ||
+                            chosenCommunity == "My Profile")
+                        ? CircleAvatar(
+                            backgroundImage: NetworkImage(context
+                                .read<NetworkService>()
+                                .user!
+                                .profilePicture),
+                          )
+                        : (chosenCommunity != "")
+                            ? CircleAvatar(
+                                backgroundImage: NetworkImage(details!.icon),
+                              )
+                            //not handled
+                            : CircleAvatar(
+                                backgroundImage: NetworkImage(context
+                                    .read<NetworkService>()
+                                    .user!
+                                    .profilePicture),
+                              ),
                     const SizedBox(width: 10),
-                    const Text(
-                      "My Profile",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    Text(
+                      (widget.communityName == "My Profile" ||
+                              chosenCommunity == "My Profile")
+                          ? "My Profile"
+                          : (chosenCommunity != "")
+                              ? "r/$chosenCommunity"
+                              : "r/${widget.communityName}",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const Icon(Icons.keyboard_arrow_down_sharp),
                   ],
@@ -65,12 +99,18 @@ class _ShareState extends State<Share> {
                     context,
                     MaterialPageRoute(
                       fullscreenDialog: true,
-                      builder: (context) => const ChooseCommunity(homePage: false,),
+                      builder: (context) => const ChooseCommunity(
+                        homePage: false,
+                      ),
                     ),
                   );
                   setState(() {
-                    if(returnedData != null){
+                    if (returnedData != null) {
                       chosenCommunity = returnedData.toString();
+                      if (chosenCommunity != "My Profile") {
+                        getSubredditDetails(chosenCommunity);
+                      }
+                      print(chosenCommunity);
                     }
                   });
                 },

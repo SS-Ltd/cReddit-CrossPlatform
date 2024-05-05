@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
-import 'package:reddit_clone/features/home_page/choose_community.dart';
+import 'package:reddit_clone/features/post/choose_community.dart';
 import 'package:reddit_clone/features/post/share.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -86,7 +86,9 @@ class _PostState extends State<Post> {
                       Positioned.fill(
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child: Container(color: Colors.transparent,),
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
                         ),
                       ),
                   ],
@@ -648,7 +650,10 @@ class _PostState extends State<Post> {
                                                   MaterialPageRoute(
                                                     fullscreenDialog: true,
                                                     builder: (context) =>
-                                                        ChooseCommunity(homePage: true, post: widget.postModel,),
+                                                        ChooseCommunity(
+                                                      homePage: true,
+                                                      post: widget.postModel,
+                                                    ),
                                                   ),
                                                 );
                                               },
@@ -670,8 +675,11 @@ class _PostState extends State<Post> {
                                                   context,
                                                   MaterialPageRoute(
                                                     fullscreenDialog: true,
-                                                    builder: (context) =>
-                                                        Share(post: widget.postModel,),
+                                                    builder: (context) => Share(
+                                                      post: widget.postModel,
+                                                      communityName:
+                                                          "My Profile",
+                                                    ),
                                                   ),
                                                 );
                                               },

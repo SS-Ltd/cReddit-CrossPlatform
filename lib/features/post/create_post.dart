@@ -65,7 +65,6 @@ class _CreatePostState extends State<CreatePost> {
   bool _hasVideo = false;
   VideoPlayerController? _videoPlayerController;
 
-
   final _linkController = TextEditingController();
   bool _insertlink = false;
   bool _islinkempty = true;
@@ -170,15 +169,14 @@ class _CreatePostState extends State<CreatePost> {
           _hasVideo = true;
 
           _videoPlayerController = VideoPlayerController.file(_video!)
-        ..initialize().then((_) {
-          setState(() {});
-        });
+            ..initialize().then((_) {
+              setState(() {});
+            });
         }
       });
     }
     _isImagePickerOpen = false;
   }
-
 
   @override
   void dispose() {
@@ -458,8 +456,10 @@ class _CreatePostState extends State<CreatePost> {
                                             _titleController.text,
                                             _bodyController.text,
                                             _optionControllers
-                                                .where((controller) => controller.text.isNotEmpty)
-                                                .map((controller) => controller.text)
+                                                .where((controller) =>
+                                                    controller.text.isNotEmpty)
+                                                .map((controller) =>
+                                                    controller.text)
                                                 .toList(),
                                             endsInDateTime, //month-day-year
                                             false,
@@ -476,15 +476,18 @@ class _CreatePostState extends State<CreatePost> {
                                         : await context
                                             .read<NetworkService>()
                                             .createNewTextOrLinkPost(
-                                                type, chosenCommunity, _titleController.text, data, false, isspoiler);
-                                print(newpost);
+                                                type,
+                                                chosenCommunity,
+                                                _titleController.text,
+                                                data,
+                                                false,
+                                                isspoiler);
                                 bool success = false;
                                 if (newpost is Map<String, dynamic>) {
                                   success = newpost['success'];
                                 } else if (newpost is bool) {
                                   success = newpost;
                                 }
-                                
 
                                 if (success) {
                                   Navigator.push(
@@ -495,10 +498,13 @@ class _CreatePostState extends State<CreatePost> {
                                       ),
                                     ),
                                   );
+                                } else {
+                                  CustomSnackBar(
+                                          content: (newpost as Map<String,
+                                              dynamic>)['message'],
+                                          context: context)
+                                      .show();
                                 }
-                                else {
-  CustomSnackBar(content: (newpost as Map<String, dynamic>)['message'], context: context).show();
-}
                               },
                     child: const Text('Post'),
                   )
@@ -513,9 +519,7 @@ class _CreatePostState extends State<CreatePost> {
                                   context,
                                   MaterialPageRoute(
                                     fullscreenDialog: true,
-                                    builder: (context) => CommunityChoice(
-                                      chosenCommunity: chosenCommunity,
-                                    ),
+                                    builder: (context) => const CommunityChoice(),
                                   ),
                                 );
                                 setState(
@@ -545,9 +549,7 @@ class _CreatePostState extends State<CreatePost> {
                           context,
                           MaterialPageRoute(
                             fullscreenDialog: true,
-                            builder: (context) => CommunityChoice(
-                              chosenCommunity: chosenCommunity,
-                            ),
+                            builder: (context) => const CommunityChoice(),
                           ),
                         );
                         setState(
@@ -768,71 +770,76 @@ class _CreatePostState extends State<CreatePost> {
                 },
               ),
               _hasImage
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Stack(
-                      children: <Widget>[
-                        Image.file(_image!),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: IconButton(
-                            icon: const Icon(Icons.cancel, color: Palette.greyColor),
-                            onPressed: () {
-                              setState(() {
-                                _hasImage = false;
-                                _image = null;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-              _hasVideo
-                ? (_videoPlayerController?.value.isInitialized ?? false)
-                    ? Stack(
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Stack(
                         children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (_videoPlayerController!.value.isPlaying) {
-                                  _videoPlayerController!.pause();
-                                } else {
-                                  _videoPlayerController!.play();
-                                }
-                              });
-                            },
-                            child: AspectRatio(
-                              aspectRatio: _videoPlayerController!.value.aspectRatio,
-                              child: Stack(
-                                alignment: Alignment.bottomCenter,
-                                children: <Widget>[
-                                  VideoPlayer(_videoPlayerController!),
-                                  VideoProgressIndicator(_videoPlayerController!, allowScrubbing: true),
-                                ],
-                              ),
-                            ),
-                          ),
+                          Image.file(_image!),
                           Positioned(
                             top: 4,
                             right: 4,
                             child: IconButton(
-                              icon: const Icon(Icons.cancel, color: Palette.greyColor),
+                              icon: const Icon(Icons.cancel,
+                                  color: Palette.greyColor),
                               onPressed: () {
                                 setState(() {
-                                  _hasVideo = false;
-                                  _videoPlayerController?.dispose();
-                                  _videoPlayerController = null;
+                                  _hasImage = false;
+                                  _image = null;
                                 });
                               },
                             ),
                           ),
                         ],
-                      )
-                    : CustomLoadingIndicator()
-                : const SizedBox(),
+                      ),
+                    )
+                  : const SizedBox(),
+              _hasVideo
+                  ? (_videoPlayerController?.value.isInitialized ?? false)
+                      ? Stack(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (_videoPlayerController!.value.isPlaying) {
+                                    _videoPlayerController!.pause();
+                                  } else {
+                                    _videoPlayerController!.play();
+                                  }
+                                });
+                              },
+                              child: AspectRatio(
+                                aspectRatio:
+                                    _videoPlayerController!.value.aspectRatio,
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: <Widget>[
+                                    VideoPlayer(_videoPlayerController!),
+                                    VideoProgressIndicator(
+                                        _videoPlayerController!,
+                                        allowScrubbing: true),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 4,
+                              right: 4,
+                              child: IconButton(
+                                icon: const Icon(Icons.cancel,
+                                    color: Palette.greyColor),
+                                onPressed: () {
+                                  setState(() {
+                                    _hasVideo = false;
+                                    _videoPlayerController?.dispose();
+                                    _videoPlayerController = null;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      : CustomLoadingIndicator()
+                  : const SizedBox(),
               Row(
                 children: [
                   IconButton(
@@ -849,9 +856,7 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _insertlink || _insertpoll || _hasVideo
                         ? null
                         : () {
-                            print("aloo");
                             getImage();
-                            print("alooo2");
                           },
                     icon: const Icon(Icons.image),
                   ),
@@ -859,9 +864,7 @@ class _CreatePostState extends State<CreatePost> {
                     onPressed: _insertlink || _insertpoll || _hasImage
                         ? null
                         : () {
-                            print("aloo");
                             getVideo();
-                            print("alooo2");
                           },
                     icon: const Icon(Icons.video_library_outlined),
                   ),
