@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
@@ -264,10 +266,14 @@ class _PostState extends State<Post> {
                                   },
                                   child: Row(
                                     children: [
-                                      Text(
-                                        'u/${widget.postModel.username}',
-                                        style: const TextStyle(
-                                          color: Palette.whiteColor,
+                                      Semantics(
+                                        identifier: 'post username',
+                                        label: 'post username',
+                                        child: Text(
+                                          'u/${widget.postModel.username}',
+                                          style: const TextStyle(
+                                            color: Palette.whiteColor,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: 10),
@@ -328,10 +334,14 @@ class _PostState extends State<Post> {
                                       },
                                       child: Row(
                                         children: [
-                                          Text(
-                                            'r/${widget.postModel.communityName}',
-                                            style: const TextStyle(
-                                              color: Palette.whiteColor,
+                                          Semantics(
+                                            identifier: 'post subreddit',
+                                            label: 'post subreddit',
+                                            child: Text(
+                                              'r/${widget.postModel.communityName}',
+                                              style: const TextStyle(
+                                                color: Palette.whiteColor,
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(width: 10),
@@ -393,10 +403,14 @@ class _PostState extends State<Post> {
                                                   )),
                                         );
                                       },
-                                      child: Text(
-                                        'r/${widget.postModel.communityName}',
-                                        style: const TextStyle(
-                                          color: Colors.grey,
+                                      child: Semantics(
+                                        identifier: 'post subreddit',
+                                        label: 'post subreddit',
+                                        child: Text(
+                                          'r/${widget.postModel.communityName}',
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -413,10 +427,14 @@ class _PostState extends State<Post> {
                                       },
                                       child: Row(
                                         children: [
-                                          Text(
-                                            'u/${widget.postModel.username}',
-                                            style: const TextStyle(
-                                              color: Colors.blue,
+                                          Semantics(
+                                            identifier: 'post username',
+                                            label: 'post username',
+                                            child: Text(
+                                              'u/${widget.postModel.username}',
+                                              style: const TextStyle(
+                                                color: Colors.blue,
+                                              ),
                                             ),
                                           ),
                                           Text(
@@ -462,11 +480,15 @@ class _PostState extends State<Post> {
                 : null,
             child: Padding(
               padding: const EdgeInsets.only(left: 10, right: 10),
-              child: Text(
-                widget.postModel.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+              child: Semantics(
+                identifier: 'post title',
+                label: 'post title',
+                child: Text(
+                  widget.postModel.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
             ),
@@ -573,7 +595,10 @@ class _PostState extends State<Post> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.chat_bubble_outline),
+                icon: Semantics(
+                    identifier: "post comment",
+                    label: "post comment",
+                    child: const Icon(Icons.chat_bubble_outline)),
                 //other icon: add_comment,comment
                 onPressed: widget.isHomePage
                     ? () {
@@ -611,7 +636,10 @@ class _PostState extends State<Post> {
                   },
                 ),
               IconButton(
-                icon: const Icon(Icons.share),
+                icon: Semantics(
+                    identifier: "post share",
+                    label: "post share",
+                    child: const Icon(Icons.share)),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
