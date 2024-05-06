@@ -71,14 +71,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
               ),
             ),
             SizedBox(
-              height: 100, // Increased height for better layout
+              height: 90,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.channelInfo.length,
                 itemBuilder: (context, index) {
                   final channel = widget.channelInfo[index];
                   return Container(
-                    width: 375, // Adjusted width
+                    width: MediaQuery.of(context).size.width - 15,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -100,34 +100,47 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(channel['name'],
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16)),
-                              Row(
-                                children: [
-                                  Text(channel['description'],
-                                      style: TextStyle(
+                              Text(
+                                channel['name'],
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        channel['description'],
+                                        style: TextStyle(
                                           color: Colors.grey[400],
-                                          fontSize: 12)),
-                                  const SizedBox(width: 10),
-                                  const CircleAvatar(
+                                          fontSize: 12,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage(
-                                          'https://picsum.photos/200')),
-                                  const CircleAvatar(
+                                      backgroundImage: NetworkImage('https://picsum.photos/200'),
+                                    ),
+                                    const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage(
-                                          'https://picsum.photos/201')),
-                                  const CircleAvatar(
+                                      backgroundImage: NetworkImage('https://picsum.photos/201'),
+                                    ),
+                                    const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage(
-                                          'https://picsum.photos/202')),
-                                  const SizedBox(width: 10),
-                                  const SpinKitThreeBounce(
-                                      color: Colors.white, size: 10.0),
-                                ],
+                                      backgroundImage: NetworkImage('https://picsum.photos/202'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    const SpinKitThreeBounce(color: Colors.white, size: 10.0),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
