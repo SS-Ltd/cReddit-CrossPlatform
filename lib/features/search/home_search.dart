@@ -29,6 +29,7 @@ class HomeSearch extends StatefulWidget {
 class _HomeSearchState extends State<HomeSearch>
     with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   List<SearchComments> commentsResults = [];
   List<SearchPosts> postsResults = [];
@@ -45,10 +46,40 @@ class _HomeSearchState extends State<HomeSearch>
   late final TabController _tabController;
   int _selectedIndex = 0;
   final FocusNode _focusNode = FocusNode();
+  int commentsPage = 1;
+  int postsPage = 1;
+  int communitiesPage = 1;
+  int peoplePage = 1;
+  int hashtagsPage = 1;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent -
+              _scrollController.position.pixels <=
+          50.0) {
+        print("new data");
+        // The user has scrolled to the end of the list, fetch more data
+        switch (_selectedIndex) {
+          case 0:
+            getPostsData();
+            break;
+          case 1:
+            getCommunitiesData();
+            break;
+          case 2:
+            getCommentsData();
+            break;
+          case 3:
+            getUsersData();
+            break;
+          case 4:
+            getHashtagsData();
+            break;
+        }
+      }
+    });
     _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(() {
       setState(() {
@@ -59,8 +90,80 @@ class _HomeSearchState extends State<HomeSearch>
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void getCommentsData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+    List<SearchComments> newComments =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchComments(searchQuery, '', sortOption, "", commentsPage);
+    setState(() {
+      commentsResults.addAll(newComments);
+      isLoading = false; // End loading
+      commentsPage++; // Increment page number
+    });
+  }
+
+  void getPostsData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+    List<SearchPosts> newPosts =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchPosts(searchQuery, '', sortOption, timeOption, postsPage);
+    setState(() {
+      postsResults.addAll(newPosts);
+      isLoading = false; // End loading
+      postsPage++; // Increment page number
+    });
+  }
+
+  void getCommunitiesData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+    List<SearchCommunities> newCommunities =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchCommunities(searchQuery, true, communitiesPage);
+    setState(() {
+      communitiesResults.addAll(newCommunities);
+      isLoading = false; // End loading
+      communitiesPage++; // Increment page number
+    });
+  }
+
+  void getUsersData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+    List<SearchUsers> newUsers =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchUsers(searchQuery, peoplePage);
+    setState(() {
+      peopleResults.addAll(newUsers);
+      isLoading = false; // End loading
+      peoplePage++; // Increment page number
+    });
+  }
+
+  void getHashtagsData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+    List<SearchHashtag> newHashtags =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchHashtags(searchQuery, hashtagsPage);
+    setState(() {
+      hashtagsResults.addAll(newHashtags);
+      isLoading = false; // End loading
+      hashtagsPage++; // Increment page number
+    });
   }
 
   void getAllData() async {
@@ -95,48 +198,46 @@ class _HomeSearchState extends State<HomeSearch>
             },
             icon: const Icon(Icons.arrow_back),
           ),
-          title: Focus(
-            canRequestFocus: canRequestFocus,
-            child: TextField(
-              focusNode: _focusNode,
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search Reddit',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    _searchController.clear();
-                  },
-                  icon: const Icon(Icons.clear),
-                ),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                contentPadding: const EdgeInsets.all(10),
+          title: TextField(
+            canRequestFocus: true,
+            focusNode: _focusNode,
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search Reddit',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  _searchController.clear();
+                },
+                icon: const Icon(Icons.clear),
               ),
-              onChanged: (value) async {
-                if (!mounted) return;
-
-                setState(() {
-                  searchQuery = value;
-                });
-                if (value.isEmpty) {
-                  setState(() {
-                    commentsResults.clear();
-                    postsResults.clear();
-                    communitiesResults.clear();
-                    peopleResults.clear();
-                    hashtagsResults.clear();
-                  });
-                  return;
-                }
-                getAllData();
-              },
-              onTap: () {
-                setState(() {
-                  isSearching = true;
-                });
-              },
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+              contentPadding: const EdgeInsets.all(10),
             ),
+            onChanged: (value) async {
+              if (!mounted) return;
+
+              setState(() {
+                searchQuery = value;
+              });
+              if (value.isEmpty) {
+                setState(() {
+                  commentsResults.clear();
+                  postsResults.clear();
+                  communitiesResults.clear();
+                  peopleResults.clear();
+                  hashtagsResults.clear();
+                });
+                return;
+              }
+              getAllData();
+            },
+            onTap: () {
+              setState(() {
+                isSearching = true;
+              });
+            },
           ),
           bottom: isSearching
               ? null
@@ -183,6 +284,7 @@ class _HomeSearchState extends State<HomeSearch>
                   if (communitiesResults.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
+                        controller: _scrollController,
                         itemCount: communitiesResults.length,
                         itemBuilder: (context, index) {
                           return ListTile(
@@ -216,6 +318,7 @@ class _HomeSearchState extends State<HomeSearch>
                   if (peopleResults.isNotEmpty)
                     Expanded(
                       child: ListView.builder(
+                        controller: _scrollController,
                         itemCount: peopleResults.length,
                         itemBuilder: (context, index) {
                           return ListTile(
@@ -517,6 +620,7 @@ class _HomeSearchState extends State<HomeSearch>
                             : isLoading
                                 ? CustomLoadingIndicator()
                                 : ListView.builder(
+                                    controller: _scrollController,
                                     itemCount: postsResults.length,
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
@@ -563,6 +667,7 @@ class _HomeSearchState extends State<HomeSearch>
                             : isLoading
                                 ? CustomLoadingIndicator()
                                 : ListView.builder(
+                                    controller: _scrollController,
                                     itemCount: communitiesResults.length,
                                     itemBuilder: (context, index) {
                                       Community community = Community(
@@ -606,6 +711,7 @@ class _HomeSearchState extends State<HomeSearch>
                             : isLoading
                                 ? CustomLoadingIndicator()
                                 : ListView.builder(
+                                    controller: _scrollController,
                                     itemCount: commentsResults.length,
                                     itemBuilder: (context, index) {
                                       return Column(
@@ -626,6 +732,7 @@ class _HomeSearchState extends State<HomeSearch>
                             : isLoading
                                 ? CustomLoadingIndicator()
                                 : ListView.builder(
+                                    controller: _scrollController,
                                     itemCount: peopleResults.length,
                                     itemBuilder: (context, index) {
                                       return Column(
@@ -672,6 +779,7 @@ class _HomeSearchState extends State<HomeSearch>
                             : isLoading
                                 ? CustomLoadingIndicator()
                                 : ListView.builder(
+                                    controller: _scrollController,
                                     itemCount: hashtagsResults.length,
                                     itemBuilder: (context, index) {
                                       return Column(
@@ -758,12 +866,6 @@ class _HomeSearchState extends State<HomeSearch>
           style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         const Text('Double-check your spelling or try a different keywords'),
-        ElevatedButton(
-          onPressed: () {
-            FocusScope.of(context).requestFocus(_focusNode);
-          },
-          child: const Text('Adjust Search'),
-        ),
       ],
     );
   }

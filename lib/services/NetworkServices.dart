@@ -761,6 +761,7 @@ class NetworkService extends ChangeNotifier {
       'user': username,
       'sort': sort,
       'time': timeOption,
+      'page': pageNumber.toString()
     };
     Uri url = Uri.parse('$_baseUrl/search/comments')
         .replace(queryParameters: parameters);
@@ -783,7 +784,7 @@ class NetworkService extends ChangeNotifier {
 
   Future<List<SearchHashtag>> getSearchHashtags(
       String hashtag, int pageNumber) async {
-    final parameters = {'query': hashtag};
+    final parameters = {'query': hashtag, 'page': pageNumber.toString()};
     Uri url = Uri.parse('$_baseUrl/search/hashtags')
         .replace(queryParameters: parameters);
 
@@ -813,6 +814,7 @@ class NetworkService extends ChangeNotifier {
       'user': username,
       'sort': sort,
       'time': time,
+      'page': pageNumber.toString()
     };
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
@@ -838,6 +840,7 @@ class NetworkService extends ChangeNotifier {
     final parameters = {
       'query': community,
       'autocomplete': autocomplete.toString(),
+      'page': pageNumber.toString()
     };
     Uri url = Uri.parse('$_baseUrl/search/communities')
         .replace(queryParameters: parameters);
