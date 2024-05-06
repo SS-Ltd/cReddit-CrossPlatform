@@ -40,6 +40,7 @@ class _HomeSearchState extends State<HomeSearch>
   bool isSearching = true;
   late final TabController _tabController;
   int _selectedIndex = 0;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -70,6 +71,7 @@ class _HomeSearchState extends State<HomeSearch>
             icon: const Icon(Icons.arrow_back),
           ),
           title: TextField(
+            focusNode: _focusNode,
             controller: _searchController,
             decoration: InputDecoration(
               hintText: 'Search Reddit',
@@ -101,10 +103,10 @@ class _HomeSearchState extends State<HomeSearch>
               }
               commentsResults =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchComments(value, '');
+                      .getSearchComments(value, '', sortOption);
               postsResults =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchPosts(value, '');
+                      .getSearchPosts(value, '', sortOption, timeOption);
               communitiesResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchCommunities(value, true);
@@ -500,188 +502,238 @@ class _HomeSearchState extends State<HomeSearch>
                       controller: _tabController,
                       children: <Widget>[
                         //Posts
-                        ListView.builder(
-                          itemCount: postsResults.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () async {
-                                Post postComment = Post(
-                                  postModel: await Provider.of<NetworkService>(
-                                          context,
-                                          listen: false)
-                                      .fetchPost(postsResults[index].id),
-                                  isHomePage: false,
-                                  isSubRedditPage: false,
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CommentPage(
-                                      postId: postsResults[index].id,
-                                      postComment: postComment,
-                                      postTitle: postsResults[index].title,
-                                      username: postsResults[index].username,
+                        postsResults.isEmpty
+                            ? noResults()
+                            : ListView.builder(
+                                itemCount: postsResults.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      Post postComment = Post(
+                                        postModel: await Provider.of<
+                                                    NetworkService>(context,
+                                                listen: false)
+                                            .fetchPost(postsResults[index].id),
+                                        isHomePage: false,
+                                        isSubRedditPage: false,
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => CommentPage(
+                                            postId: postsResults[index].id,
+                                            postComment: postComment,
+                                            postTitle:
+                                                postsResults[index].title,
+                                            username:
+                                                postsResults[index].username,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      children: [
+                                        PostTile(
+                                            post: postsResults[index],
+                                            isProfile: false),
+                                        const Divider(
+                                          thickness: 1,
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                );
-                              },
-                              child: Column(
-                                children: [
-                                  PostTile(
-                                      post: postsResults[index],
-                                      isProfile: false),
-                                  const Divider(
-                                    thickness: 1,
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                         //Communities
-                        ListView.builder(
-                          itemCount: communitiesResults.length,
-                          itemBuilder: (context, index) {
-                            Community community = Community(
-                                name: communitiesResults[index].name,
-                                description:
-                                    communitiesResults[index].description,
-                                members: communitiesResults[index].members,
-                                icon: communitiesResults[index].icon,
-                                isJoined: false);
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SubRedditPage(
-                                      subredditName:
-                                          communitiesResults[index].name,
+                        communitiesResults.isEmpty
+                            ? noResults()
+                            : ListView.builder(
+                                itemCount: communitiesResults.length,
+                                itemBuilder: (context, index) {
+                                  Community community = Community(
+                                      name: communitiesResults[index].name,
+                                      description:
+                                          communitiesResults[index].description,
+                                      members:
+                                          communitiesResults[index].members,
+                                      icon: communitiesResults[index].icon,
+                                      isJoined: false);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SubRedditPage(
+                                            subredditName:
+                                                communitiesResults[index].name,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      children: [
+                                        CommunityCard(
+                                            community: community, search: true),
+                                        const Divider(
+                                          thickness: 1,
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                );
-                              },
-                              child: Column(
-                                children: [
-                                  CommunityCard(
-                                      community: community, search: true),
-                                  const Divider(
-                                    thickness: 1,
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                         //Comments
-                        ListView.builder(
-                          itemCount: commentsResults.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                CommentTile(
-                                    comment: commentsResults[index],
-                                    isProfile: false),
-                                const Divider(
-                                  thickness: 1,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                        commentsResults.isEmpty
+                            ? noResults()
+                            : ListView.builder(
+                                itemCount: commentsResults.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      CommentTile(
+                                          comment: commentsResults[index],
+                                          isProfile: false),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                         //People
-                        ListView.builder(
-                          itemCount: peopleResults.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  onTap: () async {
-                                    UserModel myUser = await context
-                                        .read<NetworkService>()
-                                        .getMyDetails();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            CustomNavigationBar(
-                                          isProfile: true,
-                                          myuser: myUser,
+                        peopleResults.isEmpty
+                            ? noResults()
+                            : ListView.builder(
+                                itemCount: peopleResults.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        onTap: () async {
+                                          UserModel myUser = await context
+                                              .read<NetworkService>()
+                                              .getMyDetails();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CustomNavigationBar(
+                                                isProfile: true,
+                                                myuser: myUser,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        leading: CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              peopleResults[index]
+                                                  .profilePicture),
                                         ),
+                                        title: Text(
+                                            'u/${peopleResults[index].username}'),
+                                        trailing: FollowButton(
+                                            userName: 'userName',
+                                            profileName:
+                                                peopleResults[index].username),
                                       ),
-                                    );
-                                  },
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        peopleResults[index].profilePicture),
-                                  ),
-                                  title: Text(
-                                      'u/${peopleResults[index].username}'),
-                                  trailing: FollowButton(
-                                      userName: 'userName',
-                                      profileName:
-                                          peopleResults[index].username),
-                                ),
-                                const Divider(
-                                  thickness: 1,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                                      const Divider(
+                                        thickness: 1,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                         //Hashtags
-                        ListView.builder(
-                          itemCount: hashtagsResults.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                      hashtagsResults[index].postPicture,
-                                    ),
-                                  ),
-                                  title: Text(hashtagsResults[index].username),
-                                  subtitle:
-                                      Text(hashtagsResults[index].postTitle),
-                                  onTap: () async {
-                                    Post postComment = Post(
-                                      postModel: await Provider.of<
-                                                  NetworkService>(context,
-                                              listen: false)
-                                          .fetchPost(
-                                              hashtagsResults[index].postID),
-                                      isHomePage: false,
-                                      isSubRedditPage: false,
-                                    );
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CommentPage(
-                                          postId: hashtagsResults[index].postID,
-                                          postComment: postComment,
-                                          postTitle:
-                                              hashtagsResults[index].postTitle,
-                                          username:
-                                              hashtagsResults[index].username,
+                        hashtagsResults.isEmpty
+                            ? noResults()
+                            : ListView.builder(
+                                itemCount: hashtagsResults.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                            hashtagsResults[index].postPicture,
+                                          ),
                                         ),
+                                        title: Text(
+                                            hashtagsResults[index].username),
+                                        subtitle: Text(
+                                            hashtagsResults[index].postTitle),
+                                        onTap: () async {
+                                          Post postComment = Post(
+                                            postModel: await Provider.of<
+                                                        NetworkService>(context,
+                                                    listen: false)
+                                                .fetchPost(
+                                                    hashtagsResults[index]
+                                                        .postID),
+                                            isHomePage: false,
+                                            isSubRedditPage: false,
+                                          );
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CommentPage(
+                                                postId: hashtagsResults[index]
+                                                    .postID,
+                                                postComment: postComment,
+                                                postTitle:
+                                                    hashtagsResults[index]
+                                                        .postTitle,
+                                                username: hashtagsResults[index]
+                                                    .username,
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  },
-                                ),
-                                const Divider(
-                                  thickness: 1,
-                                )
-                              ],
-                            );
-                          },
-                        ),
+                                      const Divider(
+                                        thickness: 1,
+                                      )
+                                    ],
+                                  );
+                                },
+                              ),
                       ],
                     ),
                   ),
                 ],
               ),
       ),
+    );
+  }
+
+  Widget noResults() {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          height: 200,
+          child: Image.asset(
+            'assets/search.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        const Text(
+          "Hm...we couldn't find any",
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'results for "$searchQuery"',
+          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        const Text('Double-check your spelling or try a different keywords'),
+        ElevatedButton(
+          onPressed: () {
+            FocusScope.of(context).requestFocus(_focusNode);
+          },
+          child: const Text('Adjust Search'),
+        ),
+      ],
     );
   }
 }
