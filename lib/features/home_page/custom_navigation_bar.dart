@@ -242,12 +242,18 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.search, size: 30.0),
+                            icon: Semantics(
+                                label: 'Open search',
+                                identifier: 'Open search',
+                                child: const Icon(Icons.search, size: 30.0)),
                           ),
                     IconButton(
                       onPressed: () =>
                           _scaffoldKey.currentState!.openEndDrawer(),
-                      icon: const Icon(Icons.reddit, size: 30.0),
+                      icon: Semantics(
+                          label: 'Open right sidebar',
+                          identifier: 'Open right sidebar',
+                          child: const Icon(Icons.reddit, size: 30.0)),
                     ),
                   ],
                 )
