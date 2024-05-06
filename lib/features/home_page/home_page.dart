@@ -155,6 +155,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+          if (isLoading && posts.isEmpty)
+            const Center(child: CustomLoadingIndicator()),
         ],
       ),
     );
