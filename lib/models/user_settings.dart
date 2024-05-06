@@ -146,16 +146,16 @@ class FeedSettings {
 }
 
 class Notifications {
-  final bool? mentionsNotifs;
-  final bool? commentsNotifs;
-  final bool? postsUpvotesNotifs;
-  final bool? repliesNotifs;
-  final bool? newFollowersNotifs;
-  final bool? postNotifs;
-  final bool? cakeDayNotifs;
-  final bool? modNotifs;
+  final bool mentionsNotifs;
+  final bool commentsNotifs;
+  final bool postsUpvotesNotifs;
+  final bool repliesNotifs;
+  final bool newFollowersNotifs;
+  final bool postNotifs;
+  final bool cakeDayNotifs;
+  final bool modNotifs;
   final List<String>? moderatorInCommunities;
-  final bool? invitationNotifs;
+  final bool invitationNotifs;
 
   Notifications({
     required this.mentionsNotifs,

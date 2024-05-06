@@ -18,6 +18,7 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
   final _userNameController = TextEditingController();
   List<SearchUsers> peopleResults = [];
   bool isSearching = false;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -57,56 +58,100 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                             borderRadius: BorderRadius.circular(40)),
                         contentPadding: const EdgeInsets.all(10),
                       ),
-                      onChanged: (value) async {
-                        peopleResults = await Provider.of<NetworkService>(
-                                context,
-                                listen: false)
-                            .getSearchUsers(value);
+                      onTap: () {
                         setState(() {
                           isSearching = true;
                         });
                       },
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: settings!.safetyAndPrivacy.blockedUsers.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: CircleAvatar(
-                            radius: 10,
-                            backgroundImage: NetworkImage(settings
-                                .safetyAndPrivacy
-                                .blockedUsers[index]
-                                .profilePicture),
-                          ),
-                          title: Text(settings
-                              .safetyAndPrivacy.blockedUsers[index].username),
-                          trailing: ElevatedButton(
-                            onPressed: () async {
-                              bool unBlock = await context
-                                  .read<NetworkService>()
-                                  .unBlockUser(settings.safetyAndPrivacy
-                                      .blockedUsers[index].username);
-                              if (unBlock) {
-                                setState(() {
-                                  settings.safetyAndPrivacy.blockedUsers
-                                      .removeAt(index);
-                                });
-                                CustomSnackBar(
-                                        context: context,
-                                        content:
-                                            "${settings.safetyAndPrivacy.blockedUsers[index].username} unblocked",
-                                        backgroundColor: Colors.green)
-                                    .show();
-                              }
-                            },
-                            child: const Text("Unblock"),
-                          ),
-                        );
+                      onChanged: (value) async {
+                        if (!mounted) return;
+                        if (value.isEmpty) {
+                          setState(() {
+                            peopleResults.clear();
+                          });
+                          return;
+                        }
+                        peopleResults = await Provider.of<NetworkService>(
+                                context,
+                                listen: false)
+                            .getSearchUsers(value);
                       },
                     ),
                   ),
+                  isSearching
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListView.builder(
+                                itemCount: peopleResults.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          peopleResults[index].profilePicture),
+                                    ),
+                                    title: Text(peopleResults[index].username),
+                                    trailing: ElevatedButton(
+                                      onPressed: () async {
+                                        bool blocked = await context
+                                            .read<NetworkService>()
+                                            .blockUser(
+                                                peopleResults[index].username);
+                                        if (blocked) {
+                                          CustomSnackBar(
+                                                  context: context,
+                                                  content:
+                                                      "User has been blocked",
+                                                  backgroundColor: Colors.green)
+                                              .show();
+                                        }
+                                      },
+                                      child: const Text("Block"),
+                                    ),
+                                  );
+                                })
+                          ],
+                        )
+                      : Expanded(
+                          child: ListView.builder(
+                            itemCount:
+                                settings!.safetyAndPrivacy.blockedUsers.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  radius: 10,
+                                  backgroundImage: NetworkImage(settings
+                                      .safetyAndPrivacy
+                                      .blockedUsers[index]
+                                      .profilePicture),
+                                ),
+                                title: Text(settings.safetyAndPrivacy
+                                    .blockedUsers[index].username),
+                                trailing: ElevatedButton(
+                                  onPressed: () async {
+                                    bool unBlock = await context
+                                        .read<NetworkService>()
+                                        .unBlockUser(settings.safetyAndPrivacy
+                                            .blockedUsers[index].username);
+                                    if (unBlock) {
+                                      setState(() {
+                                        settings.safetyAndPrivacy.blockedUsers
+                                            .removeAt(index);
+                                      });
+                                      CustomSnackBar(
+                                              context: context,
+                                              content:
+                                                  "${settings.safetyAndPrivacy.blockedUsers[index].username} unblocked",
+                                              backgroundColor: Colors.green)
+                                          .show();
+                                    }
+                                  },
+                                  child: const Text("Unblock"),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                 ],
               ),
             ),
