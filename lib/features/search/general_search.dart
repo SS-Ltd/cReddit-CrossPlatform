@@ -17,20 +17,24 @@ import 'package:reddit_clone/services/networkServices.dart';
 
 //this page will be used to search inside home and communities page
 
-class ProfileSearch extends StatefulWidget {
-  const ProfileSearch(
-      {super.key, required this.displayName, required this.username});
+class GeneralSearch extends StatefulWidget {
+  const GeneralSearch(
+      {super.key,
+      required this.communityName,
+      required this.displayName,
+      required this.username});
 
+  final String communityName;
   final String displayName;
   final String username;
 
   @override
-  State<ProfileSearch> createState() {
-    return _ProfileSearchState();
+  State<GeneralSearch> createState() {
+    return _GeneralSearchState();
   }
 }
 
-class _ProfileSearchState extends State<ProfileSearch>
+class _GeneralSearchState extends State<GeneralSearch>
     with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
@@ -98,8 +102,8 @@ class _ProfileSearchState extends State<ProfileSearch>
     });
     List<SearchComments> newComments =
         await Provider.of<NetworkService>(context, listen: false)
-            .getSearchComments(
-                searchQuery, widget.username, sortOption, "", commentsPage, "");
+            .getSearchComments(searchQuery, widget.username, sortOption, "",
+                commentsPage, widget.communityName);
     setState(() {
       commentsResults.addAll(newComments);
       isGettingMoreData = false; // End loading
@@ -114,7 +118,7 @@ class _ProfileSearchState extends State<ProfileSearch>
     List<SearchPosts> newPosts =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchPosts(searchQuery, widget.username, sortOption,
-                timeOption, postsPage, "");
+                timeOption, postsPage, widget.communityName);
     setState(() {
       postsResults.addAll(newPosts);
       isGettingMoreData = false; // End loading
@@ -126,9 +130,10 @@ class _ProfileSearchState extends State<ProfileSearch>
     setState(() {
       isGettingMoreData = true; // Start loading
     });
-    List<dynamic> newHashtags =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchHashtags(searchQuery, hashtagsPage, widget.username, "");
+    List<dynamic> newHashtags = await Provider.of<NetworkService>(context,
+            listen: false)
+        .getSearchHashtags(
+            searchQuery, hashtagsPage, widget.username, widget.communityName);
     setState(() {
       hashtagsResults.addAll(newHashtags);
       isGettingMoreData = false; // End loading
@@ -141,12 +146,14 @@ class _ProfileSearchState extends State<ProfileSearch>
       isLoading = true; // Start loading
     });
     commentsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchComments(searchQuery, widget.username, sortOption, "", 1, "");
+        .getSearchComments(searchQuery, widget.username, sortOption, "", 1,
+            widget.communityName);
     postsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchPosts(
-            searchQuery, widget.username, sortOption, timeOption, 1, "");
+        .getSearchPosts(searchQuery, widget.username, sortOption, timeOption, 1,
+            widget.communityName);
     hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchHashtags(searchQuery, 1, widget.username, "");
+        .getSearchHashtags(
+            searchQuery, 1, widget.username, widget.communityName);
 
     print(searchQuery + "  " + sortOption);
     setState(() {
