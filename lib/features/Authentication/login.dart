@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
@@ -20,7 +22,8 @@ import 'dart:async';
 /// This widget displays the login screen of the cReddit app. It allows users to enter their email and password to log in.
 /// The screen also provides options for signing up, logging in with Google, and recovering a forgotten password.
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final String? fcmToken;
+  const LoginScreen({super.key, this.fcmToken});
 
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -37,6 +40,45 @@ class LoginScreenState extends State<LoginScreen> {
       KeyboardVisibilityController();
   bool isKeyboardVisible = false;
   StreamSubscription<bool>? _keyboardVisibilitySubscription;
+  Future<bool>? _continueFuture;
+
+  void onContinueButtonPressed() {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _continueFuture = loginUser();
+    });
+  }
+
+  Future<bool> loginUser() async {
+    bool result = false;
+    if (_formKey.currentState!.validate()) {
+      await context
+          .read<NetworkService>()
+          .login(emailController.text, passwordController.text, widget.fcmToken);
+      final user = context.read<NetworkService>().user;
+      print(user);
+      print(user?.isLoggedIn);
+      if (user != null && user.isLoggedIn) {
+        Navigator.popUntil(context, (route) => route.isFirst);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomNavigationBar(
+              isProfile: false,
+            ),
+          ),
+        );
+        result = true;
+      }
+      else{
+        CustomSnackBar(
+          context: context,
+          content: 'Failed to login',
+        ).show();
+      }
+    }
+    return result;
+  }
 
   @override
   void initState() {
@@ -91,7 +133,8 @@ class LoginScreenState extends State<LoginScreen> {
                 if (mounted) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => SignUpScreen(fcmToken: widget.fcmToken)),
                   );
                 }
               },
@@ -120,7 +163,7 @@ class LoginScreenState extends State<LoginScreen> {
                           color: Palette.whiteColor),
                     ),
                     const SizedBox(height: 20),
-                    const GoogleButton(),
+                    GoogleButton(fcmToken: widget.fcmToken,),
                     const Row(
                       children: <Widget>[
                         Expanded(
@@ -198,33 +241,7 @@ class LoginScreenState extends State<LoginScreen> {
               valueListenable: isFormFilled,
               builder: (context, isFilled, child) {
                 return ElevatedButton(
-                  onPressed: isFilled
-                      ? () async {
-                          if (mounted) {
-                            if (_formKey.currentState!.validate()) {         
-                              await context.read<NetworkService>().login(
-                                  emailController.text,
-                                  passwordController.text);
-                              final user = context.read<NetworkService>().user;
-                              print(user);
-                              print(user?.isLoggedIn);
-                              if (user != null && user.isLoggedIn) {
-                                Navigator.popUntil(
-                                    context, (route) => route.isFirst);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CustomNavigationBar(
-                                      isProfile: false,
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                          }
-                        }
-                      : null,
+                  onPressed: isFilled ? onContinueButtonPressed : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
                         isFilled == true ? Colors.deepOrange : Colors.grey,
@@ -235,7 +252,22 @@ class LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(18),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child: FutureBuilder<bool>(
+                    future: _continueFuture,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const SizedBox(
+                          width: 50,
+                          height: 50,
+                          child:
+                              CustomLoadingIndicator(color: Palette.whiteColor),
+                        );
+                      } else {
+                        return const Text("Continue");
+                      }
+                    },
+                  ),
                 );
               },
             ),

@@ -74,8 +74,8 @@ Future<void> main() async {
     );
 
     // Get the token for this device
-    String? token = await FirebaseMessaging.instance.getToken();
-    print('Firebase Messaging Token: $token');
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+    print('Firebase Messaging Token: $fcmToken');
 
     // Listen for token refresh
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
@@ -125,23 +125,24 @@ Future<void> main() async {
         );
       }
     });
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => NetworkService()),
+        ChangeNotifierProvider(create: (context) => GoogleService()),
+        ChangeNotifierProvider(
+            create: (context) =>
+                MenuState()) // Add GoogleSignInService provider
+      ],
+      child: MyApp(fcmToken: fcmToken),
+    ));
   }
-
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (context) => NetworkService()),
-      ChangeNotifierProvider(create: (context) => GoogleService()),
-      ChangeNotifierProvider(
-          create: (context) => MenuState()) // Add GoogleSignInService provider
-    ],
-    child: const MyApp(),
-  ));
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final String? fcmToken;
+  const MyApp({super.key, this.fcmToken});
 
   @override
   MyAppState createState() => MyAppState();
@@ -186,9 +187,9 @@ class MyAppState extends State<MyApp> {
       theme: AppTheme.darkTheme,
       home: Scaffold(
         body: PageView(
-          children: const [
-            LoginScreen(),
-            SignUpScreen(),
+          children: [
+            LoginScreen(fcmToken: widget.fcmToken),
+            SignUpScreen(fcmToken: widget.fcmToken),
           ],
         ),
       ),

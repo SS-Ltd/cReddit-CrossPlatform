@@ -27,7 +27,7 @@ class _MutedCommunitiesState extends State<MutedCommunities> {
         future: context.read<NetworkService>().getUserSettings(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CustomLoadingIndicator());
+            return const Center(child: CustomLoadingIndicator());
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {

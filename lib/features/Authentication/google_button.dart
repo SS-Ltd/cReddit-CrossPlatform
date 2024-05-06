@@ -27,9 +27,8 @@ import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 /// )
 /// ```
 class GoogleButton extends StatelessWidget {
-  const GoogleButton({
-    super.key,
-  });
+  final String? fcmToken;
+  const GoogleButton({super.key, this.fcmToken});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,7 @@ class GoogleButton extends StatelessWidget {
                 .accessToken!;
         bool isValidated = await context
             .read<NetworkService>()
-            .sendGoogleAccessToken(googleAccessToken);
+            .sendGoogleAccessToken(googleAccessToken, fcmToken);
         if (!isValidated) {
           CustomSnackBar(
               context: context, content: 'Failed to sign in with Google');
