@@ -40,6 +40,7 @@ class _HomeSearchState extends State<HomeSearch>
   String searchQuery = '';
   bool isSearching = true;
   bool isLoading = false;
+  bool canRequestFocus = true;
   late final TabController _tabController;
   int _selectedIndex = 0;
   final FocusNode _focusNode = FocusNode();
@@ -93,44 +94,48 @@ class _HomeSearchState extends State<HomeSearch>
             },
             icon: const Icon(Icons.arrow_back),
           ),
-          title: TextField(
-            focusNode: _focusNode,
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search Reddit',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  _searchController.clear();
-                },
-                icon: const Icon(Icons.clear),
+          title: Focus(
+            canRequestFocus: canRequestFocus,
+            child: TextField(
+              focusNode: _focusNode,
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search Reddit',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    _searchController.clear();
+                  },
+                  icon: const Icon(Icons.clear),
+                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                contentPadding: const EdgeInsets.all(10),
               ),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-              contentPadding: const EdgeInsets.all(10),
-            ),
-            onChanged: (value) async {
-              if (!mounted) return;
-              setState(() {
-                searchQuery = value;
-              });
-              if (value.isEmpty) {
+              onChanged: (value) async {
+                if (!mounted) return;
+
                 setState(() {
-                  commentsResults.clear();
-                  postsResults.clear();
-                  communitiesResults.clear();
-                  peopleResults.clear();
-                  hashtagsResults.clear();
+                  searchQuery = value;
                 });
-                return;
-              }
-              getAllData();
-            },
-            onTap: () {
-              setState(() {
-                isSearching = true;
-              });
-            },
+                if (value.isEmpty) {
+                  setState(() {
+                    commentsResults.clear();
+                    postsResults.clear();
+                    communitiesResults.clear();
+                    peopleResults.clear();
+                    hashtagsResults.clear();
+                  });
+                  return;
+                }
+                getAllData();
+              },
+              onTap: () {
+                setState(() {
+                  isSearching = true;
+                });
+              },
+            ),
           ),
           bottom: isSearching
               ? null
@@ -270,6 +275,7 @@ class _HomeSearchState extends State<HomeSearch>
                                 height: 35,
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    _focusNode.unfocus();
                                     showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -300,6 +306,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                                 .toString();
                                                           },
                                                         );
+                                                        getAllData();
                                                         Navigator.pop(context);
                                                       },
                                                     ),
@@ -314,6 +321,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                                 .toString();
                                                           },
                                                         );
+                                                        getAllData();
                                                         Navigator.pop(context);
                                                       },
                                                     ),
@@ -328,6 +336,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                                 .toString();
                                                           },
                                                         );
+                                                        getAllData();
                                                         Navigator.pop(context);
                                                       },
                                                     ),
@@ -342,6 +351,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                                 .toString();
                                                           },
                                                         );
+                                                        getAllData();
                                                         Navigator.pop(context);
                                                       },
                                                     ),
@@ -366,6 +376,7 @@ class _HomeSearchState extends State<HomeSearch>
                                 child: _selectedIndex == 0
                                     ? ElevatedButton(
                                         onPressed: () {
+                                          _focusNode.unfocus();
                                           showModalBottomSheet(
                                             context: context,
                                             builder: (BuildContext context) {
