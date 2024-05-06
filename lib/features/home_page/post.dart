@@ -2,8 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/User/about_user_pop_up.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/subreddit_page.dart';
@@ -42,6 +44,7 @@ class _PostState extends State<Post> {
   bool _controllerInitialized =
       false; // Flag to track if controller is initialized
 
+  final String _baseUrl = "https://creddit.tech/";
   @override
   void initState() {
     super.initState();
@@ -292,8 +295,8 @@ class _PostState extends State<Post> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AboutUserPopUp(
-                                                userName: widget
-                                                    .postModel.username);
+                                                userName:
+                                                    widget.postModel.username);
                                           });
                                     },
                                     child: Row(
@@ -321,11 +324,9 @@ class _PostState extends State<Post> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                SubRedditPage(
+                                            builder: (context) => SubRedditPage(
                                                   subredditName: widget
-                                                      .postModel
-                                                      .communityName,
+                                                      .postModel.communityName,
                                                 )),
                                       );
                                     },
@@ -392,11 +393,9 @@ class _PostState extends State<Post> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                SubRedditPage(
+                                            builder: (context) => SubRedditPage(
                                                   subredditName: widget
-                                                      .postModel
-                                                      .communityName,
+                                                      .postModel.communityName,
                                                 )),
                                       );
                                     },
@@ -406,7 +405,7 @@ class _PostState extends State<Post> {
                                       child: Text(
                                         'r/${widget.postModel.communityName}',
                                         style: const TextStyle(
-                                          color: Colors.grey,
+                                          color: Palette.whiteColor,
                                         ),
                                       ),
                                     ),
@@ -417,8 +416,8 @@ class _PostState extends State<Post> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AboutUserPopUp(
-                                                userName: widget
-                                                    .postModel.username);
+                                                userName:
+                                                    widget.postModel.username);
                                           });
                                       //replace with profile page or widget
                                     },
@@ -428,9 +427,9 @@ class _PostState extends State<Post> {
                                           identifier: 'post username',
                                           label: 'post username',
                                           child: Text(
-                                            'u/${widget.postModel.username}',
+                                            'u/${widget.postModel.username} • ',
                                             style: const TextStyle(
-                                              color: Colors.blue,
+                                              color: Palette.greyColor,
                                             ),
                                           ),
                                         ),
@@ -720,8 +719,28 @@ class _PostState extends State<Post> {
                                         Column(
                                           children: [
                                             IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(Icons.link),
+                                              onPressed: () {
+                                                String link;
+                                                if (widget.postModel
+                                                    .communityName.isEmpty) {
+                                                  link =
+                                                      "${_baseUrl}r/${widget.postModel.username}/comments/${widget.postModel.postId}";
+                                                } else {
+                                                  link =
+                                                      "${_baseUrl}u/${widget.postModel.communityName}/comments/${widget.postModel.postId}";
+                                                }
+                                                Clipboard.setData(
+                                                    ClipboardData(text: link));
+                                                CustomSnackBar(
+                                                  context: context,
+                                                  content:
+                                                      "Copied to Clipboard",
+                                                      backgroundColor: Palette.whiteColor,
+                                                      textColor: Palette.blackColor,
+                                                ).show();
+                                                Navigator.pop(context);
+                                              },
+                                              icon: const Icon(Icons.copy_outlined),
                                               style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(

@@ -120,13 +120,14 @@ class _CommentPageState extends State<CommentPage> {
                   isPostPage: true,
                   comment: comment,
                   isModerator: widget.postComment.postModel.isModerator,
+                  postComment: widget.postComment,
                 ))
             .toList();
       });
-      print('ssssssssssssssssssssssssssssssssssssssssssssssss');
-      print(_comments[0].comment.username);
-      print(_comments[0].comment.content);
-      print(widget.commentId);
+      // print('ssssssssssssssssssssssssssssssssssssssssssssssss');
+      // print(_comments[0].comment.username);
+      // print(_comments[0].comment.content);
+      // print(widget.commentId);
       if (widget.commentId != null) {
         _comments.sort((a, b) {
           if (a.comment.commentId == widget.commentId) {
@@ -138,8 +139,8 @@ class _CommentPageState extends State<CommentPage> {
           }
         });
       }
-      print(_comments[0].comment.username);
-      print(_comments[0].comment.content);
+      // print(_comments[0].comment.username);
+      // print(_comments[0].comment.content);
     }
   }
 
@@ -264,6 +265,7 @@ class _CommentPageState extends State<CommentPage> {
                   comment: _comments[index - 1].comment,
                   isModerator: _comments[index - 1].isModerator,
                   isPostPage: true,
+                  postComment: widget.postComment,
                   onDeleted: () {
                     setState(() {
                       _comments.removeAt(index - 1);
@@ -314,6 +316,7 @@ class _CommentPageState extends State<CommentPage> {
                           hasVoted: 1,
                           isPostPage: true,
                           isModerator: widget.postComment.postModel.isModerator,
+                          postComment: widget.postComment,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
@@ -332,6 +335,7 @@ class _CommentPageState extends State<CommentPage> {
                           hasVoted: 1,
                           isPostPage: true,
                           isModerator: widget.postComment.postModel.isModerator,
+                          postComment: widget.postComment,
                           comment: Comments(
                             profilePicture: result['user'].profilePicture,
                             username: result['user'].username,
