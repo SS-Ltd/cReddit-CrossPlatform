@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
@@ -35,8 +36,8 @@ class _HomeSearchState extends State<HomeSearch>
   List<SearchUsers> peopleResults = [];
   List<SearchHashtag> hashtagsResults = [];
 
-  String sortOption = "Most relevant";
-  String timeOption = "All time";
+  String sortOption = "Hot";
+  String timeOption = "All";
   String searchQuery = '';
   bool isSearching = true;
   bool isLoading = false;
@@ -77,7 +78,7 @@ class _HomeSearchState extends State<HomeSearch>
         .getSearchUsers(searchQuery, 1);
     hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
         .getSearchHashtags(searchQuery, 1);
-
+    print(searchQuery + "  " + sortOption);
     setState(() {
       isLoading = false; // End loading
     });
@@ -295,39 +296,8 @@ class _HomeSearchState extends State<HomeSearch>
                                                           fontSize: 18),
                                                     ),
                                                     RadioListTile(
-                                                      title: const Text(
-                                                          "Most relevant"),
-                                                      value: 'Most relevant',
-                                                      groupValue: sortOption,
-                                                      onChanged: (value) {
-                                                        setState(
-                                                          () {
-                                                            sortOption = value
-                                                                .toString();
-                                                          },
-                                                        );
-                                                        getAllData();
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                    RadioListTile(
                                                       title: const Text("Hot"),
                                                       value: 'Hot',
-                                                      groupValue: sortOption,
-                                                      onChanged: (value) {
-                                                        setState(
-                                                          () {
-                                                            sortOption = value
-                                                                .toString();
-                                                          },
-                                                        );
-                                                        getAllData();
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                    RadioListTile(
-                                                      title: const Text("New"),
-                                                      value: 'New',
                                                       groupValue: sortOption,
                                                       onChanged: (value) {
                                                         setState(
@@ -355,6 +325,21 @@ class _HomeSearchState extends State<HomeSearch>
                                                         Navigator.pop(context);
                                                       },
                                                     ),
+                                                    RadioListTile(
+                                                      title: const Text("New"),
+                                                      value: 'New',
+                                                      groupValue: sortOption,
+                                                      onChanged: (value) {
+                                                        setState(
+                                                          () {
+                                                            sortOption = value
+                                                                .toString();
+                                                          },
+                                                        );
+                                                        getAllData();
+                                                        Navigator.pop(context);
+                                                      },
+                                                    )
                                                   ],
                                                 );
                                               },
@@ -399,8 +384,8 @@ class _HomeSearchState extends State<HomeSearch>
                                                           ),
                                                           RadioListTile(
                                                             title: const Text(
-                                                                "All time"),
-                                                            value: 'All time',
+                                                                "Now"),
+                                                            value: 'Now',
                                                             groupValue:
                                                                 timeOption,
                                                             onChanged: (value) {
@@ -410,14 +395,15 @@ class _HomeSearchState extends State<HomeSearch>
                                                                       .toString();
                                                                 },
                                                               );
+                                                              getAllData();
                                                               Navigator.pop(
                                                                   context);
                                                             },
                                                           ),
                                                           RadioListTile(
                                                             title: const Text(
-                                                                "Past year"),
-                                                            value: 'Past year',
+                                                                "Today"),
+                                                            value: 'Today"),',
                                                             groupValue:
                                                                 timeOption,
                                                             onChanged: (value) {
@@ -427,14 +413,15 @@ class _HomeSearchState extends State<HomeSearch>
                                                                       .toString();
                                                                 },
                                                               );
+                                                              getAllData();
                                                               Navigator.pop(
                                                                   context);
                                                             },
                                                           ),
                                                           RadioListTile(
                                                             title: const Text(
-                                                                "Past month"),
-                                                            value: 'Past month',
+                                                                "Week"),
+                                                            value: 'Week',
                                                             groupValue:
                                                                 timeOption,
                                                             onChanged: (value) {
@@ -444,14 +431,15 @@ class _HomeSearchState extends State<HomeSearch>
                                                                       .toString();
                                                                 },
                                                               );
+                                                              getAllData();
                                                               Navigator.pop(
                                                                   context);
                                                             },
                                                           ),
                                                           RadioListTile(
                                                             title: const Text(
-                                                                "Past week"),
-                                                            value: 'Past week',
+                                                                "Month"),
+                                                            value: 'Month',
                                                             groupValue:
                                                                 timeOption,
                                                             onChanged: (value) {
@@ -461,15 +449,15 @@ class _HomeSearchState extends State<HomeSearch>
                                                                       .toString();
                                                                 },
                                                               );
+                                                              getAllData();
                                                               Navigator.pop(
                                                                   context);
                                                             },
                                                           ),
                                                           RadioListTile(
                                                             title: const Text(
-                                                                "Past 24 hours"),
-                                                            value:
-                                                                'Past 24 hours',
+                                                                "Year"),
+                                                            value: 'Year',
                                                             groupValue:
                                                                 timeOption,
                                                             onChanged: (value) {
@@ -479,14 +467,15 @@ class _HomeSearchState extends State<HomeSearch>
                                                                       .toString();
                                                                 },
                                                               );
+                                                              getAllData();
                                                               Navigator.pop(
                                                                   context);
                                                             },
                                                           ),
                                                           RadioListTile(
                                                             title: const Text(
-                                                                "Past hour"),
-                                                            value: 'Past hour',
+                                                                "All"),
+                                                            value: 'All',
                                                             groupValue:
                                                                 timeOption,
                                                             onChanged: (value) {
@@ -496,6 +485,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                                       .toString();
                                                                 },
                                                               );
+                                                              getAllData();
                                                               Navigator.pop(
                                                                   context);
                                                             },
@@ -568,157 +558,175 @@ class _HomeSearchState extends State<HomeSearch>
                                     },
                                   ),
                         //Communities
-                        communitiesResults.isEmpty
+                        communitiesResults.isEmpty && !isLoading
                             ? noResults()
-                            : ListView.builder(
-                                itemCount: communitiesResults.length,
-                                itemBuilder: (context, index) {
-                                  Community community = Community(
-                                      name: communitiesResults[index].name,
-                                      description:
-                                          communitiesResults[index].description,
-                                      members:
-                                          communitiesResults[index].members,
-                                      icon: communitiesResults[index].icon,
-                                      isJoined: false);
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SubRedditPage(
-                                            subredditName:
-                                                communitiesResults[index].name,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      children: [
-                                        CommunityCard(
-                                            community: community, search: true),
-                                        const Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                        //Comments
-                        commentsResults.isEmpty
-                            ? noResults()
-                            : ListView.builder(
-                                itemCount: commentsResults.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      CommentTile(
-                                          comment: commentsResults[index],
-                                          isProfile: false),
-                                      const Divider(
-                                        thickness: 1,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                        //People
-                        peopleResults.isEmpty
-                            ? noResults()
-                            : ListView.builder(
-                                itemCount: peopleResults.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      ListTile(
-                                        onTap: () async {
-                                          UserModel myUser = await context
-                                              .read<NetworkService>()
-                                              .getMyDetails();
+                            : isLoading
+                                ? CustomLoadingIndicator()
+                                : ListView.builder(
+                                    itemCount: communitiesResults.length,
+                                    itemBuilder: (context, index) {
+                                      Community community = Community(
+                                          name: communitiesResults[index].name,
+                                          description: communitiesResults[index]
+                                              .description,
+                                          members:
+                                              communitiesResults[index].members,
+                                          icon: communitiesResults[index].icon,
+                                          isJoined: false);
+                                      return GestureDetector(
+                                        onTap: () {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  CustomNavigationBar(
-                                                isProfile: true,
-                                                myuser: myUser,
+                                                  SubRedditPage(
+                                                subredditName:
+                                                    communitiesResults[index]
+                                                        .name,
                                               ),
                                             ),
                                           );
                                         },
-                                        leading: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              peopleResults[index]
-                                                  .profilePicture),
+                                        child: Column(
+                                          children: [
+                                            CommunityCard(
+                                                community: community,
+                                                search: true),
+                                            const Divider(
+                                              thickness: 1,
+                                            ),
+                                          ],
                                         ),
-                                        title: Text(
-                                            'u/${peopleResults[index].username}'),
-                                        trailing: FollowButton(
-                                            userName: 'userName',
-                                            profileName:
-                                                peopleResults[index].username),
-                                      ),
-                                      const Divider(
-                                        thickness: 1,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                        //Hashtags
-                        hashtagsResults.isEmpty
+                                      );
+                                    },
+                                  ),
+                        //Comments
+                        commentsResults.isEmpty && !isLoading
                             ? noResults()
-                            : ListView.builder(
-                                itemCount: hashtagsResults.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      ListTile(
-                                        leading: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                            hashtagsResults[index].postPicture,
+                            : isLoading
+                                ? CustomLoadingIndicator()
+                                : ListView.builder(
+                                    itemCount: commentsResults.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          CommentTile(
+                                              comment: commentsResults[index],
+                                              isProfile: false),
+                                          const Divider(
+                                            thickness: 1,
                                           ),
-                                        ),
-                                        title: Text(
-                                            hashtagsResults[index].username),
-                                        subtitle: Text(
-                                            hashtagsResults[index].postTitle),
-                                        onTap: () async {
-                                          Post postComment = Post(
-                                            postModel: await Provider.of<
-                                                        NetworkService>(context,
-                                                    listen: false)
-                                                .fetchPost(
-                                                    hashtagsResults[index]
-                                                        .postID),
-                                            isHomePage: false,
-                                            isSubRedditPage: false,
-                                          );
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => CommentPage(
-                                                postId: hashtagsResults[index]
-                                                    .postID,
-                                                postComment: postComment,
-                                                postTitle:
-                                                    hashtagsResults[index]
-                                                        .postTitle,
-                                                username: hashtagsResults[index]
-                                                    .username,
+                                        ],
+                                      );
+                                    },
+                                  ),
+                        //People
+                        peopleResults.isEmpty && !isLoading
+                            ? noResults()
+                            : isLoading
+                                ? CustomLoadingIndicator()
+                                : ListView.builder(
+                                    itemCount: peopleResults.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () async {
+                                              UserModel myUser = await context
+                                                  .read<NetworkService>()
+                                                  .getMyDetails();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CustomNavigationBar(
+                                                    isProfile: true,
+                                                    myuser: myUser,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            leading: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  peopleResults[index]
+                                                      .profilePicture),
+                                            ),
+                                            title: Text(
+                                                'u/${peopleResults[index].username}'),
+                                            trailing: FollowButton(
+                                                userName: 'userName',
+                                                profileName:
+                                                    peopleResults[index]
+                                                        .username),
+                                          ),
+                                          const Divider(
+                                            thickness: 1,
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                        //Hashtags
+                        hashtagsResults.isEmpty && !isLoading
+                            ? noResults()
+                            : isLoading
+                                ? CustomLoadingIndicator()
+                                : ListView.builder(
+                                    itemCount: hashtagsResults.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                hashtagsResults[index]
+                                                    .postPicture,
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
-                                      const Divider(
-                                        thickness: 1,
-                                      )
-                                    ],
-                                  );
-                                },
-                              ),
+                                            title: Text(hashtagsResults[index]
+                                                .username),
+                                            subtitle: Text(
+                                                hashtagsResults[index]
+                                                    .postTitle),
+                                            onTap: () async {
+                                              Post postComment = Post(
+                                                postModel: await Provider.of<
+                                                            NetworkService>(
+                                                        context,
+                                                        listen: false)
+                                                    .fetchPost(
+                                                        hashtagsResults[index]
+                                                            .postID),
+                                                isHomePage: false,
+                                                isSubRedditPage: false,
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CommentPage(
+                                                    postId:
+                                                        hashtagsResults[index]
+                                                            .postID,
+                                                    postComment: postComment,
+                                                    postTitle:
+                                                        hashtagsResults[index]
+                                                            .postTitle,
+                                                    username:
+                                                        hashtagsResults[index]
+                                                            .username,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          const Divider(
+                                            thickness: 1,
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  ),
                       ],
                     ),
                   ),
