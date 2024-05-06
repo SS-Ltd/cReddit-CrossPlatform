@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -225,7 +226,10 @@ class _CreatePostState extends State<CreatePost> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: Semantics(
+              label: 'close',
+              identifier: 'close',
+              child: const Icon(Icons.close)),
           onPressed: () {
             Navigator.push(
               context,
@@ -242,7 +246,10 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15),
             child: widget.ismoderator && !_istitleempty
                 ? IconButton(
-                    icon: const Icon(Icons.more_horiz),
+                    icon: Semantics(
+                        label: 'more options',
+                        identifier: 'more options',
+                        child: const Icon(Icons.more_horiz)),
                     onPressed: () {
                       showModalBottomSheet(
                           context: context,
@@ -265,7 +272,12 @@ class _CreatePostState extends State<CreatePost> {
                                               const Text("Post Settings"),
                                               IconButton(
                                                 onPressed: () {},
-                                                icon: const Icon(Icons.close),
+                                                icon: Semantics(
+                                                    label: 'close settings',
+                                                    identifier:
+                                                        'close settings',
+                                                    child: const Icon(
+                                                        Icons.close)),
                                               ),
                                             ],
                                           ),
@@ -274,11 +286,19 @@ class _CreatePostState extends State<CreatePost> {
                                           padding:
                                               const EdgeInsets.only(bottom: 20),
                                           child: ListTile(
-                                            leading: const Icon(
-                                                Icons.calendar_month_outlined),
+                                            leading: Semantics(
+                                              label: 'calender',
+                                              identifier: 'calender',
+                                              child: const Icon(Icons
+                                                  .calendar_month_outlined),
+                                            ),
                                             title: const Text("Schedule Post"),
-                                            trailing: const Icon(
-                                                Icons.arrow_forward_ios),
+                                            trailing: Semantics(
+                                              label: 'schedule post',
+                                              identifier: 'schedule post',
+                                              child: const Icon(
+                                                  Icons.arrow_forward_ios),
+                                            ),
                                             onTap: () {
                                               Navigator.pop(context);
                                               showModalBottomSheet(
@@ -307,9 +327,16 @@ class _CreatePostState extends State<CreatePost> {
                                                                   IconButton(
                                                                     onPressed:
                                                                         () {},
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .arrow_back),
+                                                                    icon:
+                                                                        Semantics(
+                                                                      label:
+                                                                          'close schedule',
+                                                                      identifier:
+                                                                          'close schedule',
+                                                                      child: const Icon(
+                                                                          Icons
+                                                                              .arrow_back),
+                                                                    ),
                                                                   ),
                                                                   const Text(
                                                                     "Schedule Post",
@@ -519,7 +546,8 @@ class _CreatePostState extends State<CreatePost> {
                                   context,
                                   MaterialPageRoute(
                                     fullscreenDialog: true,
-                                    builder: (context) => const CommunityChoice(),
+                                    builder: (context) =>
+                                        const CommunityChoice(),
                                   ),
                                 );
                                 setState(
@@ -600,7 +628,11 @@ class _CreatePostState extends State<CreatePost> {
                                             children: [
                                               IconButton(
                                                 onPressed: () {},
-                                                icon: const Icon(Icons.close),
+                                                icon: Semantics(
+                                                    label: 'close rules',
+                                                    identifier: 'close rules',
+                                                    child: const Icon(
+                                                        Icons.close)),
                                               ),
                                               const Text(
                                                 "Community Rules",
@@ -638,18 +670,22 @@ class _CreatePostState extends State<CreatePost> {
                       ),
                     )
                   : const SizedBox(),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: _istitleempty ? 'Title' : '',
-                  labelStyle: const TextStyle(fontSize: 30),
-                  border: InputBorder.none,
+              Semantics(
+                label: 'Create Post Title',
+                identifier: 'Create Post Title',
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: _istitleempty ? 'Title' : '',
+                    labelStyle: const TextStyle(fontSize: 30),
+                    border: InputBorder.none,
+                  ),
+                  controller: _titleController,
+                  onChanged: (value) {
+                    setState(() {
+                      _istitleempty = value.isEmpty;
+                    });
+                  },
                 ),
-                controller: _titleController,
-                onChanged: (value) {
-                  setState(() {
-                    _istitleempty = value.isEmpty;
-                  });
-                },
               ),
               widget.profile || chosenCommunity.isNotEmpty
                   ? Row(
@@ -689,28 +725,36 @@ class _CreatePostState extends State<CreatePost> {
                                         "Universal tags",
                                         style: TextStyle(fontSize: 20),
                                       ),
-                                      SwitchButton(
-                                        buttonText: 'Spoiler',
-                                        buttonicon: Icons.warning_amber,
-                                        onPressed: (value) {
-                                          setState(() {
-                                            isspoiler = value;
-                                          });
-                                        },
-                                        switchvalue: isspoiler,
+                                      Semantics(
+                                        label: 'Spoiler Button',
+                                        identifier: 'Spoiler Button',
+                                        child: SwitchButton(
+                                          buttonText: 'Spoiler',
+                                          buttonicon: Icons.warning_amber,
+                                          onPressed: (value) {
+                                            setState(() {
+                                              isspoiler = value;
+                                            });
+                                          },
+                                          switchvalue: isspoiler,
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      SwitchButton(
-                                        buttonText: 'Brand affiliate',
-                                        buttonicon: Icons.warning,
-                                        onPressed: (value) {
-                                          setState(() {
-                                            isBrand = value;
-                                          });
-                                        },
-                                        switchvalue: isBrand,
+                                      Semantics(
+                                        label: 'Brand affiliate Button',
+                                        identifier: 'Brand affiliate Button',
+                                        child: SwitchButton(
+                                          buttonText: 'Brand affiliate',
+                                          buttonicon: Icons.warning,
+                                          onPressed: (value) {
+                                            setState(() {
+                                              isBrand = value;
+                                            });
+                                          },
+                                          switchvalue: isBrand,
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 10,
@@ -727,47 +771,58 @@ class _CreatePostState extends State<CreatePost> {
                     )
                   : const SizedBox(),
               _insertlink
-                  ? TextField(
-                      decoration: InputDecoration(
-                        labelText: _islinkempty ? 'Enter link' : '',
-                        labelStyle: const TextStyle(fontSize: 30),
-                        border: InputBorder.none,
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _linkController.clear();
-                              _insertlink = false;
-                            });
-                          },
-                          icon: const Icon(Icons.close),
+                  ? Semantics(
+                      label: 'Insert Link',
+                      identifier: 'Insert Link',
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: _islinkempty ? 'Enter link' : '',
+                          labelStyle: const TextStyle(fontSize: 30),
+                          border: InputBorder.none,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _linkController.clear();
+                                _insertlink = false;
+                              });
+                            },
+                            icon: Semantics(
+                                label: 'close link',
+                                identifier: 'close link',
+                                child: const Icon(Icons.close)),
+                          ),
                         ),
+                        controller: _linkController,
+                        onChanged: (value) {
+                          setState(() {
+                            _islinkempty = value.isEmpty;
+                          });
+                        },
                       ),
-                      controller: _linkController,
-                      onChanged: (value) {
-                        setState(() {
-                          _islinkempty = value.isEmpty;
-                        });
-                      },
                     )
                   : const SizedBox(),
-              TextField(
-                enabled: _insertlink || _hasImage || _hasVideo ? false : true,
-                decoration: InputDecoration(
-                  labelText: _isbodyempty & chosenCommunity.isEmpty
-                      ? 'body text (optional)'
-                      : chosenCommunity.isNotEmpty & _isbodyempty
-                          ? 'body text'
-                          : '',
-                  border: InputBorder.none,
+              Semantics(
+                label: 'Create Post Body',
+                identifier: 'Create Post Body',
+                child: TextField(
+                  enabled: _insertlink || _hasImage || _hasVideo ? false : true,
+                  decoration: InputDecoration(
+                    labelText: _isbodyempty & chosenCommunity.isEmpty
+                        ? 'body text (optional)'
+                        : chosenCommunity.isNotEmpty & _isbodyempty
+                            ? 'body text'
+                            : '',
+                    border: InputBorder.none,
+                  ),
+                  controller: _bodyController,
+                  onChanged: (text) {
+                    setState(
+                      () {
+                        _isbodyempty = text.isEmpty;
+                      },
+                    );
+                  },
                 ),
-                controller: _bodyController,
-                onChanged: (text) {
-                  setState(
-                    () {
-                      _isbodyempty = text.isEmpty;
-                    },
-                  );
-                },
               ),
               _hasImage
                   ? Padding(
@@ -779,8 +834,12 @@ class _CreatePostState extends State<CreatePost> {
                             top: 4,
                             right: 4,
                             child: IconButton(
-                              icon: const Icon(Icons.cancel,
-                                  color: Palette.greyColor),
+                              icon: Semantics(
+                                label: 'close image',
+                                identifier: 'close image',
+                                child: const Icon(Icons.cancel,
+                                    color: Palette.greyColor),
+                              ),
                               onPressed: () {
                                 setState(() {
                                   _hasImage = false;
@@ -825,8 +884,12 @@ class _CreatePostState extends State<CreatePost> {
                               top: 4,
                               right: 4,
                               child: IconButton(
-                                icon: const Icon(Icons.cancel,
-                                    color: Palette.greyColor),
+                                icon: Semantics(
+                                  label: 'close video',
+                                  identifier: 'close video',
+                                  child: const Icon(Icons.cancel,
+                                      color: Palette.greyColor),
+                                ),
                                 onPressed: () {
                                   setState(() {
                                     _hasVideo = false;
@@ -850,7 +913,10 @@ class _CreatePostState extends State<CreatePost> {
                               _insertlink = !_insertlink;
                             });
                           },
-                    icon: const Icon(Icons.link),
+                    icon: Semantics(
+                        label: 'add link',
+                        identifier: 'add link',
+                        child: const Icon(Icons.link)),
                   ),
                   IconButton(
                     onPressed: _insertlink || _insertpoll || _hasVideo
@@ -858,7 +924,10 @@ class _CreatePostState extends State<CreatePost> {
                         : () {
                             getImage();
                           },
-                    icon: const Icon(Icons.image),
+                    icon: Semantics(
+                        label: 'add image',
+                        identifier: 'add image',
+                        child: const Icon(Icons.image)),
                   ),
                   IconButton(
                     onPressed: _insertlink || _insertpoll || _hasImage
@@ -866,7 +935,10 @@ class _CreatePostState extends State<CreatePost> {
                         : () {
                             getVideo();
                           },
-                    icon: const Icon(Icons.video_library_outlined),
+                    icon: Semantics(
+                        label: 'add video',
+                        identifier: 'add video',
+                        child: const Icon(Icons.video_library_outlined)),
                   ),
                   IconButton(
                     onPressed: _insertlink || _hasImage || _hasVideo
@@ -876,7 +948,10 @@ class _CreatePostState extends State<CreatePost> {
                               _insertpoll = !_insertpoll;
                             });
                           },
-                    icon: const Icon(Icons.poll_outlined),
+                    icon: Semantics(
+                        label: 'add poll',
+                        identifier: 'add poll',
+                        child: const Icon(Icons.poll_outlined)),
                   ),
                 ],
               ),
@@ -1017,7 +1092,10 @@ class _CreatePostState extends State<CreatePost> {
                     );
                   },
                   label: Text('Poll ends in $_pollendsin'),
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: Semantics(
+                      label: 'poll ends in',
+                      identifier: 'poll ends in',
+                      child: const Icon(Icons.arrow_drop_down)),
                 ),
                 IconButton(
                   onPressed: () {
@@ -1025,7 +1103,10 @@ class _CreatePostState extends State<CreatePost> {
                       _insertpoll = !_insertpoll;
                     });
                   },
-                  icon: const Icon(Icons.close),
+                  icon: Semantics(
+                      label: 'close poll',
+                      identifier: 'close poll',
+                      child: const Icon(Icons.close)),
                 ),
               ],
             ),
@@ -1064,7 +1145,10 @@ class _CreatePostState extends State<CreatePost> {
                             _optionControllers[index + 2].clear();
                           });
                         },
-                        icon: const Icon(Icons.close))
+                        icon: Semantics(
+                            label: 'close option ${index + 3}',
+                            identifier: 'close option ${index + 3}',
+                            child: const Icon(Icons.close)))
                   ],
                 );
               },
@@ -1079,7 +1163,10 @@ class _CreatePostState extends State<CreatePost> {
                           });
                         },
                         label: const Text('Add option'),
-                        icon: const Icon(Icons.add),
+                        icon: Semantics(
+                            label: 'add option',
+                            identifier: 'add option',
+                            child: const Icon(Icons.add)),
                       )
                     ],
                   )
