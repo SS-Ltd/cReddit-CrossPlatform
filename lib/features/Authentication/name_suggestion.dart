@@ -12,12 +12,13 @@ import 'package:reddit_clone/services/networkServices.dart'; // Import NetworkSe
 /// It allows the user to create a username by choosing from a list of suggestions
 /// or generating new suggestions.
 class NameSuggestion extends StatefulWidget {
+  final String? fcmToken;
   final Map<String, dynamic> userData;
 
   /// Constructs a [NameSuggestion] widget.
   ///
   /// The [userData] parameter is required and contains user data.
-  NameSuggestion({Key? key, required this.userData}) : super(key: key);
+  NameSuggestion({Key? key, required this.userData, this.fcmToken}) : super(key: key);
 
   @override
   _NameSuggestionState createState() => _NameSuggestionState();
@@ -181,7 +182,7 @@ class _NameSuggestionState extends State<NameSuggestion> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            Gender(userData: widget.userData)),
+                            Gender(userData: widget.userData, fcmToken: widget.fcmToken)),
                   );
                 },
               ),

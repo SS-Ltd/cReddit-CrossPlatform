@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
@@ -17,13 +19,14 @@ import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 /// The [Gender] widget is typically used as part of the signup process in the
 /// authentication feature of the cReddit-CrossPlatform app.
 class Gender extends StatelessWidget {
+  final String? fcmToken;
   final Map<String, dynamic> userData;
 
   /// Constructs a [Gender] widget.
   ///
   /// The [userData] parameter is a map that contains the user's signup data,
   /// including their username, email, password, and gender.
-  Gender({super.key, required this.userData});
+  Gender({super.key, required this.userData, this.fcmToken});
 
   final List<String> userGender = [
     "Man",
@@ -44,7 +47,8 @@ class Gender extends StatelessWidget {
         userData["username"],
         userData["email"],
         userData["password"],
-        userData["gender"]);
+        userData["gender"],
+        fcmToken);
     if (signup) {
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.push(

@@ -35,8 +35,14 @@ class CustomNavigationBar extends StatefulWidget {
   /// Creates a custom navigation bar widget.
   ///
   /// The [key] parameter is used to provide a global key for the widget.
+
+  final String? fcmToken;
   CustomNavigationBar(
-      {super.key, required this.isProfile, this.myuser, this.navigateToChat});
+      {super.key,
+      required this.isProfile,
+      this.myuser,
+      this.navigateToChat,
+      this.fcmToken});
 
   bool? navigateToChat;
   bool isProfile;
@@ -232,7 +238,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   ],
                 )
               : null,
-      endDrawer: widget.isProfile ? null : const Rightsidebar(),
+      endDrawer:
+          widget.isProfile ? null : Rightsidebar(fcmToken: widget.fcmToken),
       body: widget.isProfile
           ? Profile(
               userName: widget.myuser!.username,
