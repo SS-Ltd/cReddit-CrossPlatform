@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/community/rules_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
@@ -210,16 +212,28 @@ class _SubRedditPageState extends State<SubRedditPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: <Widget>[
-          _iconButtonWithBackground(Icons.search, () {}),
-          _iconButtonWithBackground(Icons.share_outlined, () {}),
-          _iconButtonWithBackground(Icons.more_vert, () {}),
+          Semantics(
+              label: "search subreddit",
+              identifier: "search subreddit",
+              child: _iconButtonWithBackground(Icons.search, () {})),
+          Semantics(
+              label: "share subreddit",
+              identifier: "share subreddit",
+              child: _iconButtonWithBackground(Icons.share_outlined, () {})),
+          Semantics(
+              label: "subreddit options",
+              identifier: "subreddit options",
+              child: _iconButtonWithBackground(Icons.more_vert, () {})),
         ],
       ),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: <Widget>[
           SliverToBoxAdapter(child: _subredditInfo()),
-          SliverToBoxAdapter(child: _sortingOptions()),
+          Semantics(
+              label: "subreddit sorting options",
+              identifier: "subreddit sorting options",
+              child: SliverToBoxAdapter(child: _sortingOptions())),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -382,7 +396,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ModeratorTools(communityName: widget.subredditName),
+                            builder: (context) => ModeratorTools(
+                                communityName: widget.subredditName),
                           ),
                         );
                       },
