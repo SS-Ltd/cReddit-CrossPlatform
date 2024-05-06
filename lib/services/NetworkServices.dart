@@ -753,8 +753,8 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<SearchComments>> getSearchComments(
-      String comment, String username) async {
-    final parameters = {'query': comment, 'user': username};
+      String comment, String username, String sort) async {
+    final parameters = {'query': comment, 'user': username, 'sort': sort};
     Uri url = Uri.parse('$_baseUrl/search/comments')
         .replace(queryParameters: parameters);
     print(parameters);
@@ -762,7 +762,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchComments(comment, username);
+      return getSearchComments(comment, username, sort);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
@@ -796,8 +796,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchPosts>> getSearchPosts(String post, String username) async {
-    final parameters = {'query': post, 'user': username};
+  Future<List<SearchPosts>> getSearchPosts(String post, String username, String sort, String time) async {
+    final parameters = {'query': post, 'user': username, 'sort': sort, 'time': time};
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
 
@@ -805,7 +805,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchPosts(post, username);
+      return getSearchPosts(post, username, sort, time);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
@@ -817,8 +817,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchCommunities>> getSearchCommunities(String community) async {
-    final parameters = {'query': community};
+  Future<List<SearchCommunities>> getSearchCommunities(
+      String community, bool autocomplete) async {
+    final parameters = {
+      'query': community,
+      'autocomplete': autocomplete.toString()
+    };
     Uri url = Uri.parse('$_baseUrl/search/communities')
         .replace(queryParameters: parameters);
 
@@ -826,7 +830,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchCommunities(community);
+      return getSearchCommunities(community, autocomplete);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
