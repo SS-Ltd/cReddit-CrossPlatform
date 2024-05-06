@@ -196,6 +196,9 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                   notification: notification,
                   onTap: () {
                     setState(() {
+                      context
+                          .read<NetworkService>()
+                          .markAllNotificationAsRead();
                       notifications[index].isRead = true;
                     });
                   },

@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:random_avatar/random_avatar.dart';
 import 'package:reddit_clone/features/chat/chat_screen.dart';
 import 'package:reddit_clone/features/chat/view_all_channels.dart';
 import 'package:reddit_clone/models/chat.dart';
@@ -18,7 +22,6 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   List<Chat> chats = [];
-
   Future<void> fetchChats() async {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final posts = await networkService.fetchChats();
@@ -150,12 +153,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 itemBuilder: (context, index) {
                   final chat = chats[index];
                   bool isUnread = false; //change when mahmoud finishes
+                  final random = Random();
+                  final svgCode =
+                      RandomAvatarString(random.nextInt(1000000).toString());
                   return Card(
                     color: Palette.settingsHeading,
                     child: ListTile(
-                      leading: const CircleAvatar(
-                          backgroundImage:
-                              NetworkImage('https://picsum.photos/200/300')),
+                      leading: SvgPicture.string(
+                        svgCode,
+                        width: 56, // Adjust as needed
+                        height: 56, // Adjust as needed
+                        fit: BoxFit.cover,
+                      ),
                       title: Text(chat.name,
                           style: TextStyle(
                               color: isUnread ? Colors.white : Colors.grey[400],
