@@ -8,11 +8,11 @@ import 'package:reddit_clone/utils/utils_time.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatScreen extends StatefulWidget {
-  final String recipientId;
   final String chatId;
+  final String usernameOrGroupName;
 
   const ChatScreen(
-      {super.key, required this.recipientId, required this.chatId});
+      {super.key, required this.chatId, required this.usernameOrGroupName});
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -21,64 +21,54 @@ class ChatScreen extends StatefulWidget {
 class ChatScreenState extends State<ChatScreen> {
   List<ChatMessage> messages = [];
   final messageController = TextEditingController();
-  bool isFirstMessage = true; // Assuming this is to check if it's a new chat
   List<ChatMessages> chatMessages = [];
   late IO.Socket socket;
-  Future<void> fetchChatMessages() async {
-    final networkService = Provider.of<NetworkService>(context, listen: false);
-    final messages = await networkService.fetchChatMessages(widget.chatId);
-    if (messages == null) return;
-    setState(() {
-      chatMessages = messages;
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    socket.disconnect();
-  }
 
   @override
   void initState() {
     super.initState();
-    messages.add(ChatMessage(
-        senderId: 'user1',
-        recipientId: 'user2',
-        message: 'Hello!',
-        timestamp: DateTime.now()));
-    messages.add(ChatMessage(
-        senderId: 'user1',
-        recipientId: 'user2',
-        message: 'Hello!!!',
-        timestamp: DateTime.now()));
-    messages.add(ChatMessage(
-        senderId: 'user2',
-        recipientId: 'user1',
-        message: 'Hi there!',
-        timestamp: DateTime.now()));
-    messages.add(ChatMessage(
-        senderId: 'user1',
-        recipientId: 'user2',
-        message: 'Hello!!!!!!!',
-        timestamp: DateTime.now()));
+    initializeSocket();
+    fetchChatMessages();
+  }
+
+  void initializeSocket() {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final accessToken = networkService.getAccessToken();
-    socket = IO.io('http://192.168.1.10:3000', <String, dynamic>{
+    socket = IO.io('https://api.creddit.tech/', <String, dynamic>{
       'autoConnect': false,
       'transports': ['websocket'],
-      'extraHeaders': {
-        'cookie': 'accessToken=$accessToken',
-      },
+      'extraHeaders': {'cookie': 'accessToken=$accessToken'},
     });
-    fetchChatMessages();
     connectAndListen();
+  }
+
+  Future<void> fetchChatMessages() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    final messages = await networkService.fetchChatMessages(widget.chatId);
+    if (messages != null) {
+      setState(() {
+        chatMessages = messages;
+      });
+    }
   }
 
   void connectAndListen() {
     UserModel user = context.read<NetworkService>().getUser();
     socket.connect();
     socket.on('connect', (data) => print('Connected'));
+    socket.on('connect_error', (err) => print('Connect error: $err'));
+    socket.on(
+        'connect_timeout', (timeout) => print('Connect timeout: $timeout'));
+    socket.on('error', (err) => print('Error: $err'));
+    socket.on('disconnect', (reason) => print('Disconnected: $reason'));
+    socket.on(
+        'reconnect', (attemptNumber) => print('Reconnected: $attemptNumber'));
+    socket.on('reconnect_attempt',
+        (attemptNumber) => print('Reconnect attempt: $attemptNumber'));
+    socket.on('reconnecting',
+        (attemptNumber) => print('Reconnecting: $attemptNumber'));
+    socket.on('reconnect_error', (err) => print('Reconnect error: $err'));
+
     socket
         .emit('joinRoom', {'rooms': widget.chatId, 'username': user.username});
     socket.on('newMessage', (data) {
@@ -91,6 +81,7 @@ class ChatScreenState extends State<ChatScreen> {
             user: data['username'],
             room: 'some-room', // Replace with actual room
             content: data['message'],
+            profilePicture: data['profilePicture'],
             isDeleted: false, // Replace with actual isDeleted
             reactions: [], // Replace with actual reactions
             createdAt: DateTime.now(),
@@ -105,68 +96,49 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   @override
+  void dispose() {
+    socket.disconnect();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                'Username', // This should be the recipient's username
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            // IconButton(
-            //   icon: Icon(Icons.more_vert),
-            //   onPressed: () {
-            //     Navigator.push(context,
-            //         MaterialPageRoute(builder: (context) => const NewPage()));
-            //   },
-            // ),
-          ],
-        ),
+        title: Text(widget.usernameOrGroupName,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Column(
         children: [
-          isFirstMessage ? introSection() : Container(),
           Expanded(
             child: ListView.builder(
               itemCount: chatMessages.length,
               itemBuilder: (context, index) {
                 final chatMessage = chatMessages[index];
-                bool showUserInfo = true; // Default to showing user info
-                // Check if the current message is from the same sender as the previous one
-                if (index > 0 &&
-                    chatMessages[index - 1].user == chatMessage.user) {
-                  showUserInfo =
-                      false; // Do not show user info if the sender is the same
-                }
-
+                bool showUserInfo = index == 0 ||
+                    chatMessages[index - 1].user != chatMessage.user;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (showUserInfo)
-                      Row(
-                        children: [
-                          const CircleAvatar(
-                            backgroundImage:
-                                NetworkImage("https://i.imgur.com/BoN9kdC.png"),
-                          ),
-                          const SizedBox(width: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(chatMessage.user ?? ''),
-                              Text(formatTimestamp(chatMessage.createdAt)),
-                            ],
-                          ),
-                        ],
+                    if (showUserInfo && chatMessage.user != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          children: [
+                            if (chatMessage.user != null)
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    chatMessage.profilePicture ?? ''),
+                              ),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(chatMessage.user!)),
+                            Text(formatTimestamp(chatMessage.createdAt),
+                                style: TextStyle(color: Colors.grey[600])),
+                          ],
+                        ),
                       ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          top: 2.0,
-                          bottom: 8.0,
-                          left: 50.0), // Add left padding to the message
+                      padding: const EdgeInsets.only(left: 50.0),
                       child: Text(chatMessage.content),
                     ),
                   ],
@@ -177,29 +149,6 @@ class ChatScreenState extends State<ChatScreen> {
           messageInputField(),
         ],
       ),
-    );
-  }
-
-  Widget introSection() {
-    return Column(
-      children: [
-        const SizedBox(height: 20),
-        const CircleAvatar(
-          radius: 60,
-          backgroundImage: NetworkImage(
-              "https://i.imgur.com/BoN9kdC.png"), // Recipient's large profile picture
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'Username', // Recipient's username
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const Text('Redditor for 7m 25d'),
-        TextButton(
-          onPressed: () {}, // Navigate to recipient's profile
-          child: const Text('View Profile'),
-        ),
-      ],
     );
   }
 
@@ -240,25 +189,13 @@ class ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.send),
             color: Colors.blue,
             onPressed: () {
-              // final message = ChatMessage(
-              //   senderId: 'currentUserId', // Replace with the current user's ID
-              //   recipientId: widget.recipientId,
-              //   message: messageController.text,
-              //   timestamp: DateTime.now(),
-              // );
-              // setState(() {
-              //   messages.add(message);
-              //   isFirstMessage =
-              //       false; // After the first message, remove the intro section
-              // });
-              // messageController.clear();
               UserModel user = context.read<NetworkService>().getUser();
               socket.emit('chatMessage', {
                 'username': user.username,
                 'message': messageController.text,
                 'roomId': widget.chatId,
-                //MAHMOUD ENTA 3AYZ HAGA ZY KDA?
               });
+              messageController.clear();
             },
           ),
         ],

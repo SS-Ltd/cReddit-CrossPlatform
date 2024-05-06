@@ -1527,7 +1527,7 @@ class NetworkService extends ChangeNotifier {
     return response.statusCode == 200 || response.statusCode == 201;
   }
 
-  Future<bool> createPrivateChatRoom(List<String> member) async {
+  Future<String> createPrivateChatRoom(List<String> member) async {
     Uri url = Uri.parse('$_baseUrl/chat');
     final response = await http.post(
       url,
@@ -1542,13 +1542,14 @@ class NetworkService extends ChangeNotifier {
       return createPrivateChatRoom(member);
     }
 
-    return response.statusCode == 200 || response.statusCode == 201;
+    var responseBody = jsonDecode(response.body);
+    return responseBody['roomID'];
   }
 
   Future<List<ChatMessages>?> fetchChatMessages(String chatId) async {
     Uri url = Uri.parse('$_baseUrl/chat/$chatId');
     final response = await http.get(url, headers: _headers);
-
+    print(response.body);
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body);
       return jsonResponse.map((item) => ChatMessages.fromJson(item)).toList();

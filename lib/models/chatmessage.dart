@@ -4,6 +4,7 @@ class ChatMessages {
   final String room;
   final String content;
   final bool isDeleted;
+  final String? profilePicture;
   final List<dynamic> reactions;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -15,6 +16,7 @@ class ChatMessages {
     required this.content,
     required this.isDeleted,
     required this.reactions,
+    this.profilePicture,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -22,9 +24,10 @@ class ChatMessages {
   factory ChatMessages.fromJson(Map<String, dynamic> json) {
     return ChatMessages(
       id: json['_id'],
-      user: json['user'],
+      user: json['username'],
       room: json['room'],
       content: json['content'],
+      profilePicture: json['profilePicture'],
       isDeleted: json['isDeleted'],
       reactions: json['reactions'],
       createdAt: json['createdAt'] != null
