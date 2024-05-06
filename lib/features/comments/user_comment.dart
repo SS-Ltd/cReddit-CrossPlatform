@@ -281,22 +281,25 @@ class UserCommentState extends State<UserComment> {
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AboutUserPopUp(
-                                      userName: widget.comment.username);
-                                });
-                          },
-                          child: Text(
-                            widget.comment.username,
-                            style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AboutUserPopUp(
+                                        userName: widget.comment.username);
+                                  });
+                            },
+                            child: Semantics(
+                              label: 'comment username',
+                              identifier: "comment username",
+                              child: Text(
+                                widget.comment.username,
+                                style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )),
                         const SizedBox(width: 10),
                         Text(
                           formatTimestamp(
@@ -360,23 +363,26 @@ class UserCommentState extends State<UserComment> {
                                             value.contains('\n')
                                                 ? value.split('\n')[0]
                                                 : value;
-                                        return SizedBox(
-                                          height: 33,
-                                          child: SingleChildScrollView(
-                                            child: MarkdownBody(
-                                              data: displayText,
-                                              styleSheet:
-                                                  MarkdownStyleSheet.fromTheme(
-                                                          Theme.of(context))
+                                        return Semantics(
+                                            label: 'comment content',
+                                            identifier: 'comment content',
+                                            child: SizedBox(
+                                              height: 33,
+                                              child: SingleChildScrollView(
+                                                child: MarkdownBody(
+                                                  data: displayText,
+                                                  styleSheet: MarkdownStyleSheet
+                                                          .fromTheme(
+                                                              Theme.of(context))
                                                       .copyWith(
-                                                p: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.grey,
+                                                    p: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        );
+                                            ));
                                       },
                                     ),
                                   )
@@ -475,7 +481,10 @@ class UserCommentState extends State<UserComment> {
                       children: [
                         const Spacer(),
                         IconButton(
-                          icon: const Icon(Icons.more_vert),
+                          icon: Semantics(
+                              identifier: "comment options",
+                              label: "comment options",
+                              child: const Icon(Icons.more_vert)),
                           onPressed: () {
                             UserModel user =
                                 context.read<NetworkService>().getUser();
@@ -498,7 +507,10 @@ class UserCommentState extends State<UserComment> {
                               }),
                         ] else
                           IconButton(
-                            icon: const Icon(Icons.reply_sharp),
+                            icon: Semantics(
+                                identifier: "comment reply",
+                                label: "comment reply",
+                                child: const Icon(Icons.reply_sharp)),
                             onPressed: _addReply,
                           ),
                         ValueListenableBuilder<int>(
@@ -510,10 +522,14 @@ class UserCommentState extends State<UserComment> {
                                   identifier: 'comment upvote',
                                   label: 'comment upvote',
                                   child: IconButton(
-                                    icon: Icon(Icons.arrow_upward,
-                                        color: value == 1
-                                            ? Palette.upvoteOrange
-                                            : Palette.greyColor),
+                                    icon: Semantics(
+                                      identifier: 'comment upvote',
+                                      label: 'comment upvote',
+                                      child: Icon(Icons.arrow_upward,
+                                          color: value == 1
+                                              ? Palette.upvoteOrange
+                                              : Palette.greyColor),
+                                    ),
                                     onPressed: () async {
                                       int oldVotes = votes;
                                       ValueNotifier<int> oldHasVoted =
@@ -773,7 +789,8 @@ class UserCommentState extends State<UserComment> {
                               onPressed: () async {
                                 bool removed = await context
                                     .read<NetworkService>()
-                                    .removeComment(widget.comment.commentId, true);
+                                    .removeComment(
+                                        widget.comment.commentId, true);
                                 if (removed) {
                                   widget.comment.isDeleted.value = true;
                                   CustomSnackBar(
