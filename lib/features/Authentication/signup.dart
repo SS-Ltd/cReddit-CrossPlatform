@@ -146,16 +146,21 @@ class SignUpScreenState extends State<SignUpScreen> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          AuthField(
-                            controller: emailController,
-                            labelText: 'Email',
-                            showClearButton: true,
-                          ),
+                          Semantics(
+                              identifier: 'signup_email_field',
+                              child: AuthField(
+                                controller: emailController,
+                                labelText: 'Email',
+                                showClearButton: true,
+                              )),
                           const SizedBox(height: 20),
-                          AuthField(
-                              controller: passwordController,
-                              labelText: 'Password',
-                              obscureText: true),
+                          Semantics(
+                            identifier: 'signup_password_fields',
+                            child: AuthField(
+                                controller: passwordController,
+                                labelText: 'Password',
+                                obscureText: true),
+                          ),
                         ],
                       ),
                     ),
@@ -179,41 +184,41 @@ class SignUpScreenState extends State<SignUpScreen> {
                   return ElevatedButton(
                     onPressed: isFilled
                         ? () async {
-                    if (emailController.text.isEmpty ||
-                        passwordController.text.isEmpty) {
-                      // Show an error message
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Please fill in all fields')),
-                      );
-                      return;
-                    }
-                    if (!isValidEmail(emailController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Invalid email address')),
-                      );
-                      return;
-                    }
-                    if (!isValidPassword(passwordController.text)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
-                      );
-                      return;
-                    }
-                    Map<String, dynamic> userData = {
-                      'email': emailController.text,
-                      'password': passwordController.text,
-                    };
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              NameSuggestion(userData: userData)),
-                    );
-                  }
-                
+                            if (emailController.text.isEmpty ||
+                                passwordController.text.isEmpty) {
+                              // Show an error message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Please fill in all fields')),
+                              );
+                              return;
+                            }
+                            if (!isValidEmail(emailController.text)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Invalid email address')),
+                              );
+                              return;
+                            }
+                            if (!isValidPassword(passwordController.text)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
+                              );
+                              return;
+                            }
+                            Map<String, dynamic> userData = {
+                              'email': emailController.text,
+                              'password': passwordController.text,
+                            };
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      NameSuggestion(userData: userData)),
+                            );
+                          }
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
@@ -233,6 +238,7 @@ class SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
   /// Checks if the given [email] is a valid email address.
   ///
   /// Returns `true` if the email is valid, otherwise `false`.
