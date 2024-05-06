@@ -24,8 +24,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  //final String _baseUrl = 'https://api.creddit.tech';
-  final String _baseUrl = 'http://192.168.1.5:3000';
+  final String _baseUrl = 'https://api.creddit.tech';
+  //final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -433,6 +433,20 @@ class NetworkService extends ChangeNotifier {
       return disJoinSubReddit(subredditName);
     }
     if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> muteCommunity(String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/mute');
+    final response = await http.post(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return muteCommunity(communityName);
+    }
+    if (response.statusCode == 200) {
       return true;
     } else {
       return false;

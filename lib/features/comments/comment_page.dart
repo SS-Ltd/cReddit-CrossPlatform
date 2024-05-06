@@ -10,6 +10,7 @@ import 'package:reddit_clone/features/comments/comment_post.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/post/edit_post.dart';
 import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
 import 'user_comment.dart';
@@ -76,6 +77,7 @@ class _CommentPageState extends State<CommentPage> {
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
   bool isLoading = true;
+  List<SearchComments> commentsResults = [];
 
   @override
   void initState() {
@@ -184,14 +186,16 @@ class _CommentPageState extends State<CommentPage> {
                       borderRadius: BorderRadius.circular(40)),
                   contentPadding: const EdgeInsets.all(10),
                 ),
-                // onChanged: (value) async {
-                //   setState(() {
-                //     searchQuery = value;
-                //   });
-                //   commentsResults =
-                //       await Provider.of<NetworkService>(context, listen: false)
-                //           .getSearchComments(value, '');
-                //},
+                onTap: () {
+                  setState(() {
+                    isSearching = true;
+                  });
+                },
+                onChanged: (value) async {
+                  commentsResults =
+                      await Provider.of<NetworkService>(context, listen: false)
+                          .getSearchComments(value, '', '');
+                },
               )
             : null,
         actions: isSearching
