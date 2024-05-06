@@ -42,6 +42,7 @@ class _HomeSearchState extends State<HomeSearch>
   String searchQuery = '';
   bool isSearching = true;
   bool isLoading = false;
+  bool isGettingMoreData = false;
   bool canRequestFocus = true;
   late final TabController _tabController;
   int _selectedIndex = 0;
@@ -98,70 +99,70 @@ class _HomeSearchState extends State<HomeSearch>
 
   void getCommentsData() async {
     setState(() {
-      isLoading = true; // Start loading
+      isGettingMoreData = true; // Start loading
     });
     List<SearchComments> newComments =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchComments(searchQuery, '', sortOption, "", commentsPage);
     setState(() {
       commentsResults.addAll(newComments);
-      isLoading = false; // End loading
+      isGettingMoreData = false; // End loading
       commentsPage++; // Increment page number
     });
   }
 
   void getPostsData() async {
     setState(() {
-      isLoading = true; // Start loading
+      isGettingMoreData = true; // Start loading
     });
     List<SearchPosts> newPosts =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchPosts(searchQuery, '', sortOption, timeOption, postsPage);
     setState(() {
       postsResults.addAll(newPosts);
-      isLoading = false; // End loading
+      isGettingMoreData = false; // End loading
       postsPage++; // Increment page number
     });
   }
 
   void getCommunitiesData() async {
     setState(() {
-      isLoading = true; // Start loading
+      isGettingMoreData = true; // Start loading
     });
     List<SearchCommunities> newCommunities =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchCommunities(searchQuery, true, communitiesPage);
     setState(() {
       communitiesResults.addAll(newCommunities);
-      isLoading = false; // End loading
+      isGettingMoreData = false; // End loading
       communitiesPage++; // Increment page number
     });
   }
 
   void getUsersData() async {
     setState(() {
-      isLoading = true; // Start loading
+      isGettingMoreData = true; // Start loading
     });
     List<SearchUsers> newUsers =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchUsers(searchQuery, peoplePage);
     setState(() {
       peopleResults.addAll(newUsers);
-      isLoading = false; // End loading
+      isGettingMoreData = false; // End loading
       peoplePage++; // Increment page number
     });
   }
 
   void getHashtagsData() async {
     setState(() {
-      isLoading = true; // Start loading
+      isGettingMoreData = true; // Start loading
     });
     List<SearchHashtag> newHashtags =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchHashtags(searchQuery, hashtagsPage);
     setState(() {
       hashtagsResults.addAll(newHashtags);
-      isLoading = false; // End loading
+      isGettingMoreData = false; // End loading
       hashtagsPage++; // Increment page number
     });
   }
@@ -283,36 +284,38 @@ class _HomeSearchState extends State<HomeSearch>
                   if (communitiesResults.isNotEmpty) const Text('Communities'),
                   if (communitiesResults.isNotEmpty)
                     Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: communitiesResults.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(communitiesResults[index].icon),
-                            ),
-                            subtitle: Text(
-                                "${communitiesResults[index].members} members"),
-                            title: Text(communitiesResults[index].name),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SubRedditPage(
-                                    subredditName:
-                                        communitiesResults[index].name,
+                      child: Column(children: [
+                        ListView.builder(
+                          controller: _scrollController,
+                          itemCount: communitiesResults.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    communitiesResults[index].icon),
+                              ),
+                              subtitle: Text(
+                                  "${communitiesResults[index].members} members"),
+                              title: Text(communitiesResults[index].name),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SubRedditPage(
+                                      subredditName:
+                                          communitiesResults[index].name,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            trailing: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.clear),
-                            ),
-                          );
-                        },
-                      ),
+                                );
+                              },
+                              trailing: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.clear),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
                     ),
                   if (peopleResults.isNotEmpty) const Text('People'),
                   if (peopleResults.isNotEmpty)
