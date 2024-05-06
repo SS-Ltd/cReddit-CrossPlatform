@@ -55,12 +55,14 @@ class CommentPage extends StatefulWidget {
   final Post postComment;
   final String postTitle;
   final String username;
+  final String? commentId;
   const CommentPage(
       {super.key,
       required this.postId,
       required this.postComment,
       required this.postTitle,
-      required this.username});
+      required this.username,
+      this.commentId});
 
   @override
   State<CommentPage> createState() {
@@ -121,7 +123,25 @@ class _CommentPageState extends State<CommentPage> {
                 ))
             .toList();
       });
-    }
+      print('ssssssssssssssssssssssssssssssssssssssssssssssss');
+      print(_comments[0].comment.username);
+      print(_comments[0].comment.content);
+      print(widget.commentId);
+      if(widget.commentId != null){
+        _comments.sort((a,b) {
+          if (a.comment.commentId == widget.commentId){
+            return -1;
+          }
+          else if (b.comment.commentId == widget.commentId){
+            return 1;
+          }
+          else{
+            return 0;
+          }
+        });
+      }
+      print(_comments[0].comment.username);
+      print(_comments[0].comment.content);    }
   }
 
   void _calculateCommentPositions() {

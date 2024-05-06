@@ -91,37 +91,61 @@ class CommentTile extends StatelessWidget {
             ),
             SizedBox(
               width: 500,
-              child: Card(
-                color: Palette.commentTile,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(comment.postPicture),
-                            radius: 15,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text('u/${comment.username}'),
-                        ],
+              child: GestureDetector(
+                onTap: () async {
+                  Post postComment = Post(
+                    postModel: await Provider.of<NetworkService>(context,
+                            listen: false)
+                        .fetchPost(comment.postID),
+                    isHomePage: false,
+                    isSubRedditPage: false,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommentPage(
+                        postId: comment.postID,
+                        postComment: postComment,
+                        postTitle: comment.postTitle,
+                        username: comment.postUsername,
+                        commentId: comment.id,
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(comment.content),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text('${comment.netVote.toString()} upvotes'),
-                    ],
+                    ),
+                  );
+                },
+                child: Card(
+                  color: Palette.commentTile,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(comment.postPicture),
+                              radius: 15,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text('u/${comment.username}'),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(comment.content),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text('${comment.netVote.toString()} upvotes'),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -130,7 +154,27 @@ class CommentTile extends StatelessWidget {
               height: 10,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () async {
+                Post postComment = Post(
+                  postModel:
+                      await Provider.of<NetworkService>(context, listen: false)
+                          .fetchPost(comment.postID),
+                  isHomePage: false,
+                  isSubRedditPage: false,
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommentPage(
+                      postId: comment.postID,
+                      postComment: postComment,
+                      postTitle: comment.postTitle,
+                      username: comment.postUsername,
+                      commentId: comment.id,
+                    ),
+                  ),
+                );
+              },
               child: const Text('Go to comments'),
             ),
             const SizedBox(
@@ -138,7 +182,7 @@ class CommentTile extends StatelessWidget {
             ),
             Row(
               children: [
-                Text('${comment.commentCount.toString()} comments'),
+                Text('${comment.commentCount} comments'),
               ],
             )
           ],
