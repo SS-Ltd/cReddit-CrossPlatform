@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
-import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
 import 'package:reddit_clone/features/Inbox/message_page.dart';
 import 'package:reddit_clone/features/Inbox/new_message.dart';
@@ -204,7 +203,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                   },
                 );
               } else {
-                return CustomLoadingIndicator();
+                return const CustomLoadingIndicator();
               }
             },
           ),
@@ -241,7 +240,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                   },
                 );
               } else {
-                return CustomLoadingIndicator();
+                return const CustomLoadingIndicator();
               }
             },
           ),

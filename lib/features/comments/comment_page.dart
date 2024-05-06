@@ -254,7 +254,7 @@ class _CommentPageState extends State<CommentPage> {
               if (index == 0) {
                 return widget.postComment;
               } else if (isLoading) {
-                return CustomLoadingIndicator();
+                return const CustomLoadingIndicator();
               } else if (index - 1 < _keys.length) {
                 return UserComment(
                   key: _keys[index - 1],

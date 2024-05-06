@@ -18,7 +18,6 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/features/comments/edit_comment.dart';
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// This file contains the implementation of the [UserComment] widget and its related classes.
 ///

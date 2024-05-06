@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
@@ -509,7 +511,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                         postsResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: postsResults.length,
@@ -558,7 +560,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                         commentsResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: commentsResults.length,
@@ -579,7 +581,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                         hashtagsResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: hashtagsResults.length,

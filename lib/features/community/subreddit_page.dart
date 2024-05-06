@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -161,12 +163,12 @@ class _SubRedditPageState extends State<SubRedditPage> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('NSFW Content'),
-            content: Text(
+            title: const Text('NSFW Content'),
+            content: const Text(
                 'This subreddit contains NSFW content and cannot be viewed.'),
             actions: <Widget>[
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(); // Go back to the previous page

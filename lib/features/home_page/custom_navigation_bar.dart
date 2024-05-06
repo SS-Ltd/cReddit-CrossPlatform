@@ -201,7 +201,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NewChatPage()),
+                                builder: (context) => const NewChatPage()),
                           );
                         },
                       ),
@@ -324,7 +324,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                   },
                 ),
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     width: 400,
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),

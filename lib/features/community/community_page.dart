@@ -40,7 +40,7 @@ class CommunityPageState extends State<CommunityPage> {
       future: communities,
       builder: (BuildContext context, AsyncSnapshot<List<Community>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CustomLoadingIndicator();
+          return const CustomLoadingIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

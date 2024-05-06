@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 } else {
                   return posts.isNotEmpty
-                      ? Center(child: CustomLoadingIndicator())
+                      ? const Center(child: CustomLoadingIndicator())
                       : const SizedBox.shrink();
                 }
               },

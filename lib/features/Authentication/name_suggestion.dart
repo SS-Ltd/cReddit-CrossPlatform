@@ -18,13 +18,13 @@ class NameSuggestion extends StatefulWidget {
   /// Constructs a [NameSuggestion] widget.
   ///
   /// The [userData] parameter is required and contains user data.
-  NameSuggestion({Key? key, required this.userData, this.fcmToken}) : super(key: key);
+  const NameSuggestion({super.key, required this.userData, this.fcmToken});
 
   @override
-  _NameSuggestionState createState() => _NameSuggestionState();
+  NameSuggestionState createState() => NameSuggestionState();
 }
 
-class _NameSuggestionState extends State<NameSuggestion> {
+class NameSuggestionState extends State<NameSuggestion> {
   final TextEditingController usernameController = TextEditingController();
 
   List<String> usernameSuggestions = [];
@@ -116,7 +116,7 @@ class _NameSuggestionState extends State<NameSuggestion> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: isLoading
-                          ? Center(
+                          ? const Center(
                               child: CircularProgressIndicator(),
                             )
                           : Column(
