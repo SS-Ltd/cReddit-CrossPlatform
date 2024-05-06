@@ -14,16 +14,16 @@ class ManageNotifications extends StatefulWidget {
 }
 
 class _ManageNotificationsState extends State<ManageNotifications> {
-  bool mentions = true;
-  bool comments = true;
-  bool upvotes = true;
-  bool replies = true;
-  bool followers = true;
-  bool posts = true;
-  bool cakeday = true;
-  bool modNotifs = true;
-  bool moderator = true;
-  bool invitations = true;
+  bool? mentions;
+  bool? comments;
+  bool? upvotes;
+  bool? replies;
+  bool? followers;
+  bool? posts;
+  bool? cakeday;
+  bool? modNotifs;
+  bool? moderator;
+  bool? invitations;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             mentions = value;
                           });
                         },
-                        switchvalue: mentions),
+                        switchvalue: mentions ?? true),
                     SwitchButton(
                         buttonText: "Comments on your posts",
                         buttonicon: Icons.comment,
@@ -77,7 +77,7 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             comments = value;
                           });
                         },
-                        switchvalue: comments),
+                        switchvalue: comments ?? true),
                     SwitchButton(
                         buttonText: "Upvotes on your posts",
                         buttonicon: Icons.arrow_upward,
@@ -86,7 +86,7 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             upvotes = value;
                           });
                         },
-                        switchvalue: upvotes),
+                        switchvalue: upvotes ?? true),
                     SwitchButton(
                         buttonText: "Replies to your comments",
                         buttonicon: Icons.reply,
@@ -95,7 +95,7 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             replies = value;
                           });
                         },
-                        switchvalue: replies),
+                        switchvalue: replies ?? true),
                     SwitchButton(
                         buttonText: "New followers",
                         buttonicon: Icons.person_add_alt,
@@ -104,13 +104,13 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             followers = value;
                           });
                         },
-                        switchvalue: followers),
+                        switchvalue: followers ?? true),
                     const Heading(text: "UPDATES"),
                     SwitchButton(
                         buttonText: "Cake day",
                         buttonicon: Icons.cake,
                         onPressed: (value) {},
-                        switchvalue: cakeday),
+                        switchvalue: cakeday ?? true),
                     const Heading(text: "MODERATION"),
                     SwitchButton(
                         buttonText: "Mod notifications",
@@ -120,7 +120,7 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             modNotifs = value;
                           });
                         },
-                        switchvalue: modNotifs),
+                        switchvalue: modNotifs ?? true),
                   ],
                 ),
               ),

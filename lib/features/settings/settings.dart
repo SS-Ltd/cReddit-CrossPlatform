@@ -243,7 +243,6 @@ class _SettingsState extends State<Settings> {
                         const Heading(text: 'About'),
                         ArrowButton(
                             onPressed: () => setState(() {
-                                  print(reduceAnimations);
                                   launchUrl(
                                       Uri.parse(
                                           'https://www.redditinc.com/policies/content-policy'),
