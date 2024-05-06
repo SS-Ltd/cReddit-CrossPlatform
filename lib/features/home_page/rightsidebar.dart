@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/community/create_community_page.dart';
@@ -41,7 +43,8 @@ class Rightsidebar extends StatefulWidget {
   /// Creates a `Rightsidebar` widget.
   ///
   /// The `key` parameter is used to specify a unique identifier for the widget.
-  const Rightsidebar({super.key});
+  final String? fcmToken;
+  const Rightsidebar({super.key, this.fcmToken});
 
   @override
   State<Rightsidebar> createState() {
@@ -202,13 +205,13 @@ class _RightsidebarState extends State<Rightsidebar> {
                                                         await context
                                                             .read<
                                                                 NetworkService>()
-                                                            .logout();
+                                                            .logout(widget.fcmToken);
                                                         Navigator
                                                             .pushAndRemoveUntil(
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) =>
-                                                                const LoginScreen(),
+                                                                LoginScreen(fcmToken: widget.fcmToken),
                                                           ),
                                                           (Route<dynamic>
                                                                   route) =>
