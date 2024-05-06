@@ -127,45 +127,51 @@ class CommunityCardState extends State<CommunityCard> {
                       height: 33,
                       child: ButtonTheme(
                         minWidth: 0,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _future = joinOrDisjoinSubreddit();
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const StadiumBorder(),
-                            backgroundColor: value
-                                ? Palette.transparent
-                                : Palette.blueJoinColor,
-                            foregroundColor: value
-                                ? Palette.blueJoinedColor
-                                : Palette.whiteColor,
-                            side: value
-                                ? const BorderSide(
-                                    color: Palette.blueJoinedColor, width: 2.0)
-                                : BorderSide.none,
-                            padding: EdgeInsets.zero,
-                          ),
-                          child: FutureBuilder<bool>(
-                            future: _future,
-                            builder: (BuildContext context,
-                                AsyncSnapshot<bool> snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Palette.blueJoinedColor),
-                                  ),
-                                );
-                              } else {
-                                return Text(isJoined.value ? 'Joined' : 'Join');
-                              }
+                        child: Semantics(
+                          label: "join or disjoin subreddit",
+                          identifier: "join or disjoin subreddit",
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _future = joinOrDisjoinSubreddit();
+                              });
                             },
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              backgroundColor: value
+                                  ? Palette.transparent
+                                  : Palette.blueJoinColor,
+                              foregroundColor: value
+                                  ? Palette.blueJoinedColor
+                                  : Palette.whiteColor,
+                              side: value
+                                  ? const BorderSide(
+                                      color: Palette.blueJoinedColor,
+                                      width: 2.0)
+                                  : BorderSide.none,
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: FutureBuilder<bool>(
+                              future: _future,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<bool> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Palette.blueJoinedColor),
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                      isJoined.value ? 'Joined' : 'Join');
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),
