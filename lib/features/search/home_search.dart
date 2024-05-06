@@ -91,6 +91,16 @@ class _HomeSearchState extends State<HomeSearch>
               setState(() {
                 searchQuery = value;
               });
+              if (value.isEmpty) {
+                setState(() {
+                  commentsResults.clear();
+                  postsResults.clear();
+                  communitiesResults.clear();
+                  peopleResults.clear();
+                  hashtagsResults.clear();
+                });
+                return;
+              }
               commentsResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchComments(value, '', sortOption);
@@ -99,7 +109,7 @@ class _HomeSearchState extends State<HomeSearch>
                       .getSearchPosts(value, '', sortOption, timeOption);
               communitiesResults =
                   await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchCommunities(value);
+                      .getSearchCommunities(value, true);
               peopleResults =
                   await Provider.of<NetworkService>(context, listen: false)
                       .getSearchUsers(value);
@@ -116,22 +126,36 @@ class _HomeSearchState extends State<HomeSearch>
           bottom: isSearching
               ? null
               : TabBar(
+                  isScrollable: true,
                   controller: _tabController,
                   tabs: const <Widget>[
-                    Tab(
-                      text: "Posts",
+                    SizedBox(
+                      width: 40,
+                      child: Tab(text: "Posts"),
                     ),
-                    Tab(
-                      text: "Communities",
+                    SizedBox(
+                      width: 100,
+                      child: Tab(
+                        text: "Communities",
+                      ),
                     ),
-                    Tab(
-                      text: "Comments",
+                    SizedBox(
+                      width: 80,
+                      child: Tab(
+                        text: "Comments",
+                      ),
                     ),
-                    Tab(
-                      text: "People",
+                    SizedBox(
+                      width: 80,
+                      child: Tab(
+                        text: "People",
+                      ),
                     ),
-                    Tab(
-                      text: "Hashtags",
+                    SizedBox(
+                      width: 80,
+                      child: Tab(
+                        text: "Hashtags",
+                      ),
                     ),
                   ],
                 ),

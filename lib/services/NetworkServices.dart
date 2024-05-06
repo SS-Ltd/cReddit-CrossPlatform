@@ -444,7 +444,7 @@ class NetworkService extends ChangeNotifier {
     } else {
       return false;
     }
-  }  
+  }
 
   Future<bool> saveOrUnsaveComment(String commentId, bool isSaved) async {
     Uri url = Uri.parse('$_baseUrl/post/$commentId/save');
@@ -817,8 +817,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchCommunities>> getSearchCommunities(String community) async {
-    final parameters = {'query': community};
+  Future<List<SearchCommunities>> getSearchCommunities(
+      String community, bool autocomplete) async {
+    final parameters = {
+      'query': community,
+      'autocomplete': autocomplete.toString()
+    };
     Uri url = Uri.parse('$_baseUrl/search/communities')
         .replace(queryParameters: parameters);
 
@@ -826,7 +830,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchCommunities(community);
+      return getSearchCommunities(community, autocomplete);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
