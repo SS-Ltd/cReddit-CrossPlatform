@@ -230,10 +230,11 @@ class _SubRedditPageState extends State<SubRedditPage> {
         controller: _scrollController,
         slivers: <Widget>[
           SliverToBoxAdapter(child: _subredditInfo()),
-          Semantics(
-              label: "subreddit sorting options",
-              identifier: "subreddit sorting options",
-              child: SliverToBoxAdapter(child: _sortingOptions())),
+          SliverToBoxAdapter(
+              child: Semantics(
+                  label: "subreddit sorting options",
+                  identifier: "subreddit sorting options",
+                  child: _sortingOptions())),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {

@@ -24,8 +24,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://api.creddit.tech';
-  //final String _baseUrl = 'http://192.168.1.10:3000';
+  //final String _baseUrl = 'https://api.creddit.tech';
+  final String _baseUrl = 'http://192.168.0.5:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -796,8 +796,14 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchPosts>> getSearchPosts(String post, String username, String sort, String time) async {
-    final parameters = {'query': post, 'user': username, 'sort': sort, 'time': time};
+  Future<List<SearchPosts>> getSearchPosts(
+      String post, String username, String sort, String time) async {
+    final parameters = {
+      'query': post,
+      'user': username,
+      'sort': sort,
+      'time': time
+    };
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
 
