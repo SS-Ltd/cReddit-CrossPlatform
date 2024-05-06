@@ -25,9 +25,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final posts = await networkService.fetchChats();
     if (posts == null) return;
-    setState(() {
-      chats = posts;
-    });
+    if (mounted) {
+      setState(() {
+        chats = posts;
+      });
+    }
   }
 
   @override
