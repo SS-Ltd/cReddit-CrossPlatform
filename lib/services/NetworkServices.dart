@@ -782,7 +782,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchHashtag>> getSearchHashtags(
+  Future<List<dynamic>> getSearchHashtags(
       String hashtag, int pageNumber) async {
     final parameters = {'query': hashtag, 'page': pageNumber.toString()};
     Uri url = Uri.parse('$_baseUrl/search/hashtags')
@@ -795,10 +795,21 @@ class NetworkService extends ChangeNotifier {
       return getSearchHashtags(hashtag, pageNumber);
     }
     print(response.body);
+    print("I am here");
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
-      List<SearchHashtag> searchResult =
-          responseData.map((item) => SearchHashtag.fromJson(item)).toList();
+      List<dynamic> searchResult = responseData.map((item) {
+        switch (item['type']) {
+          case 'Post':
+            return SearchHashTagPost.fromJson(item);
+          case 'Comment':
+            return SearchComments.fromJson(item);
+          default:
+            return SearchHashtag.fromJson(item);
+        }
+      }).toList();
+      print("---------------------------------");
+      print(searchResult);
       return searchResult;
     } else {
       return [];

@@ -35,7 +35,7 @@ class _HomeSearchState extends State<HomeSearch>
   List<SearchPosts> postsResults = [];
   List<SearchCommunities> communitiesResults = [];
   List<SearchUsers> peopleResults = [];
-  List<SearchHashtag> hashtagsResults = [];
+  List<dynamic> hashtagsResults = [];
 
   String sortOption = "Hot";
   String timeOption = "All";
@@ -157,7 +157,7 @@ class _HomeSearchState extends State<HomeSearch>
     setState(() {
       isGettingMoreData = true; // Start loading
     });
-    List<SearchHashtag> newHashtags =
+    List<dynamic> newHashtags =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchHashtags(searchQuery, hashtagsPage);
     setState(() {
@@ -182,6 +182,7 @@ class _HomeSearchState extends State<HomeSearch>
         .getSearchUsers(searchQuery, 1);
     hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
         .getSearchHashtags(searchQuery, 1);
+
     print(searchQuery + "  " + sortOption);
     setState(() {
       isLoading = false; // End loading
@@ -284,38 +285,36 @@ class _HomeSearchState extends State<HomeSearch>
                   if (communitiesResults.isNotEmpty) const Text('Communities'),
                   if (communitiesResults.isNotEmpty)
                     Expanded(
-                      child: Column(children: [
-                        ListView.builder(
-                          controller: _scrollController,
-                          itemCount: communitiesResults.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    communitiesResults[index].icon),
-                              ),
-                              subtitle: Text(
-                                  "${communitiesResults[index].members} members"),
-                              title: Text(communitiesResults[index].name),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SubRedditPage(
-                                      subredditName:
-                                          communitiesResults[index].name,
-                                    ),
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: communitiesResults.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(communitiesResults[index].icon),
+                            ),
+                            subtitle: Text(
+                                "${communitiesResults[index].members} members"),
+                            title: Text(communitiesResults[index].name),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SubRedditPage(
+                                    subredditName:
+                                        communitiesResults[index].name,
                                   ),
-                                );
-                              },
-                              trailing: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.clear),
-                              ),
-                            );
-                          },
-                        ),
-                      ]),
+                                ),
+                              );
+                            },
+                            trailing: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.clear),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   if (peopleResults.isNotEmpty) const Text('People'),
                   if (peopleResults.isNotEmpty)
@@ -787,50 +786,57 @@ class _HomeSearchState extends State<HomeSearch>
                                     itemBuilder: (context, index) {
                                       return Column(
                                         children: [
-                                          ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                hashtagsResults[index]
-                                                    .postPicture,
-                                              ),
-                                            ),
-                                            title: Text(hashtagsResults[index]
-                                                .username),
-                                            subtitle: Text(
-                                                hashtagsResults[index]
-                                                    .postTitle),
-                                            onTap: () async {
-                                              Post postComment = Post(
-                                                postModel: await Provider.of<
-                                                            NetworkService>(
-                                                        context,
-                                                        listen: false)
-                                                    .fetchPost(
-                                                        hashtagsResults[index]
-                                                            .postID),
-                                                isHomePage: false,
-                                                isSubRedditPage: false,
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CommentPage(
-                                                    postId:
-                                                        hashtagsResults[index]
-                                                            .postID,
-                                                    postComment: postComment,
-                                                    postTitle:
-                                                        hashtagsResults[index]
-                                                            .postTitle,
-                                                    username:
-                                                        hashtagsResults[index]
-                                                            .username,
-                                                  ),
+                                          if (hashtagsResults[index]
+                                              is SearchHashTagPost)
+                                            ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                  hashtagsResults[index]
+                                                      .commentPicture,
                                                 ),
-                                              );
-                                            },
-                                          ),
+                                              ),
+                                              title: Text(hashtagsResults[index]
+                                                  .username),
+                                              subtitle: Text(
+                                                  hashtagsResults[index]
+                                                      .postTitle),
+                                              onTap: () async {
+                                                Post postComment = Post(
+                                                  postModel: await Provider.of<
+                                                              NetworkService>(
+                                                          context,
+                                                          listen: false)
+                                                      .fetchPost(
+                                                          hashtagsResults[index]
+                                                              .id),
+                                                  isHomePage: false,
+                                                  isSubRedditPage: false,
+                                                );
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CommentPage(
+                                                      postId:
+                                                          hashtagsResults[index]
+                                                              .id,
+                                                      postComment: postComment,
+                                                      postTitle:
+                                                          hashtagsResults[index]
+                                                              .postTitle,
+                                                      username:
+                                                          hashtagsResults[index]
+                                                              .username,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          if (hashtagsResults[index]
+                                              is SearchComments)
+                                            CommentTile(
+                                                comment: hashtagsResults[index],
+                                                isProfile: false),
                                           const Divider(
                                             thickness: 1,
                                           )
