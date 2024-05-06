@@ -34,8 +34,8 @@ class _HomeSearchState extends State<HomeSearch>
   List<SearchUsers> peopleResults = [];
   List<SearchHashtag> hashtagsResults = [];
 
-  String sortOption = '';
-  String timeOption = '';
+  String sortOption = "Most relevant";
+  String timeOption = "All time";
   String searchQuery = '';
   bool isSearching = true;
   late final TabController _tabController;
@@ -262,13 +262,83 @@ class _HomeSearchState extends State<HomeSearch>
                                     showModalBottomSheet(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return BottomSheet(
-                                          onClosing: () {},
-                                          builder: (BuildContext context) {
-                                            return const Column(
-                                              children: [],
-                                            );
-                                          },
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            BottomSheet(
+                                              onClosing: () {},
+                                              builder: (BuildContext context) {
+                                                return Column(
+                                                  children: [
+                                                    const Text(
+                                                      "Sort by",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18),
+                                                    ),
+                                                    RadioListTile(
+                                                      title: const Text(
+                                                          "Most relevant"),
+                                                      value: 'Most relevant',
+                                                      groupValue: sortOption,
+                                                      onChanged: (value) {
+                                                        setState(
+                                                          () {
+                                                            sortOption = value
+                                                                .toString();
+                                                          },
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                    RadioListTile(
+                                                      title: const Text("Hot"),
+                                                      value: 'Hot',
+                                                      groupValue: sortOption,
+                                                      onChanged: (value) {
+                                                        setState(
+                                                          () {
+                                                            sortOption = value
+                                                                .toString();
+                                                          },
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                    RadioListTile(
+                                                      title: const Text("New"),
+                                                      value: 'New',
+                                                      groupValue: sortOption,
+                                                      onChanged: (value) {
+                                                        setState(
+                                                          () {
+                                                            sortOption = value
+                                                                .toString();
+                                                          },
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                    RadioListTile(
+                                                      title: const Text("Top"),
+                                                      value: 'Top',
+                                                      groupValue: sortOption,
+                                                      onChanged: (value) {
+                                                        setState(
+                                                          () {
+                                                            sortOption = value
+                                                                .toString();
+                                                          },
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         );
                                       },
                                     );
@@ -284,7 +354,139 @@ class _HomeSearchState extends State<HomeSearch>
                                 height: 35,
                                 child: _selectedIndex == 0
                                     ? ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  BottomSheet(
+                                                    onClosing: () {},
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return Column(
+                                                        children: [
+                                                          const Text(
+                                                            "Filter by time",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 18),
+                                                          ),
+                                                          RadioListTile(
+                                                            title: const Text(
+                                                                "All time"),
+                                                            value: 'All time',
+                                                            groupValue:
+                                                                timeOption,
+                                                            onChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  timeOption = value
+                                                                      .toString();
+                                                                },
+                                                              );
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          RadioListTile(
+                                                            title: const Text(
+                                                                "Past year"),
+                                                            value: 'Past year',
+                                                            groupValue:
+                                                                timeOption,
+                                                            onChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  timeOption = value
+                                                                      .toString();
+                                                                },
+                                                              );
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          RadioListTile(
+                                                            title: const Text(
+                                                                "Past month"),
+                                                            value: 'Past month',
+                                                            groupValue:
+                                                                timeOption,
+                                                            onChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  timeOption = value
+                                                                      .toString();
+                                                                },
+                                                              );
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          RadioListTile(
+                                                            title: const Text(
+                                                                "Past week"),
+                                                            value: 'Past week',
+                                                            groupValue:
+                                                                timeOption,
+                                                            onChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  timeOption = value
+                                                                      .toString();
+                                                                },
+                                                              );
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          RadioListTile(
+                                                            title: const Text(
+                                                                "Past 24 hours"),
+                                                            value:
+                                                                'Past 24 hours',
+                                                            groupValue:
+                                                                timeOption,
+                                                            onChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  timeOption = value
+                                                                      .toString();
+                                                                },
+                                                              );
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          RadioListTile(
+                                                            title: const Text(
+                                                                "Past hour"),
+                                                            value: 'Past hour',
+                                                            groupValue:
+                                                                timeOption,
+                                                            onChanged: (value) {
+                                                              setState(
+                                                                () {
+                                                                  timeOption = value
+                                                                      .toString();
+                                                                },
+                                                              );
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
                                         child: const Text("Time"),
                                       )
                                     : null,
