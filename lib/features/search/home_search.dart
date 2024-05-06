@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
 import 'package:reddit_clone/features/comments/comment_page.dart';
 import 'package:reddit_clone/features/community/community_card.dart';
@@ -38,6 +39,7 @@ class _HomeSearchState extends State<HomeSearch>
   String timeOption = "All time";
   String searchQuery = '';
   bool isSearching = true;
+  bool isLoading = false;
   late final TabController _tabController;
   int _selectedIndex = 0;
   final FocusNode _focusNode = FocusNode();
@@ -57,6 +59,27 @@ class _HomeSearchState extends State<HomeSearch>
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void getAllData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
+    commentsResults = await Provider.of<NetworkService>(context, listen: false)
+        .getSearchComments(searchQuery, '', sortOption, "", 1);
+    postsResults = await Provider.of<NetworkService>(context, listen: false)
+        .getSearchPosts(searchQuery, '', sortOption, timeOption, 1);
+    communitiesResults =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchCommunities(searchQuery, true, 1);
+    peopleResults = await Provider.of<NetworkService>(context, listen: false)
+        .getSearchUsers(searchQuery, 1);
+    hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
+        .getSearchHashtags(searchQuery, 1);
+
+    setState(() {
+      isLoading = false; // End loading
+    });
   }
 
   @override
@@ -101,21 +124,7 @@ class _HomeSearchState extends State<HomeSearch>
                 });
                 return;
               }
-              commentsResults =
-                  await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchComments(value, '', sortOption);
-              postsResults =
-                  await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchPosts(value, '', sortOption, timeOption);
-              communitiesResults =
-                  await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchCommunities(value, true);
-              peopleResults =
-                  await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchUsers(value);
-              hashtagsResults =
-                  await Provider.of<NetworkService>(context, listen: false)
-                      .getSearchHashtags(value);
+              getAllData();
             },
             onTap: () {
               setState(() {
@@ -502,48 +511,51 @@ class _HomeSearchState extends State<HomeSearch>
                       controller: _tabController,
                       children: <Widget>[
                         //Posts
-                        postsResults.isEmpty
+                        postsResults.isEmpty && !isLoading
                             ? noResults()
-                            : ListView.builder(
-                                itemCount: postsResults.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      Post postComment = Post(
-                                        postModel: await Provider.of<
-                                                    NetworkService>(context,
-                                                listen: false)
-                                            .fetchPost(postsResults[index].id),
-                                        isHomePage: false,
-                                        isSubRedditPage: false,
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => CommentPage(
-                                            postId: postsResults[index].id,
-                                            postComment: postComment,
-                                            postTitle:
-                                                postsResults[index].title,
-                                            username:
-                                                postsResults[index].username,
-                                          ),
+                            : isLoading
+                                ? CustomLoadingIndicator()
+                                : ListView.builder(
+                                    itemCount: postsResults.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          Post postComment = Post(
+                                            postModel: await Provider.of<
+                                                        NetworkService>(context,
+                                                    listen: false)
+                                                .fetchPost(
+                                                    postsResults[index].id),
+                                            isHomePage: false,
+                                            isSubRedditPage: false,
+                                          );
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CommentPage(
+                                                postId: postsResults[index].id,
+                                                postComment: postComment,
+                                                postTitle:
+                                                    postsResults[index].title,
+                                                username: postsResults[index]
+                                                    .username,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Column(
+                                          children: [
+                                            PostTile(
+                                                post: postsResults[index],
+                                                isProfile: false),
+                                            const Divider(
+                                              thickness: 1,
+                                            ),
+                                          ],
                                         ),
                                       );
                                     },
-                                    child: Column(
-                                      children: [
-                                        PostTile(
-                                            post: postsResults[index],
-                                            isProfile: false),
-                                        const Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                                  ),
                         //Communities
                         communitiesResults.isEmpty
                             ? noResults()

@@ -118,7 +118,7 @@ class _NewChatPageState extends State<NewChatPage> {
                 // Search for users
                 peopleResults =
                     await Provider.of<NetworkService>(context, listen: false)
-                        .getSearchUsers(value);
+                        .getSearchUsers(value, 1);
                 setState(() {
                   peopleResults = peopleResults;
                 });

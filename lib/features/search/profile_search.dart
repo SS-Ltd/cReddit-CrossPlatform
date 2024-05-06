@@ -66,12 +66,13 @@ class _ProfileSearchState extends State<ProfileSearch>
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.next,
           onSubmitted: (value) async {
-            commentsResults =
-                await Provider.of<NetworkService>(context, listen: false)
-                    .getSearchComments(value, widget.username, sortOption);
-            postsResults = await Provider.of<NetworkService>(context,
+            commentsResults = await Provider.of<NetworkService>(context,
                     listen: false)
-                .getSearchPosts(value, widget.username, sortOption, timeOption);
+                .getSearchComments(value, widget.username, sortOption, "", 1);
+            postsResults =
+                await Provider.of<NetworkService>(context, listen: false)
+                    .getSearchPosts(
+                        value, widget.username, sortOption, timeOption, 1);
             setState(() {
               isSearching = false;
               searchQuery = value;
