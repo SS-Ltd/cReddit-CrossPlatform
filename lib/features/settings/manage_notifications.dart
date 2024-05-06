@@ -46,84 +46,88 @@ class _ManageNotificationsState extends State<ManageNotifications> {
             modNotifs = settings.notifications.modNotifs;
             //moderator = settings.notifications.moderatorInCommunities;
             invitations = settings.notifications.invitationNotifs;
-            return Dialog.fullscreen(
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("Notifications"),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+            return StatefulBuilder(
+              builder: (context, setState) {
+                return Dialog.fullscreen(
+                  child: Scaffold(
+                    appBar: AppBar(
+                      title: const Text("Notifications"),
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    body: Column(
+                      children: [
+                        const Heading(text: "ACTIVITY"),
+                        SwitchButton(
+                            buttonText: "Mentions of u/username",
+                            buttonicon: Icons.person,
+                            onPressed: (value) {
+                              setState(() {
+                                mentions = value;
+                              });
+                            },
+                            switchvalue: mentions ?? true),
+                        SwitchButton(
+                            buttonText: "Comments on your posts",
+                            buttonicon: Icons.comment,
+                            onPressed: (value) {
+                              setState(() {
+                                comments = value;
+                              });
+                            },
+                            switchvalue: comments ?? true),
+                        SwitchButton(
+                            buttonText: "Upvotes on your posts",
+                            buttonicon: Icons.arrow_upward,
+                            onPressed: (value) {
+                              setState(() {
+                                upvotes = value;
+                              });
+                            },
+                            switchvalue: upvotes ?? true),
+                        SwitchButton(
+                            buttonText: "Replies to your comments",
+                            buttonicon: Icons.reply,
+                            onPressed: (value) {
+                              setState(() {
+                                replies = value;
+                              });
+                            },
+                            switchvalue: replies ?? true),
+                        SwitchButton(
+                            buttonText: "New followers",
+                            buttonicon: Icons.person_add_alt,
+                            onPressed: (value) {
+                              setState(() {
+                                followers = value;
+                              });
+                            },
+                            switchvalue: followers ?? true),
+                        const Heading(text: "UPDATES"),
+                        SwitchButton(
+                            buttonText: "Cake day",
+                            buttonicon: Icons.cake,
+                            onPressed: (value) {},
+                            switchvalue: cakeday ?? true),
+                        const Heading(text: "MODERATION"),
+                        SwitchButton(
+                            buttonText: "Mod notifications",
+                            buttonicon: Icons.shield,
+                            onPressed: (value) {
+                              setState(() {
+                                modNotifs = value;
+                              });
+                            },
+                            switchvalue: modNotifs ?? true),
+                      ],
+                    ),
                   ),
-                ),
-                body: Column(
-                  children: [
-                    const Heading(text: "ACTIVITY"),
-                    SwitchButton(
-                        buttonText: "Mentions of u/username",
-                        buttonicon: Icons.person,
-                        onPressed: (value) {
-                          setState(() {
-                            mentions = value;
-                          });
-                        },
-                        switchvalue: mentions ?? true),
-                    SwitchButton(
-                        buttonText: "Comments on your posts",
-                        buttonicon: Icons.comment,
-                        onPressed: (value) {
-                          setState(() {
-                            comments = value;
-                          });
-                        },
-                        switchvalue: comments ?? true),
-                    SwitchButton(
-                        buttonText: "Upvotes on your posts",
-                        buttonicon: Icons.arrow_upward,
-                        onPressed: (value) {
-                          setState(() {
-                            upvotes = value;
-                          });
-                        },
-                        switchvalue: upvotes ?? true),
-                    SwitchButton(
-                        buttonText: "Replies to your comments",
-                        buttonicon: Icons.reply,
-                        onPressed: (value) {
-                          setState(() {
-                            replies = value;
-                          });
-                        },
-                        switchvalue: replies ?? true),
-                    SwitchButton(
-                        buttonText: "New followers",
-                        buttonicon: Icons.person_add_alt,
-                        onPressed: (value) {
-                          setState(() {
-                            followers = value;
-                          });
-                        },
-                        switchvalue: followers ?? true),
-                    const Heading(text: "UPDATES"),
-                    SwitchButton(
-                        buttonText: "Cake day",
-                        buttonicon: Icons.cake,
-                        onPressed: (value) {},
-                        switchvalue: cakeday ?? true),
-                    const Heading(text: "MODERATION"),
-                    SwitchButton(
-                        buttonText: "Mod notifications",
-                        buttonicon: Icons.shield,
-                        onPressed: (value) {
-                          setState(() {
-                            modNotifs = value;
-                          });
-                        },
-                        switchvalue: modNotifs ?? true),
-                  ],
-                ),
-              ),
+                );
+              }
             );
           }
         });
