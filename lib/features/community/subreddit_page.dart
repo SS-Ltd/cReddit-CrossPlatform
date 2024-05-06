@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/community/rules_page.dart';
 import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/features/moderator/mod_tools.dart';
+import 'package:reddit_clone/features/search/general_search.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/theme/palette.dart';
@@ -215,7 +216,19 @@ class _SubRedditPageState extends State<SubRedditPage> {
           Semantics(
               label: "search subreddit",
               identifier: "search subreddit",
-              child: _iconButtonWithBackground(Icons.search, () {})),
+              child: _iconButtonWithBackground(Icons.search, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => GeneralSearch(
+                      communityName: widget.subredditName,
+                      displayName: "",
+                      username: "",
+                    ),
+                  ),
+                );
+              })),
           Semantics(
               label: "share subreddit",
               identifier: "share subreddit",

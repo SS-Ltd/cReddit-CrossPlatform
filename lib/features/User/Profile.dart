@@ -13,7 +13,7 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'follow_unfollow_button.dart';
 import 'chat_button.dart';
 import 'package:reddit_clone/features/User/edit_button.dart';
-import 'package:reddit_clone/features/search/profile_search.dart';
+import 'package:reddit_clone/features/search/general_search.dart';
 
 enum TabSelection { posts, comments, about }
 
@@ -213,7 +213,8 @@ class _ProfileState extends State<Profile> {
                   context,
                   MaterialPageRoute(
                     fullscreenDialog: true,
-                    builder: (context) => ProfileSearch(
+                    builder: (context) => GeneralSearch(
+                      communityName: "",
                       displayName: widget.displayName,
                       username: widget.userName,
                     ),
@@ -470,7 +471,8 @@ class _ProfileState extends State<Profile> {
               context,
               MaterialPageRoute(
                 fullscreenDialog: true,
-                builder: (context) => ProfileSearch(
+                builder: (context) => GeneralSearch(
+                  communityName: "",
                   displayName: widget.displayName,
                   username: widget.userName,
                 ),

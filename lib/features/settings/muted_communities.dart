@@ -80,7 +80,7 @@ class _MutedCommunitiesState extends State<MutedCommunities> {
                           communitiesResults =
                               await Provider.of<NetworkService>(context,
                                       listen: false)
-                                  .getSearchCommunities(value, true);
+                                  .getSearchCommunities(value, true, 1);
                         },
                         onTap: () {
                           setState(() {

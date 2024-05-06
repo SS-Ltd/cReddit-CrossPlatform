@@ -17,24 +17,30 @@ import 'package:reddit_clone/services/networkServices.dart';
 
 //this page will be used to search inside home and communities page
 
-class HomeSearch extends StatefulWidget {
-  const HomeSearch({super.key});
+class GeneralSearch extends StatefulWidget {
+  const GeneralSearch(
+      {super.key,
+      required this.communityName,
+      required this.displayName,
+      required this.username});
+
+  final String communityName;
+  final String displayName;
+  final String username;
 
   @override
-  State<HomeSearch> createState() {
-    return _HomeSearchState();
+  State<GeneralSearch> createState() {
+    return _GeneralSearchState();
   }
 }
 
-class _HomeSearchState extends State<HomeSearch>
+class _GeneralSearchState extends State<GeneralSearch>
     with SingleTickerProviderStateMixin {
   final _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   List<SearchComments> commentsResults = [];
   List<SearchPosts> postsResults = [];
-  List<SearchCommunities> communitiesResults = [];
-  List<SearchUsers> peopleResults = [];
   List<dynamic> hashtagsResults = [];
 
   String sortOption = "Hot";
@@ -49,7 +55,6 @@ class _HomeSearchState extends State<HomeSearch>
   final FocusNode _focusNode = FocusNode();
   int commentsPage = 1;
   int postsPage = 1;
-  int communitiesPage = 1;
   int peoplePage = 1;
   int hashtagsPage = 1;
 
@@ -67,15 +72,9 @@ class _HomeSearchState extends State<HomeSearch>
             getPostsData();
             break;
           case 1:
-            getCommunitiesData();
-            break;
-          case 2:
             getCommentsData();
             break;
-          case 3:
-            getUsersData();
-            break;
-          case 4:
+          case 2:
             getHashtagsData();
             break;
         }
@@ -103,8 +102,8 @@ class _HomeSearchState extends State<HomeSearch>
     });
     List<SearchComments> newComments =
         await Provider.of<NetworkService>(context, listen: false)
-            .getSearchComments(
-                searchQuery, '', sortOption, "", commentsPage, "");
+            .getSearchComments(searchQuery, widget.username, sortOption, "",
+                commentsPage, widget.communityName);
     setState(() {
       commentsResults.addAll(newComments);
       isGettingMoreData = false; // End loading
@@ -116,9 +115,10 @@ class _HomeSearchState extends State<HomeSearch>
     setState(() {
       isGettingMoreData = true; // Start loading
     });
-    List<SearchPosts> newPosts = await Provider.of<NetworkService>(context,
-            listen: false)
-        .getSearchPosts(searchQuery, '', sortOption, timeOption, postsPage, "");
+    List<SearchPosts> newPosts =
+        await Provider.of<NetworkService>(context, listen: false)
+            .getSearchPosts(searchQuery, widget.username, sortOption,
+                timeOption, postsPage, widget.communityName);
     setState(() {
       postsResults.addAll(newPosts);
       isGettingMoreData = false; // End loading
@@ -126,41 +126,14 @@ class _HomeSearchState extends State<HomeSearch>
     });
   }
 
-  void getCommunitiesData() async {
-    setState(() {
-      isGettingMoreData = true; // Start loading
-    });
-    List<SearchCommunities> newCommunities =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchCommunities(searchQuery, true, communitiesPage);
-    setState(() {
-      communitiesResults.addAll(newCommunities);
-      isGettingMoreData = false; // End loading
-      communitiesPage++; // Increment page number
-    });
-  }
-
-  void getUsersData() async {
-    setState(() {
-      isGettingMoreData = true; // Start loading
-    });
-    List<SearchUsers> newUsers =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchUsers(searchQuery, peoplePage);
-    setState(() {
-      peopleResults.addAll(newUsers);
-      isGettingMoreData = false; // End loading
-      peoplePage++; // Increment page number
-    });
-  }
-
   void getHashtagsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
-    List<dynamic> newHashtags =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchHashtags(searchQuery, hashtagsPage, "", "");
+    List<dynamic> newHashtags = await Provider.of<NetworkService>(context,
+            listen: false)
+        .getSearchHashtags(
+            searchQuery, hashtagsPage, widget.username, widget.communityName);
     setState(() {
       hashtagsResults.addAll(newHashtags);
       isGettingMoreData = false; // End loading
@@ -173,16 +146,14 @@ class _HomeSearchState extends State<HomeSearch>
       isLoading = true; // Start loading
     });
     commentsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchComments(searchQuery, '', sortOption, timeOption, 1, "");
+        .getSearchComments(searchQuery, widget.username, sortOption, "", 1,
+            widget.communityName);
     postsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchPosts(searchQuery, '', sortOption, timeOption, 1, "");
-    communitiesResults =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchCommunities(searchQuery, true, 1);
-    peopleResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchUsers(searchQuery, 1);
+        .getSearchPosts(searchQuery, widget.username, sortOption, timeOption, 1,
+            widget.communityName);
     hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchHashtags(searchQuery, 1, "", "");
+        .getSearchHashtags(
+            searchQuery, 1, widget.username, widget.communityName);
 
     print(searchQuery + "  " + sortOption);
     setState(() {
@@ -206,7 +177,7 @@ class _HomeSearchState extends State<HomeSearch>
             focusNode: _focusNode,
             controller: _searchController,
             decoration: InputDecoration(
-              hintText: 'Search Reddit',
+              hintText: 'Search ${widget.displayName}',
               prefixIcon: const Icon(Icons.search),
               suffixIcon: IconButton(
                 onPressed: () {
@@ -228,8 +199,6 @@ class _HomeSearchState extends State<HomeSearch>
                 setState(() {
                   commentsResults.clear();
                   postsResults.clear();
-                  communitiesResults.clear();
-                  peopleResults.clear();
                   hashtagsResults.clear();
                 });
                 return;
@@ -253,21 +222,9 @@ class _HomeSearchState extends State<HomeSearch>
                       child: Tab(text: "Posts"),
                     ),
                     SizedBox(
-                      width: 100,
-                      child: Tab(
-                        text: "Communities",
-                      ),
-                    ),
-                    SizedBox(
                       width: 80,
                       child: Tab(
                         text: "Comments",
-                      ),
-                    ),
-                    SizedBox(
-                      width: 80,
-                      child: Tab(
-                        text: "People",
                       ),
                     ),
                     SizedBox(
@@ -283,75 +240,6 @@ class _HomeSearchState extends State<HomeSearch>
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (communitiesResults.isNotEmpty) const Text('Communities'),
-                  if (communitiesResults.isNotEmpty)
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: communitiesResults.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(communitiesResults[index].icon),
-                            ),
-                            subtitle: Text(
-                                "${communitiesResults[index].members} members"),
-                            title: Text(communitiesResults[index].name),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SubRedditPage(
-                                    subredditName:
-                                        communitiesResults[index].name,
-                                  ),
-                                ),
-                              );
-                            },
-                            trailing: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.clear),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  if (peopleResults.isNotEmpty) const Text('People'),
-                  if (peopleResults.isNotEmpty)
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: peopleResults.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  peopleResults[index].profilePicture),
-                            ),
-                            title: Text(peopleResults[index].username),
-                            onTap: () async {
-                              UserModel myUser = await context
-                                  .read<NetworkService>()
-                                  .getMyDetails();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CustomNavigationBar(
-                                    isProfile: true,
-                                    myuser: myUser,
-                                  ),
-                                ),
-                              );
-                            },
-                            trailing: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.clear),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
                   if (searchQuery.isNotEmpty)
                     Center(
                       child: TextButton(
@@ -665,49 +553,7 @@ class _HomeSearchState extends State<HomeSearch>
                                     },
                                   ),
                         //Communities
-                        communitiesResults.isEmpty && !isLoading
-                            ? noResults()
-                            : isLoading
-                                ? CustomLoadingIndicator()
-                                : ListView.builder(
-                                    controller: _scrollController,
-                                    itemCount: communitiesResults.length,
-                                    itemBuilder: (context, index) {
-                                      Community community = Community(
-                                          name: communitiesResults[index].name,
-                                          description: communitiesResults[index]
-                                              .description,
-                                          members:
-                                              communitiesResults[index].members,
-                                          icon: communitiesResults[index].icon,
-                                          isJoined: false);
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SubRedditPage(
-                                                subredditName:
-                                                    communitiesResults[index]
-                                                        .name,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Column(
-                                          children: [
-                                            CommunityCard(
-                                                community: community,
-                                                search: true),
-                                            const Divider(
-                                              thickness: 1,
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
+
                         //Comments
                         commentsResults.isEmpty && !isLoading
                             ? noResults()
@@ -722,53 +568,6 @@ class _HomeSearchState extends State<HomeSearch>
                                           CommentTile(
                                               comment: commentsResults[index],
                                               isProfile: false),
-                                          const Divider(
-                                            thickness: 1,
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                        //People
-                        peopleResults.isEmpty && !isLoading
-                            ? noResults()
-                            : isLoading
-                                ? CustomLoadingIndicator()
-                                : ListView.builder(
-                                    controller: _scrollController,
-                                    itemCount: peopleResults.length,
-                                    itemBuilder: (context, index) {
-                                      return Column(
-                                        children: [
-                                          ListTile(
-                                            onTap: () async {
-                                              UserModel myUser = await context
-                                                  .read<NetworkService>()
-                                                  .getMyDetails();
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CustomNavigationBar(
-                                                    isProfile: true,
-                                                    myuser: myUser,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            leading: CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  peopleResults[index]
-                                                      .profilePicture),
-                                            ),
-                                            title: Text(
-                                                'u/${peopleResults[index].username}'),
-                                            trailing: FollowButton(
-                                                userName: 'userName',
-                                                profileName:
-                                                    peopleResults[index]
-                                                        .username),
-                                          ),
                                           const Divider(
                                             thickness: 1,
                                           ),

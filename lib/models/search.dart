@@ -155,8 +155,7 @@ class SearchCommunities {
   }
 }
 
-class SearchHashtag{
-
+class SearchHashtag {
   final String id;
   final String postID;
   final String postTitle;
@@ -196,7 +195,7 @@ class SearchHashtag{
   factory SearchHashtag.fromJson(Map<String, dynamic> json) {
     return SearchHashtag(
       id: json['_id'],
-      postID: json['postID'],
+      postID: json['_id'],
       postTitle: json['postTitle'],
       postUsername: json['postUsername'],
       postVotes: json['postVotes'],
@@ -212,5 +211,145 @@ class SearchHashtag{
       commentPicture: json['commentPicture'],
       content: json['content'],
     );
+  }
+}
+
+class SearchHashTagPost {
+  final String id;
+  final String type;
+  final String username;
+  final String communityName;
+  final String content;
+  final int netVote;
+  final DateTime createdAt;
+  final String commentPicture;
+  final int commentCount;
+  final String postTitle;
+
+  SearchHashTagPost({
+    required this.id,
+    required this.type,
+    required this.username,
+    required this.communityName,
+    required this.content,
+    required this.netVote,
+    required this.createdAt,
+    required this.commentPicture,
+    required this.commentCount,
+    required this.postTitle,
+  });
+
+  factory SearchHashTagPost.fromJson(Map<String, dynamic> json) {
+    return SearchHashTagPost(
+      id: json['_id'],
+      type: json['type'],
+      username: json['username'],
+      communityName: json['communityName'] ?? "",
+      content: json['content'],
+      netVote: json['netVote'],
+      createdAt: DateTime.parse(json['createdAt']),
+      commentPicture: json['commentPicture'],
+      commentCount: json['commentCount'],
+      postTitle: json['postTitle'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'type': type,
+      'username': username,
+      'communityName': communityName,
+      'content': content,
+      'netVote': netVote,
+      'createdAt': createdAt.toIso8601String(),
+      'commentPicture': commentPicture,
+      'commentCount': commentCount,
+      'postTitle': postTitle,
+    };
+  }
+}
+
+class SearchHashtagComment {
+  final String id;
+  final String type;
+  final String postID;
+  final String username;
+  final String? communityName;
+  final String content;
+  final int netVote;
+  final DateTime createdAt;
+  final String postPicture;
+  final String postUsername;
+  final String commentPicture;
+  final int commentCount;
+  final int postVotes;
+  final DateTime postCreatedAt;
+  final String postTitle;
+  final bool isPostSpoiler;
+  final bool isPostNsfw;
+
+  SearchHashtagComment({
+    required this.id,
+    required this.type,
+    required this.postID,
+    required this.username,
+    this.communityName,
+    required this.content,
+    required this.netVote,
+    required this.createdAt,
+    required this.postPicture,
+    required this.postUsername,
+    required this.commentPicture,
+    required this.commentCount,
+    required this.postVotes,
+    required this.postCreatedAt,
+    required this.postTitle,
+    required this.isPostSpoiler,
+    required this.isPostNsfw,
+  });
+
+  factory SearchHashtagComment.fromJson(Map<String, dynamic> json) {
+    return SearchHashtagComment(
+      id: json['_id'],
+      type: json['type'],
+      postID: json['postID'],
+      username: json['username'],
+      communityName: json['communityName'] ?? "",
+      content: json['content'],
+      netVote: json['netVote'],
+      createdAt: DateTime.parse(json['createdAt']),
+      postPicture: json['postPicture'],
+      postUsername: json['postUsername'],
+      commentPicture: json['commentPicture'],
+      commentCount: json['commentCount'],
+      postVotes: json['postVotes'],
+      postCreatedAt: DateTime.parse(json['postCreatedAt']),
+      postTitle: json['postTitle'],
+      isPostSpoiler: json['isPostSpoiler'],
+      isPostNsfw: json['isPostNsfw'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'type': type,
+      'postID': postID,
+      'username': username,
+      'communityName': communityName,
+      'content': content,
+      'netVote': netVote,
+      'createdAt': createdAt.toIso8601String(),
+      'postPicture': postPicture,
+      'postUsername': postUsername,
+      'commentPicture': commentPicture,
+      'commentCount': commentCount,
+      'postVotes': postVotes,
+      'postCreatedAt': postCreatedAt.toIso8601String(),
+      'postTitle': postTitle,
+      'isPostSpoiler': isPostSpoiler,
+      'isPostNsfw': isPostNsfw,
+    };
   }
 }

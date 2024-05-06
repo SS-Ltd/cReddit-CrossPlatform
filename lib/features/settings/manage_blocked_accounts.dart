@@ -74,7 +74,7 @@ class _ManageBlockedAccountsState extends State<ManageBlockedAccounts> {
                         peopleResults = await Provider.of<NetworkService>(
                                 context,
                                 listen: false)
-                            .getSearchUsers(value);
+                            .getSearchUsers(value, 1);
                       },
                     ),
                   ),
