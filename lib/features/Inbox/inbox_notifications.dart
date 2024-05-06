@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/Inbox/message_layout.dart';
+import 'package:reddit_clone/features/Inbox/message_page.dart';
 import 'package:reddit_clone/features/Inbox/new_message.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
 import 'package:reddit_clone/models/messages.dart';
@@ -213,21 +214,27 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                   message: inboxMessages[index],
                   onTap: () async {
                     UserModel user = context.read<NetworkService>().getUser();
-                    if (inboxMessages[index].from == user.username ||
-                        inboxMessages[index].isRead) {
-                      return;
+                    if (inboxMessages[index].from != user.username &&
+                        !inboxMessages[index].isRead) {
+                      setState(() {
+                        inboxMessages[index].isRead = true;
+                      });
+                      bool done = await context
+                          .read<NetworkService>()
+                          .markMessageAsRead(inboxMessages[index].id);
+                      setState(() {
+                        if (!done) {
+                          inboxMessages[index].isRead = false;
+                        }
+                      });
                     }
-                    setState(() {
-                      inboxMessages[index].isRead = true;
-                    });
-                    bool done = await context
-                        .read<NetworkService>()
-                        .markMessageAsRead(inboxMessages[index].id);
-                    setState(() {
-                      if (!done) {
-                        inboxMessages[index].isRead = false;
-                      }
-                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            MessagePage(message: inboxMessages[index]),
+                      ),
+                    );
                   },
                 );
               } else {
