@@ -9,10 +9,8 @@ import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class ChatListScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> chatInfo; // List of chat information
   final List<Map<String, dynamic>> channelInfo; // List of channels information
-  const ChatListScreen(
-      {super.key, required this.chatInfo, required this.channelInfo});
+  const ChatListScreen({super.key, required this.channelInfo});
 
   @override
   State<ChatListScreen> createState() => _ChatListScreenState();
@@ -190,8 +188,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ChatScreen(
-                                      recipientId: chat.id,
                                       chatId: chat.id,
+                                      usernameOrGroupName: chat.name,
                                     )));
                       },
                     ),
