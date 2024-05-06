@@ -24,21 +24,22 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://api.creddit.tech';
-  //final String _baseUrl = 'http://192.168.1.10:3000';
+  //final String _baseUrl = 'https://api.creddit.tech';
+  final String _baseUrl = 'http://192.168.1.5:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
   UserSettings? _userSettings;
   UserSettings? get userSettings => _userSettings;
 
-  Future<bool> login(String username, String password) async {
+  Future<bool> login(String username, String password, String? fcmToken) async {
     print('Logging in...');
     Uri url = Uri.parse('$_baseUrl/user/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
+      body: jsonEncode(
+          {'username': username, 'password': password, 'fcmToken': fcmToken}),
     );
 
     if (response.statusCode == 200) {
@@ -56,7 +57,8 @@ class NetworkService extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> sendGoogleAccessToken(String googleAccessToken) async {
+  Future<bool> sendGoogleAccessToken(
+      String googleAccessToken, String? fcmToken) async {
     Uri url = Uri.parse('$_baseUrl/user/auth/google');
     final response = await http.post(
       url,
@@ -64,7 +66,8 @@ class NetworkService extends ChangeNotifier {
         'accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'googleToken': googleAccessToken}),
+      body:
+          jsonEncode({'googleToken': googleAccessToken, 'fcmToken': fcmToken}),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -85,9 +88,12 @@ class NetworkService extends ChangeNotifier {
     return _user;
   }
 
-  Future<void> logout() async {
+  Future<void> logout(String? fcmToken) async {
     Uri url = Uri.parse('$_baseUrl/user/logout');
-    final response = await http.get(url, headers: _headers);
+    final response = await http.post(url,
+        headers: _headers, body: jsonEncode({'fcmToken': fcmToken}));
+    _cookie = '';
+    _user = null;
     print('Logged out: ${response.body}');
   }
 
@@ -182,8 +188,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createUser(
-      String username, String email, String password, String gender) async {
+  Future<bool> createUser(String username, String email, String password,
+      String gender, String? fcmToken) async {
     final url = Uri.parse('$_baseUrl/user');
     final response = await http.post(
       url,
@@ -193,13 +199,14 @@ class NetworkService extends ChangeNotifier {
         'email': email,
         'password': password,
         'gender': gender,
+        'fcmToken': fcmToken
       }),
     );
     print(response.body);
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return createUser(username, email, password, gender);
+      return createUser(username, email, password, gender, fcmToken);
     }
     if (response.statusCode == 201) {
       _updateCookie(response);
@@ -796,8 +803,14 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchPosts>> getSearchPosts(String post, String username, String sort, String time) async {
-    final parameters = {'query': post, 'user': username, 'sort': sort, 'time': time};
+  Future<List<SearchPosts>> getSearchPosts(
+      String post, String username, String sort, String time) async {
+    final parameters = {
+      'query': post,
+      'user': username,
+      'sort': sort,
+      'time': time
+    };
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
 

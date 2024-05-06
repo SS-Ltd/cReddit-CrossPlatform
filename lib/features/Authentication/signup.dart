@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
@@ -18,7 +19,8 @@ import 'dart:async';
 /// It includes form validation and enables the sign-up button only when the
 /// email and password fields are filled.
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  String? fcmToken;
+  SignUpScreen({super.key, this.fcmToken});
 
   @override
   SignUpScreenState createState() => SignUpScreenState();
@@ -119,7 +121,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                           color: Palette.whiteColor),
                     ),
                     const SizedBox(height: 20),
-                    const GoogleButton(),
+                    GoogleButton(fcmToken: widget.fcmToken),
                     const Row(
                       children: <Widget>[
                         Expanded(
@@ -184,28 +186,29 @@ class SignUpScreenState extends State<SignUpScreen> {
                   return ElevatedButton(
                     onPressed: isFilled
                         ? () async {
+                            FocusScope.of(context).unfocus();
                             if (emailController.text.isEmpty ||
                                 passwordController.text.isEmpty) {
                               // Show an error message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Please fill in all fields')),
-                              );
+                              CustomSnackBar(
+                                context: context,
+                                content: 'Please fill in all fields',
+                              ).show();
                               return;
                             }
                             if (!isValidEmail(emailController.text)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Invalid email address')),
-                              );
+                              CustomSnackBar(
+                                context: context,
+                                content: 'Invalid email address',
+                              ).show();
                               return;
                             }
                             if (!isValidPassword(passwordController.text)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter')),
-                              );
+                              CustomSnackBar(
+                                context: context,
+                                content:
+                                    'Password must be 8 or more characters and contain at least one uppercase and one lowercase letter',
+                              ).show();
                               return;
                             }
                             Map<String, dynamic> userData = {
@@ -215,8 +218,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      NameSuggestion(userData: userData)),
+                                  builder: (context) => NameSuggestion(
+                                      userData: userData,
+                                      fcmToken: widget.fcmToken)),
                             );
                           }
                         : null,

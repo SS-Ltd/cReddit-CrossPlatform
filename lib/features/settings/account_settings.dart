@@ -37,7 +37,8 @@ import 'package:reddit_clone/features/settings/manage_notifications.dart';
 /// )
 /// ```
 class AccountSettings extends StatefulWidget {
-  const AccountSettings({super.key});
+  final String? fcmToken;
+  const AccountSettings({super.key, this.fcmToken});
 
   @override
   State<AccountSettings> createState() {
@@ -265,11 +266,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                         bool isDeleted =
                             await context.read<NetworkService>().deleteUser();
                         if (isDeleted) {
-                          await context.read<NetworkService>().logout();
+                          await context.read<NetworkService>().logout(widget.fcmToken);
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
+                              builder: (context) =>  LoginScreen(fcmToken: widget.fcmToken),
                             ),
                             (Route<dynamic> route) => false,
                           );
