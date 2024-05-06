@@ -103,7 +103,8 @@ class _HomeSearchState extends State<HomeSearch>
     });
     List<SearchComments> newComments =
         await Provider.of<NetworkService>(context, listen: false)
-            .getSearchComments(searchQuery, '', sortOption, "", commentsPage);
+            .getSearchComments(
+                searchQuery, '', sortOption, "", commentsPage, "");
     setState(() {
       commentsResults.addAll(newComments);
       isGettingMoreData = false; // End loading
@@ -115,9 +116,9 @@ class _HomeSearchState extends State<HomeSearch>
     setState(() {
       isGettingMoreData = true; // Start loading
     });
-    List<SearchPosts> newPosts =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchPosts(searchQuery, '', sortOption, timeOption, postsPage);
+    List<SearchPosts> newPosts = await Provider.of<NetworkService>(context,
+            listen: false)
+        .getSearchPosts(searchQuery, '', sortOption, timeOption, postsPage, "");
     setState(() {
       postsResults.addAll(newPosts);
       isGettingMoreData = false; // End loading
@@ -159,7 +160,7 @@ class _HomeSearchState extends State<HomeSearch>
     });
     List<dynamic> newHashtags =
         await Provider.of<NetworkService>(context, listen: false)
-            .getSearchHashtags(searchQuery, hashtagsPage);
+            .getSearchHashtags(searchQuery, hashtagsPage, "", "");
     setState(() {
       hashtagsResults.addAll(newHashtags);
       isGettingMoreData = false; // End loading
@@ -172,16 +173,16 @@ class _HomeSearchState extends State<HomeSearch>
       isLoading = true; // Start loading
     });
     commentsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchComments(searchQuery, '', sortOption, "", 1);
+        .getSearchComments(searchQuery, '', sortOption, timeOption, 1, "");
     postsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchPosts(searchQuery, '', sortOption, timeOption, 1);
+        .getSearchPosts(searchQuery, '', sortOption, timeOption, 1, "");
     communitiesResults =
         await Provider.of<NetworkService>(context, listen: false)
             .getSearchCommunities(searchQuery, true, 1);
     peopleResults = await Provider.of<NetworkService>(context, listen: false)
         .getSearchUsers(searchQuery, 1);
     hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchHashtags(searchQuery, 1);
+        .getSearchHashtags(searchQuery, 1, "", "");
 
     print(searchQuery + "  " + sortOption);
     setState(() {

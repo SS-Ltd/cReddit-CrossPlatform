@@ -752,8 +752,13 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchComments>> getSearchComments(String comment,
-      String username, String sort, String timeOption, int pageNumber) async {
+  Future<List<SearchComments>> getSearchComments(
+      String comment,
+      String username,
+      String sort,
+      String timeOption,
+      int pageNumber,
+      String community) async {
     sort = sort.toLowerCase();
     timeOption = timeOption.toLowerCase();
     final parameters = {
@@ -761,7 +766,8 @@ class NetworkService extends ChangeNotifier {
       'user': username,
       'sort': sort,
       'time': timeOption,
-      'page': pageNumber.toString()
+      'page': pageNumber.toString(),
+      'community': community
     };
     Uri url = Uri.parse('$_baseUrl/search/comments')
         .replace(queryParameters: parameters);
@@ -770,7 +776,8 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchComments(comment, username, sort, timeOption, pageNumber);
+      return getSearchComments(
+          comment, username, sort, timeOption, pageNumber, community);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
@@ -783,8 +790,13 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<dynamic>> getSearchHashtags(
-      String hashtag, int pageNumber) async {
-    final parameters = {'query': hashtag, 'page': pageNumber.toString()};
+      String hashtag, int pageNumber, String username, String community) async {
+    final parameters = {
+      'query': hashtag,
+      'page': pageNumber.toString(),
+      'user': username,
+      'community': community
+    };
     Uri url = Uri.parse('$_baseUrl/search/hashtags')
         .replace(queryParameters: parameters);
 
@@ -792,7 +804,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchHashtags(hashtag, pageNumber);
+      return getSearchHashtags(hashtag, pageNumber, username, community);
     }
     print(response.body);
     print("I am here");
@@ -817,7 +829,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<SearchPosts>> getSearchPosts(String post, String username,
-      String sort, String time, int pageNumber) async {
+      String sort, String time, int pageNumber, String community) async {
     sort = sort.toLowerCase();
     time = time.toLowerCase();
     final parameters = {
@@ -825,7 +837,8 @@ class NetworkService extends ChangeNotifier {
       'user': username,
       'sort': sort,
       'time': time,
-      'page': pageNumber.toString()
+      'page': pageNumber.toString(),
+      'community': community
     };
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
@@ -834,7 +847,7 @@ class NetworkService extends ChangeNotifier {
     print(response.statusCode);
     if (response.statusCode == 403) {
       refreshToken();
-      return getSearchPosts(post, username, sort, time, pageNumber);
+      return getSearchPosts(post, username, sort, time, pageNumber, community);
     }
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);
