@@ -10,7 +10,7 @@ class ReplyPage extends StatefulWidget {
   final DateTime timestamp;
 
   /// Constructs a [ReplyPage] with the given [commentContent], [username], and [timestamp].
-  ReplyPage({
+  const ReplyPage({
     super.key,
     required this.commentContent,
     required this.username,

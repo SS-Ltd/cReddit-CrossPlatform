@@ -10,7 +10,6 @@ import 'package:reddit_clone/services/google_service.dart';
 import 'package:reddit_clone/features/Authentication/signup.dart';
 import 'services/firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dart:io' show Platform;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -26,7 +25,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
 
-  print("Handling a background message: ${message.messageId}");
 }
 
 Future<void> main() async {
@@ -43,7 +41,6 @@ Future<void> main() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   if (Firebase.apps.isEmpty) {
-    print("initializing firebase");
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -64,7 +61,6 @@ Future<void> main() async {
       sound: true,
     );
 
-    print('User granted permission: ${settings.authorizationStatus}');
 
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
@@ -80,20 +76,12 @@ Future<void> main() async {
     // Listen for token refresh
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
       // Save new token if necessary
-      print('Token refreshed: $newToken');
     }).onError((err) {
       // Handle any errors
-      print('Error refreshing token: $err');
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-        print(message.notification!.title);
-
         // Create a local notification
         const AndroidNotificationDetails androidPlatformChannelSpecifics =
             AndroidNotificationDetails('default_channel', 'Default Channel',

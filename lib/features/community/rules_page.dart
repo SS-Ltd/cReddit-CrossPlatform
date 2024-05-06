@@ -6,8 +6,9 @@ class RulesPage extends StatelessWidget {
   final String description;
   final String subredditName;
   final String bannerURL;
-  RulesPage(
-      {required this.rules,
+  const RulesPage(
+      {super.key,
+      required this.rules,
       required this.description,
       required this.subredditName,
       required this.bannerURL,
@@ -32,12 +33,13 @@ class RulesPage extends StatelessWidget {
         elevation: 0,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.search, color: Colors.white), onPressed: () {}),
-          IconButton(
-              icon: Icon(Icons.share_outlined, color: Colors.white),
+              icon: const Icon(Icons.search, color: Colors.white),
               onPressed: () {}),
           IconButton(
-              icon: Icon(Icons.more_vert, color: Colors.white),
+              icon: const Icon(Icons.share_outlined, color: Colors.white),
+              onPressed: () {}),
+          IconButton(
+              icon: const Icon(Icons.more_vert, color: Colors.white),
               onPressed: () {}),
         ],
       ),
@@ -49,17 +51,18 @@ class RulesPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
                       'Description',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(description, style: TextStyle(fontSize: 14)),
+                    child:
+                        Text(description, style: const TextStyle(fontSize: 14)),
                   ),
                 ],
               ),
@@ -71,23 +74,23 @@ class RulesPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
                     child: Text(
                       'Subreddit Rules',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: rules.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text('${index + 1}. ${rules[index]}',
-                            style: TextStyle(fontSize: 14)),
+                            style: const TextStyle(fontSize: 14)),
                       );
                     },
                   ),
@@ -101,23 +104,23 @@ class RulesPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
                     child: Text(
                       'Moderators',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: moderators.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text('${index + 1}. ${moderators[index]}',
-                            style: TextStyle(fontSize: 14)),
+                            style: const TextStyle(fontSize: 14)),
                       );
                     },
                   ),

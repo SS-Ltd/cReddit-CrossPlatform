@@ -103,7 +103,7 @@ class SavedPostsState extends State<SavedPosts> {
           if (index < posts.length) {
             return postWidget(posts[index]); // Your post widget here
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),

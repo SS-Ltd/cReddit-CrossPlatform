@@ -901,7 +901,7 @@ class _CreatePostState extends State<CreatePost> {
                             ),
                           ],
                         )
-                      : CustomLoadingIndicator()
+                      : const CustomLoadingIndicator()
                   : const SizedBox(),
               Row(
                 children: [

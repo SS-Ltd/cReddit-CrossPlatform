@@ -151,8 +151,8 @@ class _HistoryPageState extends State<HistoryPage> {
                 if (index < historyPosts.length) {
                   return postWidget(historyPosts[index]);
                 } else {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32.0),
                     child: Center(child: CircularProgressIndicator()),
                   );
                 }

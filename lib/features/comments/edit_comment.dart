@@ -22,13 +22,13 @@ class EditCommentPage extends StatefulWidget {
   int imageSource; // Source of the image
 
   EditCommentPage({
-    Key? key,
+    super.key,
     required this.commentId,
     required this.commentContent,
     required this.contentType,
     required this.photo,
     required this.imageSource,
-  }) : super(key: key);
+  });
 
   @override
   State<EditCommentPage> createState() {
@@ -87,9 +87,9 @@ class _EditCommentPageState extends State<EditCommentPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.contentType == false)
+    if (widget.contentType == false) {
       _controller.text = widget.commentContent;
-    else if (widget.contentType == true && widget.imageSource == 0) {
+    } else if (widget.contentType == true && widget.imageSource == 0) {
       _imageUrl = widget.commentContent;
     } else if (widget.contentType == true && widget.imageSource == 1) {
       _image = widget.photo;

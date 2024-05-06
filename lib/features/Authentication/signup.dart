@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
-import 'package:reddit_clone/common/FullWidthButton.dart';
 import 'package:reddit_clone/constants/assets_constants.dart';
-import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/Authentication/widgets/auth_filed.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';

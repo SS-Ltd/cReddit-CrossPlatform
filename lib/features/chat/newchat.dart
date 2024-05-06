@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/chat/chat_screen.dart';
@@ -6,11 +8,13 @@ import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 class NewChatPage extends StatefulWidget {
+  const NewChatPage({super.key});
+
   @override
-  _NewChatPageState createState() => _NewChatPageState();
+  NewChatPageState createState() => NewChatPageState();
 }
 
-class _NewChatPageState extends State<NewChatPage> {
+class NewChatPageState extends State<NewChatPage> {
   List<String> selectedUsers = [];
   List<SearchUsers> peopleResults = [];
   String groupName = '';

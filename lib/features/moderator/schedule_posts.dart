@@ -68,7 +68,7 @@ class _SchedulePostsState extends State<SchedulePosts> {
             : ListView.builder(
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
+                  return const ListTile(
                       //title: Text(posts[index].title),
                       //subtitle: Text(posts[index].description),
                       //trailing: Text(posts[index].scheduledTime),

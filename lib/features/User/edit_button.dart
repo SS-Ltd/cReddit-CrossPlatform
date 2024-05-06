@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class EditButton extends StatelessWidget {
   final String userName;
 
-  const EditButton({Key? key, required this.userName}) : super(key: key);
+  const EditButton({super.key, required this.userName});
 
   @override
   Widget build(BuildContext context) {

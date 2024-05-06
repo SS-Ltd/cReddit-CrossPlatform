@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
@@ -621,7 +623,7 @@ class _HomeSearchState extends State<HomeSearch>
                         postsResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: postsResults.length,
@@ -668,7 +670,7 @@ class _HomeSearchState extends State<HomeSearch>
                         communitiesResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: communitiesResults.length,
@@ -712,7 +714,7 @@ class _HomeSearchState extends State<HomeSearch>
                         commentsResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: commentsResults.length,
@@ -733,7 +735,7 @@ class _HomeSearchState extends State<HomeSearch>
                         peopleResults.isEmpty && !isLoading
                             ? noResults()
                             : isLoading
-                                ? CustomLoadingIndicator()
+                                ? const CustomLoadingIndicator()
                                 : ListView.builder(
                                     controller: _scrollController,
                                     itemCount: peopleResults.length,
