@@ -24,8 +24,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://api.creddit.tech';
-  //final String _baseUrl = 'http://192.168.1.10:3000';
+  //final String _baseUrl = 'https://api.creddit.tech';
+  final String _baseUrl = 'http://192.168.0.5:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -810,8 +810,14 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchPosts>> getSearchPosts(String post, String username, String sort, String time) async {
-    final parameters = {'query': post, 'user': username, 'sort': sort, 'time': time};
+  Future<List<SearchPosts>> getSearchPosts(
+      String post, String username, String sort, String time) async {
+    final parameters = {
+      'query': post,
+      'user': username,
+      'sort': sort,
+      'time': time
+    };
     Uri url = Uri.parse('$_baseUrl/search/posts')
         .replace(queryParameters: parameters);
 
@@ -1535,7 +1541,7 @@ class NetworkService extends ChangeNotifier {
     return response.statusCode == 200 || response.statusCode == 201;
   }
 
-  Future<bool> createPrivateChatRoom(List<String> member) async {
+  Future<String> createPrivateChatRoom(List<String> member) async {
     Uri url = Uri.parse('$_baseUrl/chat');
     final response = await http.post(
       url,
@@ -1550,13 +1556,14 @@ class NetworkService extends ChangeNotifier {
       return createPrivateChatRoom(member);
     }
 
-    return response.statusCode == 200 || response.statusCode == 201;
+    var responseBody = jsonDecode(response.body);
+    return responseBody['roomID'];
   }
 
   Future<List<ChatMessages>?> fetchChatMessages(String chatId) async {
     Uri url = Uri.parse('$_baseUrl/chat/$chatId');
     final response = await http.get(url, headers: _headers);
-
+    print(response.body);
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body);
       return jsonResponse.map((item) => ChatMessages.fromJson(item)).toList();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/chat/chat_screen.dart';
 import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -63,17 +64,17 @@ class _NewChatPageState extends State<NewChatPage> {
                       );
                     } else {
                       // Create single chat
-                      bool created = await Provider.of<NetworkService>(context,
+                      String roomID = await Provider.of<NetworkService>(context,
                               listen: false)
                           .createPrivateChatRoom(selectedUsers);
 
-                      if (created) {
+                      if (roomID.isNotEmpty) {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CustomNavigationBar(
-                                      isProfile: false,
-                                      navigateToChat: true,
+                                builder: (context) => ChatScreen(
+                                      chatId: roomID,
+                                      usernameOrGroupName: selectedUsers[0],
                                     )));
                       }
                     }

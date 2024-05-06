@@ -61,32 +61,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const CommunityPage(),
     const CreatePost(profile: false),
     const ChatListScreen(
-      chatInfo: [
-        {
-          'id': 'user1',
-          'name': 'User One',
-          'lastMessage': 'Hey, how are you?',
-          'time': '10:45 PM',
-          'unread': true,
-          'profilePic': 'https://picsum.photos/240'
-        },
-        {
-          'id': 'user2',
-          'name': 'User Two',
-          'lastMessage': 'Let\'s meet tomorrow',
-          'time': '9:15 PM',
-          'unread': true,
-          'profilePic': 'https://picsum.photos/200'
-        },
-        {
-          'id': 'user3',
-          'name': 'User Three',
-          'lastMessage': 'Thank you!',
-          'time': '8:03 PM',
-          'unread': false,
-          'profilePic': 'https://picsum.photos/201'
-        },
-      ],
       channelInfo: [
         {
           'name': 'Channel One',
