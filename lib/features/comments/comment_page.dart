@@ -127,21 +127,20 @@ class _CommentPageState extends State<CommentPage> {
       print(_comments[0].comment.username);
       print(_comments[0].comment.content);
       print(widget.commentId);
-      if(widget.commentId != null){
-        _comments.sort((a,b) {
-          if (a.comment.commentId == widget.commentId){
+      if (widget.commentId != null) {
+        _comments.sort((a, b) {
+          if (a.comment.commentId == widget.commentId) {
             return -1;
-          }
-          else if (b.comment.commentId == widget.commentId){
+          } else if (b.comment.commentId == widget.commentId) {
             return 1;
-          }
-          else{
+          } else {
             return 0;
           }
         });
       }
       print(_comments[0].comment.username);
-      print(_comments[0].comment.content);    }
+      print(_comments[0].comment.content);
+    }
   }
 
   void _calculateCommentPositions() {
@@ -214,7 +213,7 @@ class _CommentPageState extends State<CommentPage> {
                 onChanged: (value) async {
                   commentsResults =
                       await Provider.of<NetworkService>(context, listen: false)
-                          .getSearchComments(value, '', '');
+                          .getSearchComments(value, '', '', "", 1, '');
                 },
               )
             : null,
