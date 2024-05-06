@@ -220,11 +220,17 @@ class _ProfileState extends State<Profile> {
                   ),
                 );
               },
-              icon: const Icon(Icons.search, size: 30.0),
+              icon: Semantics(
+                  label: 'Open Search 1',
+                  identifier: 'Open Search 1',
+                  child: const Icon(Icons.search, size: 30.0)),
             ),
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.share, size: 30.0),
+              icon: Semantics(
+                  label: 'Share Profile 1',
+                  identifier: 'Share Profile 1',
+                  child: const Icon(Icons.share, size: 30.0)),
             ),
             PopupMenuButton<Menu>(
               onSelected: (Menu item) {},
@@ -471,11 +477,17 @@ class _ProfileState extends State<Profile> {
               ),
             );
           },
-          icon: const Icon(Icons.search, size: 30.0),
+          icon: Semantics(
+              label: 'Open Search 2',
+              identifier: 'Open Search 2',
+              child: const Icon(Icons.search, size: 30.0)),
         ),
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.share, size: 30.0),
+          icon: Semantics(
+              label: 'Share Profile 2',
+              identifier: 'Share Profile 2',
+              child: const Icon(Icons.share, size: 30.0)),
         ),
         PopupMenuButton<Menu>(
           onSelected: (Menu item) {},
@@ -488,32 +500,42 @@ class _ProfileState extends State<Profile> {
 
 List<PopupMenuEntry<Menu>> menuitems() {
   return <PopupMenuEntry<Menu>>[
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.share,
       child: ListTile(
-        leading: Icon(Icons.share),
-        title: Text('Share'),
+        leading: Semantics(
+            label: 'Share', identifier: 'Share', child: Icon(Icons.share)),
+        title: const Text('Share'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.subscribe,
       child: ListTile(
-        leading: Icon(Icons.add_alert),
-        title: Text('Subscribe'),
+        leading: Semantics(
+            label: 'Subscribe',
+            identifier: 'Subscribe',
+            child: const Icon(Icons.add_alert)),
+        title: const Text('Subscribe'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.save,
       child: ListTile(
-        leading: Icon(Icons.bookmark_add_outlined),
-        title: Text('Save'),
+        leading: Semantics(
+            label: 'Save',
+            identifier: 'Save',
+            child: const Icon(Icons.bookmark_add_outlined)),
+        title: const Text('Save'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.copytext,
       child: ListTile(
-        leading: Icon(Icons.copy),
-        title: Text('Copy text'),
+        leading: Semantics(
+            label: 'Copy text',
+            identifier: 'Copy text',
+            child: const Icon(Icons.copy)),
+        title: const Text('Copy text'),
       ),
     ),
     const PopupMenuItem<Menu>(
@@ -523,39 +545,54 @@ List<PopupMenuEntry<Menu>> menuitems() {
         title: Text('Edit'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.addpostflair,
       child: ListTile(
-        leading: Icon(Icons.add),
-        title: Text('Add post flair'),
+        leading: Semantics(
+            label: 'Add post flair',
+            identifier: 'Add post flair',
+            child: const Icon(Icons.add)),
+        title: const Text('Add post flair'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.markspoiler,
       child: ListTile(
-        leading: Icon(Icons.warning),
-        title: Text('Mark spoiler'),
+        leading: Semantics(
+            label: 'Mark spoiler',
+            identifier: 'Mark spoiler',
+            child: const Icon(Icons.warning)),
+        title: const Text('Mark spoiler'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.markNSFW,
       child: ListTile(
-        leading: Icon(Icons.warning),
-        title: Text('Mark NSFW'),
+        leading: Semantics(
+            label: 'Mark NSFW',
+            identifier: 'Mark NSFW',
+            child: const Icon(Icons.warning)),
+        title: const Text('Mark NSFW'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.markasbrandaffiliate,
       child: ListTile(
-        leading: Icon(Icons.warning),
-        title: Text('Mark as brand affiliate'),
+        leading: Semantics(
+            label: 'Mark as brand affiliate',
+            identifier: 'Mark as brand affiliate',
+            child: const Icon(Icons.warning)),
+        title: const Text('Mark as brand affiliate'),
       ),
     ),
-    const PopupMenuItem<Menu>(
+    PopupMenuItem<Menu>(
       value: Menu.report,
       child: ListTile(
-        leading: Icon(Icons.warning),
-        title: Text('Report'),
+        leading: Semantics(
+            label: 'Report',
+            identifier: 'Report',
+            child: const Icon(Icons.warning)),
+        title: const Text('Report'),
       ),
     ),
   ];
