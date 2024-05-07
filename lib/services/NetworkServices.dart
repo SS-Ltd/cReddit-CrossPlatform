@@ -813,12 +813,12 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> leaveModerator(String username) async {
-    Uri url = Uri.parse('$_baseUrl/mod/leave/$username');
+  Future<bool> leaveModerator() async {
+    Uri url = Uri.parse('$_baseUrl/mod/leave');
     final response = await http.patch(url, headers: _headers);
     if (response.statusCode == 403) {
       refreshToken();
-      return leaveModerator(username);
+      return leaveModerator();
     }
     if (response.statusCode == 200) {
       return true;
