@@ -254,6 +254,7 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                         ),
                       );
                     }
+                    setState(() {});
                   },
                 );
               } else {

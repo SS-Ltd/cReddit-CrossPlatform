@@ -294,7 +294,9 @@ class _CreateCommunityPageState extends State<CreateCommunityPage> {
     final networkService = Provider.of<NetworkService>(context, listen: false);
     final subredditName = _communityNameController.text.trim();
     final isNSFW = _is18Plus;
-    final success = await networkService.createCommunity(subredditName, isNSFW);
+    final communityType = _communityType;
+    final success = await networkService.createCommunity(
+        subredditName, isNSFW, communityType);
     if (success) {
       Navigator.push(
         context,

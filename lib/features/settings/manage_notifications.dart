@@ -36,7 +36,7 @@ class _ManageNotificationsState extends State<ManageNotifications> {
             return Text('Error: ${snapshot.error}');
           } else {
             final settings = context.read<NetworkService>().userSettings;
-            context.read<NetworkService>().updateSettingsNotifications(false);
+            //context.read<NetworkService>().updateSettingsNotifications(false);
             mentions = settings!.notifications.mentionsNotifs;
             comments = settings.notifications.commentsNotifs;
             upvotes = settings.notifications.postsUpvotesNotifs;
