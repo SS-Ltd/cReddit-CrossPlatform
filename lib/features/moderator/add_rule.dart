@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/models/rule.dart';
 
 class AddRule extends StatefulWidget {
-  const AddRule({super.key, this.isEditing = false});
-
+  const AddRule({super.key, this.isEditing = false, this.rule});
+  final SubredditRule? rule;
   final bool isEditing;
 
   @override
@@ -13,13 +14,23 @@ class AddRule extends StatefulWidget {
 
 class _AddRuleState extends State<AddRule> {
   bool _istitleempty = true;
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _reportController = TextEditingController();
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _reportController;
   String _reportReason = "P&C";
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _titleController = TextEditingController(text: widget.rule?.text);
+    _descriptionController = TextEditingController(text: "");
+    _reportController = TextEditingController(text: "");
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _reportReason = widget.rule?.appliesTo ?? "P&C";
     return Dialog.fullscreen(
       child: Scaffold(
         appBar: AppBar(
@@ -29,7 +40,9 @@ class _AddRuleState extends State<AddRule> {
             },
             icon: const Icon(Icons.close),
           ),
-          title: widget.isEditing ? const Text("Edit rule") : const Text("Create rule"),
+          title: widget.isEditing
+              ? const Text("Edit rule")
+              : const Text("Create rule"),
           actions: [
             ElevatedButton(
               onPressed: _istitleempty ? null : () {},
@@ -140,7 +153,7 @@ class _AddRuleState extends State<AddRule> {
                 onChanged: (value) {
                   setState(
                     () {
-                      _reportReason = value.toString();
+                      _reportReason = value ?? "P&C";
                     },
                   );
                 },
@@ -152,7 +165,7 @@ class _AddRuleState extends State<AddRule> {
                 onChanged: (value) {
                   setState(
                     () {
-                      _reportReason = value.toString();
+                      _reportReason = value ?? "comments";
                     },
                   );
                 },
@@ -164,7 +177,7 @@ class _AddRuleState extends State<AddRule> {
                 onChanged: (value) {
                   setState(
                     () {
-                      _reportReason = value.toString();
+                      _reportReason = value ?? "posts";
                     },
                   );
                 },

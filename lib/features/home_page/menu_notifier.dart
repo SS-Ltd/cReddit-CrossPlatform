@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MenuState extends ChangeNotifier {
-  String _selectedMenuItem = 'Hot';
+  String _selectedMenuItem = 'Best';
 
   String get selectedMenuItem => _selectedMenuItem;
 

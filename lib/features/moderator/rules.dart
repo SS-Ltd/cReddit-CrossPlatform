@@ -27,9 +27,8 @@ class _RulesState extends State<Rules> {
   }
 
   Future<void> fetcheddata() async {
-    rules =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSubredditRules(widget.currentCommunity);
+    rules = await Provider.of<NetworkService>(context, listen: false)
+        .getSubredditRules(widget.currentCommunity);
     rules ??= [];
     setState(() {});
   }
@@ -167,7 +166,7 @@ class _RulesState extends State<Rules> {
               ],
             )
           : ListView.builder(
-              //itemCount: rules.length,
+              itemCount: rules?.length ?? 0,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -177,15 +176,16 @@ class _RulesState extends State<Rules> {
                             context,
                             MaterialPageRoute(
                                 fullscreenDialog: true,
-                                builder: (context) => const AddRule(
+                                builder: (context) => AddRule(
                                       isEditing: true,
+                                      rule: rules?[index],
                                     )));
                       },
                       leading: CircleAvatar(
                         child: Text("${index + 1}"),
                       ),
-                      //title: Text("Rule name"),
-                      subtitle: const Text('Description of the rule'),
+                      title: Text(rules![index].text),
+                      //subtitle: const Text('Description of the rule'),
                       trailing: _isEditing
                           ? IconButton(
                               onPressed: () {}, icon: const Icon(Icons.delete))
