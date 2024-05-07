@@ -1252,6 +1252,7 @@ class NetworkService extends ChangeNotifier {
       String? date) async {
     Uri url = Uri.parse('$_baseUrl/post');
     print("klam");
+    print(date);
     if (isLink) {
       content = "http://$content";
     }

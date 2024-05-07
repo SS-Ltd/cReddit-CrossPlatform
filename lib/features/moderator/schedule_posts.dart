@@ -57,7 +57,7 @@ class _SchedulePostsState extends State<SchedulePosts> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const CreatePost(profile: true, ismoderator: true,)));
+                                      const CreatePost(profile: false, ismoderator: true,)));
                         },
                         child: const Text("Schedule post"),
                       ),
