@@ -254,7 +254,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               displayName: widget.myuser!.displayName,
               about: 'about',
               profilePicture: widget.myuser!.profilePicture,
-              bannerPicture: 'bannerPicture',
+              bannerPicture: widget.myuser?.banner ??
+                  "https://res.cloudinary.com/dfvgbxwed/image/upload/v1713636481/cReddit/ybhvvqqpctjxljqehtif.gif",
               followerCount: widget.myuser!.followers,
               cakeDay: '2024-03-25T15:37:33.339+00:00',
               isOwnProfile: true,

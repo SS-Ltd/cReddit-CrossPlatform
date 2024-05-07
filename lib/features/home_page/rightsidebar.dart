@@ -205,13 +205,16 @@ class _RightsidebarState extends State<Rightsidebar> {
                                                         await context
                                                             .read<
                                                                 NetworkService>()
-                                                            .logout(widget.fcmToken);
+                                                            .logout(widget
+                                                                .fcmToken);
                                                         Navigator
                                                             .pushAndRemoveUntil(
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) =>
-                                                                LoginScreen(fcmToken: widget.fcmToken),
+                                                                LoginScreen(
+                                                                    fcmToken: widget
+                                                                        .fcmToken),
                                                           ),
                                                           (Route<dynamic>
                                                                   route) =>

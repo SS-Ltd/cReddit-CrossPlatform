@@ -33,9 +33,7 @@ class EditButton extends StatelessWidget {
                 builder: (context) => ProfileSettings(
                       userName: userName,
                       profilePictureUrl: profilePictureUrl,
-                      bannerUrl: bannerUrl == ""
-                          ? bannerUrl
-                          : "https://via.placeholder.com/150",
+                      bannerUrl: bannerUrl,
                       displayName: displayName,
                       about: about,
                     )),
