@@ -7,7 +7,11 @@ import 'package:reddit_clone/features/Inbox/message_layout.dart';
 import 'package:reddit_clone/features/Inbox/message_page.dart';
 import 'package:reddit_clone/features/Inbox/new_message.dart';
 import 'package:reddit_clone/features/Inbox/notification_layout.dart';
+import 'package:reddit_clone/features/comments/comment_page.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
+import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -193,13 +197,63 @@ class _InboxNotificationPageState extends State<InboxNotificationPage>
                 final notification = notifications[index];
                 return NotificationLayout(
                   notification: notification,
-                  onTap: () {
-                    setState(() {
-                      context
+                  onTap: () async {
+                    context
+                        .read<NetworkService>()
+                        .markNotificationAsRead(notification.id);
+                    notifications[index].isRead = true;
+                    if (notification.type == 'upvotedPost' ||
+                        notification.type == 'followedPost') {
+                      PostModel post = await context
                           .read<NetworkService>()
-                          .markAllNotificationAsRead();
-                      notifications[index].isRead = true;
-                    });
+                          .fetchPost(notification.resourceId);
+                      Post postComment = Post(
+                        postModel: post,
+                        isHomePage: false,
+                        isSubRedditPage: false,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommentPage(
+                            postId: notification.resourceId,
+                            postComment: postComment,
+                            postTitle: post?.title ?? '',
+                            username: post?.username ?? '',
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (notification.type == 'comment' ||
+                        notification.type == 'upvotedComment') {
+                      Comments? comment = await context
+                          .read<NetworkService>()
+                          .fetchCommentById(notification.resourceId);
+
+                      PostModel post = await context
+                          .read<NetworkService>()
+                          .fetchPost(comment?.postId ?? '');
+
+                      Post postComment = Post(
+                        postModel: post,
+                        isHomePage: false,
+                        isSubRedditPage: false,
+                      );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommentPage(
+                            postId: comment?.postId ?? '',
+                            postComment: postComment,
+                            postTitle: post?.title ?? '',
+                            username: post?.username ?? '',
+                            commentId: notification.resourceId,
+                          ),
+                        ),
+                      );
+                    }
                   },
                 );
               } else {

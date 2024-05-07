@@ -256,6 +256,21 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<Comments?> fetchCommentById(String commentId) async {
+    Uri url = Uri.parse('$_baseUrl/comment/$commentId');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchCommentById(commentId);
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      return Comments.fromJson(responseData);
+    } else {
+      return null;
+    }
+  }
+
   Future<List<Comments>?> fetchCommentsForPost(String postId) async {
     Uri url = Uri.parse('$_baseUrl/post/$postId/comments');
     final response = await http.get(url, headers: _headers);
@@ -1534,7 +1549,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<NotificationModel>?> fetchNotifications() async {
-    Uri url = Uri.parse('$_baseUrl/notification/');
+    Uri url = Uri.parse('$_baseUrl/notification/?limit=100');
     final response = await http.get(url, headers: _headers);
     if (response.statusCode == 403) {
       refreshToken();
