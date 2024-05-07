@@ -113,7 +113,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateNotificationsSettings(String parameter, bool newValue) async {
+  Future<bool> updateNotificationsSettings(
+      String parameter, bool newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
     request.headers.addAll(_headers);
@@ -123,16 +124,14 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print(responseBody);
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-    Future<bool> updateEmailSettings(String parameter, bool newValue) async {
+  Future<bool> updateEmailSettings(String parameter, bool newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
     request.headers.addAll(_headers);
@@ -142,11 +141,9 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print(responseBody);
-        if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
@@ -162,16 +159,14 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
-        if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-    Future<bool> updateAccountSettings(String parameter, String newValue) async {
+  Future<bool> updateAccountSettings(String parameter, String newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
 
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
@@ -182,11 +177,9 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
-        if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
@@ -1615,6 +1608,17 @@ class NetworkService extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  Future<void> markChatAsRead(String chatId) async {
+    Uri url = Uri.parse('$_baseUrl/chat/$chatId/mark-as-read');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markChatAsRead(chatId);
+    }
+    print('MARK CHAT AS READ');
+    print(response.body);
   }
 
   Future<bool> markAllNotificationAsRead() async {
