@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reddit_clone/features/User/profile_settings.dart';
 
 /// A button widget used for editing user profiles.
 ///
@@ -13,6 +14,11 @@ class EditButton extends StatelessWidget {
     return ElevatedButton(
         onPressed: () {
           // Add functionality to edit user profile given the username
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileSettings(userName: userName)),
+          );
         },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
