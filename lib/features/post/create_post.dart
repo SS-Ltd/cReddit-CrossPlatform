@@ -471,68 +471,60 @@ class _CreatePostState extends State<CreatePost> {
                                 _hasVideo
                             ? null
                             : () async {
-                                String type = _insertlink ? "Link" : "Post";
-                                String data = _insertlink
-                                    ? _linkController.text
-                                    : _bodyController.text;
-                                var newpost = _insertpoll
-                                    ? await context
-                                        .read<NetworkService>()
-                                        .createNewPollPost(
-                                            chosenCommunity,
-                                            _titleController.text,
-                                            _bodyController.text,
-                                            _optionControllers
-                                                .where((controller) =>
-                                                    controller.text.isNotEmpty)
-                                                .map((controller) =>
-                                                    controller.text)
-                                                .toList(),
-                                            endsInDateTime, //month-day-year
-                                            false,
-                                            isspoiler)
-                                    : (_hasImage || _hasVideo)
-                                        ? await context
-                                            .read<NetworkService>()
-                                            .createNewImagePost(
-                                                chosenCommunity,
-                                                _titleController.text,
-                                                _hasImage ? _image! : _video!,
-                                                false,
-                                                isspoiler)
-                                        : await context
-                                            .read<NetworkService>()
-                                            .createNewTextOrLinkPost(
-                                                type,
-                                                chosenCommunity,
-                                                _titleController.text,
-                                                data,
-                                                false,
-                                                isspoiler);
-                                bool success = false;
-                                if (newpost is Map<String, dynamic>) {
-                                  success = newpost['success'];
-                                } else if (newpost is bool) {
-                                  success = newpost;
-                                }
-
-                                if (success) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CustomNavigationBar(
-                                        isProfile: false,
-                                      ),
+                              String type = _insertlink ? "Link" : "Post";
+                              String data = _insertlink ? _linkController.text : _bodyController.text;
+                              Map<String, dynamic> newpost = _insertpoll
+                                  ? await context
+                                      .read<NetworkService>()
+                                      .createNewPollPost(
+                                          chosenCommunity,
+                                          _titleController.text,
+                                          _bodyController.text,
+                                          _optionControllers
+                                              .where((controller) => controller.text.isNotEmpty)
+                                              .map((controller) => controller.text)
+                                              .toList(),
+                                          endsInDateTime, //month-day-year
+                                          false,
+                                          isspoiler)
+                                  : (_hasImage || _hasVideo)
+                                      ? await context
+                                          .read<NetworkService>()
+                                          .createNewImagePost(
+                                              chosenCommunity,
+                                              _titleController.text,
+                                              _hasImage ? _image! : _video!,
+                                              false,
+                                              isspoiler)
+                                      : await context
+                                          .read<NetworkService>()
+                                          .createNewTextOrLinkPost(
+                                              type,
+                                              chosenCommunity,
+                                              _titleController.text,
+                                              data,
+                                              false,
+                                              isspoiler,
+                                              _insertlink);
+                            
+                              bool success = newpost['success'];
+                            
+                              if (success) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CustomNavigationBar(
+                                      isProfile: false,
                                     ),
-                                  );
-                                } else {
-                                  CustomSnackBar(
-                                          content: (newpost as Map<String,
-                                              dynamic>)['message'],
-                                          context: context)
-                                      .show();
-                                }
-                              },
+                                  ),
+                                );
+                              } else {
+                                CustomSnackBar(
+                                        content: newpost['message'],
+                                        context: context)
+                                    .show();
+                              }
+                            },
                     child: const Text('Post'),
                   )
                 : _isSaved

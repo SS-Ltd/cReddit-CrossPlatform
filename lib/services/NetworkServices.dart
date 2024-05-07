@@ -1221,10 +1221,38 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNewTextOrLinkPost(String type, String communityname,
-      String title, String content, bool isNSFW, bool isSpoiler) async {
+  Future<bool> createCrossPost(String postID, String title) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode(
+            {'postId': postID, 'type': 'Cross Post', 'title': title}));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createCrossPost(postID, title);
+    }
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> createNewTextOrLinkPost(
+      String type,
+      String communityname,
+      String title,
+      String content,
+      bool isNSFW,
+      bool isSpoiler,
+      bool isLink) async {
     Uri url = Uri.parse('$_baseUrl/post');
     print("klam");
+    if (isLink) {
+      content = "http://$content";
+    }
     final response = await http.post(
       url,
       headers: _headers,
@@ -1232,7 +1260,7 @@ class NetworkService extends ChangeNotifier {
         'type': type,
         'communityName': communityname,
         'title': title,
-        'content': "http://$content",
+        'content': content,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
@@ -1241,12 +1269,20 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 403) {
       refreshToken();
       return createNewTextOrLinkPost(
-          type, communityname, title, content, isNSFW, isSpoiler);
+          type, communityname, title, content, isNSFW, isSpoiler, isLink);
     }
-    if (response.statusCode == 201) {
-      return true;
+
+    var parsedJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (parsedJson['postId'] != null) {
+        String postId = parsedJson['postId'];
+        return {'success': true, 'postId': postId};
+      } else {
+        return {'success': false};
+      }
     } else {
-      return false;
+      return {'success': false, 'message': parsedJson['message']};
     }
   }
 
@@ -1294,7 +1330,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNewPollPost(
+  Future<Map<String, dynamic>> createNewPollPost(
       String communityname,
       String title,
       String content,
@@ -1322,10 +1358,17 @@ class NetworkService extends ChangeNotifier {
       return createNewPollPost(
           communityname, title, content, options, expDate, isNSFW, isSpoiler);
     }
-    if (response.statusCode == 201) {
-      return true;
+    var parsedJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (parsedJson['postId'] != null) {
+        String postId = parsedJson['postId'];
+        return {'success': true, 'postId': postId};
+      } else {
+        return {'success': false};
+      }
     } else {
-      return false;
+      return {'success': false, 'message': parsedJson['message']};
     }
   }
 
@@ -1474,8 +1517,6 @@ class NetworkService extends ChangeNotifier {
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isApproved': isApproved}));
 
-    print(response.statusCode);
-    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return approveComment(commentId, isApproved);
@@ -1488,11 +1529,10 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<bool> removeComment(String commentId, bool isRemoved) async {
-    Uri url = Uri.parse('$_baseUrl/post/$commentId/isRemoved');
+    Uri url = Uri.parse('$_baseUrl/post/$commentId/remove');
     final response = await http.patch(url,
         headers: _headers, body: jsonEncode({'isRemoved': isRemoved}));
-    print(response.statusCode);
-    print(response.body);
+
     if (response.statusCode == 403) {
       refreshToken();
       return removeComment(commentId, isRemoved);

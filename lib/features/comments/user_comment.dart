@@ -115,8 +115,8 @@ class UserCommentState extends State<UserComment> {
           isPostPage: true,
           isModerator: widget.isModerator,
           comment: Comments(
-            profilePicture: 'assets/MonkeyDLuffy.png',
-            username: 'User123',
+            profilePicture: 'https://res.cloudinary.com/dfvgbxwed/image/upload/v1713636481/cReddit/ybhvvqqpctjxljqehtif.gif',
+            username: 'Zahar',
             isImage: false,
             netVote: 0,
             content: commentText,
@@ -139,8 +139,8 @@ class UserCommentState extends State<UserComment> {
           isPostPage: true,
           isModerator: widget.isModerator,
           comment: Comments(
-            profilePicture: 'assets/MonkeyDLuffy.png',
-            username: 'User123',
+            profilePicture: 'https://res.cloudinary.com/dfvgbxwed/image/upload/v1713636481/cReddit/ybhvvqqpctjxljqehtif.gif',
+            username: 'Zahar',
             isImage: true,
             netVote: 0,
             content: commentImage.path,
@@ -508,7 +508,7 @@ class UserCommentState extends State<UserComment> {
                               onPressed: () {
                                 modOptions(3);
                               }),
-                        ] else
+                        ],
                           IconButton(
                             icon: Semantics(
                                 identifier: "comment reply",
@@ -700,6 +700,7 @@ class UserCommentState extends State<UserComment> {
                     .read<NetworkService>()
                     .approveComment(widget.comment.commentId, true);
                 if (approved) {
+                  isApproved.value = true;
                   CustomSnackBar(
                     context: context,
                     content: 'Comment Approved!',
@@ -779,7 +780,26 @@ class UserCommentState extends State<UserComment> {
                         Column(
                           children: [
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                bool removed = await context
+                                    .read<NetworkService>()
+                                    .removeComment(
+                                        widget.comment.commentId, true);
+                                if (removed) {
+                                  widget.comment.isDeleted.value = true;
+                                  CustomSnackBar(
+                                    context: context,
+                                    content: 'Comment Removed!',
+                                  ).show();
+                                } else {
+                                  CustomSnackBar(
+                                    context: context,
+                                    content: 'Failed to remove comment!',
+                                  ).show();
+                                }
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Palette.blueJoinColor,
                                 foregroundColor: Palette.whiteColor,
@@ -800,12 +820,15 @@ class UserCommentState extends State<UserComment> {
                                     context: context,
                                     content: 'Comment Removed!',
                                   ).show();
+                                  
                                 } else {
                                   CustomSnackBar(
                                     context: context,
                                     content: 'Failed to remove comment!',
                                   ).show();
                                 }
+                                Navigator.pop(context);
+                                Navigator.pop(context);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Palette.blueJoinColor,
@@ -958,6 +981,9 @@ class UserCommentState extends State<UserComment> {
                 leading: const Icon(Icons.merge_type_outlined),
                 title: const Text('Collapse thread'),
                 onTap: () {
+                  setState(() {
+                    isMinimized.value = true;
+                  });
                   Navigator.pop(context);
                 },
               ),
