@@ -627,12 +627,12 @@ class _PostState extends State<Post> {
                       label: "moderator post settings",
                   child: const Icon(Icons.shield_outlined)),
                   onPressed: () {
-                    showDialog(
+                    final result = showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return ModeratorPopUP(postModel: widget.postModel);
                         });
-                  },
+                  },  
                 ),
               IconButton(
                 icon: Semantics(
