@@ -41,6 +41,7 @@ class Message {
   final String room;
   final String content;
   final bool isDeleted;
+  bool isRead;
   final List<dynamic> reactions;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -51,6 +52,7 @@ class Message {
     required this.room,
     required this.content,
     required this.isDeleted,
+    required this.isRead,
     required this.reactions,
     required this.createdAt,
     required this.updatedAt,
@@ -64,6 +66,7 @@ class Message {
       content: json['content'],
       isDeleted: json['isDeleted'] ?? false,
       reactions: json['reactions'],
+      isRead: json['isRead'] ?? false,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])

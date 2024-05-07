@@ -29,6 +29,12 @@ class ChatScreenState extends State<ChatScreen> {
     super.initState();
     initializeSocket();
     fetchChatMessages();
+    markChatAsRead();
+  }
+
+  void markChatAsRead() async {
+    final networkService = Provider.of<NetworkService>(context, listen: false);
+    await networkService.markChatAsRead(widget.chatId);
   }
 
   void initializeSocket() {

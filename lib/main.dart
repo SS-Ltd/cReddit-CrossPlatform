@@ -24,31 +24,31 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  const InitializationSettings initializationSettings =
-      InitializationSettings(android: initializationSettingsAndroid);
-
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
-
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   if (Platform.isAndroid) {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
     NotificationSettings settings = await messaging.requestPermission(
@@ -60,7 +60,6 @@ Future<void> main() async {
       provisional: false,
       sound: true,
     );
-
 
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
@@ -113,6 +112,7 @@ Future<void> main() async {
         );
       }
     });
+
     runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => NetworkService()),
@@ -122,6 +122,17 @@ Future<void> main() async {
                 MenuState()) // Add GoogleSignInService provider
       ],
       child: MyApp(fcmToken: fcmToken),
+    ));
+  } else if (Platform.isIOS) {
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => NetworkService()),
+        ChangeNotifierProvider(create: (context) => GoogleService()),
+        ChangeNotifierProvider(
+            create: (context) =>
+                MenuState()) // Add GoogleSignInService provider
+      ],
+      child: MyApp(fcmToken: ""),
     ));
   }
 }
@@ -163,7 +174,9 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    setupInteractedMessage();
+    if (Platform.isAndroid) {
+      setupInteractedMessage();
+    }
   }
 
   @override

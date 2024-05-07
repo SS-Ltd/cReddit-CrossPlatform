@@ -1650,6 +1650,17 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<void> markChatAsRead(String chatId) async {
+    Uri url = Uri.parse('$_baseUrl/chat/$chatId/mark-as-read');
+    final response = await http.patch(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markChatAsRead(chatId);
+    }
+    print('MARK CHAT AS READ');
+    print(response.body);
+  }
+
   Future<bool> markAllNotificationAsRead() async {
     Uri url = Uri.parse('$_baseUrl/notification/mark-all-as-read');
     final response = await http.put(url, headers: _headers);

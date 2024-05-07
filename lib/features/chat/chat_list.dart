@@ -127,18 +127,22 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     const SizedBox(width: 10),
                                     const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage('https://picsum.photos/200'),
+                                      backgroundImage: NetworkImage(
+                                          'https://picsum.photos/200'),
                                     ),
                                     const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage('https://picsum.photos/201'),
+                                      backgroundImage: NetworkImage(
+                                          'https://picsum.photos/201'),
                                     ),
                                     const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage('https://picsum.photos/202'),
+                                      backgroundImage: NetworkImage(
+                                          'https://picsum.photos/202'),
                                     ),
                                     const SizedBox(width: 10),
-                                    const SpinKitThreeBounce(color: Colors.white, size: 10.0),
+                                    const SpinKitThreeBounce(
+                                        color: Colors.white, size: 10.0),
                                   ],
                                 ),
                               ),
@@ -180,14 +184,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       ),
                       title: Text(chat.name,
                           style: TextStyle(
-                              color: isUnread ? Colors.white : Colors.grey[400],
-                              fontWeight: isUnread
+                              color: chat.lastSentMessage?.isRead == false
+                                  ? Colors.white
+                                  : Colors.grey[400],
+                              fontWeight: chat.lastSentMessage?.isRead == false
                                   ? FontWeight.bold
                                   : FontWeight.normal)),
                       subtitle: Text(chat.lastSentMessage?.content ?? '',
                           style: TextStyle(
-                              color:
-                                  isUnread ? Colors.white : Colors.grey[400])),
+                              color: chat.lastSentMessage?.isRead == false
+                                  ? Colors.white
+                                  : Colors.grey[400])),
                       trailing: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
@@ -196,7 +203,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               style: TextStyle(
                                   color: Colors.grey[400], fontSize: 12)),
                           const SizedBox(height: 15),
-                          if (isUnread)
+                          if (chat.lastSentMessage?.isRead == false)
                             Container(
                               width: 10,
                               height: 10,
