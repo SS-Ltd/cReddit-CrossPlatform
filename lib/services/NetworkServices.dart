@@ -1747,6 +1747,18 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<Map<String, dynamic>?> getCommunitySettings(String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/settings');
+    final response = await http.get(url, headers: _headers);
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      return responseData;
+    } else {
+      return null;
+    }
+  }
+
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
@@ -1772,3 +1784,11 @@ class NetworkService extends ChangeNotifier {
     return '';
   }
 }
+
+
+/*
+1
+3
+schedule post
+.....
+*/
