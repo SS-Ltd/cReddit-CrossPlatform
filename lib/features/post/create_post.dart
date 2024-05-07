@@ -75,8 +75,8 @@ class _CreatePostState extends State<CreatePost> {
   bool _insertpoll = false;
   int count = 0;
   String _pollendsin = "2 Day";
-  String endsInDateTime = '';
-
+  String endsInDateTime =
+      DateTime.now().add(const Duration(days: 2)).toString();
   bool isspoiler = false;
   bool isBrand = false;
 
@@ -87,7 +87,7 @@ class _CreatePostState extends State<CreatePost> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   DateTime scheduledDate = DateTime.now();
   TimeOfDay scheduledTime = TimeOfDay.now();
-  bool _isSaved = false;
+  bool _isSaved = true;
   bool scheduleRepeating = true;
   final currentdate = DateTime.now();
   final currenttime = TimeOfDay.now();
@@ -344,7 +344,7 @@ class _CreatePostState extends State<CreatePost> {
                                                                         fontSize:
                                                                             20),
                                                                   ),
-                                                                  !_isSaved
+                                                                  _isSaved
                                                                       ? ElevatedButton(
                                                                           onPressed:
                                                                               () {
@@ -471,6 +471,10 @@ class _CreatePostState extends State<CreatePost> {
                                 _hasVideo
                             ? null
                             : () async {
+                                print("yallaaa: " +
+                                    widget.profile.toString() +
+                                    " and " +
+                                    chosenCommunity.isNotEmpty.toString());
                                 String type = _insertlink ? "Link" : "Post";
                                 String data = _insertlink
                                     ? _linkController.text
@@ -513,7 +517,7 @@ class _CreatePostState extends State<CreatePost> {
                                                 isspoiler,
                                                 _insertlink,
                                                 null);
-
+                                print("wowowowow");
                                 bool success = newpost['success'];
 
                                 if (success) {
@@ -536,7 +540,81 @@ class _CreatePostState extends State<CreatePost> {
                   )
                 : _isSaved
                     ? ElevatedButton(
-                        onPressed: () {}, child: const Text("Schedule"))
+                        onPressed: _istitleempty
+                            ? null
+                            : _isbodyempty &&
+                                    _hasImage &&
+                                    _insertlink &&
+                                    _insertpoll &&
+                                    _hasVideo
+                                ? null
+                                : () async {
+                                    String type = _insertlink ? "Link" : "Post";
+                                    String data = _insertlink
+                                        ? _linkController.text
+                                        : _bodyController.text;
+                                    Map<String, dynamic> newpost = _insertpoll
+                                        ? await context
+                                            .read<NetworkService>()
+                                            .createNewPollPost(
+                                                chosenCommunity,
+                                                _titleController.text,
+                                                _bodyController.text,
+                                                _optionControllers
+                                                    .where((controller) =>
+                                                        controller
+                                                            .text.isNotEmpty)
+                                                    .map((controller) =>
+                                                        controller.text)
+                                                    .toList(),
+                                                endsInDateTime, //month-day-year
+                                                false,
+                                                isspoiler,
+                                                scheduledDate.toString())
+                                        : (_hasImage || _hasVideo)
+                                            ? await context
+                                                .read<NetworkService>()
+                                                .createNewImagePost(
+                                                    chosenCommunity,
+                                                    _titleController.text,
+                                                    _hasImage
+                                                        ? _image!
+                                                        : _video!,
+                                                    false,
+                                                    isspoiler,
+                                                    scheduledDate.toString())
+                                            : await context
+                                                .read<NetworkService>()
+                                                .createNewTextOrLinkPost(
+                                                    type,
+                                                    chosenCommunity,
+                                                    _titleController.text,
+                                                    data,
+                                                    false,
+                                                    isspoiler,
+                                                    _insertlink,
+                                                    scheduledDate.toString());
+                                    print("date: " + scheduledDate.toString());
+                                    bool success = newpost['success'];
+
+                                    if (success) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              CustomNavigationBar(
+                                            isProfile: false,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      CustomSnackBar(
+                                              content: newpost['message'],
+                                              context: context)
+                                          .show();
+                                    }
+                                  },
+                        child: const Text("Schedule"))
                     : ElevatedButton(
                         onPressed: _istitleempty
                             ? null
