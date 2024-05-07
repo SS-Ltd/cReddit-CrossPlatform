@@ -15,6 +15,7 @@ import 'package:reddit_clone/features/Community/community_page.dart';
 import 'package:reddit_clone/features/post/create_post.dart';
 import 'package:reddit_clone/theme/palette.dart';
 import 'package:reddit_clone/models/user.dart';
+import 'package:badges/badges.dart' as badges;
 
 /// A custom navigation bar widget that displays different pages based on the selected menu item.
 ///
@@ -273,7 +274,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.chat_outlined), label: 'Chat'),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications), label: 'Inbox'),
+                    icon: badges.Badge(
+                      badgeContent: Text('3'),
+                      child: Icon(Icons.notifications),
+                    ),
+                    label: 'Inbox'),
               ],
             )
           : null,

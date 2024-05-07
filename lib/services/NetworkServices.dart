@@ -24,7 +24,8 @@ class NetworkService extends ChangeNotifier {
   factory NetworkService() => _instance;
 
   NetworkService._internal();
-  final String _baseUrl = 'https://api.creddit.tech';
+  //final String _baseUrl = 'https://api.creddit.tech';
+  final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
   UserModel? get user => _user;
@@ -109,6 +110,18 @@ class NetworkService extends ChangeNotifier {
       notifyListeners();
       // Notify listeners to update UI or other components listening to changes
     }
+  }
+
+  Future<void> updateSettingsNotifications(bool mentionNotifs) async {
+    Uri url = Uri.parse('$_baseUrl/user/settings');
+    http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.headers.addAll(_headers);
+    String jsonString = jsonEncode({'mentionsNotifs': mentionNotifs});
+    print(jsonString);
+    request.fields['notifications'] = jsonString;
+    http.StreamedResponse response = await request.send();
+    String responseBody = await response.stream.bytesToString();
+    print(responseBody);
   }
 
   Future<void> updateUserSettings(String newName) async {
@@ -268,6 +281,21 @@ class NetworkService extends ChangeNotifier {
       return Comments.fromJson(responseData);
     } else {
       return null;
+    }
+  }
+
+  Future<int> getUnreadNotifications() async {
+    Uri url = Uri.parse('$_baseUrl/notification/unread-count');
+    final response = await http.get(url, headers: _headers);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getUnreadNotifications();
+    }
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      return responseData['total'];
+    } else {
+      return 0;
     }
   }
 
