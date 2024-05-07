@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/common/block_pop_up.dart';
@@ -43,41 +45,44 @@ class AboutUserPopUp extends StatelessWidget {
               ),
             ),
           ),
-          ArrowButton(
-              onPressed: () async {
-                UserModel myUser = await context
-                    .read<NetworkService>()
-                    .getUserDetails(userName);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(
-                      userName: myUser.username,
-                      profileName: myUser.username,
-                      displayName: myUser.displayName,
-                      profilePicture: myUser.profilePicture,
-                      followerCount: myUser.followers,
-                      about: myUser.about!,
-                      cakeDay: myUser.cakeDay.toString(),
-                      bannerPicture: myUser.banner!,
-                      isOwnProfile: false,
+          Semantics(
+            label: "View Profile",
+            child: ArrowButton(
+                onPressed: () async {
+                  UserModel myUser = await context
+                      .read<NetworkService>()
+                      .getUserDetails(userName);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Profile(
+                        userName: myUser.username,
+                        profileName: myUser.username,
+                        displayName: myUser.displayName,
+                        profilePicture: myUser.profilePicture,
+                        followerCount: myUser.followers,
+                        about: myUser.about!,
+                        cakeDay: myUser.cakeDay.toString(),
+                        bannerPicture: myUser.banner!,
+                        isOwnProfile: false,
+                      ),
                     ),
-                  ),
-                );
-              },
-              buttonText: 'View Profile',
-              buttonIcon: Icons.person,
-              hasarrow: false),
-          Padding(
-            padding: const EdgeInsets.all(0),
+                  );
+                },
+                buttonText: 'View Profile',
+                buttonIcon: Icons.person,
+                hasarrow: false),
+          ),
+          Semantics(
+            label: "Send Message",
             child: ArrowButton(
                 onPressed: () {},
                 buttonText: 'Send Message',
                 buttonIcon: Icons.mail_outline,
                 hasarrow: false),
           ),
-          Padding(
-            padding: const EdgeInsets.all(0),
+          Semantics(
+            label: "Block Account",
             child: ArrowButton(
                 onPressed: () {
                   showDialog(
@@ -86,7 +91,7 @@ class AboutUserPopUp extends StatelessWidget {
                         return BlockPopUp(userName: userName);
                       });
                 },
-                buttonText: "Block account",
+                buttonText: "Block Account",
                 buttonIcon: Icons.person_off_outlined,
                 hasarrow: false),
           ),
