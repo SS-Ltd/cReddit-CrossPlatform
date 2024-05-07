@@ -29,6 +29,7 @@ class _BannedUserState extends State<BannedUser> {
         .read<NetworkService>()
         .getBannedUsers(widget.communityName);
     bannedUsers = fetchedbannedUsers;
+    print(bannedUsers?.bannedUsers.length);
     return bannedUsers;
   }
 
