@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
+import 'package:reddit_clone/features/home_page/post.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'static_comment_card.dart';
@@ -41,6 +42,7 @@ class UserComment extends StatefulWidget {
   final VoidCallback onBlock;
   final bool isPostPage; // true for post, false for savedcomments
   bool isModerator;
+  final Post? postComment;
 
   UserComment({
     super.key,
@@ -53,6 +55,7 @@ class UserComment extends StatefulWidget {
     this.onBlock = defaultOnBlock,
     required this.isPostPage,
     this.isModerator = false,
+    this.postComment,
   });
 
   static void defaultOnDeleted() {}
@@ -86,6 +89,7 @@ class UserCommentState extends State<UserComment> {
   late ValueNotifier<File?> photo;
   late ValueNotifier<bool> isApproved;
   late ValueNotifier<bool> isRemoved;
+  final String _baseUrl = "https://creddit.tech/";
 
   void _addReply() async {
     final result = await Navigator.push(
@@ -880,6 +884,31 @@ class UserCommentState extends State<UserComment> {
                 leading: const Icon(Icons.share_outlined),
                 title: const Text('Share'),
                 onTap: () {
+                  if (widget.postComment != null) {
+                    String link;
+                    if (widget.postComment!.postModel.communityName.isEmpty) {
+                      link =
+                          "${_baseUrl}r/${widget.postComment?.postModel.username}/comments/${widget.postComment?.postModel.postId}";
+                    } else {
+                      link =
+                          "${_baseUrl}u/${widget.postComment?.postModel.communityName}/comments/${widget.postComment?.postModel.postId}";
+                    }
+                    Clipboard.setData(ClipboardData(text: link));
+                    CustomSnackBar(
+                      context: context,
+                      content: "Copied to Clipboard",
+                      backgroundColor: Palette.whiteColor,
+                      textColor: Palette.blackColor,
+                    ).show();
+                  }
+                  else{
+                    CustomSnackBar(
+                      context: context,
+                      content: "Failed to copy to Clipboard",
+                      backgroundColor: Palette.whiteColor,
+                      textColor: Palette.blackColor,
+                    ).show();
+                  }
                   Navigator.pop(context);
                 },
               ),
