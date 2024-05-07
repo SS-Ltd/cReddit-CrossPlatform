@@ -48,20 +48,26 @@ class _ManageEmailsState extends State<ManageEmails> {
                       SwitchButton(
                           buttonText: "Chat requests",
                           buttonicon: Icons.chat,
-                          onPressed: (value) {
+                          onPressed: (value) async {
                             setState(() {
                               chatRequests = value;
                             });
+                            await context
+                                .read<NetworkService>()
+                                .updateEmailSettings('followEmail', value);
                           },
                           switchvalue: chatRequests ?? true),
                       const Heading(text: "ACTIVITY"),
                       SwitchButton(
                         buttonText: "New followers",
                         buttonicon: Icons.notifications,
-                        onPressed: (value) {
+                        onPressed: (value) async {
                           setState(() {
                             newFollowers = value;
                           });
+                          await context
+                              .read<NetworkService>()
+                              .updateEmailSettings('chatEmail', value);
                         },
                         switchvalue: newFollowers ?? true,
                       )

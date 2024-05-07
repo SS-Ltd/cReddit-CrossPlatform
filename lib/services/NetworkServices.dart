@@ -25,6 +25,7 @@ class NetworkService extends ChangeNotifier {
 
   NetworkService._internal();
   final String _baseUrl = 'https://api.creddit.tech';
+  //final String _baseUrl = 'http://192.168.1.10:3000';
   // final String _baseUrl = 'http://192.168.1.10:3000';
   String _cookie = '';
   UserModel? _user;
@@ -112,31 +113,82 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<void> updateSettingsNotifications(bool mentionNotifs) async {
+  Future<bool> updateNotificationsSettings(String parameter, bool newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
     request.headers.addAll(_headers);
-    String jsonString = jsonEncode({'mentionsNotifs': mentionNotifs});
+    String jsonString = jsonEncode({parameter: newValue});
     print(jsonString);
     request.fields['notifications'] = jsonString;
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print(responseBody);
+    if(response.statusCode == 200)
+    {
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
-  Future<void> updateUserSettings(String newName) async {
+    Future<bool> updateEmailSettings(String parameter, bool newValue) async {
+    Uri url = Uri.parse('$_baseUrl/user/settings');
+    http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.headers.addAll(_headers);
+    String jsonString = jsonEncode({parameter: newValue});
+    print(jsonString);
+    request.fields['email'] = jsonString;
+    http.StreamedResponse response = await request.send();
+    String responseBody = await response.stream.bytesToString();
+    print(responseBody);
+        if(response.statusCode == 200)
+    {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  Future<bool> updateProfileSettings(String parameter, bool newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
 
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
     request.headers.addAll(_headers);
 
-    Map<String, dynamic> json = {
-      'displayName': newName,
-    };
-    request.fields['profile'] = jsonEncode(json);
+    String jsonString = jsonEncode({parameter: newValue});
+    request.fields['profile'] = jsonString;
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
+        if(response.statusCode == 200)
+    {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+    Future<bool> updateAccountSettings(String parameter, String newValue) async {
+    Uri url = Uri.parse('$_baseUrl/user/settings');
+
+    http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.headers.addAll(_headers);
+
+    String jsonString = jsonEncode({parameter: newValue});
+    request.fields['account'] = jsonString;
+    http.StreamedResponse response = await request.send();
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+        if(response.statusCode == 200)
+    {
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   Future<bool> forgotPassword(String username) async {

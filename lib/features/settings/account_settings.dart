@@ -140,10 +140,11 @@ class _AccountSettingsState extends State<AccountSettings> {
                                                         FontWeight.bold),
                                               ),
                                               TextButton(
-                                                onPressed: () {
+                                                onPressed: () async {
                                                   setState(() {
                                                     gender = chosenGender;
                                                   });
+                                                  await context.read<NetworkService>().updateAccountSettings('gender', gender);
                                                   Navigator.pop(context);
                                                 },
                                                 child: const Text("Done"),
@@ -256,21 +257,23 @@ class _AccountSettingsState extends State<AccountSettings> {
                       SwitchButton(
                         buttonText: "Allow people to follow you",
                         buttonicon: Icons.person_add_alt_sharp,
-                        onPressed: (value) {
+                        onPressed: (value) async {
                           setState(() {
                             allowFollow = value;
                           });
+                                                      await context
+                                .read<NetworkService>()
+                                .updateProfileSettings(
+                                    'allowFollow', value);
                         },
                         switchvalue: allowFollow,
                       ),
-                      // optional: "Followers will be notified about posts you make to your profile and see them in their home feed."),
                       SwitchButton(
                         buttonText: "show your follower count",
                         buttonicon: Icons.numbers,
                         onPressed: (value) {},
                         switchvalue: showCount,
                       ),
-                      //optional: "Turning this off hides your follower count on your profile from others."),
                       const Heading(text: ''),
                       ArrowButton(
                         onPressed: () async {
