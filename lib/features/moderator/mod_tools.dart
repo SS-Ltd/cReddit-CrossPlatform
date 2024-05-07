@@ -154,7 +154,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const BannedUser()));
+                          builder: (context) => BannedUser(communityName: widget.communityName)));
                 },
                 buttonText: "Banned users",
                 buttonIcon: Icons.handyman_outlined),

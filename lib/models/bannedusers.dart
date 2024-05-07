@@ -16,15 +16,17 @@ class BannedUserList {
 class BannedUser {
   final String name;
   final String reasonToBan;
-  final String modNote;
+  final String? modNote;
+  final int days;       // 0 means permenant
 
-  BannedUser({required this.name, required this.reasonToBan, required this.modNote});
+  BannedUser({required this.name, required this.reasonToBan, this.modNote, required this.days});
 
   factory BannedUser.fromJson(Map<String, dynamic> json) {
     return BannedUser(
       name: json['name'],
       reasonToBan: json['reasonToBan'],
       modNote: json['modNote'],
+      days: json['days'],
     );
   }
 }

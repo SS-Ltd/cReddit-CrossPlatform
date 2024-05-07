@@ -1891,7 +1891,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<BannedUserList?> getBannedUsers(String communityName) async{
+  Future<BannedUserList?> getBannedUsers(String communityName) async {
     Uri url = Uri.parse('$_baseUrl/mod/get-banned-users/$communityName');
     final response = await http.get(url, headers: _headers);
 
@@ -1903,17 +1903,23 @@ class NetworkService extends ChangeNotifier {
       final json = jsonDecode(response.body);
       return BannedUserList.fromJson(json);
     } else {
-      return null;          // i guess this return need to be changed
+      return null; // i guess this return need to be changed
     }
   }
 
-  Future<bool> banUser(String username, String communityName) async {
+  Future<bool> banUser(
+      String username, String communityName, String rule, int days) async {
     Uri url = Uri.parse('$_baseUrl/mod/ban/$communityName');
     final response = await http.patch(url,
-        headers: _headers, body: jsonEncode({'username': username}));
+        headers: _headers,
+        body: jsonEncode(
+            {'username': username,
+             'rule': rule,
+              if (days != 0) 'days': days
+              }));
     if (response.statusCode == 403) {
       refreshToken();
-      return banUser(username, communityName);
+      return banUser(username, communityName, rule, days);
     }
     if (response.statusCode == 200) {
       return true;
@@ -1962,11 +1968,3 @@ class NetworkService extends ChangeNotifier {
     return '';
   }
 }
-
-
-/*
-1
-3
-schedule post
-.....
-*/

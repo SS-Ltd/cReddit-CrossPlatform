@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/moderator/add_banned.dart';
+import 'package:reddit_clone/models/bannedusers.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class BannedUser extends StatefulWidget {
-  const BannedUser({super.key});
+  final String communityName;
+  const BannedUser({super.key, required this.communityName});
 
   @override
   State<BannedUser> createState() {
@@ -11,9 +16,20 @@ class BannedUser extends StatefulWidget {
 }
 
 class _BannedUserState extends State<BannedUser> {
+  late BannedUserList? bannedUsers;
+
   @override
   void initState() {
     super.initState();
+    fetchUnbannedUsers();
+  }
+
+  Future<BannedUserList?> fetchUnbannedUsers() async {
+    final fetchedbannedUsers = await context
+        .read<NetworkService>()
+        .getBannedUsers(widget.communityName);
+    bannedUsers = fetchedbannedUsers;
+    return bannedUsers;
   }
 
   @override
@@ -40,27 +56,34 @@ class _BannedUserState extends State<BannedUser> {
             ),
           ],
         ),
-        body: ListView.builder(
-          //itemCount: postsResults.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                ListTile(
-                  onTap: () {},
-                  //                     leading: CircleAvatar(
-                  //   backgroundImage: NetworkImage(
-                  //       peopleResults[index].profilePicture),
-                  // ),
-                  //                 title: Text(
-                  // 'u/${peopleResults[index].username}'),
-                  subtitle: const Text('cake'),
-                  //trailing: ,
-                ),
-                const Divider(
-                  thickness: 1,
-                ),
-              ],
-            );
+        body: FutureBuilder<BannedUserList?>(
+          future: fetchUnbannedUsers(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CustomLoadingIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              final bannedUsers = snapshot.data?.bannedUsers ?? [];
+              return ListView.builder(
+                itemCount: bannedUsers.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        onTap: () {},
+                        title: Text('u/${bannedUsers[index].name}'),
+                        subtitle: Text(
+                            'days: ${bannedUsers[index].days}'),
+                      ),
+                      const Divider(
+                        thickness: 1,
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           },
         ));
   }
