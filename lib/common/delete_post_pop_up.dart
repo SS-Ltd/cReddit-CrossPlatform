@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +63,7 @@ class DeletePostPopUp extends StatelessWidget {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomePage()),
+                                builder: (context) => CustomNavigationBar(isProfile: false,)),
                             (route) => false);
                       } else {
                         CustomSnackBar(

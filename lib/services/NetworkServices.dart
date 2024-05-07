@@ -1221,6 +1221,25 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> createCrossPost(String postID, String title) async {
+    Uri url = Uri.parse('$_baseUrl/post');
+    final response = await http.post(url,
+        headers: _headers,
+        body: jsonEncode(
+            {'postId': postID, 'type': 'Cross Post', 'title': title}));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return createCrossPost(postID, title);
+    }
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<Map<String, dynamic>> createNewTextOrLinkPost(
       String type,
       String communityname,
