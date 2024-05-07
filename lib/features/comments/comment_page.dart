@@ -7,6 +7,7 @@ import 'package:reddit_clone/common/block_pop_up.dart';
 import 'package:reddit_clone/common/delete_post_pop_up.dart';
 import 'package:reddit_clone/features/User/report_button.dart';
 import 'package:reddit_clone/features/comments/comment_post.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
 import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/post/edit_post.dart';
 import 'package:reddit_clone/models/comments.dart';
@@ -556,14 +557,8 @@ class _CommentPageState extends State<CommentPage> {
                       .show();
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      MaterialPageRoute(builder: (context) => CustomNavigationBar(isProfile: false,)),
                       (route) => false);
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const HomePage(),
-                  //   ),
-                  // );
                 }
               },
             )),

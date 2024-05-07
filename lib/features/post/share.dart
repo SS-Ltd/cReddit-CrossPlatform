@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
+import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/post/choose_community.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
@@ -7,11 +9,11 @@ import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
 
 class Share extends StatefulWidget {
-  const Share(
-      {super.key,
-      required this.post,
-      required this.communityName,
-      });
+  const Share({
+    super.key,
+    required this.post,
+    required this.communityName,
+  });
 
   final PostModel? post;
   final String communityName;
@@ -25,11 +27,13 @@ class Share extends StatefulWidget {
 class _ShareState extends State<Share> {
   String chosenCommunity = "";
   Subreddit? details;
+  late TextEditingController _titleController;
 
   @override
   void initState() {
     super.initState();
     getSubredditDetails(widget.communityName);
+    _titleController = TextEditingController(text: widget.post!.title);
   }
 
   Future getSubredditDetails(String subredditName) async {
@@ -54,7 +58,18 @@ class _ShareState extends State<Share> {
           ),
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                bool posted = await context
+                    .read<NetworkService>()
+                    .createCrossPost(
+                        widget.post!.postId, _titleController.text);
+                if (posted) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => CustomNavigationBar(isProfile: false,)),
+                      (route) => false);
+                }
+              },
               child: const Text("Post"),
             ),
           ],
@@ -119,9 +134,15 @@ class _ShareState extends State<Share> {
               ),
               const Divider(thickness: 1),
               const SizedBox(height: 7),
-              Text(
-                widget.post!.title,
-                style: const TextStyle(fontSize: 16),
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelStyle: TextStyle(fontSize: 30),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  print(_titleController.text);
+                },
               ),
               const SizedBox(height: 25),
               Container(
