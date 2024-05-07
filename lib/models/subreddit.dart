@@ -57,3 +57,19 @@ class Moderators {
     );
   }
 }
+
+class Rule {
+  final String text;
+  final String appliesTo;
+  //final String id;
+
+  Rule({required this.text, required this.appliesTo});
+
+  factory Rule.fromJson(Map<String, dynamic> json) {
+    return Rule(
+      text: json['text'],
+      appliesTo: json['appliesTo'],
+      //id: json['_id'],
+    );
+  }
+}

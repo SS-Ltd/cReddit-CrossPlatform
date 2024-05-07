@@ -1247,7 +1247,8 @@ class NetworkService extends ChangeNotifier {
       String content,
       bool isNSFW,
       bool isSpoiler,
-      bool isLink) async {
+      bool isLink,
+      String? date) async {
     Uri url = Uri.parse('$_baseUrl/post');
     print("klam");
     if (isLink) {
@@ -1263,13 +1264,14 @@ class NetworkService extends ChangeNotifier {
         'content': content,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
+        if (date != null) 'date': date
       }),
     );
     print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
       return createNewTextOrLinkPost(
-          type, communityname, title, content, isNSFW, isSpoiler, isLink);
+          type, communityname, title, content, isNSFW, isSpoiler, isLink, date);
     }
 
     var parsedJson = jsonDecode(response.body);
@@ -1286,8 +1288,13 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>> createNewImagePost(String communityname,
-      String title, File imageFile, bool isNSFW, bool isSpoiler) async {
+  Future<Map<String, dynamic>> createNewImagePost(
+      String communityname,
+      String title,
+      File imageFile,
+      bool isNSFW,
+      bool isSpoiler,
+      String? date) async {
     Uri url = Uri.parse('$_baseUrl/post');
     print("wslt");
     http.MultipartRequest request = http.MultipartRequest('POST', url);
@@ -1299,7 +1306,9 @@ class NetworkService extends ChangeNotifier {
     request.fields['title'] = title;
     request.fields['isSpoiler'] = isSpoiler.toString();
     request.fields['isNSFW'] = isNSFW.toString();
-
+    if (date != null) {
+      request.fields['date'] = date;
+    }
     request.files.add(await http.MultipartFile.fromPath(
       'images',
       imageFile.path,
@@ -1313,7 +1322,7 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 403) {
       refreshToken();
       return createNewImagePost(
-          communityname, title, imageFile, isNSFW, isSpoiler);
+          communityname, title, imageFile, isNSFW, isSpoiler, date);
     }
 
     var parsedJson = jsonDecode(responseBody);
@@ -1337,8 +1346,12 @@ class NetworkService extends ChangeNotifier {
       List<String> options,
       String expDate,
       bool isNSFW,
-      bool isSpoiler) async {
+      bool isSpoiler,
+      String? date) async {
     Uri url = Uri.parse('$_baseUrl/post');
+    print(expDate);
+    print(date);
+
     final response = await http.post(
       url,
       headers: _headers,
@@ -1351,12 +1364,15 @@ class NetworkService extends ChangeNotifier {
         'expirationDate': expDate,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
+        if (date != null) 'date': date,
       }),
     );
+
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
-      return createNewPollPost(
-          communityname, title, content, options, expDate, isNSFW, isSpoiler);
+      return createNewPollPost(communityname, title, content, options, expDate,
+          isNSFW, isSpoiler, date);
     }
     var parsedJson = jsonDecode(response.body);
 
@@ -1750,6 +1766,10 @@ class NetworkService extends ChangeNotifier {
     Uri url = Uri.parse('$_baseUrl/chat/$chatId');
     final response = await http.get(url, headers: _headers);
     print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return fetchChatMessages(chatId);
+    }
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body);
       return jsonResponse.map((item) => ChatMessages.fromJson(item)).toList();
@@ -1758,15 +1778,54 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>?> getCommunitySettings(String communityName) async {
+  Future<Map<String, dynamic>?> getCommunitySettings(
+      String communityName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/settings');
     final response = await http.get(url, headers: _headers);
     print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getCommunitySettings(communityName);
+    }
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       return responseData;
     } else {
       return null;
+    }
+  }
+
+  // Future<List<Map<String, dynamic>>?> getCommunityRules(String communityName) async {
+  //   Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/rules');
+  //   final response = await http.get(url, headers: _headers);
+  //   print(response.body);
+  // if(response.statusCode == 403){
+  //     refreshToken();
+  //     return getCommunityRules(communityName);
+  //   }
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> responseData = jsonDecode(response.body);
+  //     print(responseData.cast<Map<String, dynamic>>());
+  //     return responseData.cast<Map<String, dynamic>>();
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
+  Future<bool> updateCommunityRules(
+      String communityName, List<Rule> rules) async {
+    Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/settings');
+    final response = await http.put(url,
+        headers: _headers, body: jsonEncode({'rules': rules}));
+    print(response.body);
+    if (response.statusCode == 403) {
+      refreshToken();
+      return updateCommunityRules(communityName, rules);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 
