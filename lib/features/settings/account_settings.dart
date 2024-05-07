@@ -144,7 +144,10 @@ class _AccountSettingsState extends State<AccountSettings> {
                                                   setState(() {
                                                     gender = chosenGender;
                                                   });
-                                                  await context.read<NetworkService>().updateAccountSettings('gender', gender);
+                                                  await context
+                                                      .read<NetworkService>()
+                                                      .updateAccountSettings(
+                                                          'gender', gender);
                                                   Navigator.pop(context);
                                                 },
                                                 child: const Text("Done"),
@@ -261,10 +264,9 @@ class _AccountSettingsState extends State<AccountSettings> {
                           setState(() {
                             allowFollow = value;
                           });
-                                                      await context
-                                .read<NetworkService>()
-                                .updateProfileSettings(
-                                    'allowFollow', value);
+                          await context
+                              .read<NetworkService>()
+                              .updateProfileSettings('allowFollow', value);
                         },
                         switchvalue: allowFollow,
                       ),
