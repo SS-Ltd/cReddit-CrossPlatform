@@ -43,16 +43,16 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Future<void> _changeBannerImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      // Update the banner image URL in your state or model
       print('Banner Image selected: ${image.path}');
+      // Update state to reflect new banner image, if applicable
     }
   }
 
   Future<void> _changeProfileImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      // Update the profile image URL in your state or model
       print('Profile Image selected: ${image.path}');
+      // Update state to reflect new profile image, if applicable
     }
   }
 
@@ -65,7 +65,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () {
-              // Save the updated profile data
               print('Save profile settings');
             },
           ),
@@ -76,35 +75,34 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              // Banner Image
               InkWell(
                 onTap: _changeBannerImage,
                 child: Container(
                   height: 150,
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(widget.bannerUrl),
                       fit: BoxFit.cover,
                     ),
-                    color: Colors.grey[300],
                   ),
-                  child: const Icon(Icons.camera_alt, color: Colors.white70),
+                  child: const Icon(Icons.camera_alt,
+                      color: Colors.white70, size: 24),
                 ),
               ),
-              // Profile Image
               Positioned(
-                top: 100,
+                top: 60, // Adjusted to ensure visibility
                 child: InkWell(
                   onTap: _changeProfileImage,
                   child: CircleAvatar(
-                    radius: 50,
+                    radius: 43,
                     backgroundImage: NetworkImage(widget.profilePictureUrl),
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: CircleAvatar(
                         backgroundColor: Colors.blue,
                         radius: 15,
-                        child: Icon(Icons.camera_alt,
+                        child: const Icon(Icons.camera_alt,
                             size: 15, color: Colors.white),
                       ),
                     ),
@@ -113,6 +111,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               ),
             ],
           ),
+          const SizedBox(
+              height:
+                  0), // Adjusted spacing to accommodate new profile pic position
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
