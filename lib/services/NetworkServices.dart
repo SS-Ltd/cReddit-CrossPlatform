@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:reddit_clone/models/bannedusers.dart';
 import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/messages.dart';
@@ -1821,6 +1822,52 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 403) {
       refreshToken();
       return updateCommunityRules(communityName, rules);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<BannedUserList?> getBannedUsers(String communityName) async{
+    Uri url = Uri.parse('$_baseUrl/mod/get-banned-users/$communityName');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 403) {
+      refreshToken();
+      return getBannedUsers(communityName);
+    }
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return BannedUserList.fromJson(json);
+    } else {
+      return null;          // i guess this return need to be changed
+    }
+  }
+
+  Future<bool> banUser(String username, String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/mod/ban/$communityName');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return banUser(username, communityName);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> unbanUser(String username, String communityName) async {
+    Uri url = Uri.parse('$_baseUrl/mod/unban/$communityName');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'username': username}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return unbanUser(username, communityName);
     }
     if (response.statusCode == 200) {
       return true;

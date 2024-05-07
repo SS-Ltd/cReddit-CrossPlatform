@@ -8,6 +8,7 @@ import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/features/home_page/rightsidebar.dart';
 import 'package:reddit_clone/features/home_page/select_item.dart';
+import 'package:reddit_clone/models/bannedusers.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/features/search/home_search.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -102,6 +103,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     }
     loadUnreadNotifications();
   }
+
+
 
   Future<void> loadUnreadNotifications() async {
     unread = await context.read<NetworkService>().getUnreadNotifications();
