@@ -140,6 +140,11 @@ class _HomePageState extends State<HomePage> {
                         shareNumber: 0,
                         isSubRedditPage: false,
                         isHomePage: true,
+                        onRemove: () {
+                          setState(() {
+                            posts.removeAt(index);
+                          });
+                        },
                       ),
                       const Divider(
                         height: 20,
