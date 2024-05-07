@@ -26,6 +26,7 @@ class Post extends StatefulWidget {
   final int shareNumber;
   final bool isHomePage;
   final bool isSubRedditPage;
+  final VoidCallback onRemove;
 
   const Post({
     super.key,
@@ -33,7 +34,10 @@ class Post extends StatefulWidget {
     this.isHomePage = true,
     required this.isSubRedditPage,
     this.shareNumber = 0,
+    this.onRemove = defaultOnRemove,
   });
+
+  static void defaultOnRemove() {}
 
   @override
   State<Post> createState() => _PostState();
@@ -632,6 +636,13 @@ class _PostState extends State<Post> {
                         builder: (BuildContext context) {
                           return ModeratorPopUP(postModel: widget.postModel);
                         });
+                    if (result != null) {
+                      result.then((value) {
+                        if (value == 'removed') {
+                          widget.onRemove();
+                        }
+                      });
+                    }
                   },  
                 ),
               IconButton(

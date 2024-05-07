@@ -281,6 +281,11 @@ class _SubRedditPageState extends State<SubRedditPage> {
           postModel: postModel,
           isHomePage: true,
           isSubRedditPage: true,
+          onRemove: () {
+            setState(() {
+              subredditPosts.remove(postModel);
+            });
+          },
         ),
         const Divider(height: 1, thickness: 1),
       ],
