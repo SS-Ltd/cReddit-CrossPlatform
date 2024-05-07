@@ -62,7 +62,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int _currentIndex = 0;
   var unread = 0;
 
-  final List<String> menuItems = ['Hot', 'Top', 'New'];
+  final List<String> menuItems = ['Best', 'Hot', 'Top', 'New'];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Widget> _pages = [
     const HomePage(),

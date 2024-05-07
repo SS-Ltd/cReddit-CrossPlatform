@@ -1035,7 +1035,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<PostModel>?> fetchHomeFeed({
-    String sort = 'hot',
+    String sort = 'best',
     String time = 'all',
     int page = 1,
     int limit = 5,
@@ -1758,7 +1758,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<Map<String, dynamic>?> getCommunitySettings(String communityName) async {
+  Future<Map<String, dynamic>?> getCommunitySettings(
+      String communityName) async {
     Uri url = Uri.parse('$_baseUrl/subreddit/$communityName/settings');
     final response = await http.get(url, headers: _headers);
     print(response.body);
