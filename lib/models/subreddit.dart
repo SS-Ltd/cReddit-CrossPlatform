@@ -33,11 +33,27 @@ class Subreddit {
       banner: json['banner'],
       members: json['members'],
       rules: rulesTexts,
-      moderators: List<String>.from(json['moderators']),
+      moderators: (json['moderators'] as List)
+          .map((user) => Moderators.fromJson(user).username)
+          .toList(),
       description: json['description'] ?? '',
       isMember: json['isMember'] ?? false,
       isModerator: json['isModerator'],
       isNSFW: json['isNSFW'] ?? false,
+    );
+  }
+}
+
+class Moderators {
+  String username;
+  String profilePicture;
+
+  Moderators({required this.username, required this.profilePicture});
+
+  factory Moderators.fromJson(Map<String, dynamic> json) {
+    return Moderators(
+      username: json['username'],
+      profilePicture: json['profilePicture'],
     );
   }
 }

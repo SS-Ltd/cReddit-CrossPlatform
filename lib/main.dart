@@ -132,7 +132,7 @@ Future<void> main() async {
             create: (context) =>
                 MenuState()) // Add GoogleSignInService provider
       ],
-      child: MyApp(fcmToken: ""),
+      child: const MyApp(fcmToken: ""),
     ));
   }
 }
