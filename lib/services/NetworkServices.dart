@@ -1473,6 +1473,66 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> approvePost(String postId, bool isApproved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/approve');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isApproved': isApproved}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return approvePost(postId, isApproved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> removePost(String postId, bool isRemoved) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/remove');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isRemoved': isRemoved}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return removePost(postId, isRemoved);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> markAsSpoiler(String postId, bool isSpoiler) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/mark-spoiler');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isSpoiler': isSpoiler}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAsSpoiler(postId, isSpoiler);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> markAsNSFW(String postId, bool isNSFW) async {
+    Uri url = Uri.parse('$_baseUrl/post/$postId/mark-nsfw');
+    final response = await http.patch(url,
+        headers: _headers, body: jsonEncode({'isNSFW': isNSFW}));
+    if (response.statusCode == 403) {
+      refreshToken();
+      return markAsNSFW(postId, isNSFW);
+    }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> hidepost(String postId, bool value) async {
     print('asdasd');
     Uri url = Uri.parse('$_baseUrl/post/$postId/hide');

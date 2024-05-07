@@ -290,6 +290,10 @@ class _ProfileState extends State<Profile> {
                                 alignment: Alignment.bottomRight,
                                 child: EditButton(
                                   userName: widget.userName,
+                                  displayName: widget.displayName,
+                                  bannerUrl: widget.bannerPicture,
+                                  profilePictureUrl: widget.profilePicture,
+                                  about: widget.about,
                                 ),
                               )
                             : Row(
