@@ -710,7 +710,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createCommunity(String name, bool isNSFW) async {
+  Future<bool> createCommunity(String name, bool isNSFW, String type) async {
     Uri url = Uri.parse('$_baseUrl/subreddit');
     final response = await http.post(
       url,
@@ -718,11 +718,14 @@ class NetworkService extends ChangeNotifier {
       body: jsonEncode({
         'name': name,
         'isNSFW': isNSFW,
+        'type': type.toLowerCase(),
       }),
     );
+    print("name: $name, isNSFW: $isNSFW, type: $type");
+    print(response.body);
     if (response.statusCode == 403) {
       refreshToken();
-      return createCommunity(name, isNSFW);
+      return createCommunity(name, isNSFW, type);
     }
     if (response.statusCode == 201) {
       return true;
@@ -1062,7 +1065,7 @@ class NetworkService extends ChangeNotifier {
   Future<PostModel> fetchPost(String id) async {
     final url = Uri.parse('$_baseUrl/post/$id');
     final response = await http.get(url);
-
+    print(response.body);
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, then parse the JSON.
       return PostModel.fromJson(jsonDecode(response.body));
