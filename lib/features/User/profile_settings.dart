@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/services/networkServices.dart';
 
 class ProfileSettings extends StatefulWidget {
   final String userName;
@@ -25,6 +31,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   late TextEditingController _displayNameController;
   late TextEditingController _aboutController;
   final ImagePicker _picker = ImagePicker();
+  File? _bannerImage;
+  File? _profileImage;
 
   @override
   void initState() {
@@ -43,6 +51,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Future<void> _changeBannerImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      setState(() {
+        _bannerImage = File(image.path);
+      });
       print('Banner Image selected: ${image.path}');
       // Update state to reflect new banner image, if applicable
     }
@@ -51,6 +62,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   Future<void> _changeProfileImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
       print('Profile Image selected: ${image.path}');
       // Update state to reflect new profile image, if applicable
     }
@@ -64,8 +78,21 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: () {
+            onPressed: () async {
               print('Save profile settings');
+              bool success = await context
+                  .read<NetworkService>()
+                  .updateAllProfileSettings(_displayNameController.text,
+                      _aboutController.text, _bannerImage, _profileImage);
+              if (success) {
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Failed to update profile settings'),
+                  ),
+                );
+              }
             },
           ),
         ],

@@ -167,6 +167,40 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+  Future<bool> updateAllProfileSettings(String displayName, String about,
+      File? banner, File? profilePicture) async {
+    Uri url = Uri.parse('$_baseUrl/user/settings');
+    http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.headers.addAll(_headers);
+
+    String jsonString =
+        jsonEncode({'displayName': displayName, 'about': about});
+    request.fields['profile'] = jsonString;
+    if (banner != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'avatar',
+        banner.path,
+        filename: basename(banner.path),
+      ));
+    }
+    if (profilePicture != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'avatar',
+        profilePicture.path,
+        filename: basename(profilePicture.path),
+      ));
+    }
+    http.StreamedResponse response = await request.send();
+
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> updateAccountSettings(String parameter, String newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
 
@@ -1824,7 +1858,7 @@ class NetworkService extends ChangeNotifier {
   }
 
   Future<List<ChatMessages>?> fetchChatMessages(String chatId) async {
-    Uri url = Uri.parse('$_baseUrl/chat/$chatId');
+    Uri url = Uri.parse('$_baseUrl/chat/$chatId/?page=1&limit=100');
     final response = await http.get(url, headers: _headers);
     print(response.body);
     if (response.statusCode == 403) {
@@ -1890,7 +1924,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<BannedUserList?> getBannedUsers(String communityName) async{
+  Future<BannedUserList?> getBannedUsers(String communityName) async {
     Uri url = Uri.parse('$_baseUrl/mod/get-banned-users/$communityName');
     final response = await http.get(url, headers: _headers);
 
@@ -1902,7 +1936,7 @@ class NetworkService extends ChangeNotifier {
       final json = jsonDecode(response.body);
       return BannedUserList.fromJson(json);
     } else {
-      return null;          // i guess this return need to be changed
+      return null; // i guess this return need to be changed
     }
   }
 
