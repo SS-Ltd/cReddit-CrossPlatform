@@ -113,7 +113,8 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateNotificationsSettings(String parameter, bool newValue) async {
+  Future<bool> updateNotificationsSettings(
+      String parameter, bool newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
     request.headers.addAll(_headers);
@@ -123,16 +124,14 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print(responseBody);
-    if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-    Future<bool> updateEmailSettings(String parameter, bool newValue) async {
+  Future<bool> updateEmailSettings(String parameter, bool newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
     request.headers.addAll(_headers);
@@ -142,11 +141,9 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print(responseBody);
-        if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
@@ -162,16 +159,14 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
-        if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-    Future<bool> updateAccountSettings(String parameter, String newValue) async {
+  Future<bool> updateAccountSettings(String parameter, String newValue) async {
     Uri url = Uri.parse('$_baseUrl/user/settings');
 
     http.MultipartRequest request = http.MultipartRequest('PUT', url);
@@ -182,11 +177,9 @@ class NetworkService extends ChangeNotifier {
     http.StreamedResponse response = await request.send();
     String responseBody = await response.stream.bytesToString();
     print('Response body: $responseBody');
-        if(response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
@@ -1225,10 +1218,19 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNewTextOrLinkPost(String type, String communityname,
-      String title, String content, bool isNSFW, bool isSpoiler) async {
+  Future<Map<String, dynamic>> createNewTextOrLinkPost(
+      String type,
+      String communityname,
+      String title,
+      String content,
+      bool isNSFW,
+      bool isSpoiler,
+      bool isLink) async {
     Uri url = Uri.parse('$_baseUrl/post');
     print("klam");
+    if (isLink) {
+      content = "http://$content";
+    }
     final response = await http.post(
       url,
       headers: _headers,
@@ -1236,7 +1238,7 @@ class NetworkService extends ChangeNotifier {
         'type': type,
         'communityName': communityname,
         'title': title,
-        'content': "http://$content",
+        'content': content,
         'isSpoiler': isSpoiler,
         'isNSFW': isNSFW,
       }),
@@ -1245,12 +1247,20 @@ class NetworkService extends ChangeNotifier {
     if (response.statusCode == 403) {
       refreshToken();
       return createNewTextOrLinkPost(
-          type, communityname, title, content, isNSFW, isSpoiler);
+          type, communityname, title, content, isNSFW, isSpoiler, isLink);
     }
-    if (response.statusCode == 201) {
-      return true;
+
+    var parsedJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (parsedJson['postId'] != null) {
+        String postId = parsedJson['postId'];
+        return {'success': true, 'postId': postId};
+      } else {
+        return {'success': false};
+      }
     } else {
-      return false;
+      return {'success': false, 'message': parsedJson['message']};
     }
   }
 
@@ -1298,7 +1308,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
-  Future<bool> createNewPollPost(
+  Future<Map<String, dynamic>> createNewPollPost(
       String communityname,
       String title,
       String content,
@@ -1326,10 +1336,17 @@ class NetworkService extends ChangeNotifier {
       return createNewPollPost(
           communityname, title, content, options, expDate, isNSFW, isSpoiler);
     }
-    if (response.statusCode == 201) {
-      return true;
+    var parsedJson = jsonDecode(response.body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      if (parsedJson['postId'] != null) {
+        String postId = parsedJson['postId'];
+        return {'success': true, 'postId': postId};
+      } else {
+        return {'success': false};
+      }
     } else {
-      return false;
+      return {'success': false, 'message': parsedJson['message']};
     }
   }
 

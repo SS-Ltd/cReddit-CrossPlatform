@@ -958,6 +958,9 @@ class UserCommentState extends State<UserComment> {
                 leading: const Icon(Icons.merge_type_outlined),
                 title: const Text('Collapse thread'),
                 onTap: () {
+                  setState(() {
+                    isMinimized.value = true;
+                  });
                   Navigator.pop(context);
                 },
               ),
