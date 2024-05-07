@@ -92,7 +92,7 @@ class _PostState extends State<Post> {
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),
-                    if (widget.postModel.isSpoiler)
+                    if (widget.postModel.isSpoiler && widget.isHomePage)
                       Positioned.fill(
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -456,6 +456,46 @@ class _PostState extends State<Post> {
               ],
             ),
           ),
+          Row(children: [
+            if (widget.postModel.isNSFW)
+              const Padding(
+                padding: EdgeInsets.only(left: 10, right: 5),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.eighteen_up_rating_rounded,
+                      color: Colors.purple,
+                    ),
+                    Text(
+                      'NSFW',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            if (widget.postModel.isSpoiler)
+              const Padding(
+                padding: EdgeInsets.only(left: 10, right: 5),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_rounded,
+                      color: Colors.grey,
+                    ),
+                    Text(
+                      'Spoiler',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ]),
           GestureDetector(
             onTap: widget.isHomePage
                 ? () {
@@ -629,7 +669,7 @@ class _PostState extends State<Post> {
                   icon: Semantics(
                       identifier: "moderator post settings",
                       label: "moderator post settings",
-                  child: const Icon(Icons.shield_outlined)),
+                      child: const Icon(Icons.shield_outlined)),
                   onPressed: () {
                     final result = showDialog(
                         context: context,
@@ -643,7 +683,7 @@ class _PostState extends State<Post> {
                         }
                       });
                     }
-                  },  
+                  },
                 ),
               IconButton(
                 icon: Semantics(
@@ -750,12 +790,14 @@ class _PostState extends State<Post> {
                                                   context: context,
                                                   content:
                                                       "Copied to Clipboard",
-                                                      backgroundColor: Palette.whiteColor,
-                                                      textColor: Palette.blackColor,
+                                                  backgroundColor:
+                                                      Palette.whiteColor,
+                                                  textColor: Palette.blackColor,
                                                 ).show();
                                                 Navigator.pop(context);
                                               },
-                                              icon: const Icon(Icons.copy_outlined),
+                                              icon: const Icon(
+                                                  Icons.copy_outlined),
                                               style: ButtonStyle(
                                                 backgroundColor:
                                                     MaterialStateProperty.all(
