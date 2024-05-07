@@ -171,6 +171,26 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+    Future<bool> updateAccountSettings(String parameter, String newValue) async {
+    Uri url = Uri.parse('$_baseUrl/user/settings');
+
+    http.MultipartRequest request = http.MultipartRequest('PUT', url);
+    request.headers.addAll(_headers);
+
+    String jsonString = jsonEncode({parameter: newValue});
+    request.fields['account'] = jsonString;
+    http.StreamedResponse response = await request.send();
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+        if(response.statusCode == 200)
+    {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   Future<bool> forgotPassword(String username) async {
     final url = Uri.parse('$_baseUrl/user/forgot-password');
     final response = await http.post(

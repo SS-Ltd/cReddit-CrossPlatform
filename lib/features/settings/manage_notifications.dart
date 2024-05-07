@@ -29,28 +29,26 @@ class _ManageNotificationsState extends State<ManageNotifications> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: context.read<NetworkService>().getUserSettings(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            final settings = context.read<NetworkService>().userSettings;
-            mentions = settings!.notifications.mentionsNotifs;
-            comments = settings.notifications.commentsNotifs;
-            print(settings.notifications.mentionsNotifs);
-            print(settings.notifications.commentsNotifs);
-            print(settings.notifications.modNotifs);
-            upvotes = settings.notifications.postsUpvotesNotifs;
-            replies = settings.notifications.repliesNotifs;
-            followers = settings.notifications.newFollowersNotifs;
-            posts = settings.notifications.postNotifs;
-            cakeday = settings.notifications.cakeDayNotifs;
-            modNotifs = settings.notifications.modNotifs;
-            //moderator = settings.notifications.moderatorInCommunities;
-            invitations = settings.notifications.invitationNotifs;
-            return StatefulBuilder(builder: (context, setState) {
+      future: context.read<NetworkService>().getUserSettings(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final settings = context.read<NetworkService>().userSettings;
+          mentions = settings!.notifications.mentionsNotifs;
+          comments = settings.notifications.commentsNotifs;
+          upvotes = settings.notifications.postsUpvotesNotifs;
+          replies = settings.notifications.repliesNotifs;
+          followers = settings.notifications.newFollowersNotifs;
+          posts = settings.notifications.postNotifs;
+          cakeday = settings.notifications.cakeDayNotifs;
+          modNotifs = settings.notifications.modNotifs;
+          //moderator = settings.notifications.moderatorInCommunities;
+          invitations = settings.notifications.invitationNotifs;
+          return StatefulBuilder(
+            builder: (context, setState) {
               return Dialog.fullscreen(
                 child: Scaffold(
                   appBar: AppBar(
@@ -72,11 +70,10 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             setState(() {
                               mentions = value;
                             });
-                            bool updateMentions = await context
+                            await context
                                 .read<NetworkService>()
                                 .updateNotificationsSettings(
                                     'mentionsNotifs', value);
-                            print(updateMentions);
                           },
                           switchvalue: mentions ?? true),
                       SwitchButton(
@@ -86,11 +83,10 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             setState(() {
                               comments = value;
                             });
-                            bool updateComments = await context
+                            await context
                                 .read<NetworkService>()
                                 .updateNotificationsSettings(
                                     'commentsNotifs', value);
-                            print(updateComments);
                           },
                           switchvalue: comments ?? true),
                       SwitchButton(
@@ -100,11 +96,10 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             setState(() {
                               upvotes = value;
                             });
-                            bool updateUpVotes = await context
+                            await context
                                 .read<NetworkService>()
                                 .updateNotificationsSettings(
                                     'postsUpvotesNotifs', value);
-                            print(updateUpVotes);
                           },
                           switchvalue: upvotes ?? true),
                       SwitchButton(
@@ -114,11 +109,10 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             setState(() {
                               replies = value;
                             });
-                            bool updateReplies = await context
+                            await context
                                 .read<NetworkService>()
                                 .updateNotificationsSettings(
                                     'repliesNotifs', value);
-                            print(updateReplies);
                           },
                           switchvalue: replies ?? true),
                       SwitchButton(
@@ -128,18 +122,25 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             setState(() {
                               followers = value;
                             });
-                            bool updateNewFollowers = await context
+                            await context
                                 .read<NetworkService>()
                                 .updateNotificationsSettings(
                                     'newFollowersNotifs', value);
-                            print(updateNewFollowers);
                           },
                           switchvalue: followers ?? true),
                       const Heading(text: "UPDATES"),
                       SwitchButton(
                           buttonText: "Cake day",
                           buttonicon: Icons.cake,
-                          onPressed: (value) {},
+                          onPressed: (value) async {
+                            setState(() {
+                              cakeday = value;
+                            });
+                            await context
+                                .read<NetworkService>()
+                                .updateNotificationsSettings(
+                                    'cakeDayNotifs', value);
+                          },
                           switchvalue: cakeday ?? true),
                       const Heading(text: "MODERATION"),
                       SwitchButton(
@@ -149,19 +150,20 @@ class _ManageNotificationsState extends State<ManageNotifications> {
                             setState(() {
                               modNotifs = value;
                             });
-                            bool updateModNotifi = await context
+                            await context
                                 .read<NetworkService>()
                                 .updateNotificationsSettings(
                                     'modNotifs', value);
-                            print(updateModNotifi);
                           },
                           switchvalue: modNotifs ?? true),
                     ],
                   ),
                 ),
               );
-            });
-          }
-        });
+            },
+          );
+        }
+      },
+    );
   }
 }
