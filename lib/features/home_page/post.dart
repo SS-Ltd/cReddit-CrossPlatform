@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -621,7 +622,10 @@ class _PostState extends State<Post> {
               const Spacer(),
               if (widget.postModel.isModerator)
                 IconButton(
-                  icon: const Icon(Icons.shield_outlined),
+                  icon: Semantics(
+                      identifier: "moderator post settings",
+                      label: "moderator post settings",
+                  child: const Icon(Icons.shield_outlined)),
                   onPressed: () {
                     showDialog(
                         context: context,
