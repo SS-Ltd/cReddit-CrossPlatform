@@ -60,6 +60,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   bool showall = false;
   bool isprofile = false;
   int _currentIndex = 0;
+  var unread = 0;
 
   final List<String> menuItems = ['Hot', 'Top', 'New'];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -99,12 +100,17 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     if (widget.navigateToChat != null && widget.navigateToChat!) {
       _currentIndex = 3;
     }
+    loadUnreadNotifications();
+  }
+
+  Future<void> loadUnreadNotifications() async {
+    unread = await context.read<NetworkService>().getUnreadNotifications();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final menuState = Provider.of<MenuState>(context, listen: false);
-
     final user = context.read<NetworkService>().user;
     Set<Subreddit>? recentlyvisited = user?.recentlyVisited;
     List<Subreddit>? listRecentlyVisited = recentlyvisited?.toList();
@@ -266,17 +272,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               },
               selectedFontSize: 11, // Adjust the selected font size
               unselectedFontSize: 11, // Adjust the unselected font size
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-                BottomNavigationBarItem(
+              items: <BottomNavigationBarItem>[
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.home), label: 'Home'),
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.group), label: 'Communities'),
-                BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Create'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.add), label: 'Create'),
+                const BottomNavigationBarItem(
                     icon: Icon(Icons.chat_outlined), label: 'Chat'),
                 BottomNavigationBarItem(
                     icon: badges.Badge(
-                      badgeContent: Text('3'),
-                      child: Icon(Icons.notifications),
+                      badgeContent: Text(unread.toString()),
+                      child: const Icon(Icons.notifications),
                     ),
                     label: 'Inbox'),
               ],
