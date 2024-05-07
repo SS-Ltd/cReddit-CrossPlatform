@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/arrow_button.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/settings/change_password.dart';
-import 'package:reddit_clone/features/settings/chat_messages_permissions.dart';
 import 'package:reddit_clone/common/heading.dart';
+import 'package:reddit_clone/features/settings/manage_email.dart';
 import 'package:reddit_clone/features/settings/muted_communities.dart';
 import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
@@ -66,6 +66,7 @@ class _AccountSettingsState extends State<AccountSettings> {
         } else {
           final settings = context.read<NetworkService>().userSettings;
           gender = settings!.account.gender;
+          allowFollow = settings.profile.allowFollow;
           return Scaffold(
             backgroundColor: Palette.appBar,
             appBar: AppBar(
@@ -78,218 +79,226 @@ class _AccountSettingsState extends State<AccountSettings> {
               ),
               title: const Text('Account settings'),
             ),
-            body: StatefulBuilder(
-              builder: (context, setState) {
-                return SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        const Heading(text: 'BASIC SETTINGS'),
-                        ArrowButton(
+            body: StatefulBuilder(builder: (context, setState) {
+              return SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    children: [
+                      const Heading(text: 'BASIC SETTINGS'),
+                      ArrowButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => const UpdateEmail()));
+                        },
+                        buttonText: 'Update email address',
+                        buttonIcon: Icons.settings,
+                        optional: settings.account.email,
+                      ),
+                      ArrowButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     fullscreenDialog: true,
-                                    builder: (context) => const UpdateEmail()));
+                                    builder: (context) =>
+                                        const ChangePassword()));
                           },
-                          buttonText: 'Update email address',
-                          buttonIcon: Icons.settings,
-                          optional: settings.account.email,
-                        ),
-                        ArrowButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (context) =>
-                                          const ChangePassword()));
-                            },
-                            buttonText: 'Change password',
-                            buttonIcon: Icons.settings),
-                        ArrowButton(
-                            onPressed: () {},
-                            buttonText: 'Location customization',
-                            buttonIcon: Icons.location_on_outlined,
-                            optional: 'Use approximate location (based on IP)'),
-                        SelectionButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    BottomSheet(
-                                      onClosing: () {},
-                                      builder: (context) => Column(
-                                        children: [
-                                          const Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(20, 10, 10, 0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Gender",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                // TextButton(
-                                                //   onPressed: () {
-                                                //     setState(() {
-                                                //       gender = chosenGender;
-                                                //     });
-                                                //     Navigator.pop(context);
-                                                //   },
-                                                //   child: const Text("Done"),
-                                                // ),
-                                              ],
-                                            ),
-                                          ),
-                                          RadioListTile(
-                                            title: const Text("Man"),
-                                            value: 'Man',
-                                            groupValue: gender,
-                                            onChanged: (value) {
-                                              setState(
-                                                () {
-                                                  gender = value.toString();
+                          buttonText: 'Change password',
+                          buttonIcon: Icons.settings),
+                      ArrowButton(
+                          onPressed: () {},
+                          buttonText: 'Location customization',
+                          buttonIcon: Icons.location_on_outlined,
+                          optional: 'Use approximate location (based on IP)'),
+                      SelectionButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  BottomSheet(
+                                    onClosing: () {},
+                                    builder: (context) => Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 10, 10, 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text(
+                                                "Gender",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    gender = chosenGender;
+                                                  });
+                                                  Navigator.pop(context);
                                                 },
-                                              );
-                                              Navigator.pop(context);
-                                            },
+                                                child: const Text("Done"),
+                                              ),
+                                            ],
                                           ),
-                                          RadioListTile(
-                                            title: const Text("Woman"),
-                                            value: 'Woman',
-                                            groupValue: gender,
-                                            onChanged: (value) {
-                                              setState(
-                                                () {
-                                                  gender = value.toString();
-                                                },
-                                              );
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                        RadioListTile(
+                                          title: const Text("Man"),
+                                          value: 'Man',
+                                          groupValue: gender,
+                                          onChanged: (value) {
+                                            setState(
+                                              () {
+                                                chosenGender = value.toString();
+                                              },
+                                            );
+                                          },
+                                        ),
+                                        RadioListTile(
+                                          title: const Text("Woman"),
+                                          value: 'Woman',
+                                          groupValue: gender,
+                                          onChanged: (value) {
+                                            setState(
+                                              () {
+                                                chosenGender = value.toString();
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          buttonText: "Gender",
-                          buttonIcon: Icons.person,
-                          selectedtext: gender,
-                        ),
-                        const Heading(text: 'CONNECTED ACCOUNTS'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              child: Text('Google'),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {}, child: const Text('Connect'))
-                          ],
-                        ),
-                        const Heading(text: 'CONTACT SETTINGS'),
-                        ArrowButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (context) =>
-                                          const ManageNotifications()));
+                                  ),
+                                ],
+                              );
                             },
-                            buttonText: 'Manage notifications',
-                            buttonIcon: Icons.notifications_none),
-                        ArrowButton(
-                            onPressed: () {},
-                            buttonText: 'Manage emails',
-                            buttonIcon: Icons.email_outlined),
-                        const Heading(text: 'Safety'),
-                        ArrowButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (context) =>
-                                          const ManageBlockedAccounts()));
-                            },
-                            buttonText: 'Manage blocked Accounts',
-                            buttonIcon: Icons.block_flipped),
-                        ArrowButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (context) =>
-                                          const MutedCommunities()));
-                            },
-                            buttonText: 'Manage muted communities',
-                            buttonIcon: Icons.volume_off),
-                        ArrowButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      fullscreenDialog: true,
-                                      builder: (context) =>
-                                          const ChatMessagesPermissions()));
-                            },
-                            buttonText: 'Chat and messaging permissions',
-                            buttonIcon: Icons.message),
-                        SwitchButton(
-                          buttonText: "Allow people to follow you",
-                          buttonicon: Icons.person_add_alt_sharp,
-                          onPressed: (value) {},
-                          switchvalue: allowFollow,
-                        ),
-                        // optional: "Followers will be notified about posts you make to your profile and see them in their home feed."),
-                        SwitchButton(
-                          buttonText: "show your follower count",
-                          buttonicon: Icons.numbers,
-                          onPressed: (value) {},
-                          switchvalue: showCount,
-                        ),
-                        //optional: "Turning this off hides your follower count on your profile from others."),
-                        const Heading(text: ''),
-                        ArrowButton(
-                          onPressed: () async {
-                            bool isDeleted =
-                                await context.read<NetworkService>().deleteUser();
-                            if (isDeleted) {
-                              await context.read<NetworkService>().logout(widget.fcmToken);
-                              Navigator.pushAndRemoveUntil(
+                          );
+                        },
+                        buttonText: "Gender",
+                        buttonIcon: Icons.person,
+                        selectedtext: gender,
+                      ),
+                      const Heading(text: 'CONNECTED ACCOUNTS'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            child: Text('Google'),
+                          ),
+                          ElevatedButton(
+                            onPressed: settings.account.google ? null : () {},
+                            child: settings.account.google
+                                ? const Text('Connected')
+                                : const Text('Connect'),
+                          ),
+                        ],
+                      ),
+                      const Heading(text: 'CONTACT SETTINGS'),
+                      ArrowButton(
+                          onPressed: () {
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>  LoginScreen(fcmToken: widget.fcmToken),
-                                ),
-                                (Route<dynamic> route) => false,
-                              );
-                            }
+                                    fullscreenDialog: true,
+                                    builder: (context) =>
+                                        const ManageNotifications()));
                           },
-                          buttonText: "Delete Account",
-                          buttonIcon: Icons.delete_forever_outlined,
-                          hasarrow: false,
-                        ),
-                      ],
-                    ),
+                          buttonText: 'Manage notifications',
+                          buttonIcon: Icons.notifications_none),
+                      ArrowButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (context) =>
+                                        const ManageEmails()));
+                          },
+                          buttonText: 'Manage emails',
+                          buttonIcon: Icons.email_outlined),
+                      const Heading(text: 'Safety'),
+                      ArrowButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (context) =>
+                                        const ManageBlockedAccounts()));
+                          },
+                          buttonText: 'Manage blocked Accounts',
+                          buttonIcon: Icons.block_flipped),
+                      ArrowButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (context) =>
+                                        const MutedCommunities()));
+                          },
+                          buttonText: 'Manage muted communities',
+                          buttonIcon: Icons.volume_off),
+                      ArrowButton(
+                          onPressed: () {},
+                          buttonText: 'Chat and messaging permissions',
+                          buttonIcon: Icons.message),
+                      SwitchButton(
+                        buttonText: "Allow people to follow you",
+                        buttonicon: Icons.person_add_alt_sharp,
+                        onPressed: (value) {
+                          setState(() {
+                            allowFollow = value;
+                          });
+                        },
+                        switchvalue: allowFollow,
+                      ),
+                      // optional: "Followers will be notified about posts you make to your profile and see them in their home feed."),
+                      SwitchButton(
+                        buttonText: "show your follower count",
+                        buttonicon: Icons.numbers,
+                        onPressed: (value) {},
+                        switchvalue: showCount,
+                      ),
+                      //optional: "Turning this off hides your follower count on your profile from others."),
+                      const Heading(text: ''),
+                      ArrowButton(
+                        onPressed: () async {
+                          bool isDeleted =
+                              await context.read<NetworkService>().deleteUser();
+                          if (isDeleted) {
+                            await context
+                                .read<NetworkService>()
+                                .logout(widget.fcmToken);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LoginScreen(fcmToken: widget.fcmToken),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
+                          }
+                        },
+                        buttonText: "Delete Account",
+                        buttonIcon: Icons.delete_forever_outlined,
+                        hasarrow: false,
+                      ),
+                    ],
                   ),
-                );
-              }
-            ),
+                ),
+              );
+            }),
           );
         }
       },
