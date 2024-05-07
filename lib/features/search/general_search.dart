@@ -172,46 +172,56 @@ class _GeneralSearchState extends State<GeneralSearch>
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back),
+            icon: Semantics(
+                identifier: 'go back',
+                label: 'go back',
+                child: const Icon(Icons.arrow_back)),
           ),
-          title: TextField(
-            canRequestFocus: true,
-            focusNode: _focusNode,
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search ${widget.displayName}',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  _searchController.clear();
-                },
-                icon: const Icon(Icons.clear),
+          title: Semantics(
+            label: "search text",
+            identifier: "search text",
+            child: TextField(
+              canRequestFocus: true,
+              focusNode: _focusNode,
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search ${widget.displayName}',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    _searchController.clear();
+                  },
+                  icon: Semantics(
+                      label: 'cancel',
+                      identifier: 'cancel',
+                      child: const Icon(Icons.clear)),
+                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                contentPadding: const EdgeInsets.all(10),
               ),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-              contentPadding: const EdgeInsets.all(10),
-            ),
-            onChanged: (value) async {
-              if (!mounted) return;
+              onChanged: (value) async {
+                if (!mounted) return;
 
-              setState(() {
-                searchQuery = value;
-              });
-              if (value.isEmpty) {
                 setState(() {
-                  commentsResults.clear();
-                  postsResults.clear();
-                  hashtagsResults.clear();
+                  searchQuery = value;
                 });
-                return;
-              }
-              getAllData();
-            },
-            onTap: () {
-              setState(() {
-                isSearching = true;
-              });
-            },
+                if (value.isEmpty) {
+                  setState(() {
+                    commentsResults.clear();
+                    postsResults.clear();
+                    hashtagsResults.clear();
+                  });
+                  return;
+                }
+                getAllData();
+              },
+              onTap: () {
+                setState(() {
+                  isSearching = true;
+                });
+              },
+            ),
           ),
           bottom: isSearching
               ? null
