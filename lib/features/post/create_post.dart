@@ -506,7 +506,6 @@ class _CreatePostState extends State<CreatePost> {
                                               false,
                                               isspoiler,
                                               _insertlink);
-                              print(data);
                             
                               bool success = newpost['success'];
                             
