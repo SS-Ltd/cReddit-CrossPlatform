@@ -23,6 +23,7 @@ import 'package:path/path.dart';
 class NetworkService extends ChangeNotifier {
   static final NetworkService _instance = NetworkService._internal();
   factory NetworkService() => _instance;
+  NetworkService.instance();
 
   NetworkService._internal();
   final String _baseUrl = 'https://api.creddit.tech';
@@ -1947,10 +1948,7 @@ class NetworkService extends ChangeNotifier {
     final response = await http.patch(url,
         headers: _headers,
         body: jsonEncode(
-            {'username': username,
-             'rule': rule,
-              if (days != 0) 'days': days
-              }));
+            {'username': username, 'rule': rule, if (days != 0) 'days': days}));
     if (response.statusCode == 403) {
       refreshToken();
       return banUser(username, communityName, rule, days);
