@@ -20,15 +20,18 @@ import 'package:reddit_clone/theme/palette.dart';
 ///   obscureText: false,
 ///   showClearButton: true,
 /// )
-/// 
+///
 
 class AuthField extends StatefulWidget {
   /// The controller for managing the text input.
   final TextEditingController controller;
+
   /// The label text to display for the field.
   final String labelText;
+
   /// Whether the entered text should be obscured (e.g., for passwords).
   bool obscureText;
+
   /// Whether to show a clear button to remove the entered text.
   final bool showClearButton;
 
@@ -53,6 +56,7 @@ class AuthField extends StatefulWidget {
 
 class _AuthFieldState extends State<AuthField> {
   final ValueNotifier<String?> errorNotifier = ValueNotifier<String?>(null);
+
   /// Toggles the visibility of the password text.
   void togglePasswordVisibility() {
     setState(() {
@@ -86,6 +90,7 @@ class _AuthFieldState extends State<AuthField> {
             valueListenable: widget.controller,
             builder: (context, value, child) {
               return TextFormField(
+                key: Key(widget.labelText),
                 controller: widget.controller,
                 obscureText: widget.obscureText,
                 style: const TextStyle(color: Palette.whiteColor),

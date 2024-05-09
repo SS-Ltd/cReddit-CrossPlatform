@@ -6,7 +6,8 @@ import 'package:reddit_clone/services/networkServices.dart';
 
 class MockNetworkService extends NetworkService {
   MockNetworkService() : super.instance();
-
+  bool isLoginCalled = false;
+  bool loginResult = false;
   @override
   Future<List<Chat>> fetchChats() async {
     return [
@@ -77,6 +78,7 @@ class MockNetworkService extends NetworkService {
   }
 
   @override
+<<<<<<< Updated upstream
   Future<List<Community>> fetchTopCommunities() async {
     return [
       Community(
@@ -106,4 +108,29 @@ class MockNetworkService extends NetworkService {
     ];
   }
   
+=======
+  Future<bool> login(String username, String password, String? fcmToken) async {
+    print('Mock Logging in...');
+    isLoginCalled = true;
+
+    // You can add conditions to simulate different responses based on the input
+    if (username == 'validUser' && password == 'validPassword') {
+      super.updateUser(UserModel(
+        username: 'mockUser',
+        displayName: '',
+        email: '',
+        profilePicture: '',
+        followers: 0,
+        cakeDay: DateTime.now(),
+        isBlocked: false,
+      ));
+
+      print('Mock Logged in.');
+      return loginResult = true;
+    } else {
+      print('Mock Login failed');
+      return loginResult = false;
+    }
+  }
+>>>>>>> Stashed changes
 }
