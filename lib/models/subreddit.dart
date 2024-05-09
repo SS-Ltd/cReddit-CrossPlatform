@@ -61,7 +61,6 @@ class Moderators {
 class Rule {
   final String text;
   final String appliesTo;
-  //final String id;
 
   Rule({required this.text, required this.appliesTo});
 
@@ -69,7 +68,6 @@ class Rule {
     return Rule(
       text: json['text'],
       appliesTo: json['appliesTo'],
-      //id: json['_id'],
     );
   }
 }
