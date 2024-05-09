@@ -66,7 +66,10 @@ class _ShareState extends State<Share> {
                 if (posted) {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => CustomNavigationBar(isProfile: false,)),
+                      MaterialPageRoute(
+                          builder: (context) => CustomNavigationBar(
+                                isProfile: false,
+                              )),
                       (route) => false);
                 }
               },
@@ -84,18 +87,18 @@ class _ShareState extends State<Share> {
                     (widget.communityName == "My Profile" ||
                             chosenCommunity == "My Profile")
                         ? CircleAvatar(
-                            backgroundImage: NetworkImage(context
+                            backgroundImage: AssetImage(context
                                 .read<NetworkService>()
                                 .user!
                                 .profilePicture),
                           )
                         : (chosenCommunity != "")
                             ? CircleAvatar(
-                                backgroundImage: NetworkImage(details!.icon),
+                                backgroundImage: AssetImage(details!.icon),
                               )
                             //not handled
                             : CircleAvatar(
-                                backgroundImage: NetworkImage(details!.icon),
+                                backgroundImage: AssetImage(details!.icon),
                               ),
                     const SizedBox(width: 10),
                     Text(

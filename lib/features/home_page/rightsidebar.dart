@@ -130,7 +130,7 @@ class _RightsidebarState extends State<Rightsidebar> {
                                               BorderRadius.circular(50),
                                           child: Image.network(
                                             user?.profilePicture ??
-                                                'https://external-preview.redd.it/2ha9O240cGSUZZ0mCk6FYku61NmKUDgoOAJHMCpMjOM.png?auto=webp&s=3decd6c3ec58dc0a850933af089fb3ad12d3a505',
+                                                'assets/hehe.png',
                                             width: 30,
                                             height: 30,
                                             fit: BoxFit.cover,

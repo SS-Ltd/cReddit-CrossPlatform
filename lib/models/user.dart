@@ -13,7 +13,6 @@ class UserModel {
   final Set<Subreddit> recentlyVisited = {};
   final List<String> recentlySearch= [];
   final bool isBlocked;
-  //bool? isNFSW;
   final List<Subreddit> moderator = [];
 
   UserModel({
@@ -26,7 +25,6 @@ class UserModel {
     required this.followers,
     required this.cakeDay,
     required this.isBlocked,
-    //this.isNFSW,
   });
 
   void updateUserStatus(bool status) {
@@ -58,7 +56,6 @@ class UserModel {
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     return UserModel(
       username: json['username'],
       displayName: json['displayName'],
@@ -72,4 +69,34 @@ class UserModel {
       //isNFSW : json['isNSFW'],
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserModel &&
+        other.username == username &&
+        other.displayName == displayName &&
+        other.about == about &&
+        other.email == email &&
+        other.profilePicture == profilePicture &&
+        other.banner == banner &&
+        other.followers == followers &&
+        other.cakeDay == cakeDay &&
+        other.isBlocked == isBlocked;
+  }
+
+  @override
+  int get hashCode {
+    return username.hashCode ^
+        displayName.hashCode ^
+        about.hashCode ^
+        email.hashCode ^
+        profilePicture.hashCode ^
+        banner.hashCode ^
+        followers.hashCode ^
+        cakeDay.hashCode ^
+        isBlocked.hashCode;
+  }
+
 }

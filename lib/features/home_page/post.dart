@@ -253,7 +253,7 @@ class _PostState extends State<Post> {
                       },
                       child: CircleAvatar(
                         backgroundImage:
-                            NetworkImage(widget.postModel.profilePicture),
+                            AssetImage(widget.postModel.profilePicture),
                       ),
                     ),
                     const SizedBox(width: 10),

@@ -35,7 +35,7 @@ class CommentTile extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(comment.commentPicture),
+                  backgroundImage: AssetImage(comment.commentPicture),
                   radius: 20,
                 ),
                 const SizedBox(
@@ -128,8 +128,7 @@ class CommentTile extends StatelessWidget {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(comment.postPicture),
+                              backgroundImage: AssetImage(comment.postPicture),
                               radius: 15,
                             ),
                             const SizedBox(

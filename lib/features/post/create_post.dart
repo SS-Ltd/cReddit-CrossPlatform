@@ -676,9 +676,8 @@ class _CreatePostState extends State<CreatePost> {
                               CircleAvatar(
                                 backgroundImage:
                                     details != null && details!.icon.isNotEmpty
-                                        ? NetworkImage(details!.icon)
-                                        : const NetworkImage(
-                                            'https://picsum.photos/200/300'),
+                                        ? AssetImage(details!.icon)
+                                        : const AssetImage('assets/hehe.png'),
                               ),
                               const SizedBox(
                                 width: 10,

@@ -1,6 +1,8 @@
 import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/community.dart';
+import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
@@ -8,6 +10,64 @@ class MockNetworkService extends NetworkService {
   MockNetworkService() : super.instance();
   bool isLoginCalled = false;
   bool loginResult = false;
+
+  @override
+  Future<bool> joinSubReddit(String subredditName) async {
+    return true;
+  }
+
+  @override
+  Future<bool> disJoinSubReddit(String subredditName) async {
+    return true;
+  }
+
+  @override
+  Future<List<PostModel>?> fetchPostsForSubreddit(String? subredditName,
+      {int page = 1, int limit = 10, String sort = 'hot'}) async {
+    return [
+      PostModel(
+        title: 'Test Post',
+        content: 'Hello there!',
+        postId: '',
+        type: 'Post',
+        username: 'username',
+        communityName: 'communityname',
+        pollOptions: [],
+        expirationDate: null,
+        netVote: 0,
+        isSpoiler: false,
+        isLocked: false,
+        isApproved: false,
+        isEdited: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        profilePicture: '',
+        commentCount: 0,
+        isDeletedUser: false,
+        isUpvoted: false,
+        isDownvoted: false,
+        isSaved: false,
+        isHidden: false,
+        isNSFW: false,
+      ),
+    ];
+  }
+
+  @override
+  Future<Subreddit?> getSubredditDetails(String? subredditName) async {
+    return Subreddit(
+      name: 'Test Subreddit',
+      description: 'This is a test subreddit',
+      members: 0,
+      isMember: false,
+      isModerator: false,
+      icon: 'assets/hehe.png',
+      banner: 'assets/hehe.png',
+      rules: [],
+      moderators: [],
+    );
+  }
+
   @override
   Future<List<Chat>> fetchChats() async {
     return [
@@ -56,7 +116,7 @@ class MockNetworkService extends NetworkService {
         user: "John Doe",
         room: "Test Room",
         content: "Hello there!",
-        profilePicture: "https://example.com/image.png",
+        profilePicture: 'assets/hehe.png',
         isDeleted: false,
         reactions: [],
         createdAt: DateTime.now(),
