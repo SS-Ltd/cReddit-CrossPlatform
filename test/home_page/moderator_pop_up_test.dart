@@ -5,7 +5,6 @@ import 'package:reddit_clone/features/home_page/moderator_pop_up.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/MockNetworkService.dart';
-import 'package:reddit_clone/common/arrow_button.dart'; // To ensure arrow buttons are tested
 
 void main() {
   final postModel = PostModel(
@@ -376,4 +375,4 @@ void main() {
   //     );
   //   }),
   // });
-}
+
