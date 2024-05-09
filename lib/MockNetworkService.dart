@@ -41,7 +41,7 @@ class MockNetworkService extends NetworkService {
         isEdited: false,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
-        profilePicture: '',
+        profilePicture: 'assets/hehe.png',
         commentCount: 0,
         isDeletedUser: false,
         isUpvoted: false,

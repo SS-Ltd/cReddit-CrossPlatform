@@ -6,7 +6,7 @@ import 'package:reddit_clone/features/community/subreddit_page.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 void main() {
-  testWidgets('Community Page', (WidgetTester tester) async {
+  testWidgets('Subreddit Page', (WidgetTester tester) async {
     await tester.pumpWidget(
       ChangeNotifierProvider<NetworkService>(
         create: (_) => MockNetworkService(),
@@ -20,7 +20,14 @@ void main() {
 
     // Verify that a loading indicator is shown initially
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    await tester.pumpAndSettle();
-    expect(find.text('Join'), findsOneWidget);
+      // Pump the widget tree to allow the Future to complete
+   await tester.pump();
+
+  // Verify that the post's title and content are displayed on the screen
+  expect(find.text('Test Post'), findsOneWidget);
+  expect(find.text('Hello there!'), findsOneWidget);
+
+  // Verify that the "Join" button is displayed on the screen
+  expect(find.text('Join'), findsOneWidget);
   });
 }
