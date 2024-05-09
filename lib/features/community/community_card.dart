@@ -86,12 +86,12 @@ class CommunityCardState extends State<CommunityCard> {
                     ? SizedBox(
                         width: 45,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(widget.community.icon),
+                          backgroundImage: AssetImage(widget.community.icon),
                           radius: 20,
                         ),
                       )
                     : CircleAvatar(
-                        backgroundImage: NetworkImage(widget.community.icon),
+                        backgroundImage: AssetImage(widget.community.icon),
                         radius: 20,
                       ),
                 const SizedBox(width: 8),
