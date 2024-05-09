@@ -115,7 +115,7 @@ class UserCommentState extends State<UserComment> {
           isPostPage: true,
           isModerator: widget.isModerator,
           comment: Comments(
-            profilePicture: 'https://res.cloudinary.com/dfvgbxwed/image/upload/v1713636481/cReddit/ybhvvqqpctjxljqehtif.gif',
+            profilePicture: 'assets/hehe.png',
             username: 'Zahar',
             isImage: false,
             netVote: 0,
@@ -139,7 +139,7 @@ class UserCommentState extends State<UserComment> {
           isPostPage: true,
           isModerator: widget.isModerator,
           comment: Comments(
-            profilePicture: 'https://res.cloudinary.com/dfvgbxwed/image/upload/v1713636481/cReddit/ybhvvqqpctjxljqehtif.gif',
+            profilePicture: 'assets/hehe.png',
             username: 'Zahar',
             isImage: true,
             netVote: 0,
@@ -279,7 +279,7 @@ class UserCommentState extends State<UserComment> {
                           },
                           child: CircleAvatar(
                             backgroundImage:
-                                NetworkImage(widget.comment.profilePicture),
+                                AssetImage(widget.comment.profilePicture),
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -509,13 +509,13 @@ class UserCommentState extends State<UserComment> {
                                 modOptions(3);
                               }),
                         ],
-                          IconButton(
-                            icon: Semantics(
-                                identifier: "comment reply",
-                                label: "comment reply",
-                                child: const Icon(Icons.reply_sharp)),
-                            onPressed: _addReply,
-                          ),
+                        IconButton(
+                          icon: Semantics(
+                              identifier: "comment reply",
+                              label: "comment reply",
+                              child: const Icon(Icons.reply_sharp)),
+                          onPressed: _addReply,
+                        ),
                         ValueListenableBuilder<int>(
                           valueListenable: hasVoted,
                           builder: (context, value, child) {
@@ -820,7 +820,6 @@ class UserCommentState extends State<UserComment> {
                                     context: context,
                                     content: 'Comment Removed!',
                                   ).show();
-                                  
                                 } else {
                                   CustomSnackBar(
                                     context: context,
@@ -923,8 +922,7 @@ class UserCommentState extends State<UserComment> {
                       backgroundColor: Palette.whiteColor,
                       textColor: Palette.blackColor,
                     ).show();
-                  }
-                  else{
+                  } else {
                     CustomSnackBar(
                       context: context,
                       content: "Failed to copy to Clipboard",

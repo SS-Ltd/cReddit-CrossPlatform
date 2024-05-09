@@ -75,19 +75,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           'name': 'Channel One',
           'subredditName': 'r/Wholesome',
           'description': 'Wholesome & Heartwarming',
-          'profilePic': 'https://picsum.photos/202'
+          'profilePic': 'assets/hehe.png'
         },
         {
           'name': 'Channel Two',
           'subredditName': 'r/Heartwarming',
           'description': 'Heartwarming stories',
-          'profilePic': 'https://picsum.photos/203'
+          'profilePic': 'assets/hehe.png'
         },
         {
           'name': 'Channel Three',
           'subredditName': 'r/FeelGood',
           'description': 'Feel good, positive news',
-          'profilePic': 'https://picsum.photos/204'
+          'profilePic': 'assets/hehe.png'
         },
       ],
     ),
@@ -103,8 +103,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     }
     loadUnreadNotifications();
   }
-
-
 
   Future<void> loadUnreadNotifications() async {
     unread = await context.read<NetworkService>().getUnreadNotifications();
@@ -257,8 +255,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
               displayName: widget.myuser!.displayName,
               about: 'about',
               profilePicture: widget.myuser!.profilePicture,
-              bannerPicture: widget.myuser?.banner ??
-                  "https://res.cloudinary.com/dfvgbxwed/image/upload/v1713636481/cReddit/ybhvvqqpctjxljqehtif.gif",
+              bannerPicture: widget.myuser?.banner ?? 'assets/hehe.png',
               followerCount: widget.myuser!.followers,
               cakeDay: '2024-03-25T15:37:33.339+00:00',
               isOwnProfile: true,

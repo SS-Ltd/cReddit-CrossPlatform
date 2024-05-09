@@ -602,7 +602,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                                               is SearchHashTagPost)
                                             ListTile(
                                               leading: CircleAvatar(
-                                                backgroundImage: NetworkImage(
+                                                backgroundImage: AssetImage(
                                                   hashtagsResults[index]
                                                       .commentPicture,
                                                 ),

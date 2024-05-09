@@ -133,7 +133,7 @@ class ChatScreenState extends State<ChatScreen> {
                           children: [
                             if (chatMessage.user != null)
                               CircleAvatar(
-                                backgroundImage: NetworkImage(
+                                backgroundImage: AssetImage(
                                     chatMessage.profilePicture ?? ''),
                               ),
                             const SizedBox(width: 8),

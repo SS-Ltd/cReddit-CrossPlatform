@@ -305,7 +305,7 @@ class _HomeSearchState extends State<HomeSearch>
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundImage:
-                                  NetworkImage(communitiesResults[index].icon),
+                                  AssetImage(communitiesResults[index].icon),
                             ),
                             subtitle: Text(
                                 "${communitiesResults[index].members} members"),
@@ -341,7 +341,7 @@ class _HomeSearchState extends State<HomeSearch>
                         itemBuilder: (context, index) {
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
+                              backgroundImage: AssetImage(
                                   peopleResults[index].profilePicture),
                             ),
                             title: Text(peopleResults[index].username),
@@ -775,7 +775,7 @@ class _HomeSearchState extends State<HomeSearch>
                                               );
                                             },
                                             leading: CircleAvatar(
-                                              backgroundImage: NetworkImage(
+                                              backgroundImage: AssetImage(
                                                   peopleResults[index]
                                                       .profilePicture),
                                             ),
@@ -809,7 +809,7 @@ class _HomeSearchState extends State<HomeSearch>
                                               is SearchHashTagPost)
                                             ListTile(
                                               leading: CircleAvatar(
-                                                backgroundImage: NetworkImage(
+                                                backgroundImage: AssetImage(
                                                   hashtagsResults[index]
                                                       .commentPicture,
                                                 ),

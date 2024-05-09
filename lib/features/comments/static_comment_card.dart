@@ -45,7 +45,7 @@ class StaticCommentCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(staticComment.profilePicture),
+                  backgroundImage: AssetImage(staticComment.profilePicture),
                 ),
                 const SizedBox(width: 10),
                 Text(

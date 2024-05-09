@@ -59,8 +59,8 @@ class _CommunityChoiceState extends State<CommunityChoice> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          joinedCommunities![index].profilePicture),
+                      backgroundImage:
+                          AssetImage(joinedCommunities![index].profilePicture),
                     ),
                     title: Text(joinedCommunities![index].name),
                     subtitle: Text(

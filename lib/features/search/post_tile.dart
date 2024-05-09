@@ -5,7 +5,7 @@ class PostTile extends StatelessWidget {
   const PostTile({super.key, required this.post, required this.isProfile});
   final SearchPosts post;
   final bool isProfile;
-  
+
   @override
   Widget build(BuildContext context) {
     bool isCommunity = post.communityName != '';
@@ -20,7 +20,7 @@ class PostTile extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(post.profilePicture),
+                    backgroundImage: AssetImage(post.profilePicture),
                   ),
                   const SizedBox(
                     width: 10,
