@@ -52,9 +52,8 @@ class LoginScreenState extends State<LoginScreen> {
   Future<bool> loginUser() async {
     bool result = false;
     if (_formKey.currentState!.validate()) {
-      await context
-          .read<NetworkService>()
-          .login(emailController.text, passwordController.text, widget.fcmToken);
+      await context.read<NetworkService>().login(
+          emailController.text, passwordController.text, widget.fcmToken);
       final user = context.read<NetworkService>().user;
       print(user);
       print(user?.isLoggedIn);
@@ -69,8 +68,7 @@ class LoginScreenState extends State<LoginScreen> {
           ),
         );
         result = true;
-      }
-      else{
+      } else {
         CustomSnackBar(
           context: context,
           content: 'Failed to login',
@@ -134,7 +132,8 @@ class LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SignUpScreen(fcmToken: widget.fcmToken)),
+                        builder: (context) =>
+                            SignUpScreen(fcmToken: widget.fcmToken)),
                   );
                 }
               },
@@ -163,7 +162,9 @@ class LoginScreenState extends State<LoginScreen> {
                           color: Palette.whiteColor),
                     ),
                     const SizedBox(height: 20),
-                    GoogleButton(fcmToken: widget.fcmToken,),
+                    GoogleButton(
+                      fcmToken: widget.fcmToken,
+                    ),
                     const Row(
                       children: <Widget>[
                         Expanded(
@@ -206,6 +207,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
+                        key: Key('ForgotPassword'),
                         onPressed: () {
                           if (mounted) {
                             FocusScope.of(context).unfocus();
@@ -241,6 +243,7 @@ class LoginScreenState extends State<LoginScreen> {
               valueListenable: isFormFilled,
               builder: (context, isFilled, child) {
                 return ElevatedButton(
+                  key: const Key('loginButton'),
                   onPressed: isFilled ? onContinueButtonPressed : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor:

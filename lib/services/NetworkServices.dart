@@ -1999,4 +1999,9 @@ class NetworkService extends ChangeNotifier {
     }
     return '';
   }
+
+  void updateUser(UserModel user) {
+    _user = user;
+    _user!.updateUserStatus(true);
+  }
 }
