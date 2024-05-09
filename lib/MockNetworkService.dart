@@ -78,7 +78,6 @@ class MockNetworkService extends NetworkService {
   }
 
   @override
-<<<<<<< Updated upstream
   Future<List<Community>> fetchTopCommunities() async {
     return [
       Community(
@@ -107,8 +106,7 @@ class MockNetworkService extends NetworkService {
       ),
     ];
   }
-  
-=======
+
   Future<bool> login(String username, String password, String? fcmToken) async {
     print('Mock Logging in...');
     isLoginCalled = true;
@@ -132,5 +130,4 @@ class MockNetworkService extends NetworkService {
       return loginResult = false;
     }
   }
->>>>>>> Stashed changes
 }
