@@ -2,6 +2,8 @@ import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/models/post_model.dart';
+// import the comments
+import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -212,4 +214,84 @@ class MockNetworkService extends NetworkService {
       return signUpResult = false;
     }
   }
+
+  Future<List<PostModel>?> fetchUserPosts(
+    String username, {
+    String sort = 'hot',
+    String time = 'all',
+    int page = 1,
+    int limit = 10,
+  }) async {
+    return [
+      PostModel(
+        title: 'User Post',
+        content: 'This is a user post',
+        postId: '1',
+        type: 'Post',
+        username: username,
+        communityName: 'communityname',
+        pollOptions: [],
+        expirationDate: null,
+        netVote: 0,
+        isSpoiler: false,
+        isLocked: false,
+        isApproved: false,
+        isEdited: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        profilePicture: '',
+        commentCount: 0,
+        isDeletedUser: false,
+        isUpvoted: false,
+        isDownvoted: false,
+        isSaved: false,
+        isHidden: false,
+        isNSFW: false,
+      ),
+    ];
+  }
+
+  
+  Future<List<Comments>?> fetchUserComments(String username,
+      {int page = 1, int limit = 10}) async {
+    return [
+      Comments(
+        profilePicture: 'assets/hehe.png',
+        username: 'username',
+        isImage: false,
+        netVote: 0,
+        content: 'This is a user comment',
+        createdAt: DateTime.now().toString(),
+        commentId: '1',
+        isUpvoted: false,
+        isDownvoted: false,
+        isSaved: false,
+        communityName: 'communityname',
+        postId: '1',
+        title: 'Post Title',
+        isApproved: false,
+      ),
+    ];
+  }
+
+  Future<bool> approvePost(String postId, bool isApproved) async {
+    return true;
+  }
+
+  Future<bool> removePost(String postId, bool isRemoved) async {
+    return true;
+  }
+
+  Future<bool> lockpost(String postId, bool isLocked) async {
+    return true;
+  }
+
+  Future<bool> markAsSpoiler(String postId, bool isSpoiler) async {
+    return true;
+  }
+
+  Future<bool> markAsNSFW(String postId, bool isNSFW) async {
+    return true;
+  }
+
 }
