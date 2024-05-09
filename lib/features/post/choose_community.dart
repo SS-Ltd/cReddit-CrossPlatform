@@ -67,7 +67,7 @@ class _ChooseCommunityState extends State<ChooseCommunity> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(
+                      backgroundImage: AssetImage(
                           context.read<NetworkService>().user!.profilePicture),
                     ),
                     const SizedBox(width: 10),
@@ -129,7 +129,7 @@ class _ChooseCommunityState extends State<ChooseCommunity> {
                                     );
                             },
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
+                              backgroundImage: AssetImage(
                                   joinedCommunities![index].profilePicture),
                             ),
                             title: Text('r/${joinedCommunities![index].name}'),
@@ -177,7 +177,7 @@ class _ChooseCommunityState extends State<ChooseCommunity> {
                             },
                             leading: CircleAvatar(
                               backgroundImage:
-                                  NetworkImage(listRecentlyVisited[index].icon),
+                                  AssetImage(listRecentlyVisited[index].icon),
                             ),
                             title: Text('r/${listRecentlyVisited[index].name}'),
                           ),

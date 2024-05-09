@@ -109,7 +109,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(widget.bannerUrl),
+                      image: AssetImage(widget.bannerUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -123,7 +123,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   onTap: _changeProfileImage,
                   child: CircleAvatar(
                     radius: 43,
-                    backgroundImage: NetworkImage(widget.profilePictureUrl),
+                    backgroundImage: AssetImage(widget.profilePictureUrl),
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: CircleAvatar(

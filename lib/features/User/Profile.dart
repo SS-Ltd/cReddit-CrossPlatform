@@ -247,7 +247,7 @@ class _ProfileState extends State<Profile> {
                 decoration: widget.bannerPicture.isNotEmpty
                     ? BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(widget.bannerPicture),
+                          image: AssetImage(widget.bannerPicture),
                           fit: BoxFit.cover,
                           colorFilter: ColorFilter.mode(
                             Colors.black.withOpacity(0.7),
@@ -282,7 +282,7 @@ class _ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CircleAvatar(
-                          backgroundImage: NetworkImage(widget.profilePicture),
+                          backgroundImage: AssetImage(widget.profilePicture),
                           radius: 50,
                         ),
                         widget.isOwnProfile

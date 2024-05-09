@@ -92,7 +92,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       children: [
                         CircleAvatar(
                           radius: 28,
-                          backgroundImage: NetworkImage(channel['profilePic']),
+                          backgroundImage: AssetImage('assets/hehe.png'),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -127,18 +127,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     const SizedBox(width: 10),
                                     const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage(
-                                          'https://picsum.photos/200'),
+                                      backgroundImage:
+                                          AssetImage('assets/hehe.png'),
                                     ),
                                     const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage(
-                                          'https://picsum.photos/201'),
+                                      backgroundImage:
+                                          AssetImage('assets/hehe.png'),
                                     ),
                                     const CircleAvatar(
                                       radius: 10,
-                                      backgroundImage: NetworkImage(
-                                          'https://picsum.photos/202'),
+                                      backgroundImage:
+                                          AssetImage('assets/hehe.png'),
                                     ),
                                     const SizedBox(width: 10),
                                     const SpinKitThreeBounce(

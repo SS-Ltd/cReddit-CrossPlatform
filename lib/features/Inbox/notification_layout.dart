@@ -18,7 +18,7 @@ class NotificationLayout extends StatelessWidget {
           ? Palette.backgroundColor
           : Palette.notificationColor,
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(notification.profilePic),
+        backgroundImage: AssetImage(notification.profilePic),
       ),
       title: RichText(
         text: TextSpan(

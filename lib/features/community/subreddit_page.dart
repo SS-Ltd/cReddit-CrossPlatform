@@ -61,7 +61,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
   final ScrollController _scrollController = ScrollController();
 
   String _subredditIcon = '';
-  String _subredditBanner = 'https://picsum.photos/200/300';
+  String _subredditBanner = 'assets/hehe.png';
   String _subredditDescription = '';
   int _subredditMembers = 0;
   List<String> _subredditRules = [];
@@ -185,8 +185,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
             isModerator = details.isModerator;
             isJoined.value = isMember;
             _subredditIcon = details.icon;
-            _subredditBanner =
-                details.banner ?? 'https://picsum.photos/200/300';
+            _subredditBanner = details.banner ?? 'assets/hehe.png';
             _subredditMembers = details.members;
             _subredditRules = details.rules;
             _subredditModerators = details.moderators;
@@ -207,7 +206,7 @@ class _SubRedditPageState extends State<SubRedditPage> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(_subredditBanner),
+              image: AssetImage(_subredditBanner),
               fit: BoxFit.cover,
             ),
           ),
@@ -372,8 +371,8 @@ class _SubRedditPageState extends State<SubRedditPage> {
             children: [
               CircleAvatar(
                 backgroundImage: _subredditIcon.isNotEmpty
-                    ? NetworkImage(_subredditIcon)
-                    : const NetworkImage('https://picsum.photos/200/300'),
+                    ? AssetImage(_subredditIcon)
+                    : const AssetImage('assets/hehe.png'),
                 radius: 25,
               ),
               const SizedBox(width: 10),

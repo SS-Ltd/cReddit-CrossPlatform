@@ -23,7 +23,7 @@ class RulesPage extends StatelessWidget {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(
+              image: AssetImage(
                   bannerURL), // Replace with your subreddit banner URL
               fit: BoxFit.cover,
             ),
