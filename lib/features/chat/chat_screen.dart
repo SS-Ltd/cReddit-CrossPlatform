@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
-import 'package:reddit_clone/models/chatmessages.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 import 'package:reddit_clone/utils/utils_time.dart';
@@ -19,7 +18,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  List<ChatMessage> messages = [];
   final messageController = TextEditingController();
   List<ChatMessages> chatMessages = [];
   late IO.Socket socket;
