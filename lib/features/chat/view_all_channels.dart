@@ -29,7 +29,7 @@ class ViewAllChannels extends StatelessWidget {
                 children: <Widget>[
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: NetworkImage(channel['profilePic']),
+                    backgroundImage: AssetImage(channel['profilePic']),
                   ),
                   Expanded(
                     child: Padding(
@@ -48,18 +48,18 @@ class ViewAllChannels extends StatelessWidget {
                             children: <Widget>[
                               CircleAvatar(
                                   radius: 12,
-                                  backgroundImage: NetworkImage(
-                                      'https://picsum.photos/200')),
+                                  backgroundImage:
+                                      AssetImage('assets/hehe.png')),
                               SizedBox(width: 4),
                               CircleAvatar(
                                   radius: 12,
-                                  backgroundImage: NetworkImage(
-                                      'https://picsum.photos/201')),
+                                  backgroundImage:
+                                      AssetImage('assets/hehe.png')),
                               SizedBox(width: 4),
                               CircleAvatar(
                                   radius: 12,
-                                  backgroundImage: NetworkImage(
-                                      'https://picsum.photos/202')),
+                                  backgroundImage:
+                                      AssetImage('assets/hehe.png')),
                               SizedBox(width: 8),
                               Expanded(
                                 child: SpinKitThreeBounce(
