@@ -130,4 +130,21 @@ class MockNetworkService extends NetworkService {
       return loginResult = false;
     }
   }
+
+  bool isSignUpCalled = false;
+  bool signUpResult = false;
+
+  Future<bool> signUp(String email, String password) async {
+    print('Mock Signing up...');
+    isSignUpCalled = true;
+
+    // You can add conditions to simulate different responses based on the input
+    if (email == 'validEmail' && password == 'validPassword') {
+      print('Mock Signed up.');
+      return signUpResult = false;
+    } else {
+      print('Mock Sign up failed');
+      return signUpResult = false;
+    }
+  }
 }

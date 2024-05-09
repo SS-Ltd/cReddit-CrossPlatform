@@ -182,6 +182,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                 valueListenable: isFormFilled,
                 builder: (context, isFilled, child) {
                   return ElevatedButton(
+                    key: const Key('signupButton'),
                     onPressed: isFilled
                         ? () async {
                             FocusScope.of(context).unfocus();
