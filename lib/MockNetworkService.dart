@@ -138,6 +138,11 @@ class MockNetworkService extends NetworkService {
   }
 
   @override
+  Future<int> getUnreadNotifications() async {
+    return 5;
+  }
+
+  @override
   Future<List<Community>> fetchTopCommunities() async {
     return [
       Community(
@@ -201,7 +206,7 @@ class MockNetworkService extends NetworkService {
     // You can add conditions to simulate different responses based on the input
     if (email == 'validEmail' && password == 'validPassword') {
       print('Mock Signed up.');
-      return signUpResult = false;
+      return signUpResult = true;
     } else {
       print('Mock Sign up failed');
       return signUpResult = false;

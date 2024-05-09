@@ -5,6 +5,7 @@ import 'package:reddit_clone/MockNetworkService.dart';
 import 'package:reddit_clone/features/Authentication/forget_password.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
+import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 void main() {
@@ -12,12 +13,19 @@ void main() {
     // Mock the NetworkService
 
     await tester.pumpWidget(
-      ChangeNotifierProvider<NetworkService>(
-        create: (_) => MockNetworkService(),
-        child: MaterialApp(
-          home: const LoginScreen(),
-        ),
-      ),
+      MultiProvider(
+          providers: [
+            ChangeNotifierProvider<NetworkService>(
+              create: (_) => MockNetworkService(),
+            ),
+            ChangeNotifierProvider<MenuState>(
+              create: (_) =>
+                  MenuState(), // Replace with your MenuState instance
+            ),
+          ],
+          child: MaterialApp(
+            home: const LoginScreen(),
+          )),
     );
 
     // Verify that the LoginScreen widget is displayed.
@@ -31,8 +39,15 @@ void main() {
 
     // Enter 'validUser' into the username TextField.
     await tester.enterText(usernameField, 'validUser');
+    // Trigger the listener callback for emailController
+    (tester.widget(usernameField) as TextFormField).controller!.text =
+        'validUser';
+
     // Enter 'validPassword' into the password TextField.
     await tester.enterText(passwordField, 'validPassword');
+    // Trigger the listener callback for passwordController
+    (tester.widget(passwordField) as TextFormField).controller!.text =
+        'validPassword';
 
     // Tap the login button.
     await tester.tap(loginButton);
