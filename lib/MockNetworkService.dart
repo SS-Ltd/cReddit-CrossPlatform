@@ -1,6 +1,8 @@
 import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/community.dart';
+import 'package:reddit_clone/models/messages.dart';
+import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/models/post_model.dart';
 // import the comments
 import 'package:reddit_clone/models/comments.dart';
@@ -294,4 +296,38 @@ class MockNetworkService extends NetworkService {
     return true;
   }
 
+  @override
+  Future<List<Messages>?> fetchInboxMessages({int page = 1, int limit = 10}) async {
+    return List<Messages>.generate(limit, (index) {
+      return Messages(
+        id: 'id$index',
+        from: 'from$index', // This should create a message with 'from0' as the 'from' field
+        to: 'to$index',
+        subject: 'subject$index',
+        text: 'text$index',
+        isRead: index % 2 == 0,
+        isDeleted: index % 2 != 0,
+        createdAt: DateTime.now().toString(),
+      );
+    });
+  }
+
+  @override
+  Future<List<NotificationModel>?> fetchNotifications() async {
+    return List<NotificationModel>.generate(5, (index) {
+      return NotificationModel(
+        id: 'id1',
+        user: 'user1',
+        notificationFrom: 'notificationFrom1',
+        type: 'type1',
+        resourceId: 'resourceId1',
+        title: 'title1',
+        content: 'content1',
+        isRead: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        profilePic: 'assets/hehe.png',
+      );
+    });
+  }
 }
