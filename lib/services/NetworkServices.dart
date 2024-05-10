@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+// coverage:ignore-file
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

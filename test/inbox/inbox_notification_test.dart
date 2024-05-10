@@ -38,3 +38,4 @@ void main() {
 //   expect(find.byType(Image), findsOneWidget); // Assuming Image widget is used for profilePic
   });
 }
+

@@ -276,22 +276,27 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
+  @override
   Future<bool> approvePost(String postId, bool isApproved) async {
     return true;
   }
 
+  @override
   Future<bool> removePost(String postId, bool isRemoved) async {
     return true;
   }
 
-  Future<bool> lockpost(String postId, bool isLocked) async {
+  @override
+  Future<bool> lockpost(String postId, bool value) async {
     return true;
   }
 
+  @override
   Future<bool> markAsSpoiler(String postId, bool isSpoiler) async {
     return true;
   }
 
+  @override
   Future<bool> markAsNSFW(String postId, bool isNSFW) async {
     return true;
   }
