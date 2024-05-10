@@ -10,12 +10,12 @@ class CustomTextField extends StatelessWidget {
   final String invalidText;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.isValidNotifier,
     required this.labelText,
     required this.invalidText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
