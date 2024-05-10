@@ -20,5 +20,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Test Chat 1'), findsOneWidget);
     expect(find.text('Hello'), findsWidgets);
+    expect(find.byType(ListView), findsAny);
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.byType(FloatingActionButton), findsNothing);
   });
 }
