@@ -4,7 +4,6 @@ import 'package:reddit_clone/models/community.dart';
 import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/models/post_model.dart';
-// import the comments
 import 'package:reddit_clone/models/comments.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/models/user.dart';

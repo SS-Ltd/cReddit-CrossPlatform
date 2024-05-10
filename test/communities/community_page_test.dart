@@ -31,4 +31,33 @@ void main() {
     expect(find.widgetWithText(ElevatedButton, 'Join'), findsAny);
 
   });
+
+  testWidgets('Community Page when isJoined is true', (WidgetTester tester) async {
+     await tester.pumpWidget(
+      ChangeNotifierProvider<NetworkService>(
+        create: (_) => MockNetworkService(),
+        child: const MaterialApp(
+          home: CommunityPage(),
+        ),
+      ),
+    );
+    // Verify that a loading indicator is shown initially
+    expect(find.byType(CustomLoadingIndicator), findsOneWidget);
+
+    // Pump to settle the asynchronous operations
+    await tester.pumpAndSettle();
+
+    // Verify that the community is displayed
+    expect(find.text('Carlotta.Kreiger61'), findsOneWidget);
+    expect(find.text('95 members'), findsOneWidget);
+    expect(
+      find.text(
+        'Qui absum aiunt vehemens cernuus cenaculum accendo alveus occaecati bonus. Voluptate arbitro caste celo quaerat concedo. Summa strues vereor spero.',
+      ),
+      findsOneWidget,
+    );
+
+    // Verify that the button text is 'Leave' because isJoined is true
+    expect(find.widgetWithText(ElevatedButton, 'Joined'), findsOneWidget);
+  });
 }
