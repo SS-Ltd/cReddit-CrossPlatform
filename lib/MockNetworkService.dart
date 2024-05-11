@@ -5,6 +5,7 @@ import 'package:reddit_clone/models/messages.dart';
 import 'package:reddit_clone/models/notification.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/comments.dart';
+import 'package:reddit_clone/models/search.dart';
 import 'package:reddit_clone/models/subreddit.dart';
 import 'package:reddit_clone/models/user.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -54,6 +55,59 @@ class MockNetworkService extends NetworkService {
         isNSFW: false,
       ),
     ];
+  }
+
+  @override
+  Future<UserModel> getMyDetails() async {
+    return UserModel(
+      username: 'username',
+      displayName: 'Display Name',
+      about: 'About user',
+      email: 'user@example.com',
+      profilePicture: 'profile.jpg',
+      banner: 'assets/hehe.png',
+      followers: 100,
+      cakeDay: DateTime.parse('2022-01-01'),
+      isBlocked: false,
+    );
+  }
+
+  @override
+  Future<PostModel> fetchPost(String id) async {
+    return PostModel(
+      postId: '1',
+      type: 'post',
+      username: 'username',
+      communityName: 'community',
+      title: 'Post Title',
+      content: 'This is a post',
+      pollOptions: [
+        PollsOption(
+          option: 'Option 1',
+          isVoted: false,
+          votes: 10,
+        ),
+      ],
+      expirationDate: DateTime.parse('2022-12-31'),
+      netVote: 10,
+      isSpoiler: false,
+      isLocked: false,
+      isApproved: true,
+      isEdited: false,
+      createdAt: DateTime.parse('2022-01-01'),
+      updatedAt: DateTime.parse('2022-01-02'),
+      profilePicture: 'profile.jpg',
+      commentCount: 2,
+      isDeletedUser: false,
+      isUpvoted: false,
+      isDownvoted: false,
+      isSaved: false,
+      isHidden: false,
+      isJoined: false,
+      isModerator: false,
+      isBlocked: false,
+      isNSFW: false,
+    );
   }
 
   @override
@@ -363,4 +417,103 @@ Future<int> updateemail(String newemail, String password) async {
   } else {
     return 401;
   }
+}
+
+@override
+Future<List<SearchComments>> getSearchComments(String comment, String username,
+    String sort, String timeOption, int pageNumber, String community) async {
+  return [
+    SearchComments(
+      id: '1',
+      postID: 'post1',
+      postTitle: 'Post Title',
+      postUsername: 'username',
+      postVotes: 10,
+      postPicture: 'assets/hehe.png',
+      postCreatedAt: '2022-01-01',
+      isPostNSFW: false,
+      isPostSpoiler: false,
+      username: 'username',
+      communityName: 'community',
+      commentPicture: 'assets/hehe.png',
+      netVote: 5,
+      commentCount: 2,
+      content: 'This is a comment',
+      createdAt: '2022-01-02',
+    )
+  ];
+}
+
+@override
+Future<List<dynamic>> getSearchHashtags(
+    String hashtag, int pageNumber, String username, String community) async {
+  return [
+    SearchHashtag(
+      id: '1',
+      postID: 'post1',
+      postTitle: 'Post Title',
+      postUsername: 'username',
+      postVotes: 10,
+      postPicture: 'assets/hehe.png',
+      postCreatedAt: DateTime.now(),
+      isPostNsfw: false,
+      isPostSpoiler: false,
+      communityName: 'community',
+      createdAt: DateTime.now(),
+      username: 'username',
+      netVote: 5,
+      commentCount: 2,
+      commentPicture: 'assets/hehe.png',
+      content: 'This is a comment',
+    )
+  ];
+}
+
+@override
+Future<List<SearchPosts>> getSearchPosts(String post, String username,
+    String sort, String time, int pageNumber, String community) async {
+  return [
+    SearchPosts(
+      id: '1',
+      type: 'post',
+      username: 'username',
+      communityName: 'community',
+      profilePicture: 'profile.jpg',
+      netVote: 10,
+      commentCount: 2,
+      title: 'Post Title',
+      content: 'This is a post',
+      createdAt: '2022-01-01',
+      isNSFW: false,
+      isSpoiler: false,
+    )
+  ];
+}
+
+@override
+Future<List<SearchCommunities>> getSearchCommunities(
+    String community, bool autocomplete, int pageNumber) async {
+  return [
+    SearchCommunities(
+      id: '1',
+      name: 'Community Name',
+      description: 'About community',
+      icon: 'assets/hehe.png',
+      isNSFW: false,
+      members: 100,
+    )
+  ];
+}
+
+@override
+Future<List<SearchUsers>> getSearchUsers(String user, int pageNumber) async {
+  return [
+    SearchUsers(
+      id: '1',
+      username: 'username',
+      about: 'About user',
+      profilePicture: 'assets/hehe.png',
+      isNSFW: false,
+    )
+  ];
 }

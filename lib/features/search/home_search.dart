@@ -210,6 +210,7 @@ class _HomeSearchState extends State<HomeSearch>
             label: "search text",
             identifier: "search text",
             child: TextField(
+              key: Key('search text'),
               canRequestFocus: true,
               focusNode: _focusNode,
               controller: _searchController,
@@ -381,6 +382,7 @@ class _HomeSearchState extends State<HomeSearch>
                           );
                         },
                         child: Text(
+                          key: Key('search for'),
                           'Search for $searchQuery',
                           style: const TextStyle(fontSize: 20),
                         ),
