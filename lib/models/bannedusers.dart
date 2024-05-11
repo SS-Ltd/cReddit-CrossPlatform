@@ -5,7 +5,8 @@ class BannedUserList {
 
   factory BannedUserList.fromJson(Map<String, dynamic> json) {
     var list = json['bannedUsers'] as List;
-    List<BannedUser> bannedUserList = list.map((i) => BannedUser.fromJson(i)).toList();
+    List<BannedUser> bannedUserList =
+        list.map((i) => BannedUser.fromJson(i)).toList();
 
     return BannedUserList(
       bannedUsers: bannedUserList,
@@ -17,9 +18,13 @@ class BannedUser {
   final String name;
   final String reasonToBan;
   final String? modNote;
-  final int? days;       // 0 means permenant
+  final int? days; // 0 means permenant
 
-  BannedUser({required this.name, required this.reasonToBan, this.modNote, required this.days});
+  BannedUser(
+      {required this.name,
+      required this.reasonToBan,
+      this.modNote,
+      required this.days});
 
   factory BannedUser.fromJson(Map<String, dynamic> json) {
     return BannedUser(

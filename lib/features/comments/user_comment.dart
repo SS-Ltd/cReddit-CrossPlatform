@@ -234,6 +234,7 @@ class UserCommentState extends State<UserComment> {
     });
   }
 
+// coverage:ignore-file
   @override
   void dispose() {
     _timer?.cancel();

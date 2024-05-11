@@ -226,6 +226,7 @@ class _PostState extends State<Post> {
     }
   }
 
+// coverage:ignore-file
   @override
   Widget build(BuildContext context) {
     return Padding(

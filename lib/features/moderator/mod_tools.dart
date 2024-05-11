@@ -42,18 +42,22 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
           children: [
             const Heading(text: 'GENERAL'),
             ArrowButton(
+              key: const Key('mod_log'),
                 onPressed: () {},
                 buttonText: "Mod log",
                 buttonIcon: Icons.list),
             ArrowButton(
+              key: const Key('insights'),
                 onPressed: () {},
                 buttonText: "Insights",
                 buttonIcon: Icons.query_stats),
             ArrowButton(
+              key: const Key('community_icon'),
                 onPressed: () {},
                 buttonText: "Community icon",
                 buttonIcon: Icons.reddit),
             ArrowButton(
+              key: const Key('description'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -63,14 +67,17 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Description",
                 buttonIcon: Icons.description),
             ArrowButton(
+              key: const Key('welcome_message'),
                 onPressed: () {},
                 buttonText: "Welcome message",
                 buttonIcon: Icons.message),
             ArrowButton(
+              key: const Key('topics'),
                 onPressed: () {},
                 buttonText: "Topics",
                 buttonIcon: Icons.topic),
             ArrowButton(
+              key: const Key('community_type'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -80,6 +87,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Community type",
                 buttonIcon: Icons.lock),
             ArrowButton(
+              key: const Key('post_type'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -89,6 +97,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Post type",
                 buttonIcon: Icons.type_specimen),
             ArrowButton(
+              key: const Key('location'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -99,6 +108,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonIcon: Icons.location_on_outlined),
             const Heading(text: "CONTENT & REGULATIONS"),
             ArrowButton(
+              key: const Key('queues'),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => const Queues()));
@@ -106,6 +116,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Queues",
                 buttonIcon: Icons.queue),
             ArrowButton(
+              key: const Key('rules'),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Rules(currentCommunity:  widget.communityName)));
@@ -113,6 +124,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Rules",
                 buttonIcon: Icons.rule_folder),
             ArrowButton(
+              key: const Key('scheduled_posts'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -123,6 +135,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonIcon: Icons.query_builder),
             const Heading(text: "USER MANAGEMENT"),
             ArrowButton(
+              key: const Key('moderators'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -132,6 +145,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Moderators",
                 buttonIcon: Icons.shield_outlined),
             ArrowButton(
+              key: const Key('approved_users'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -141,6 +155,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Approved users",
                 buttonIcon: Icons.person_2_outlined),
             ArrowButton(
+              key: const Key('muted_users'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -150,6 +165,7 @@ class _ModeratorToolsSatet extends State<ModeratorTools> {
                 buttonText: "Muted users",
                 buttonIcon: Icons.block_flipped),
             ArrowButton(
+              key: const Key('banned_users'),
                 onPressed: () {
                   Navigator.push(
                       context,
