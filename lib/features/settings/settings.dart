@@ -253,30 +253,17 @@ class _SettingsState extends State<Settings> {
                             buttonIcon: Icons.help_outline),
                         const Heading(text: 'About'),
                         ArrowButton(
-                            onPressed: () => setState(() {
-                                  launchUrl(
-                                      Uri.parse(
-                                          'https://www.redditinc.com/policies/content-policy'),
-                                      mode: LaunchMode.externalApplication);
-                                }),
+                            onPressed: () {},
                             buttonText: 'Content Policy',
                             buttonIcon: Icons.description_outlined),
                         ArrowButton(
-                            onPressed: () => setState(() {
-                                  launchUrl(
-                                      Uri.parse(
-                                          'https://www.reddit.com/policies/privacy-policy'),
-                                      mode: LaunchMode.externalApplication);
-                                }),
+                            onPressed: () {},
+
                             buttonText: 'Privacy Policy',
                             buttonIcon: Icons.privacy_tip),
                         ArrowButton(
-                            onPressed: () => setState(() {
-                                  launchUrl(
-                                      Uri.parse(
-                                          'https://www.redditinc.com/policies/user-agreement'),
-                                      mode: LaunchMode.externalApplication);
-                                }),
+                            onPressed: () {},
+
                             buttonText: 'User Agreement',
                             buttonIcon: Icons.person),
                         ArrowButton(
@@ -285,21 +272,13 @@ class _SettingsState extends State<Settings> {
                             buttonIcon: Icons.description),
                         const Heading(text: 'Support'),
                         ArrowButton(
-                            onPressed: () => setState(() {
-                                  launchUrl(
-                                      Uri.parse(
-                                          'https://support.reddithelp.com/hc/en-us'),
-                                      mode: LaunchMode.externalApplication);
-                                }),
+                            onPressed: () {},
+
                             buttonText: 'Help Center',
                             buttonIcon: Icons.help_outline),
                         ArrowButton(
-                            onPressed: () => setState(() {
-                                  launchUrl(
-                                      Uri.parse(
-                                          'https://www.reddit.com/r/redditmobile/s/Nc8FRHZvS4'),
-                                      mode: LaunchMode.externalApplication);
-                                }),
+                            onPressed: () {},
+
                             buttonText: 'Visit r/redditmobile',
                             buttonIcon: Icons.reddit),
                         ArrowButton(
