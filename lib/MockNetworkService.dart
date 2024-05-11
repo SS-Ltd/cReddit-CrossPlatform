@@ -695,4 +695,9 @@ class MockNetworkService extends NetworkService {
   Future<String> getRandomName() async {
     return 'randomName';
   }
+
+  @override
+  Future<bool> forgotPassword(String username) async {
+    return true;
+  }
 }
