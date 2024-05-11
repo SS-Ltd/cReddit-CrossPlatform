@@ -125,10 +125,6 @@ class _CommentPageState extends State<CommentPage> {
                 ))
             .toList();
       });
-      // print('ssssssssssssssssssssssssssssssssssssssssssssssss');
-      // print(_comments[0].comment.username);
-      // print(_comments[0].comment.content);
-      // print(widget.commentId);
       if (widget.commentId != null) {
         _comments.sort((a, b) {
           if (a.comment.commentId == widget.commentId) {
@@ -140,8 +136,6 @@ class _CommentPageState extends State<CommentPage> {
           }
         });
       }
-      // print(_comments[0].comment.username);
-      // print(_comments[0].comment.content);
     }
   }
 
@@ -310,7 +304,6 @@ class _CommentPageState extends State<CommentPage> {
                     setState(() {
                       UserComment? newComment;
                       if (contentType == false) {
-                        //final String commentText = result['content'];
                         newComment = UserComment(
                           photo: null,
                           imageSource: 2,
@@ -329,7 +322,6 @@ class _CommentPageState extends State<CommentPage> {
                           ),
                         );
                       } else if (contentType == true) {
-                        //final File commentImage = result['content'];
                         newComment = UserComment(
                           photo: result['content'],
                           imageSource: 1,
@@ -479,27 +471,6 @@ class _CommentPageState extends State<CommentPage> {
             },
           ),
         ),
-      // if (widget.username == context.read<NetworkService>().user?.username)
-      //   const PopupMenuItem<Menu>(
-      //       value: Menu.markspoiler,
-      //       child: ListTile(
-      //         leading: Icon(Icons.warning),
-      //         title: Text('Mark spoiler'),
-      //       )),
-      // if (widget.username == context.read<NetworkService>().user?.username)
-      //   const PopupMenuItem<Menu>(
-      //       value: Menu.markNSFW,
-      //       child: ListTile(
-      //         leading: Icon(Icons.warning),
-      //         title: Text('Mark NSFW'),
-      //       )),
-      // if (widget.username == context.read<NetworkService>().user?.username)
-      //   const PopupMenuItem<Menu>(
-      //       value: Menu.markasbrandaffiliate,
-      //       child: ListTile(
-      //         leading: Icon(Icons.warning),
-      //         title: Text('Mark as brand affiliate'),
-      //       )),
       if (widget.username == context.read<NetworkService>().user?.username)
         PopupMenuItem<Menu>(
             value: Menu.delete,
