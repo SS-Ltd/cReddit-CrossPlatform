@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart';
 import 'package:reddit_clone/common/CustomLoadingIndicator.dart';
 import 'package:reddit_clone/features/User/follow_unfollow_button.dart';
@@ -262,28 +263,33 @@ class _HomeSearchState extends State<HomeSearch>
                   controller: _tabController,
                   tabs: const <Widget>[
                     SizedBox(
+                      key: Key('Posts'),
                       width: 40,
                       child: Tab(text: "Posts"),
                     ),
                     SizedBox(
                       width: 100,
                       child: Tab(
+                        key: Key('Communities'),
                         text: "Communities",
                       ),
                     ),
                     SizedBox(
+                      key: Key('Comments'),
                       width: 80,
                       child: Tab(
                         text: "Comments",
                       ),
                     ),
                     SizedBox(
+                      key: Key('People'),
                       width: 80,
                       child: Tab(
                         text: "People",
                       ),
                     ),
                     SizedBox(
+                      key: Key('Hashtags'),
                       width: 80,
                       child: Tab(
                         text: "Hashtags",
