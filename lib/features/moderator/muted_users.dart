@@ -47,14 +47,7 @@ class _MutedUserState extends State<MutedUser> {
               children: [
                 ListTile(
                   onTap: () {},
-                  //                     leading: CircleAvatar(
-                  //   backgroundImage: NetworkImage(
-                  //       peopleResults[index].profilePicture),
-                  // ),
-                  //                 title: Text(
-                  // 'u/${peopleResults[index].username}'),
                   subtitle: const Text('cake'),
-                  //trailing: ,
                 ),
                 const Divider(
                   thickness: 1,
