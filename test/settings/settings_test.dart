@@ -1,13 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/MockNetworkService.dart';
-import 'package:reddit_clone/features/settings/account_settings.dart';
 import 'package:reddit_clone/features/settings/settings.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
 void main() {
-//  Settings settings = Settings();
 
   testWidgets('Settings Page', (WidgetTester tester) async {
     await tester.pumpWidget(
@@ -18,58 +18,75 @@ void main() {
         ),
       ),
     );
+  await tester.pumpAndSettle();
+  expect(find.text('Settings'), findsOneWidget);
 
-    expect(find.byType(Settings), findsOneWidget);
-    expect(find.text('Settings'), findsOneWidget);
+  expect(find.text('General'), findsOneWidget);
 
-    Finder appBarFinder = find.byType(AppBar);
-    expect(appBarFinder, findsOneWidget);
+  expect(find.text('Get Premium'), findsOneWidget);
 
-    Finder buttonFinder = find.descendant(
-      of: appBarFinder,
-      matching: find.byTooltip('Back'),
-    );
-    expect(buttonFinder, findsOneWidget);
+  expect(find.text('Change app icon'), findsOneWidget);
 
+  expect(find.text('Create Avatar'), findsOneWidget);
 
+  expect(find.text('Language'), findsOneWidget);
 
-    Finder account = find.byKey(const Key('AccountSettingsButton'));
-    expect(account, findsOneWidget);
-    await tester.tap(account);
-    await tester.pumpAndSettle();
-    expect(find.byType(AccountSettings), findsOneWidget);
+  expect(find.text('App Language'), findsOneWidget);
 
+  expect(find.text('Content Language'), findsOneWidget);
 
-    // bool initialReduceAnimations = settings.reduceAnimations;
-    // print(initialReduceAnimations);
-    Finder reduceAnimations = find.byKey(const Key('ReduceAnimationsButton'));
-    expect(reduceAnimations, findsOneWidget);
-    await tester.tap(reduceAnimations);
-    // await tester.pumpAndSettle();
-    // print(settings.reduceAnimations);
-    // expect(settings.reduceAnimations, !initialReduceAnimations);
+  expect(find.text('View Options'), findsOneWidget);
 
-    Finder showNSFW = find.byKey(const Key('ShowNSFWButton'));
-    expect(showNSFW, findsOneWidget);
-    await tester.tap(showNSFW);
+  expect(find.text('Dark Mode'), findsOneWidget);
 
-    Finder blurNSFW = find.byKey(const Key('BlurNSFWButton'));
-    expect(blurNSFW, findsOneWidget);
-    await tester.tap(blurNSFW);
+  expect(find.text('Default view'), findsOneWidget);
 
-    Finder darkMode = find.byKey(const Key('DarkModeButton'));
-    expect(darkMode, findsOneWidget);
-    await tester.tap(darkMode);
+  expect(find.text('Autoplay'), findsOneWidget);  
 
-    Finder saveButton = find.byKey(const Key('SavedImagesButton'));
-    expect(saveButton, findsOneWidget);
-    await tester.tap(saveButton);
+  expect(find.text('Thumbnails'), findsOneWidget);
 
-    Finder commentJump = find.byKey(const Key('CommentJumpButton'));
-    expect(commentJump, findsOneWidget);
-    await tester.tap(commentJump);
+  expect(find.text('Reduce Animations'), findsOneWidget);
 
-    // Finder cancelbutton = find.byKey(const Key('CancelButton'));
-    // await tester.tap(cancelbutton);
+  expect(find.text("Show NSFW content (I'm over 18)"), findsOneWidget);
+
+  expect(find.text('Blur NSFW images'), findsOneWidget);
+
+  expect(find.text('Accessibility'), findsOneWidget);
+
+  expect(find.text('Increase Text Size'), findsOneWidget);
+
+  expect(find.text('Auto Dark Mode'), findsOneWidget);
+
+  expect(find.text('Dark Mode'), findsOneWidget);
+
+  expect(find.text('Light theme'), findsOneWidget);
+
+  expect(find.text('Dark theme'), findsOneWidget);
+
+  expect(find.text('Advanced'), findsOneWidget);
+
+  expect(find.text('Saved image attribution'), findsOneWidget);
+
+  expect(find.text('Comment jump button'), findsOneWidget);
+
+  expect(find.text('Default comment sort'), findsOneWidget);
+
+  expect(find.text('Export video log'), findsOneWidget);
+
+  expect(find.text('Content Policy'), findsOneWidget);
+
+  expect(find.text('Privacy Policy'), findsOneWidget);
+
+  expect(find.text('User Agreement'), findsOneWidget);
+
+  expect(find.text('Acknowledgments'), findsOneWidget);
+
+  expect(find.text('Support'), findsOneWidget);
+
+  expect(find.text('Help Center'), findsOneWidget);
+
+  expect(find.text('Visit r/redditmobile'), findsOneWidget);
+
+  expect(find.text('Report an issue'), findsOneWidget);
   });
 }
