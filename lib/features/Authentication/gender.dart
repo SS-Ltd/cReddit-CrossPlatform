@@ -43,20 +43,17 @@ class Gender extends StatelessWidget {
   /// navigates to the home screen using the [CustomNavigationBar] widget.
   /// Otherwise, it displays a snackbar with an error message.
   void signup(BuildContext context) async {
-    bool signup = await context.read<NetworkService>().createUser(
-        userData["username"],
-        userData["email"],
-        userData["password"],
-        userData["gender"],
-        fcmToken);
+    bool signup = await Provider.of<NetworkService>(context, listen: false)
+        .createUser(userData["username"], userData["email"],
+            userData["password"], userData["gender"], fcmToken);
     if (signup) {
       Navigator.popUntil(context, (route) => route.isFirst);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CustomNavigationBar(
-                    isProfile: false,
-                  )));
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => CustomNavigationBar(
+      //               isProfile: false,
+      //             )));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to sign up')),
@@ -81,6 +78,7 @@ class Gender extends StatelessWidget {
         centerTitle: true,
         actions: [
           TextButton(
+            key: const Key('skip'),
             onPressed: () {
               // Handle skip action
               signup(context);
