@@ -1,53 +1,54 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:reddit_clone/MockNetworkService.dart';
-import 'package:reddit_clone/features/settings/update_email.dart';
-import 'package:reddit_clone/services/networkServices.dart';
+import 'package:reddit_clone/features/moderator/moderators.dart';
 
 void main() {
-  testWidgets('Moderators page', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider<NetworkService>(
-        create: (_) => MockNetworkService(),
-        child: const MaterialApp(
-          home: UpdateEmail(),
-        ),
-      ),
-    );
+  testWidgets('Moderator Widget Test', (WidgetTester tester) async {
+    // Build the Moderator widget.
+    await tester.pumpWidget(const MaterialApp(home: Moderator(communityName: 'test')));
 
+    // Verify that the Moderator widget is rendered.
+    expect(find.byType(Moderator), findsOneWidget);
+
+    // Verify that the AppBar title is 'Moderators'.
     expect(find.text('Moderators'), findsOneWidget);
 
-    Finder appBarFinder = find.byType(AppBar);
-    expect(appBarFinder, findsOneWidget);
+    // Verify that the back button is working correctly.
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pump();
 
-    Finder buttonFinder = find.descendant(
-      of: appBarFinder,
-      matching: find
-          .byTooltip('Back'),
-    );
-    expect(buttonFinder, findsOneWidget);
+    // Verify that the add button is working correctly.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
 
-    buttonFinder = find.descendant(
-      of: appBarFinder,
-      matching: find
-          .byTooltip('Add moderator'),
-    );
-    expect(buttonFinder, findsOneWidget);
+    // Verify that the TabBar is present.
+    expect(find.byType(TabBar), findsOneWidget);
 
-    // Finder newemail = find.byType(TextField).at(0);
-    // expect(newemail, findsOneWidget);
-    // await tester.enterText(newemail, 'usama.nn201@gmail.com');
-    // expect(find.text('usama.nn201@gmail.com'), findsOneWidget);
+    // Verify that the TabBarView is present.
+    expect(find.byType(TabBarView), findsOneWidget);
 
-    // Finder currentpassword = find.byType(TextField).at(1);
-    // expect(currentpassword, findsOneWidget);
-    // await tester.enterText(currentpassword, '12234556');
-    // expect(find.text('12234556'), findsOneWidget);
+    // Verify that the ListView is populated correctly.
+    expect(find.byType(ListTile), findsWidgets);
+    expect(find.byType(Divider), findsWidgets);
 
-    // Finder savebutton = find.byKey(const Key('SaveButton'));
-    // await tester.tap(savebutton);
-    // expect(find.byType(UpdateEmail), findsOneWidget);
-;
+    // Verify that the IconButton in the ListTile is present.
+    expect(find.byType(IconButton), findsWidgets);
+
+    // Verify that the TabBar has two tabs.
+    expect(find.byType(Tab), findsNWidgets(2));
+
+    // Verify that the first tab is 'All'.
+    expect(find.widgetWithText(Tab, 'All'), findsOneWidget);
+
+    // Verify that the second tab is 'Editable'.
+    expect(find.widgetWithText(Tab, 'Editable'), findsOneWidget);
+
+    // Tap the 'Editable' tab.
+    await tester.tap(find.text('Editable'));
+    await tester.pump();
+
+    // Verify that the 'Editable' tab is selected.
+    expect(find.widgetWithText(Tab, 'Editable'), findsOneWidget);
+
   });
 }
