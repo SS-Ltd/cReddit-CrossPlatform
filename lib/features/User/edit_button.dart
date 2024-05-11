@@ -24,8 +24,6 @@ class EditButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
         onPressed: () {
-          print("HELLLOOPRGEGER");
-          print(bannerUrl);
           // Add functionality to edit user profile given the username
           Navigator.push(
             context,

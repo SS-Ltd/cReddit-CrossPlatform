@@ -128,6 +128,21 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
+  Future<UserModel> getUserDetails(String username) async {
+    return UserModel(
+        username: 'mockUser',
+        displayName: '',
+        email: '',
+        profilePicture: 'assets/hehe.png',
+        followers: 0,
+        cakeDay: DateTime.now(),
+        isBlocked: false);
+  }
+
+  Future<void> logout(String? fcmToken) async {
+    return;
+  }
+
   @override
   getUser() {
     return UserModel(
@@ -173,6 +188,10 @@ class MockNetworkService extends NetworkService {
         isJoined: false,
       ),
     ];
+  }
+
+  Future<bool> editTextPost(String postId, String content) async {
+    return true;
   }
 
   // Future<bool> login(String username, String password, String? fcmToken) async {
@@ -252,7 +271,6 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
-  
   Future<List<Comments>?> fetchUserComments(String username,
       {int page = 1, int limit = 10}) async {
     return [
@@ -301,11 +319,13 @@ class MockNetworkService extends NetworkService {
   }
 
   @override
-  Future<List<Messages>?> fetchInboxMessages({int page = 1, int limit = 10}) async {
+  Future<List<Messages>?> fetchInboxMessages(
+      {int page = 1, int limit = 10}) async {
     return List<Messages>.generate(limit, (index) {
       return Messages(
         id: 'id$index',
-        from: 'from$index', // This should create a message with 'from0' as the 'from' field
+        from:
+            'from$index', // This should create a message with 'from0' as the 'from' field
         to: 'to$index',
         subject: 'subject$index',
         text: 'text$index',
@@ -338,12 +358,9 @@ class MockNetworkService extends NetworkService {
 
 @override
 Future<int> updateemail(String newemail, String password) async {
-  if (newemail != '' && password != '')
-  {
+  if (newemail != '' && password != '') {
     return 201;
-  }
-  else
-  {
+  } else {
     return 401;
   }
 }
