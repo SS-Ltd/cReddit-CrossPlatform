@@ -66,12 +66,8 @@ class _AddApprovedState extends State<AddApproved> {
                 },
               ),
             ),
-            const Row(
-              children: [
-                Text(
-                  "This user will be able to submit cpntent to your community",
-                ),
-              ],
+            Text(
+              "This user will be able to submit cpntent to your community",
             ),
           ],
         ),
