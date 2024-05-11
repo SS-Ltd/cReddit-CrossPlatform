@@ -1,3 +1,4 @@
+import 'package:reddit_clone/models/bannedusers.dart';
 import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/community.dart';
@@ -107,6 +108,24 @@ class MockNetworkService extends NetworkService {
       isModerator: false,
       isBlocked: false,
       isNSFW: false,
+    );
+  }
+
+  @override
+  Future<BannedUserList?> fetchUnbannedUsers() async {
+    return BannedUserList(
+      bannedUsers: [
+        BannedUser(
+          name: 'User1',
+          reasonToBan: '',
+          days: null,
+        ),
+        BannedUser(
+          name: 'User2',
+          reasonToBan: '',
+          days: null,
+        ),
+      ],
     );
   }
 

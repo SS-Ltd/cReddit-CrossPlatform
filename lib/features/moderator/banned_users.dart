@@ -76,8 +76,7 @@ class _BannedUserState extends State<BannedUser> {
                       ListTile(
                         onTap: () {},
                         title: Text('u/${bannedUsers[index].name}'),
-                        subtitle: Text(
-                            'days: ${bannedUsers[index].days}'),
+                        subtitle: Text('days: ${bannedUsers[index].days}'),
                       ),
                       const Divider(
                         thickness: 1,

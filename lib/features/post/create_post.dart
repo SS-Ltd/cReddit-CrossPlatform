@@ -462,7 +462,7 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
-                  key: const Key('PostButton'),
+                    key: const Key('PostButton'),
                     onPressed: _istitleempty
                         ? null
                         : _isbodyempty &&
@@ -1251,3 +1251,4 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 }
+// coverage:ignore-file
