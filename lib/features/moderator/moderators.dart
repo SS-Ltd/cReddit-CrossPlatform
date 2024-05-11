@@ -29,6 +29,7 @@ class _ModeratorState extends State<Moderator>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
+          tooltip: 'Back',
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
@@ -37,6 +38,7 @@ class _ModeratorState extends State<Moderator>
         title: const Text('Moderators'),
         actions: [
           IconButton(
+            tooltip: 'Add moderator',
             onPressed: () {
               Navigator.push(
                   context,

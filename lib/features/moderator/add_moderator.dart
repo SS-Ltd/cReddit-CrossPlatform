@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 class AddModerator extends StatefulWidget {
   const AddModerator({super.key, required this.communityName});
 
-final String communityName;
-  
+  final String communityName;
 
   @override
   State<AddModerator> createState() {
@@ -26,6 +25,7 @@ class _AddModeratorState extends State<AddModerator> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
+            tooltip: 'Back',
             onPressed: () {
               Navigator.pop(context);
             },
@@ -34,16 +34,26 @@ class _AddModeratorState extends State<AddModerator> {
           title: const Text("Add a moderator"),
           actions: [
             ElevatedButton(
-              onPressed: _isusernameempty ? null : () async {
-                bool newModerator = await Provider.of<NetworkService>(context,
-                        listen: false)
-                    .addModerator(
-                        _userNameController.text, widget.communityName);
-                if (newModerator) {
-                  CustomSnackBar(context: context, content: "u/${_userNameController.text} was invited", backgroundColor: Colors.white, textColor: Colors.black).show();
-                  Navigator.pop(context);
-                }
-              },
+              key: const Key('InviteButton'),
+              onPressed: _isusernameempty
+                  ? null
+                  : () async {
+                      bool newModerator = await Provider.of<NetworkService>(
+                              context,
+                              listen: false)
+                          .addModerator(
+                              _userNameController.text, widget.communityName);
+                      if (newModerator) {
+                        CustomSnackBar(
+                                context: context,
+                                content:
+                                    "u/${_userNameController.text} was invited",
+                                backgroundColor: Colors.white,
+                                textColor: Colors.black)
+                            .show();
+                        Navigator.pop(context);
+                      }
+                    },
               child: const Text("Invite"),
             ),
           ],
@@ -65,12 +75,13 @@ class _AddModeratorState extends State<AddModerator> {
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: TextField(
+                key: const Key('username'),
                 controller: _userNameController,
                 decoration: InputDecoration(
                   prefixText: "u/",
                   hintText: "username",
-                  border:
-                      OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40)),
                   contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                 ),
                 onChanged: (value) {
@@ -92,6 +103,7 @@ class _AddModeratorState extends State<AddModerator> {
             Row(
               children: [
                 Checkbox(
+                  key: const Key('checkbox_0'),
                   value: checkBoxController[0],
                   onChanged: (value) {
                     setState(
@@ -110,6 +122,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_1'),
                       value: checkBoxController[1],
                       onChanged: (value) {
                         setState(
@@ -128,6 +141,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_2'),
                       value: checkBoxController[2],
                       onChanged: (value) {
                         setState(
@@ -148,6 +162,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_3'),
                       value: checkBoxController[3],
                       onChanged: (value) {
                         setState(
@@ -166,6 +181,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_4'),
                       value: checkBoxController[4],
                       onChanged: (value) {
                         setState(
@@ -186,6 +202,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_5'),
                       value: checkBoxController[5],
                       onChanged: (value) {
                         setState(
@@ -204,6 +221,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_6'),
                       value: checkBoxController[6],
                       onChanged: (value) {
                         setState(
@@ -224,6 +242,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_7'),
                       value: checkBoxController[7],
                       onChanged: (value) {
                         setState(
@@ -242,6 +261,7 @@ class _AddModeratorState extends State<AddModerator> {
                 Row(
                   children: [
                     Checkbox(
+                      key: const Key('checkbox_8'),
                       value: checkBoxController[8],
                       onChanged: (value) {
                         setState(
