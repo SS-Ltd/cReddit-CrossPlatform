@@ -1,10 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reddit_clone/features/settings/account_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/features/post/share.dart';
 import 'package:reddit_clone/models/post_model.dart';
-import 'package:reddit_clone/features/settings/manage_blocked_accounts.dart';
-import 'package:reddit_clone/features/home_page/post.dart';
+
 
 void main() {
   testWidgets('Share widget test', (WidgetTester tester) async {
