@@ -1,6 +1,4 @@
 // ignore_for_file: avoid_print
-// coverage:ignore-file
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reddit_clone/models/bannedusers.dart';
@@ -221,6 +219,7 @@ class NetworkService extends ChangeNotifier {
     }
   }
 
+// coverage:ignore-file
   Future<bool> forgotPassword(String username) async {
     final url = Uri.parse('$_baseUrl/user/forgot-password');
     final response = await http.post(
