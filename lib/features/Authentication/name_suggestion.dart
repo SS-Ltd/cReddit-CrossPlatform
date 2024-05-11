@@ -145,6 +145,7 @@ class NameSuggestionState extends State<NameSuggestion> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     TextButton(
+                                      key: const Key('Generate Again'),
                                       onPressed: () {
                                         generateRandomNames();
                                       },
@@ -181,8 +182,9 @@ class NameSuggestionState extends State<NameSuggestion> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            Gender(userData: widget.userData, fcmToken: widget.fcmToken)),
+                        builder: (context) => Gender(
+                            userData: widget.userData,
+                            fcmToken: widget.fcmToken)),
                   );
                 },
               ),

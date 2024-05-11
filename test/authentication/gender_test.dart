@@ -5,6 +5,7 @@ import 'package:reddit_clone/MockNetworkService.dart';
 import 'package:reddit_clone/features/Authentication/forget_password.dart';
 import 'package:reddit_clone/features/Authentication/gender.dart';
 import 'package:reddit_clone/features/Authentication/login.dart';
+import 'package:reddit_clone/features/Authentication/name_suggestion.dart';
 import 'package:reddit_clone/features/Authentication/widgets/user_agreement.dart';
 import 'package:reddit_clone/features/home_page/menu_notifier.dart';
 import 'package:reddit_clone/services/networkServices.dart';
@@ -68,6 +69,32 @@ void main() {
 
     // Tap the 'Skip' button and trigger a frame.
     await tester.tap(find.byKey(Key('skip')));
+    await tester.pump();
+  });
+
+  testWidgets('NameSuggestion widget test', (WidgetTester tester) async {
+    final mockNetworkService = MockNetworkService();
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<NetworkService>(
+              create: (_) => mockNetworkService),
+        ],
+        child: MaterialApp(
+          home: NameSuggestion(
+            userData: {
+              'username': '',
+              'email': '',
+              'password': '',
+              'gender': ''
+            },
+          ),
+        ),
+      ),
+    );
+
+    // Verify the screen is rendered
+    expect(find.text('Create your username'), findsOneWidget);
     await tester.pump();
   });
 }

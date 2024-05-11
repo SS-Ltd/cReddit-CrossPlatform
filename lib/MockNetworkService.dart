@@ -690,4 +690,9 @@ class MockNetworkService extends NetworkService {
     print('Mock Creating user...');
     return true;
   }
+
+  @override
+  Future<String> getRandomName() async {
+    return 'randomName';
+  }
 }
