@@ -64,7 +64,7 @@ class MockNetworkService extends NetworkService {
       displayName: 'Display Name',
       about: 'About user',
       email: 'user@example.com',
-      profilePicture: 'profile.jpg',
+      profilePicture: 'assets/hehe.png',
       banner: 'assets/hehe.png',
       followers: 100,
       cakeDay: DateTime.parse('2022-01-01'),
@@ -96,7 +96,7 @@ class MockNetworkService extends NetworkService {
       isEdited: false,
       createdAt: DateTime.parse('2022-01-01'),
       updatedAt: DateTime.parse('2022-01-02'),
-      profilePicture: 'profile.jpg',
+      profilePicture: 'assets/hehe.png',
       commentCount: 2,
       isDeletedUser: false,
       isUpvoted: false,
@@ -289,6 +289,7 @@ class MockNetworkService extends NetworkService {
     }
   }
 
+  @override
   Future<List<PostModel>?> fetchUserPosts(
     String username, {
     String sort = 'hot',
@@ -325,6 +326,7 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
+  @override
   Future<List<Comments>?> fetchUserComments(String username,
       {int page = 1, int limit = 10}) async {
     return [
@@ -408,112 +410,117 @@ class MockNetworkService extends NetworkService {
       );
     });
   }
-}
 
-@override
-Future<int> updateemail(String newemail, String password) async {
-  if (newemail != '' && password != '') {
-    return 201;
-  } else {
-    return 401;
+  @override
+  Future<int> updateemail(String newemail, String password) async {
+    if (newemail != '' && password != '') {
+      return 201;
+    } else {
+      return 401;
+    }
   }
-}
 
-@override
-Future<List<SearchComments>> getSearchComments(String comment, String username,
-    String sort, String timeOption, int pageNumber, String community) async {
-  return [
-    SearchComments(
-      id: '1',
-      postID: 'post1',
-      postTitle: 'Post Title',
-      postUsername: 'username',
-      postVotes: 10,
-      postPicture: 'assets/hehe.png',
-      postCreatedAt: '2022-01-01',
-      isPostNSFW: false,
-      isPostSpoiler: false,
-      username: 'username',
-      communityName: 'community',
-      commentPicture: 'assets/hehe.png',
-      netVote: 5,
-      commentCount: 2,
-      content: 'This is a comment',
-      createdAt: '2022-01-02',
-    )
-  ];
-}
+  @override
+  Future<List<SearchComments>> getSearchComments(
+      String comment,
+      String username,
+      String sort,
+      String timeOption,
+      int pageNumber,
+      String community) async {
+    return [
+      SearchComments(
+        id: '1',
+        postID: 'post1',
+        postTitle: 'Post Title',
+        postUsername: 'username',
+        postVotes: 10,
+        postPicture: 'assets/hehe.png',
+        postCreatedAt: '2022-01-01',
+        isPostNSFW: false,
+        isPostSpoiler: false,
+        username: 'username',
+        communityName: 'community',
+        commentPicture: 'assets/hehe.png',
+        netVote: 5,
+        commentCount: 2,
+        content: 'This is a comment',
+        createdAt: '2022-01-02',
+      )
+    ];
+  }
 
-@override
-Future<List<dynamic>> getSearchHashtags(
-    String hashtag, int pageNumber, String username, String community) async {
-  return [
-    SearchHashtag(
-      id: '1',
-      postID: 'post1',
-      postTitle: 'Post Title',
-      postUsername: 'username',
-      postVotes: 10,
-      postPicture: 'assets/hehe.png',
-      postCreatedAt: DateTime.now(),
-      isPostNsfw: false,
-      isPostSpoiler: false,
-      communityName: 'community',
-      createdAt: DateTime.now(),
-      username: 'username',
-      netVote: 5,
-      commentCount: 2,
-      commentPicture: 'assets/hehe.png',
-      content: 'This is a comment',
-    )
-  ];
-}
+  @override
+  Future<List<dynamic>> getSearchHashtags(
+      String hashtag, int pageNumber, String username, String community) async {
+    return [
+      SearchHashtag(
+        id: '1',
+        postID: 'post1',
+        postTitle: 'Post Title',
+        postUsername: 'username',
+        postVotes: 10,
+        postPicture: 'assets/hehe.png',
+        postCreatedAt: DateTime.now(),
+        isPostNsfw: false,
+        isPostSpoiler: false,
+        communityName: 'community',
+        createdAt: DateTime.now(),
+        username: 'username',
+        netVote: 5,
+        commentCount: 2,
+        commentPicture: 'assets/hehe.png',
+        content: 'This is a comment',
+      )
+    ];
+  }
 
-@override
-Future<List<SearchPosts>> getSearchPosts(String post, String username,
-    String sort, String time, int pageNumber, String community) async {
-  return [
-    SearchPosts(
-      id: '1',
-      type: 'post',
-      username: 'username',
-      communityName: 'community',
-      profilePicture: 'profile.jpg',
-      netVote: 10,
-      commentCount: 2,
-      title: 'Post Title',
-      content: 'This is a post',
-      createdAt: '2022-01-01',
-      isNSFW: false,
-      isSpoiler: false,
-    )
-  ];
-}
+  @override
+  Future<List<SearchPosts>> getSearchPosts(String post, String username,
+      String sort, String time, int pageNumber, String community) async {
+    return [
+      SearchPosts(
+        id: '1',
+        type: 'post',
+        username: 'username',
+        communityName: 'community',
+        profilePicture: 'assets/hehe.png',
+        netVote: 10,
+        commentCount: 2,
+        title: 'Post Title',
+        content: 'This is a post',
+        createdAt: '2022-01-01',
+        isNSFW: false,
+        isSpoiler: false,
+      )
+    ];
+  }
 
-@override
-Future<List<SearchCommunities>> getSearchCommunities(
-    String community, bool autocomplete, int pageNumber) async {
-  return [
-    SearchCommunities(
-      id: '1',
-      name: 'Community Name',
-      description: 'About community',
-      icon: 'assets/hehe.png',
-      isNSFW: false,
-      members: 100,
-    )
-  ];
-}
+  @override
+  Future<List<SearchCommunities>> getSearchCommunities(
+      String community, bool autocomplete, int pageNumber) async {
+    return [
+      SearchCommunities(
+        id: '1',
+        name: 'Community Name',
+        description: 'About community',
+        icon: 'assets/hehe.png',
+        isNSFW: false,
+        members: 100,
+      )
+    ];
+  }
 
-@override
-Future<List<SearchUsers>> getSearchUsers(String user, int pageNumber) async {
-  return [
-    SearchUsers(
-      id: '1',
-      username: 'username',
-      about: 'About user',
-      profilePicture: 'assets/hehe.png',
-      isNSFW: false,
-    )
-  ];
+  @override
+  Future<List<SearchUsers>> getSearchUsers(String user, int pageNumber) async {
+    return [
+      SearchUsers(
+        id: '1',
+        username: 'username',
+        about: 'About user',
+        profilePicture: 'assets/hehe.png',
+        isNSFW: false,
+      )
+    ];
+  }
 }
