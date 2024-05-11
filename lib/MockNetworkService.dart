@@ -175,29 +175,29 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
-  Future<bool> login(String username, String password, String? fcmToken) async {
-    print('Mock Logging in...');
-    isLoginCalled = true;
+  // Future<bool> login(String username, String password, String? fcmToken) async {
+  //   print('Mock Logging in...');
+  //   isLoginCalled = true;
 
-    // You can add conditions to simulate different responses based on the input
-    if (username == 'validUser' && password == 'validPassword') {
-      super.updateUser(UserModel(
-        username: 'mockUser',
-        displayName: '',
-        email: '',
-        profilePicture: '',
-        followers: 0,
-        cakeDay: DateTime.now(),
-        isBlocked: false,
-      ));
+  //   // You can add conditions to simulate different responses based on the input
+  //   if (username == 'validUser' && password == 'validPassword') {
+  //     super.updateUser(UserModel(
+  //       username: 'mockUser',
+  //       displayName: '',
+  //       email: '',
+  //       profilePicture: '',
+  //       followers: 0,
+  //       cakeDay: DateTime.now(),
+  //       isBlocked: false,
+  //     ));
 
-      print('Mock Logged in.');
-      return loginResult = true;
-    } else {
-      print('Mock Login failed');
-      return loginResult = false;
-    }
-  }
+  //     print('Mock Logged in.');
+  //     return loginResult = true;
+  //   } else {
+  //     print('Mock Login failed');
+  //     return loginResult = false;
+  //   }
+  // }
 
   bool isSignUpCalled = false;
   bool signUpResult = false;
@@ -333,5 +333,17 @@ class MockNetworkService extends NetworkService {
         profilePic: 'assets/hehe.png',
       );
     });
+  }
+}
+
+@override
+Future<int> updateemail(String newemail, String password) async {
+  if (newemail != '' && password != '')
+  {
+    return 201;
+  }
+  else
+  {
+    return 401;
   }
 }

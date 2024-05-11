@@ -133,6 +133,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ),
                       ),
                       TextFormField(
+                        key: const Key('newPassword'),
                         controller: _newPasswordController,
                         obscureText: _obscureTextNew,
                         decoration: InputDecoration(
@@ -154,6 +155,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         },
                       ),
                       TextFormField(
+                        key: const Key('confirmPassword'),
                         controller: _confirmPasswordController,
                         obscureText: _obscureTextConfirm,
                         decoration: InputDecoration(
@@ -183,20 +185,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
+                                key: const Key('CancelButton'),
                                 onPressed: () {
                                   _currentPasswordController.clear();
                                   _newPasswordController.clear();
                                   _confirmPasswordController.clear();
                                   Navigator.pop(context);
                                 },
-                                // style: ElevatedButton.styleFrom(
-                                //     minimumSize: const Size(150, 40)),
                                 child: const Text('Cancel'),
                               ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: ElevatedButton(
+                                key: const Key('SaveButton'),
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     int changeresponse = await context

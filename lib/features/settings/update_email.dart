@@ -118,8 +118,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your password';
-                          }
-                          else if (value.length < 8) {
+                          } else if (value.length < 8) {
                             return 'Password must be at least 8 characters long';
                           }
                           return null;
@@ -129,6 +128,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
+                            key: const Key('forgotpassword'),
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -148,6 +148,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
+                                key: const Key('CancelButton'),
                                 onPressed: () {
                                   _emailController.clear();
                                   _passwordController.clear();
@@ -159,6 +160,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: ElevatedButton(
+                                key: const Key('SaveButton'),
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     int changeResponse = await context
