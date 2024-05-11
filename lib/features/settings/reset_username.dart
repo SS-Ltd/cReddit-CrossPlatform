@@ -69,18 +69,17 @@ class _ResetUsernameState extends State<ResetUsername> {
           Row(
             children: [
               TextButton(
-                  onPressed: () => setState(() {
-                        launchUrl(
-                            Uri.parse(
-                                'https://support.reddithelp.com/hc/en-us/articles/205240005-How-do-I-log-in-to-Reddit-if-I-forgot-my-password'),
-                            mode: LaunchMode.externalApplication);
-                      }),
-                  child: const Text('Having Trouble?',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue,
-                      ))),
+                key: const Key('having_trouble_button'),
+                onPressed: () {},
+                child: const Text(
+                  'Having Trouble?',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.blue,
+                  ),
+                ),
+              ),
             ],
           ),
           Padding(
@@ -89,6 +88,7 @@ class _ResetUsernameState extends State<ResetUsername> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
+                  key: const Key('cancel_button'),
                   onPressed: () {
                     _emailController.clear();
                     Navigator.pop(context);
@@ -103,6 +103,7 @@ class _ResetUsernameState extends State<ResetUsername> {
                   child: const Text('CANCEL'),
                 ),
                 TextButton(
+                  key: const Key('email_me_button'),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       int changeresponse =
@@ -110,7 +111,10 @@ class _ResetUsernameState extends State<ResetUsername> {
                                 _emailController.text,
                               );
                       if (changeresponse == 200) {
-                        CustomSnackBar(context: context, content: "Please Check Your Email", backgroundColor: Colors.green);
+                        CustomSnackBar(
+                            context: context,
+                            content: "Please Check Your Email",
+                            backgroundColor: Colors.green);
                       }
                     }
                     Navigator.pop(context);

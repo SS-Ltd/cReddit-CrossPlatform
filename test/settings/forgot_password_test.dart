@@ -1,36 +1,26 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:reddit_clone/MockNetworkService.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:reddit_clone/features/settings/forgot_password.dart';
-import 'package:reddit_clone/services/networkServices.dart';
 
 void main() {
-  testWidgets('Forgot Password', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider<NetworkService>(
-        create: (_) => MockNetworkService(),
-        child: const MaterialApp(
-          home: ForgotPassword(),
-        ),
-      ),
-    );
+  testWidgets('Forgot Password widget test', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: ForgotPassword()));
 
     expect(find.text('Forgot your password?'), findsOneWidget);
 
-    Finder username = find.byType(TextField).at(0);
-    expect(username, findsOneWidget);
-    await tester.enterText(username, 'usama.nn201@gmail.com');
-    expect(find.text('usama.nn201@gmail.com'), findsOneWidget);
+    expect(find.text("Forgot username"), findsOneWidget);
 
-    Finder email = find.byType(TextField).at(1);
-    expect(email, findsOneWidget);
-    await tester.enterText(email, '12234556');
-    expect(find.text('12234556'), findsOneWidget);
+    expect(find.text("Unfortunately, if you have never given us your email, we will not be able to reset your password."), findsOneWidget);
+    
+    expect(find.text("Having Trouble?"), findsOneWidget);
+    expect(find.text("CANCEL"), findsOneWidget);
+    expect(find.text("EMAIL ME"), findsOneWidget);
 
-    // Finder savebutton = find.byKey(const Key('SaveButton'));
-    // await tester.tap(savebutton);
-    // expect(find.byType(UpdateEmail), findsOneWidget);
+    expect(find.byKey(const Key('forgot_username_button')), findsOneWidget);
+    expect(find.byKey(const Key('having_trouble_button')), findsOneWidget);
+    expect(find.byKey(const Key('cancel_button')), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('username_field')), 'test');
 
   });
 }
