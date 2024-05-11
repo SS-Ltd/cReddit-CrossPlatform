@@ -29,11 +29,11 @@ void main() {
             'Sunt capio vapulus deorsum ultio comburo validus defessus. Ait caritas utique earum sumptus bibo assentator. Sulum vitae laborum pauper pax aestas ipsum currus nam caute.'),
         findsOneWidget);
     expect(find.widgetWithText(ElevatedButton, 'Join'), findsAny);
-
   });
 
-  testWidgets('Community Page when isJoined is true', (WidgetTester tester) async {
-     await tester.pumpWidget(
+  testWidgets('Community Page when isJoined is true',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
       ChangeNotifierProvider<NetworkService>(
         create: (_) => MockNetworkService(),
         child: const MaterialApp(

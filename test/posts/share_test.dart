@@ -1,8 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reddit_clone/MockNetworkService.dart';
+import 'package:reddit_clone/features/post/community_choice.dart';
 import 'package:reddit_clone/features/post/share.dart';
 import 'package:reddit_clone/models/post_model.dart';
-
+import 'package:reddit_clone/services/networkServices.dart';
 
 void main() {
   testWidgets('Share widget test', (WidgetTester tester) async {
@@ -30,9 +33,17 @@ void main() {
       isSaved: false,
       isHidden: false,
       isNSFW: false,
-    ); 
+    );
 
-    await tester.pumpWidget(MaterialApp(home: Share(post: mockPost, communityName: "My Profile")));
+    await tester.pumpWidget(
+      ChangeNotifierProvider<NetworkService>(
+        create: (_) => MockNetworkService(),
+        child: Builder(
+          builder: (context) => MaterialApp(
+              home: Share(post: mockPost, communityName: "My Profile")),
+        ),
+      ),
+    );
 
     expect(find.text('Post'), findsOneWidget);
     expect(find.text("Crosspost"), findsOneWidget);
