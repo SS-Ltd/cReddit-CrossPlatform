@@ -18,6 +18,16 @@ void main() {
 
     expect(find.text('Change Password'), findsOneWidget);
 
+    Finder appBarFinder = find.byType(AppBar);
+    expect(appBarFinder, findsOneWidget);
+
+    Finder buttonFinder = find.descendant(
+      of: appBarFinder,
+      matching: find
+          .byTooltip('Back'),
+    );
+    expect(buttonFinder, findsOneWidget);
+    
     Finder currentpassword = find.byType(TextField).at(0);
     expect(currentpassword, findsOneWidget);
     await tester.enterText(currentpassword, '12345678aaA');

@@ -462,6 +462,7 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.only(right: 15.0),
             child: widget.profile || chosenCommunity.isNotEmpty
                 ? ElevatedButton(
+                  key: const Key('PostButton'),
                     onPressed: _istitleempty
                         ? null
                         : _isbodyempty &&
@@ -471,10 +472,6 @@ class _CreatePostState extends State<CreatePost> {
                                 _hasVideo
                             ? null
                             : () async {
-                                print("yallaaa: " +
-                                    widget.profile.toString() +
-                                    " and " +
-                                    chosenCommunity.isNotEmpty.toString());
                                 String type = _insertlink ? "Link" : "Post";
                                 String data = _insertlink
                                     ? _linkController.text
@@ -517,7 +514,6 @@ class _CreatePostState extends State<CreatePost> {
                                                 isspoiler,
                                                 _insertlink,
                                                 null);
-                                print("wowowowow");
                                 bool success = newpost['success'];
 
                                 if (success) {
@@ -750,6 +746,7 @@ class _CreatePostState extends State<CreatePost> {
                 label: 'Create Post Title',
                 identifier: 'Create Post Title',
                 child: TextField(
+                  key: const Key('title'),
                   decoration: InputDecoration(
                     labelText: _istitleempty ? 'Title' : '',
                     labelStyle: const TextStyle(fontSize: 30),
@@ -881,6 +878,7 @@ class _CreatePostState extends State<CreatePost> {
                 label: 'Create Post Body',
                 identifier: 'Create Post Body',
                 child: TextField(
+                  key: const Key('body'),
                   enabled: _insertlink || _hasImage || _hasVideo ? false : true,
                   decoration: InputDecoration(
                     labelText: _isbodyempty & chosenCommunity.isEmpty

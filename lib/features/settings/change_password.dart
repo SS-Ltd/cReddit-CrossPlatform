@@ -59,6 +59,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         appBar: AppBar(
           title: const Text('Change Password'),
           leading: IconButton(
+            tooltip: 'Back',
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
@@ -208,7 +209,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                                             _confirmPasswordController.text,
                                             _currentPasswordController.text);
                                     if (changeresponse == 200) {
-                                      CustomSnackBar(context: context, content: "Password Changed Successfully", backgroundColor: Colors.green);
+                                      CustomSnackBar(
+                                          context: context,
+                                          content:
+                                              "Password Changed Successfully",
+                                          backgroundColor: Colors.green);
                                     }
                                   }
                                 },

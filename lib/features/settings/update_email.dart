@@ -42,6 +42,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
+            tooltip: 'Back',
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               _emailController.clear();

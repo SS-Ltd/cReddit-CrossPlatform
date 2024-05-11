@@ -28,6 +28,8 @@ final List<String> languages = [
 class Settings extends StatefulWidget {
   const Settings({super.key});
 
+  bool get reduceAnimations => false;
+
   @override
   State<Settings> createState() => _SettingsState();
 }
@@ -59,6 +61,7 @@ class _SettingsState extends State<Settings> {
               appBar: AppBar(
                 backgroundColor: Palette.appBar,
                 leading: IconButton(
+                  tooltip: 'Back',
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.pop(context);
@@ -74,6 +77,7 @@ class _SettingsState extends State<Settings> {
                       children: [
                         const Heading(text: 'General'),
                         ArrowButton(
+                          key: const Key('AccountSettingsButton'),
                             onPressed: () {
                               Navigator.push(
                                   context,
@@ -102,6 +106,7 @@ class _SettingsState extends State<Settings> {
                         ),
                         const Heading(text: 'Language'),
                         SelectionButton(
+                          key: const Key('AppLanguageButton'),
                             onPressed: () {
                               showModalBottomSheet(
                                 context: context,
@@ -156,6 +161,7 @@ class _SettingsState extends State<Settings> {
                             buttonIcon: Icons.image_outlined,
                             selectedtext: 'Community default'),
                         SwitchButton(
+                            key: const Key('ReduceAnimationsButton'),
                             buttonText: "Reduce Animations",
                             buttonicon: Icons.remove_red_eye_outlined,
                             onPressed: (value) {
@@ -165,6 +171,7 @@ class _SettingsState extends State<Settings> {
                             },
                             switchvalue: reduceAnimations),
                         SwitchButton(
+                          key: const Key('ShowNSFWButton'),
                             buttonText: "Show NSFW content (I'm over 18)",
                             buttonicon: Icons.person,
                             onPressed: (value) {
@@ -174,6 +181,7 @@ class _SettingsState extends State<Settings> {
                             },
                             switchvalue: showNSFW),
                         SwitchButton(
+                            key: const Key('BlurNSFWButton'),
                             buttonText: "Blur NSFW images",
                             buttonicon: Icons.blur_circular,
                             onPressed: (value) {
@@ -194,6 +202,7 @@ class _SettingsState extends State<Settings> {
                             buttonIcon: Icons.settings,
                             selectedtext: 'Follow OS settings'),
                         SwitchButton(
+                          key: const Key('DarkModeButton'),
                             buttonText: "Dark mode",
                             buttonicon: Icons.dark_mode_outlined,
                             onPressed: (value) {
@@ -214,6 +223,7 @@ class _SettingsState extends State<Settings> {
                             selectedtext: 'Night'),
                         const Heading(text: 'Advanced'),
                         SwitchButton(
+                          key: const Key('SavedImagesButton'),
                             buttonText: "Saved image attribution",
                             buttonicon: Icons.image,
                             onPressed: (value) {
@@ -223,6 +233,7 @@ class _SettingsState extends State<Settings> {
                             },
                             switchvalue: savedImages),
                         SwitchButton(
+                          key: const Key('CommentJumpButton'),
                             buttonText: "Comment jump button",
                             buttonicon: Icons.arrow_drop_down,
                             onPressed: (value) {

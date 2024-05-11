@@ -2,8 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/MockNetworkService.dart';
-import 'package:reddit_clone/features/settings/account_settings.dart';
-import 'package:reddit_clone/features/settings/forgot_password.dart';
 import 'package:reddit_clone/features/settings/update_email.dart';
 import 'package:reddit_clone/services/networkServices.dart';
 
@@ -19,6 +17,16 @@ void main() {
     );
 
     expect(find.text('Update email address'), findsOneWidget);
+
+    Finder appBarFinder = find.byType(AppBar);
+    expect(appBarFinder, findsOneWidget);
+
+    Finder buttonFinder = find.descendant(
+      of: appBarFinder,
+      matching: find
+          .byTooltip('Back'),
+    );
+    expect(buttonFinder, findsOneWidget);
 
     Finder newemail = find.byType(TextField).at(0);
     expect(newemail, findsOneWidget);
@@ -41,6 +49,5 @@ void main() {
     // Finder cancelbutton = find.byKey(const Key('CancelButton'));
     // await tester.tap(cancelbutton);
     // expect(find.byType(AccountSettings), findsOneWidget);
-
   });
 }
