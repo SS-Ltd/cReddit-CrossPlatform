@@ -38,6 +38,7 @@ class _BannedUserState extends State<BannedUser> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
+            key: const Key('backButton'),
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
@@ -46,6 +47,7 @@ class _BannedUserState extends State<BannedUser> {
           title: const Text('Banned users'),
           actions: [
             IconButton(
+              key: const Key('addButton'),
               onPressed: () {
                 Navigator.push(
                     context,
