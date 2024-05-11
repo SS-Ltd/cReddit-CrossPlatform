@@ -82,7 +82,7 @@ class _GeneralSearchState extends State<GeneralSearch>
         }
       }
     });
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       setState(() {
         _selectedIndex = _tabController.index;
@@ -98,7 +98,7 @@ class _GeneralSearchState extends State<GeneralSearch>
     super.dispose();
   }
 
-  void getCommentsData() async {
+  Future<void> getCommentsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -113,7 +113,7 @@ class _GeneralSearchState extends State<GeneralSearch>
     });
   }
 
-  void getPostsData() async {
+  Future<void> getPostsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -128,7 +128,7 @@ class _GeneralSearchState extends State<GeneralSearch>
     });
   }
 
-  void getHashtagsData() async {
+  Future<void> getHashtagsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -147,17 +147,9 @@ class _GeneralSearchState extends State<GeneralSearch>
     setState(() {
       isLoading = true; // Start loading
     });
-    commentsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchComments(searchQuery, widget.username, sortOption, "", 1,
-            widget.communityName);
-    postsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchPosts(searchQuery, widget.username, sortOption, timeOption, 1,
-            widget.communityName);
-    hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchHashtags(
-            searchQuery, 1, widget.username, widget.communityName);
-
-    print(searchQuery + "  " + sortOption);
+    await getCommentsData();
+    await getPostsData();
+    await getHashtagsData();
     setState(() {
       isLoading = false; // End loading
     });
@@ -181,6 +173,7 @@ class _GeneralSearchState extends State<GeneralSearch>
             label: "search text",
             identifier: "search text",
             child: TextField(
+              key: Key('search text'),
               canRequestFocus: true,
               focusNode: _focusNode,
               controller: _searchController,
@@ -230,16 +223,19 @@ class _GeneralSearchState extends State<GeneralSearch>
                   controller: _tabController,
                   tabs: const <Widget>[
                     SizedBox(
+                      key: Key('Posts'),
                       width: 40,
                       child: Tab(text: "Posts"),
                     ),
                     SizedBox(
+                      key: Key('Comments'),
                       width: 80,
                       child: Tab(
                         text: "Comments",
                       ),
                     ),
                     SizedBox(
+                      key: Key('Hashtags'),
                       width: 80,
                       child: Tab(
                         text: "Hashtags",
@@ -263,6 +259,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                           );
                         },
                         child: Text(
+                          key: Key('search for'),
                           'Search for $searchQuery',
                           style: const TextStyle(fontSize: 20),
                         ),
@@ -302,6 +299,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                                                           fontSize: 18),
                                                     ),
                                                     RadioListTile(
+                                                      key: Key('Hot'),
                                                       title: const Text("Hot"),
                                                       value: 'Hot',
                                                       groupValue: sortOption,
@@ -317,6 +315,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                                                       },
                                                     ),
                                                     RadioListTile(
+                                                      key: Key('Top'),
                                                       title: const Text("Top"),
                                                       value: 'Top',
                                                       groupValue: sortOption,
@@ -332,6 +331,7 @@ class _GeneralSearchState extends State<GeneralSearch>
                                                       },
                                                     ),
                                                     RadioListTile(
+                                                      key: Key('New'),
                                                       title: const Text("New"),
                                                       value: 'New',
                                                       groupValue: sortOption,
