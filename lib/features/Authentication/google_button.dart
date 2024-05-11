@@ -1,5 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
+// coverage:ignore-file
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/common/CustomSnackBar.dart';

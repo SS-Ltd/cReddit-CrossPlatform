@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reddit_clone/features/home_page/custom_navigation_bar.dart';
-import 'package:reddit_clone/features/home_page/home_page.dart';
 import 'package:reddit_clone/features/post/choose_community.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/subreddit.dart';
