@@ -1,3 +1,4 @@
+import 'package:reddit_clone/models/bannedusers.dart';
 import 'package:reddit_clone/models/chat.dart';
 import 'package:reddit_clone/models/chatmessage.dart';
 import 'package:reddit_clone/models/community.dart';
@@ -111,6 +112,24 @@ class MockNetworkService extends NetworkService {
   }
 
   @override
+  Future<BannedUserList?> fetchUnbannedUsers() async {
+    return BannedUserList(
+      bannedUsers: [
+        BannedUser(
+          name: 'User1',
+          reasonToBan: '',
+          days: null,
+        ),
+        BannedUser(
+          name: 'User2',
+          reasonToBan: '',
+          days: null,
+        ),
+      ],
+    );
+  }
+
+  @override
   Future<Subreddit?> getSubredditDetails(String? subredditName) async {
     return Subreddit(
       name: 'Test Subreddit',
@@ -120,9 +139,32 @@ class MockNetworkService extends NetworkService {
       isModerator: false,
       icon: 'assets/hehe.png',
       banner: 'assets/hehe.png',
-      rules: [],
+      rules: ['Spam', 'Harassment'],
       moderators: [],
     );
+  }
+
+  @override
+  Future<List<Comments>?> fetchSavedComments(
+      {int page = 1, int limit = 10}) async {
+    return [
+      Comments(
+        profilePicture: 'assets/hehe.png',
+        username: 'username',
+        isImage: false,
+        netVote: 0,
+        content: 'This is a user comment',
+        createdAt: DateTime.now().toString(),
+        commentId: '1',
+        isUpvoted: false,
+        isDownvoted: false,
+        isSaved: false,
+        communityName: 'communityname',
+        postId: '1',
+        title: 'Post Title',
+        isApproved: false,
+      ),
+    ];
   }
 
   @override
@@ -182,6 +224,7 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
+  @override
   Future<UserModel> getUserDetails(String username) async {
     return UserModel(
         username: 'mockUser',
@@ -193,6 +236,7 @@ class MockNetworkService extends NetworkService {
         isBlocked: false);
   }
 
+  @override
   Future<void> logout(String? fcmToken) async {
     return;
   }
@@ -203,7 +247,7 @@ class MockNetworkService extends NetworkService {
         username: 'mockUser',
         displayName: '',
         email: '',
-        profilePicture: '',
+        profilePicture: 'assets/hehe.png',
         followers: 0,
         cakeDay: DateTime.now(),
         isBlocked: false);
@@ -244,8 +288,136 @@ class MockNetworkService extends NetworkService {
     ];
   }
 
+  @override
   Future<bool> editTextPost(String postId, String content) async {
     return true;
+  }
+
+  @override
+  Future<bool> createGroupChatRoom(String name, List<String> members) async {
+    return true;
+  }
+
+  @override
+  Future<String> createPrivateChatRoom(List<String> member) async {
+    return '1';
+  }
+
+  @override
+  Future<List<SearchUsers>> getSearchUsers(String user, int pageNumber) async {
+    return [
+      SearchUsers(
+        id: '1',
+        username: 'username',
+        about: 'About user',
+        profilePicture: 'assets/hehe.png',
+        isNSFW: false,
+      ),
+      SearchUsers(
+        username: 'user1',
+        profilePicture: 'assets/hehe.png',
+      ),
+      SearchUsers(
+        username: 'user2',
+        profilePicture: 'assets/hehe.png',
+      ),
+    ];
+  }
+
+  @override
+  Future<List<PostModel>?> getUserHistory(
+      {int page = 1, int limit = 10}) async {
+    return [
+      PostModel(
+        title: 'User Post',
+        content: 'This is a user post',
+        postId: '1',
+        type: 'Post',
+        username: 'username',
+        communityName: 'communityname',
+        pollOptions: [],
+        expirationDate: null,
+        netVote: 0,
+        isSpoiler: false,
+        isLocked: false,
+        isApproved: false,
+        isEdited: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        profilePicture: 'assets/hehe.png',
+        commentCount: 0,
+        isDeletedUser: false,
+        isUpvoted: false,
+        isDownvoted: false,
+        isSaved: false,
+        isHidden: false,
+        isNSFW: false,
+      ),
+    ];
+  }
+
+  @override
+  Future<List<PostModel>?> getUpvotedPosts(
+      {int page = 1, int limit = 10}) async {
+    return [
+      PostModel(
+        title: 'User Post',
+        content: 'This is a user post',
+        postId: '2',
+        type: 'Post',
+        username: 'username',
+        communityName: 'communityname',
+        pollOptions: [],
+        expirationDate: null,
+        netVote: 0,
+        isSpoiler: false,
+        isLocked: false,
+        isApproved: false,
+        isEdited: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        profilePicture: 'assets/hehe.png',
+        commentCount: 0,
+        isDeletedUser: false,
+        isUpvoted: true,
+        isDownvoted: false,
+        isSaved: false,
+        isHidden: false,
+        isNSFW: false,
+      ),
+    ];
+  }
+
+  @override
+  Future<List<PostModel>?> getDownvotedPosts(
+      {int page = 1, int limit = 10}) async {
+    return [
+      PostModel(
+        title: 'User Post',
+        content: 'This is a user post',
+        postId: '3',
+        type: 'Post',
+        username: 'username',
+        communityName: 'communityname',
+        pollOptions: [],
+        expirationDate: null,
+        netVote: 0,
+        isSpoiler: false,
+        isLocked: false,
+        isApproved: false,
+        isEdited: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        profilePicture: 'assets/hehe.png',
+        commentCount: 0,
+        isDeletedUser: false,
+        isUpvoted: false,
+        isDownvoted: true,
+        isSaved: false,
+        isHidden: false,
+        isNSFW: false,
+      ),
+    ];
   }
 
   // Future<bool> login(String username, String password, String? fcmToken) async {
@@ -275,6 +447,7 @@ class MockNetworkService extends NetworkService {
   bool isSignUpCalled = false;
   bool signUpResult = false;
 
+  @override
   Future<bool> signUp(String email, String password) async {
     print('Mock Signing up...');
     isSignUpCalled = true;
@@ -314,7 +487,7 @@ class MockNetworkService extends NetworkService {
         isEdited: false,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
-        profilePicture: '',
+        profilePicture: 'assets/hehe.png',
         commentCount: 0,
         isDeletedUser: false,
         isUpvoted: false,
@@ -507,19 +680,6 @@ class MockNetworkService extends NetworkService {
         icon: 'assets/hehe.png',
         isNSFW: false,
         members: 100,
-      )
-    ];
-  }
-
-  @override
-  Future<List<SearchUsers>> getSearchUsers(String user, int pageNumber) async {
-    return [
-      SearchUsers(
-        id: '1',
-        username: 'username',
-        about: 'About user',
-        profilePicture: 'assets/hehe.png',
-        isNSFW: false,
       )
     ];
   }

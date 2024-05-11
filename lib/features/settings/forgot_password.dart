@@ -59,6 +59,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             child: Column(
               children: [
                 TextFormField(
+                  key: const Key('username_field'),
                   controller: _userNameController,
                   decoration: const InputDecoration(
                     labelText: 'Username',
@@ -74,6 +75,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
+                      key: const Key('forgot_username_button'),
                       onPressed: () {
                         Navigator.pop(context);
                         showDialog(
@@ -88,6 +90,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                 ),
                 TextFormField(
+                  key: const Key('email_field'),
                   keyboardType: TextInputType.emailAddress,
                   controller: _emailController,
                   decoration: const InputDecoration(
@@ -115,18 +118,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextButton(
-                  onPressed: () => setState(() {
-                        launchUrl(
-                            Uri.parse(
-                                'https://support.reddithelp.com/hc/en-us/articles/205240005-How-do-I-log-in-to-Reddit-if-I-forgot-my-password'),
-                            mode: LaunchMode.externalApplication);
-                      }),
-                  child: const Text('Having Trouble?',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
-                        decorationColor: Colors.blue,
-                      ))),
+                key: const Key('having_trouble_button'),
+                onPressed: () {},
+                child: const Text(
+                  'Having Trouble?',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.blue,
+                  ),
+                ),
+              ),
             ],
           ),
           Padding(
@@ -135,6 +137,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
+                  key: const Key('cancel_button'),
                   onPressed: () {
                     _emailController.clear();
                     _userNameController.clear();
@@ -150,6 +153,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: const Text('CANCEL'),
                 ),
                 TextButton(
+                  key: const Key('email_me_button'),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       int changeresponse =

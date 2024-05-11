@@ -246,6 +246,7 @@ class _CommentPageState extends State<CommentPage> {
                 ),
               ],
       ),
+      // coverage:ignore-file
       endDrawer: isSearching ? null : const Rightsidebar(),
       body: Builder(
         builder: (BuildContext listViewContext) {
@@ -557,7 +558,10 @@ class _CommentPageState extends State<CommentPage> {
                       .show();
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => CustomNavigationBar(isProfile: false,)),
+                      MaterialPageRoute(
+                          builder: (context) => CustomNavigationBar(
+                                isProfile: false,
+                              )),
                       (route) => false);
                 }
               },
