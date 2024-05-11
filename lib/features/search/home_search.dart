@@ -100,7 +100,7 @@ class _HomeSearchState extends State<HomeSearch>
     super.dispose();
   }
 
-  void getCommentsData() async {
+  Future<void> getCommentsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -115,7 +115,7 @@ class _HomeSearchState extends State<HomeSearch>
     });
   }
 
-  void getPostsData() async {
+  Future<void> getPostsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -129,7 +129,7 @@ class _HomeSearchState extends State<HomeSearch>
     });
   }
 
-  void getCommunitiesData() async {
+  Future<void> getCommunitiesData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -143,7 +143,7 @@ class _HomeSearchState extends State<HomeSearch>
     });
   }
 
-  void getUsersData() async {
+  Future<void> getUsersData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -157,7 +157,7 @@ class _HomeSearchState extends State<HomeSearch>
     });
   }
 
-  void getHashtagsData() async {
+  Future<void> getHashtagsData() async {
     setState(() {
       isGettingMoreData = true; // Start loading
     });
@@ -175,18 +175,11 @@ class _HomeSearchState extends State<HomeSearch>
     setState(() {
       isLoading = true; // Start loading
     });
-    commentsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchComments(searchQuery, '', sortOption, timeOption, 1, "");
-    postsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchPosts(searchQuery, '', sortOption, timeOption, 1, "");
-    communitiesResults =
-        await Provider.of<NetworkService>(context, listen: false)
-            .getSearchCommunities(searchQuery, true, 1);
-    peopleResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchUsers(searchQuery, 1);
-    hashtagsResults = await Provider.of<NetworkService>(context, listen: false)
-        .getSearchHashtags(searchQuery, 1, "", "");
-
+    await getPostsData();
+    await getCommentsData();
+    await getCommunitiesData();
+    await getUsersData();
+    await getHashtagsData();
     print(searchQuery + "  " + sortOption);
     setState(() {
       isLoading = false; // End loading
@@ -428,6 +421,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                           fontSize: 18),
                                                     ),
                                                     RadioListTile(
+                                                      key: Key('Hot'),
                                                       title: const Text("Hot"),
                                                       value: 'Hot',
                                                       groupValue: sortOption,
@@ -443,6 +437,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                       },
                                                     ),
                                                     RadioListTile(
+                                                      key: Key('Top'),
                                                       title: const Text("Top"),
                                                       value: 'Top',
                                                       groupValue: sortOption,
@@ -458,6 +453,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                       },
                                                     ),
                                                     RadioListTile(
+                                                      key: Key('New'),
                                                       title: const Text("New"),
                                                       value: 'New',
                                                       groupValue: sortOption,
@@ -515,6 +511,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                                 fontSize: 18),
                                                           ),
                                                           RadioListTile(
+                                                            key: Key('Now'),
                                                             title: const Text(
                                                                 "Now"),
                                                             value: 'Now',
@@ -605,6 +602,7 @@ class _HomeSearchState extends State<HomeSearch>
                                                             },
                                                           ),
                                                           RadioListTile(
+                                                            key: Key('All'),
                                                             title: const Text(
                                                                 "All"),
                                                             value: 'All',
