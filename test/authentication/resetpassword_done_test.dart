@@ -1,11 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reddit_clone/MockNetworkService.dart';
 import 'package:reddit_clone/features/Authentication/reset_password_done.dart';
 import 'package:reddit_clone/services/networkServices.dart';
-import 'package:mockito/mockito.dart';
 
-class MockNetworkService extends Mock implements NetworkService {}
 
 void main() {
   testWidgets('ResetPasswordDone Widget Test', (WidgetTester tester) async {
