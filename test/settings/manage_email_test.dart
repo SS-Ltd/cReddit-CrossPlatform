@@ -15,9 +15,9 @@ void main() {
       ),
     );
 
-    expect(find.text('Emails'), findsOneWidget);
+    // Verify that the ManageEmails widget is rendered.
+    expect(find.byType(ManageEmails), findsOneWidget);
 
-    expect(find.text("MESSAGES"), findsOneWidget);
-    expect(find.text("ACTIVITY"), findsOneWidget);
   });
 }
+

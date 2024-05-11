@@ -685,6 +685,16 @@ class MockNetworkService extends NetworkService {
   }
 
   @override
+  Future<bool> muteCommunity(String communityName) async {
+    return true;
+  }
+
+  @override
+  Future<bool> unmuteCommunity(String communityName) async {
+    return true;
+  }
+
+  @override
   Future<bool> createUser(String? username, String? email, String? password,
       String? gender, String? fcmToken) async {
     print('Mock Creating user...');
@@ -700,4 +710,8 @@ class MockNetworkService extends NetworkService {
   Future<bool> forgotPassword(String username) async {
     return true;
   }
+
+  @override
+    Future<void> getUserSettings() async {
+}
 }
