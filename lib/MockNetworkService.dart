@@ -683,4 +683,11 @@ class MockNetworkService extends NetworkService {
       )
     ];
   }
+
+  @override
+  Future<bool> createUser(String? username, String? email, String? password,
+      String? gender, String? fcmToken) async {
+    print('Mock Creating user...');
+    return true;
+  }
 }
