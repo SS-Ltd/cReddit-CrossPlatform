@@ -44,6 +44,7 @@ class _PostTypesState extends State<PostTypes> {
         body: Column(
           children: [
             SelectionButton(
+              key: const Key('openmodel'),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
